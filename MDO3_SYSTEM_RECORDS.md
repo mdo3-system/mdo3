@@ -34,58 +34,87 @@
 
 ---
 
-## 2. サーバー & インフラ接続情報
+## 2. サーバー & 複数PC（D: / E: ドライブ）SSH運用方法
 
 | 項目 | 設定値 / 詳細情報 | 備考 |
 | :--- | :--- | :--- |
 | **ホスト (サーバー)** | `mdo3.xsrv.jp` (エックスサーバー / sv16377等) | ポート: `10022` |
 | **SSH ユーザー** | `mdo3` | 公開鍵認証方式 |
-| **SSH 秘密鍵の配置先 (推奨)** | `C:\Users\049sm\.ssh\id_rsa` または `id_ed25519` | XServer管理パネルから発行した鍵 |
+| **XServer SSH 秘密鍵** | Dropbox 直下: `mdo3.key` | PC①: `D:\Dropbox\mdo3.key`<br>PC②: `E:\Dropbox\mdo3.key` |
+| **GitHub SSH 秘密鍵** | Dropbox 直下: `github_id_ed25519.key` | PC①: `D:\Dropbox\github_id_ed25519.key`<br>PC②: `E:\Dropbox\github_id_ed25519.key` |
+| **共通設定先 (Windows)**| `%USERPROFILE%\.ssh\` (`C:\Users\<ユーザー名>\.ssh\`) | `config`, `mdo3.key`, `id_ed25519` |
 | **本番ドキュメントルート (基幹)** | `/home/mdo3/mdo3.com/public_html` | `https://mdo3.com` |
 | **本番ドキュメントルート (ツール)** | `/home/mdo3/mdo3.com/public_html/app` | `https://app.mdo3.com` |
-| **旧環境ドキュメントルート** | `/home/mdo3/eie.jp/public_html/2025` | 旧壁量計算WEB (`2025.eie.jp`) |
+| **旧環境ドキュメントルート** | `/home/mdo3/eie.jp/public_html/2025` | `https://2025.eie.jp` (稼働中最新版) |
+| **営業管理ポータルドキュメントルート** | `/home/mdo3/eie.tokyo/public_html/pr` | `https://pr.eie.tokyo` (法人契約管理) |
 | **構造計算マスター用ルート** | `/home/mdo3/thanks.work/public_html/kozo/` | `sub` サイト |
-| **データベース (MySQL)** | XServer 共有MySQL | 共通認証DB（`users`, `subscriptions`）設置予定 |
+| **データベース (MySQL)** | `localhost` / DB: `mdo3_toolapp` | ユーザー: `mdo3_toolapp0001` |
+
+### 💡 複数PCでの「うまい運用方法」
+1. **Dropbox で鍵ファイルを一元保管**:
+   - `Dropbox\mdo3.key` (XServer接続鍵)
+   - `Dropbox\github_id_ed25519.key` (GitHub接続鍵)
+2. **ワンクリック環境セットアップスクリプト**:
+   - 本リポジトリ内の `scripts/setup_ssh_env.bat` をダブルクリックするだけで、自動的に `D:\Dropbox` または `E:\Dropbox` を判別し、そのPCの `%USERPROFILE%\.ssh` への配備と `~/.ssh/config` の自動生成を行います。
+   - これにより、どちらのPCでも同一のコマンド（`ssh mdo3@mdo3.xsrv.jp`、`git push`、自動デプロイコマンド等）が完全にそのまま動作します。
 
 ---
 
-## 3. GitHub 設定情報 & リポジトリ構成
+## 3. GitHub 設定情報 & 稼働中リポジトリ構成
 
-| リポジトリ名 | GitHub URL | 役割 | 現状ステータス |
+| リポジトリ名 | GitHub URL | 役割 | 稼働ステータス (2026-09-24 確認) |
 | :--- | :--- | :--- | :--- |
-| **`mdo3`** *(新設)* | `git@github.com:mdo3-system/mdo3.git` | **基幹ポータル & 統合SaaS全体管理** | 今回新設（基幹システム） |
-| **`sub`** | `git@github.com:mdo3-system/sub.git` | 構造計算28ツール群マスター (Wasm化対象) | 稼働中 |
-| **`2025N`** | `git@github.com:mdo3-system/2025N.git` | 旧壁量計算WEB (`mdo3_remote/app`) | 参照・移行元リソース |
-| **`pr`** | `git@github.com:mdo3-system/pr.git` | 販売管理・マーケティングポータル | 参照リソース |
+| **`mdo3`** *(新設)* | `git@github.com:mdo3-system/mdo3.git` | **基幹ポータル & 統合SaaS全体管理** | **初期化 & push 完了 (mainブランチ開通)** |
+| **`2025N`** | `git@github.com:mdo3-system/2025N.git` | 壁量計算WEB (`2025.eie.jp`) | **正規稼働中 (最新コミット: v3.13.37)** |
+| **`pr`** | `git@github.com:mdo3-system/pr.git` | 営業契約管理ポータル (`pr.eie.tokyo`) | **正規稼働中 (Google Drive連携済み)** |
+| **`sub`** | `git@github.com:mdo3-system/sub.git` | 構造計算28ツール群マスター (Wasm化対象) | **稼働中 (`thanks.work/public_html/kozo/`)** |
 
-- **GitHub オーガナイゼーション / アカウント**: `mdo3-system` (または `mdo3`)
-- **コミッター メールアドレス**: `mdo3@mdo3.xsrv.jp` (または `eie@ymail.ne.jp`)
-
----
-
-## 4. Stripe 連携および現況確認結果 (Phase 1 調査)
-
-### 現況調査結果 (2026-09-24 確認)
-1. **既存コードにおけるStripe状態**:
-   - `wall_4split_v2/mdo3_remote/app/config/stripe.php` を確認した結果、Stripe APIキーはプレースホルダー（`pk_live_placeholder`, `sk_live_placeholder`）にリセットされている。
-   - `STRIPE_REBUILD_MEMO.md` の記録通り、旧Stripe連携はクリア済みであり、現在はマジックリンクによる無償・無料利用モードとなっている。
-2. **サブスクリプション収入状況**:
-   - **継続的なサブスク課金・自動請求は現在発生していない**ことをコード上・設計メモ上で確認済み。
-3. **今後の構築方針**:
-   - 既存の不要なWebhookや過去のテスト商品がStripeダッシュボードに残っている場合は、混乱を防ぐため整理・アーカイブする。
-   - `mdo3.com` 基幹ポータル構築（Phase 2）に合わせて、新しい正規プラン（週額/月額/年額/動画講座）のProduct ID / Price IDを新規発行する。
+- **GitHub Organization**: `mdo3-system`
+- **コミッター**: `mdo3 <mdo3@mdo3.xsrv.jp>`
 
 ---
 
-## 5. Phase 1 進捗・設定タスクリスト
+## 4. 共通SSO認証基盤（DB設計 & マジックリンク）
 
-- [x] **現況確認**: 既存Stripe状態のコード調査完了（継続課金なし、プレースホルダー状態を確認）
-- [x] **プロトコル策定**: 変更実行前の必須シーケンス (Pre-Flight Check) の公式化
-- [x] **台帳作成**: `MDO3_SYSTEM_RECORDS.md` の作成
-- [ ] **SSH鍵の配備**: Windows環境 (`C:\Users\049sm\.ssh`) へのXServer秘密鍵配置および接続疎通確認
-- [ ] **GitHub リポジトリ `mdo3` の初期化**:
-  - ローカルリポジトリ `git init`
-  - GitHub (`mdo3-system/mdo3`) へのリモート設定 & 初期コミット
-- [ ] **共通SSO認証基盤（DB設計）**:
-  - `Domain=.mdo3.com` で全サブドメインから参照可能な共通 `users` / `sessions` / `subscriptions` テーブル設計
-  - XServer MySQLへのマイグレーションスクリプト作成と適用
+### ① ドメイン共通クッキー仕様
+- **クッキー名**: `mdo3_session_token`
+- **ドメイン**: `Domain=.mdo3.com`
+- **属性**: `Path=/; Secure; HttpOnly; SameSite=Lax`
+- **有効期限**: 30日間
+- **動作**: `mdo3.com`, `app.mdo3.com`, `az.mdo3.com`, `map.mdo3.com` のどのサブドメインからでも、同一セッショントークンによりログインユーザー・契約権限が即座に共有されます。
+
+### ② データベーステーブル設計 (MySQL: `mdo3_toolapp`)
+- **`users` テーブル** (共通会員):
+  - `id`, `email`, `name`, `company`, `role` (`user`, `staff`, `admin`), `status` (`active`, `suspended`, `pending`), `created_at`, `last_login_at`
+- **`magic_links` テーブル** (ワンタイム認証URL管理):
+  - `id`, `user_id`, `token` (64文字), `redirect_to`, `expires_at`, `used_at`, `created_at`
+- **`sessions` テーブル** (共通セッショントークン):
+  - `id`, `session_token` (128文字), `user_id`, `ip_address`, `user_agent`, `expires_at`, `last_activity_at`
+- **`subscriptions` テーブル** (ツール別・個別価格対応サブスクリプション):
+  - `id`, `user_id`, `target_tool` (`all`, `app`, `az`, etc.), `plan_tier` (`free`, `spot_weekly`, `monthly_std`, `annual`, `permanent_staff`), `status` (`active`, `trialing`, `canceled`), `current_period_end`
+
+---
+
+## 5. 初期3アカウント & マジックリンク発行結果 (Phase 1 反映済み)
+
+本番MySQL（`mdo3_toolapp`）へマイグレーションスクリプトをCLI実行し、初期3アカウントを全ツール無期限権限（`permanent_staff`）として登録、ワンタイムログインURLを発行いたしました。
+
+| アカウント (Email) | 権限 (Role) | プラン | マジックリンクURL (有効期限: 2026-10-24 12:36) |
+| :--- | :--- | :--- | :--- |
+| **`eie@ymail.ne.jp`** | `admin` (管理者) | 全ツール無期限 | `https://app.mdo3.com/api/verify_magic_link.php?token=6658b54b5665923df9d3ea2e62b36e3f9d903b72391f16eb45236ea2ce27e7b2` |
+| **`sato@t-smile.co.jp`** | `admin` (管理者) | 全ツール無期限 | `https://app.mdo3.com/api/verify_magic_link.php?token=cd918d4ef0d48ba5ca8b07f61d046146ec766491540c75d22d1c19a028ff809f` |
+| **`s2712350@gmail.com`** | `staff` (スタッフ) | 全ツール無期限 | `https://app.mdo3.com/api/verify_magic_link.php?token=862f025f8ee2e7dae897a4d27f65e966c1be1a0909728bb206152b3ae75cbb76` |
+
+---
+
+## 6. Phase 2 展望 & タスクロードマップ
+
+1. **`app.mdo3.com` への `sub` 構造計算ツール群の同期 & 整備**:
+   - `sub` リポジトリからの全28ツール一覧取得
+   - 各ツールの紹介カード・ボックスの作成
+   - 操作説明動画・マニュアル・紹介動画の配置
+2. **個別価格設定 & 新Stripe連携**:
+   - ツール個別課金（単体月額/週額）および全ツールまとめプランのProduct/Price ID新規作成
+   - Stripe Customer Portal および Webhook の本番接続
+3. **`mdo3.com` 基幹ポータル構築**:
+   - 総合案内、全サブドメインナビゲーション、動画講座ポータル（Cloudflare Stream連携）の構築
