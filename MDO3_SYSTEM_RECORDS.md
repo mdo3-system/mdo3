@@ -52,26 +52,30 @@
 
 ---
 
-## 3. Stripe 確定料金プラン & 新Product/Price ID (2026-09-24 発行済み)
+## 3. Stripe 確定料金プラン & 新Product/Price ID (2026-09-24 発行・更新済み)
 
-Stripe 本番環境（Livemode）にて、確定料金体系に基づく新商品および新価格を発行完了いたしました。
+Stripe 本番環境（Livemode）にて、確定料金体系に基づく新商品および新価格を発行・連携完了いたしました。
 
-| プラン区分 | 料金 (税込) | Stripe Product ID | Stripe Price ID (本番確定) | 特徴 |
+| プラン区分 | 料金 (税込/税抜) | Stripe Product ID | Stripe Price ID (本番確定) | 特徴 |
 | :--- | :--- | :--- | :--- | :--- |
-| **① ツール個別プラン** | **月額 980円** | `prod_VJja1k2YWNc4fk` | **`price_1UJ6727zvNn4YIGPcDJwPgcj`** | 1計算書ピンポイント利用 |
-| **② カテゴリ別パック** | **月額 1,980円** | `prod_VJjaEKES7KM058` | **`price_1UJ6737zvNn4YIGPmHGlOdlw`** | 4大カテゴリ別使い放題 |
-| **③ 全ツール使い放題 (月額)**| **月額 3,980円** | `prod_VJja7rOid3RbLX` | **`price_1UJ6737zvNn4YIGPJGIAemxf`** | 全28ツール完全使い放題 |
-| **③ 全ツール使い放題 (年額)**| **年額 39,800円** | `prod_VJja7rOid3RbLX` | **`price_1UJ6747zvNn4YIGPt6vEmmpD`** | 実質2ヶ月分無料割引 |
-| **④ 操作動画・マニュアル** | **完全無償 (0円)** | — | — | 判断基準リソースとして無料公開 |
+| **① ツール個別プラン** | **月額 980円** (税込) | `prod_VJja1k2YWNc4fk` | **`price_1UJ6727zvNn4YIGPcDJwPgcj`** | 1計算書ピンポイント利用 |
+| **② カテゴリ別パック** | **月額 1,980円** (税込) | `prod_VJjaEKES7KM058` | **`price_1UJ6737zvNn4YIGPmHGlOdlw`** | 4大カテゴリ別使い放題 |
+| **③ 全ツール使い放題 (月額)**| **月額 3,980円** (税込) | `prod_VJja7rOid3RbLX` | **`price_1UJ6737zvNn4YIGPJGIAemxf`** | 構造計算補助ツール使い放題 |
+| **③ 全ツール使い放題 (年額)**| **年額 39,800円** (税込) | `prod_VJja7rOid3RbLX` | **`price_1UJ6747zvNn4YIGPt6vEmmpD`** | 実質2ヶ月分無料割引 |
+| **④ AZ斜め壁CAD (月額)** | **月額 5,980円** (税抜) | `prod_VJohqODBX6ohE7` | **`price_1UJB417zvNn4YIGP4CSL2j0M`** | ARCHITREND ZERO連携Web-CAD |
+| **④ AZ斜め壁CAD (年額)** | **年額 39,800円** (税抜) | `prod_VJohqODBX6ohE7` | **`price_1UJB417zvNn4YIGPvqElIYG9`** | 約4.5ヶ月分お得な年間契約 |
+| **⑤ スマート案内図作図** | **完全無償 (0円)** | — | — | map.mdo3.com 登録不要提供 |
+| **⑥ 操作動画・マニュアル** | **完全無償 (0円)** | — | — | 判断基準リソースとして無料公開 |
 
 - **Webhook エンドポイント**: `https://app.mdo3.com/stripe/webhook` (ID: `we_1Sh1827zvNn4YIGPUMt0o9m2`)
-- **Checkout API**: `https://app.mdo3.com/api/create_checkout_session.php` (テスト稼働確認済み)
+- **Checkout API**: `https://app.mdo3.com/api/create_checkout_session.php` (AZリダイレクト分岐対応済み)
 
 ---
 
-## 4. 全28ツール カタログ体系 & 並び順（v1.0.5 確定仕様）
+## 4. 全29ツール カタログ体系 & 並び順（v1.0.8 確定仕様）
 
 ユーザー様実務における利用頻度・審査実務フローに基づき、並び順およびブロック構造を再編。
+WRC造の「開口部補強・割増検討（jintsuko_bf）」は削除。新たに「CAD連携・無償ツール」カテゴリを追加し全29ツール体系へ拡張。
 
 ### ① 基礎・擁壁・地盤系 (8ツール)
 1. `jintsuko`: 人通口補強計算
@@ -106,13 +110,16 @@ Stripe 本番環境（Livemode）にて、確定料金体系に基づく新商�
 8. `kugihairetsushoteisu`: 釘配列諸定数 計算 ★連動セット
 9. `shosai_okabe`: 面材張り大壁 (許容応力度・剛性算定) ★連動セット
 10. `shosai_shinkabe`: 面材張り真壁 (伝統仕様算定) ★連動セット
-※ ⑧〜⑩は相互連動セットとしてUI上でハイライト連携表示。
-※ 開口部補強・割増検討（`jintsuko_bf`）は WRC造パッケージへ移設。
+※ 任意配列計算にはすべて「⑧ 釘配列諸定数」が必要となるため、⑧＋各構面の2in1連携セットとして運用。
 
-### ④ WRC造パッケージ (3ツール)
+### ④ WRC造パッケージ (2ツール)
 1. `wrc_simulator`: WRC一括検定シミュレータ (HOUSE-WL完全互換)
 2. `wrc_axial_force`: 長期軸力分割ツール
-3. `jintsuko_bf`: 開口部補強・割増検討（水平構面より移設）
+※ 「開口部補強・割増検討（jintsuko_bf）」は指示に基づき削除済み。Google APIキーモーダル完備。
+
+### ⑤ CAD連携 ＆ 無償実務ツール (2ツール)
+1. `az_skew_wall`: AZ斜め壁 構造計算補助Web-CAD (アーキトレンドゼロ連携)（月額¥5,980 / 年額¥39,800）
+2. `map_editor`: スマート案内図作成エディタ (確認申請 敷地案内図)（完全無償提供 ¥0）
 
 ---
 
@@ -203,4 +210,37 @@ Stripe 本番環境（Livemode）にて、確定料金体系に基づく新商�
   - **グローバルイベント委任 (Event Delegation)** を導入し、`.badge-api-key`, `.btn-open-api-modal`, `[data-open-api-modal]` のクリックを100%捕捉。
   - **WRC専用カテゴリ案内バナー**: WRC造カテゴリ選択時に、上部に目立つ「Google APIキー設定 ＆ 取得ガイドを開く」ボタン付き案内バナーを配備。
   - **WRCカードアクション**: 各カード下部に「API設定」ボタンを追加し、キー設定済みでもいつでもキーの確認・変更・消去が可能に。
+
+---
+
+## 8. リリース履歴: v1.0.8 ＆ v1.0.9 (2026-09-24)
+
+### ① WRC造「開口部補強・割増検討（jintsuko_bf）」の完全削除
+- **背景**: リンク先が人通口補強になっており不整合があったため、ユーザー指示によりカタログからツール自体を完全に削除。
+- **反映**: `public/js/tools_data.js` から `id: "jintsuko_bf"` を除外。WRC造パッケージを全2ツール構成に更新。
+
+### ② az.mdo3.com（ARCHITREND ZERO斜め壁Web-CAD）動作検証 ＆ Stripe本番課金連携
+- **動作検証結果**:
+  - 構成: Web-CAD単体フロントエンド（Vanilla JS + ES Modules + Straight-Skeleton幾何計算エンジン）。
+  - DXFパース、直骨格アルゴリズムによる変形スラブ荷重分配、多階層（1F/2F/3F/R/PH）切替、マニュアルモーダル、計算書レポート出力、3Dプレビューすべてコンソールエラー0件で完全稼働確認。
+- **Stripe 本番商品・価格発行 (Livemode)**:
+  - Product: `prod_VJohqODBX6ohE7` (`AZ斜め壁 構造計算補助Web-CAD (アーキトレンドゼロ連携)`)
+  - 月額プラン: `price_1UJB417zvNn4YIGP4CSL2j0M` (5,980 JPY / month)
+  - 年額プラン: `price_1UJB417zvNn4YIGPvqElIYG9` (39,800 JPY / year)
+  - `config/stripe_plans.php`（基幹側 `/public_html/config/` および会員SaaS側 `/public_html/app/config/`）へ即時登録。
+  - `public/api/create_checkout_session.php` にて AZ 対象時の success_url (`https://az.mdo3.com/?session_id={CHECKOUT_SESSION_ID}&payment=success`) および cancel_url (`https://az.mdo3.com/`) の分岐を追加。
+- **az.mdo3.com 側のUI導線追加**:
+  - `/home/mdo3/mdo3.com/public_html/az/frontend/index.html` の topbar に `← mdo3.com` ポータルリンクおよび「ライセンス契約（月額¥5,980〜）」導線ボタンを配備。
+
+### ③ map.mdo3.com（スマート案内図作成エディタ）完全無償提供統合
+- **位置づけ**: 実務設計者支援のため、完全無償提供（¥0 / 会員登録不要）。
+- **ポータル組み入れ**:
+  - カタログに `id: "map_editor"` として登録。
+  - ヘッダーナビに「スマート案内図 (無償)」直リンクを設置。
+  - 料金表（#pricingPlans）の第5カード「解説動画・案内図作図」内に完全無償提供を明記。
+
+### ④ ポータル全29ツール体系への刷新 ＆ 安定化
+- 新カテゴリ「CAD連携・無償ツール (2)」を新設（AZ斜め壁CAD ＆ スマート案内図）。
+- `window.startCheckout` を最上位グローバルスコープで定義し、未ログイン時には「無料の会員登録が必要です」と親切に案内するダイアログを実装。
+- キャッシュバスターを `v=1.0.9` に引き上げ、全ブラウザ・CDNでの完全正常稼働を検証完了。
 
