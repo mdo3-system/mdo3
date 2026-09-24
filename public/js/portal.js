@@ -687,7 +687,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const meta = REGIONAL_DATABASE.energyRegionMaster[region];
     if (!meta) return;
 
-    if (energyMapModal) energyMapModal.style.display = 'none';
+    if (energyMapModal) {
+      energyMapModal.style.display = 'none';
+      energyMapModal.classList.remove('active');
+    }
     document.body.style.overflow = '';
 
     if (regAddressInput) regAddressInput.value = meta.repCity;
@@ -708,6 +711,7 @@ document.addEventListener('DOMContentLoaded', () => {
       renderEnergyMasterTable();
       if (energyMapModal) {
         energyMapModal.style.display = 'flex';
+        energyMapModal.classList.add('active');
         document.body.style.overflow = 'hidden';
       }
     });
@@ -716,6 +720,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function closeEnergyModal() {
     if (energyMapModal) {
       energyMapModal.style.display = 'none';
+      energyMapModal.classList.remove('active');
       document.body.style.overflow = '';
     }
   }
@@ -765,6 +770,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateApiKeyStatusUI();
     if (googleApiKeyModal) {
       googleApiKeyModal.style.display = 'flex';
+      googleApiKeyModal.classList.add('active');
       document.body.style.overflow = 'hidden';
     }
   };
@@ -772,6 +778,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function closeApiKeyModal() {
     if (googleApiKeyModal) {
       googleApiKeyModal.style.display = 'none';
+      googleApiKeyModal.classList.remove('active');
       document.body.style.overflow = '';
     }
   }
