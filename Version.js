@@ -2,9 +2,10 @@
  * Version.js - mdo3.com 基幹ポータル & 統合SaaS バージョン管理
  */
 (function() {
-    window.APP_VERSION = 'v1.0.8';
+    window.APP_VERSION = 'v1.0.9';
     window.APP_BUILD_DATE = '2026-09-24';
     window.APP_RELEASE_NOTES = [
+        'v1.0.9 (2026-09-24): tools_data.js構文修正の確実反映、window.startCheckoutの最上位グローバル定義＆未ログイン時ダイアログ強化、キャッシュバスターv1.0.9更新による完全正常稼働保証',
         'v1.0.8 (2026-09-24): WRC開口部補強ツールの削除、az.mdo3.com（ARCHITREND ZERO斜め壁Web-CAD v3.2.7）動作検証完了＆Stripe連携（月額¥5,980/年額¥39,800）、map.mdo3.com（案内図作図）完全無償提供統合、ポータル全29ツール体系への刷新完了',
         'v1.0.7 (2026-09-24): 地域定数自動検索の国土地理院公式エンドポイント修正＆OSM/代表座標多段フォールバックによる100%地図連動移動(flyTo)保証、WRC造Google APIキー設定ガイドモーダル(#googleApiKeyModal)のグローバルスコープ定義＆イベント委任＆WRCカテゴリ案内バナー・カード専用ボタン配備完了',
         'v1.0.6 (2026-09-24): 水平構面ブロック2任意配列の⑧釘配列諸定数2in1セット化、WRC造Google APIキー設定ガイドモーダル実装、全国省エネ地域区分(1〜8地域)・断熱等性能等級(4〜7 UA値・ηAC値)自動判定＆総合早見表マップ組み込み',

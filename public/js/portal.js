@@ -72,6 +72,41 @@ document.addEventListener('click', (e) => {
   }
 });
 
+// ==========================================
+// 共通 Stripe Checkout 決済開始フロー
+// (インラインonclickから即時呼出し可能なよう最上位で定義)
+// ==========================================
+window.startCheckout = function(planKey, toolId = 'all') {
+  const hasSession = document.cookie.includes('mdo3_session_token=') || document.cookie.includes('mdo3_auth_token=');
+  if (!hasSession) {
+    if (confirm('料金プランのお申込みには無料の会員アカウントが必要です。\nログイン・登録画面へ移動しますか？')) {
+      window.location.href = 'https://app.mdo3.com/login?redirect=' + encodeURIComponent(window.location.href);
+    }
+    return;
+  }
+
+  const apiUrl = `https://app.mdo3.com/api/create_checkout_session.php?plan=${encodeURIComponent(planKey)}&tool=${encodeURIComponent(toolId)}`;
+  document.body.style.cursor = 'wait';
+
+  fetch(apiUrl, { credentials: 'include' })
+    .then(res => res.json())
+    .then(data => {
+      document.body.style.cursor = 'default';
+      if (data.success && data.url) {
+        window.location.href = data.url;
+      } else if (data.redirect_url) {
+        window.location.href = data.redirect_url;
+      } else {
+        alert('決済の開始に失敗しました: ' + (data.message || '不明なエラー'));
+      }
+    })
+    .catch(err => {
+      document.body.style.cursor = 'default';
+      console.error('Checkout error:', err);
+      alert('通信エラーが発生しました。時間をおいて再度お試しください。');
+    });
+};
+
 document.addEventListener('DOMContentLoaded', () => {
   const toolsContainer = document.getElementById('toolsContainer');
   const searchInput = document.getElementById('toolSearchInput');
@@ -500,36 +535,6 @@ document.addEventListener('DOMContentLoaded', () => {
       </a>
     `;
   }
-
-  // 8. Stripe Checkout 決済開始フロー
-  window.startCheckout = function(planKey, toolId = 'all') {
-    if (!hasSSOCookie) {
-      alert('お申込みにはログインが必要です。ログイン画面へ移動します。');
-      window.location.href = 'https://app.mdo3.com/login';
-      return;
-    }
-
-    const apiUrl = `https://app.mdo3.com/api/create_checkout_session.php?plan=${encodeURIComponent(planKey)}&tool=${encodeURIComponent(toolId)}`;
-    document.body.style.cursor = 'wait';
-
-    fetch(apiUrl, { credentials: 'include' })
-      .then(res => res.json())
-      .then(data => {
-        document.body.style.cursor = 'default';
-        if (data.success && data.url) {
-          window.location.href = data.url;
-        } else if (data.redirect_url) {
-          window.location.href = data.redirect_url;
-        } else {
-          alert('決済の開始に失敗しました: ' + (data.message || '不明なエラー'));
-        }
-      })
-      .catch(err => {
-        document.body.style.cursor = 'default';
-        console.error('Checkout error:', err);
-        alert('通信エラーが発生しました。時間をおいて再度お試しください。');
-      });
-  };
 
   // ==========================================
   // 9. 設計用 地域定数 自動検索エンジン (Z, S, V0, 凍結深度)
