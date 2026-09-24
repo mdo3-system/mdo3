@@ -208,9 +208,9 @@
               <li><span class="material-symbols-outlined">check</span> 操作動画・マニュアル閲覧</li>
             </ul>
           </div>
-          <a href="https://app.mdo3.com/login" class="btn btn-ghost" style="width: 100%;">
-            ツールを選んで登録
-          </a>
+          <button type="button" class="btn btn-ghost" style="width: 100%; cursor: pointer;" onclick="startCheckout('individual_monthly')">
+            ツールを選んで登録 (¥980/月)
+          </button>
         </div>
 
         <!-- プラン2: カテゴリ別パック -->
@@ -229,9 +229,9 @@
               <li><span class="material-symbols-outlined">check</span> 将来追加される同一カテゴリ新ツール</li>
             </ul>
           </div>
-          <a href="https://app.mdo3.com/login" class="btn btn-ghost" style="width: 100%;">
-            カテゴリを選択して登録
-          </a>
+          <button type="button" class="btn btn-ghost" style="width: 100%; cursor: pointer;" onclick="startCheckout('category_monthly')">
+            カテゴリを選択して登録 (¥1,980/月)
+          </button>
         </div>
 
         <!-- プラン3: 全ツール使い放題 (VIP・おすすめ) -->
@@ -255,9 +255,14 @@
               <li><span class="material-symbols-outlined">verified</span> ドメイン共通SSO (1回ログインで全開通)</li>
             </ul>
           </div>
-          <a href="https://app.mdo3.com/login" class="btn btn-gold" style="width: 100%;">
-            全ツール使い放題を始める
-          </a>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <button type="button" class="btn btn-gold" style="width: 100%; cursor: pointer;" onclick="startCheckout('all_access_monthly')">
+              月額プランを始める (¥3,980/月)
+            </button>
+            <button type="button" class="btn btn-ghost" style="width: 100%; cursor: pointer; font-size: 0.82rem;" onclick="startCheckout('all_access_annual')">
+              年額一括で申し込む (¥39,800/年)
+            </button>
+          </div>
         </div>
 
         <!-- プラン4: マニュアル・解説動画 (完全無料) -->

@@ -6,6 +6,7 @@
  * - カテゴリフィルタ & キーワード検索
  * - 判断基準モーダル (何ができて何ができないか)
  * - SSOセッションチェック & ログインステータス表示
+ * - Stripe Checkout 決済連携
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -134,8 +135,11 @@ document.addEventListener('DOMContentLoaded', () => {
           <strong style="font-size:1.2rem; color:var(--accent-gold);">単体: 月額 ¥980 / 使い放題: 月額 ¥3,980</strong>
         </div>
         <div style="display:flex; gap:12px;">
+          <button type="button" class="btn btn-gold" onclick="startCheckout('individual_monthly', '${tool.id}')">
+            月額¥980で契約する
+          </button>
           <a href="${tool.url}" target="_blank" class="btn btn-primary">
-            ツールを実行する <span class="material-symbols-outlined">launch</span>
+            ツールを開く <span class="material-symbols-outlined">launch</span>
           </a>
         </div>
       </div>
@@ -193,4 +197,37 @@ document.addEventListener('DOMContentLoaded', () => {
       </a>
     `;
   }
+
+  // 7. Stripe Checkout 決済開始フロー
+  window.startCheckout = function(planKey, toolId = 'all') {
+    if (!hasSSOCookie) {
+      // 未ログインならログイン画面へ誘導
+      alert('お申込みにはログインが必要です。ログイン画面へ移動します。');
+      window.location.href = 'https://app.mdo3.com/login';
+      return;
+    }
+
+    const apiUrl = `https://app.mdo3.com/api/create_checkout_session.php?plan=${encodeURIComponent(planKey)}&tool=${encodeURIComponent(toolId)}`;
+    
+    // ボタンのフィードバック
+    document.body.style.cursor = 'wait';
+
+    fetch(apiUrl, { credentials: 'include' })
+      .then(res => res.json())
+      .then(data => {
+        document.body.style.cursor = 'default';
+        if (data.success && data.url) {
+          window.location.href = data.url;
+        } else if (data.redirect_url) {
+          window.location.href = data.redirect_url;
+        } else {
+          alert('決済の開始に失敗しました: ' + (data.message || '不明なエラー'));
+        }
+      })
+      .catch(err => {
+        document.body.style.cursor = 'default';
+        console.error('Checkout error:', err);
+        alert('通信エラーが発生しました。時間をおいて再度お試しください。');
+      });
+  };
 });
