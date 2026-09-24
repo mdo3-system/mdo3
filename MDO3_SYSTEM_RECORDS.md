@@ -50,14 +50,6 @@
 | **構造計算マスター用ルート** | `/home/mdo3/thanks.work/public_html/kozo/` | `sub` サイト |
 | **データベース (MySQL)** | `localhost` / DB: `mdo3_toolapp` | ユーザー: `mdo3_toolapp0001` |
 
-### 💡 複数PCでの「うまい運用方法」
-1. **Dropbox で鍵ファイルを一元保管**:
-   - `Dropbox\mdo3.key` (XServer接続鍵)
-   - `Dropbox\github_id_ed25519.key` (GitHub接続鍵)
-2. **ワンクリック環境セットアップスクリプト**:
-   - 本リポジトリ内の `scripts/setup_ssh_env.bat` をダブルクリックするだけで、自動的に `D:\Dropbox` または `E:\Dropbox` を判別し、そのPCの `%USERPROFILE%\.ssh` への配備と `~/.ssh/config` の自動生成を行います。
-   - これにより、どちらのPCでも同一のコマンド（`ssh mdo3@mdo3.xsrv.jp`、`git push`、自動デプロイコマンド等）が完全にそのまま動作します。
-
 ---
 
 ## 3. GitHub 設定情報 & 稼働中リポジトリ構成
@@ -69,52 +61,62 @@
 | **`pr`** | `git@github.com:mdo3-system/pr.git` | 営業契約管理ポータル (`pr.eie.tokyo`) | **正規稼働中 (Google Drive連携済み)** |
 | **`sub`** | `git@github.com:mdo3-system/sub.git` | 構造計算28ツール群マスター (Wasm化対象) | **稼働中 (`thanks.work/public_html/kozo/`)** |
 
-- **GitHub Organization**: `mdo3-system`
-- **コミッター**: `mdo3 <mdo3@mdo3.xsrv.jp>`
+---
+
+## 4. `app.mdo3.com` 移動反映・動作テスト結果 (2026-09-24 完了)
+
+別チャット（`sub` 側）からの同期および移行作業を受け、本番環境の総合動作テストを実施。
+
+### ① テスト結果一覧
+| テスト項目 | 対象URL | 結果 | 詳細・対応 |
+| :--- | :--- | :---: | :--- |
+| **ポータル画面表示** | `https://app.mdo3.com/index.html` | **合格 (200 OK)** | 初期にファイル欠落（404）を発見し即時配備完了。全28ツール正常描画。 |
+| **ログイン画面UI** | `https://app.mdo3.com/login` | **合格 (200 OK)** | 動画視聴省略チェックボックス完全削除、メール送信のみのシンプルUI確認。 |
+| **個別計算ツール配信** | `https://app.mdo3.com/tools/...` | **合格 (200 OK)** | `foundation_beam_horizontal.html` 等の正常配信確認。 |
+| **共通スタイル/スクリプト**| `/css/common.css`, `/Version.js` | **合格 (200 OK)** | Version.js: `v1.4.1` 正常読み込み確認。 |
+| **Wasmバイナリ配信** | `/wasm/calc_core.wasm` | **合格 (200 OK)** | MIMEタイプ `application/wasm` 正常送出確認。 |
+| **旧URL転送/認証保護** | `/calc/wall_4split` | **合格 (302 Found)** | 未ログイン時は `/login` へ安全リダイレクト。ログイン後は `/index.html` へ転送。 |
 
 ---
 
-## 4. 共通SSO認証基盤（DB設計 & マジックリンク）
+## 5. Phase 2 実行計画 (基幹ポータル & 個別料金設定)
 
-### ① ドメイン共通クッキー仕様
-- **クッキー名**: `mdo3_session_token`
-- **ドメイン**: `Domain=.mdo3.com`
-- **属性**: `Path=/; Secure; HttpOnly; SameSite=Lax`
-- **有効期限**: 30日間
-- **動作**: `mdo3.com`, `app.mdo3.com`, `az.mdo3.com`, `map.mdo3.com` のどのサブドメインからでも、同一セッショントークンによりログインユーザー・契約権限が即座に共有されます。
+### ① 全28ツール群の体系別一覧（紹介ボックス・マニュアル・動画対象）
+1. **基礎・擁壁・地盤系 (7ツール)**:
+   - 片持ち基礎梁の検定 (柱あり)
+   - 片持ち基礎梁 (柱なし) ＆ 片土圧検定
+   - 基礎梁 水平力追加計算書 (KBI用・FEM/Winklerモデル)
+   - スラブ内補強 釣り合い鉄筋比の計算
+   - 人通口補強計算
+   - 逆Ｌ型・逆Ｔ型擁壁の計算
+   - Ｌ型擁壁の計算 (2.0m未満)
+2. **木造軸組・接合部・一般部材系 (8ツール)**:
+   - 柱の曲げ計算
+   - めり込み補強計算
+   - 横架材のZ低減係数
+   - 屋根葺き材等の検討
+   - はしご垂木 計算
+   - 梁上耐力壁の剛性低減
+   - 片持ち庇の検討
+   - 土砂災害特別警戒区域の外壁等
+3. **水平構面・耐力壁・詳細系 (11ツール)**:
+   - 釘配列諸定数 計算
+   - 面材張り大壁 / 面材張り真壁
+   - 垂木工法勾配屋根 / 面材直張り勾配屋根
+   - 面材張り床（任意配列 / 基本仕様）
+   - 根太工法 水平構面/屋根構面
+4. **WRC造パッケージ (2ツール)**:
+   - WRC一括検定シミュレータ (HOUSE-WL完全互換)
+   - 長期軸力分割ツール
 
-### ② データベーステーブル設計 (MySQL: `mdo3_toolapp`)
-- **`users` テーブル** (共通会員):
-  - `id`, `email`, `name`, `company`, `role` (`user`, `staff`, `admin`), `status` (`active`, `suspended`, `pending`), `created_at`, `last_login_at`
-- **`magic_links` テーブル** (ワンタイム認証URL管理):
-  - `id`, `user_id`, `token` (64文字), `redirect_to`, `expires_at`, `used_at`, `created_at`
-- **`sessions` テーブル** (共通セッショントークン):
-  - `id`, `session_token` (128文字), `user_id`, `ip_address`, `user_agent`, `expires_at`, `last_activity_at`
-- **`subscriptions` テーブル** (ツール別・個別価格対応サブスクリプション):
-  - `id`, `user_id`, `target_tool` (`all`, `app`, `az`, etc.), `plan_tier` (`free`, `spot_weekly`, `monthly_std`, `annual`, `permanent_staff`), `status` (`active`, `trialing`, `canceled`), `current_period_end`
-
----
-
-## 5. 初期3アカウント & マジックリンク発行結果 (Phase 1 反映済み)
-
-本番MySQL（`mdo3_toolapp`）へマイグレーションスクリプトをCLI実行し、初期3アカウントを全ツール無期限権限（`permanent_staff`）として登録、ワンタイムログインURLを発行いたしました。
-
-| アカウント (Email) | 権限 (Role) | プラン | マジックリンクURL (有効期限: 2026-10-24 12:36) |
-| :--- | :--- | :--- | :--- |
-| **`eie@ymail.ne.jp`** | `admin` (管理者) | 全ツール無期限 | `https://app.mdo3.com/api/verify_magic_link.php?token=6658b54b5665923df9d3ea2e62b36e3f9d903b72391f16eb45236ea2ce27e7b2` |
-| **`sato@t-smile.co.jp`** | `admin` (管理者) | 全ツール無期限 | `https://app.mdo3.com/api/verify_magic_link.php?token=cd918d4ef0d48ba5ca8b07f61d046146ec766491540c75d22d1c19a028ff809f` |
-| **`s2712350@gmail.com`** | `staff` (スタッフ) | 全ツール無期限 | `https://app.mdo3.com/api/verify_magic_link.php?token=862f025f8ee2e7dae897a4d27f65e966c1be1a0909728bb206152b3ae75cbb76` |
-
----
-
-## 6. Phase 2 展望 & タスクロードマップ
-
-1. **`app.mdo3.com` への `sub` 構造計算ツール群の同期 & 整備**:
-   - `sub` リポジトリからの全28ツール一覧取得
-   - 各ツールの紹介カード・ボックスの作成
-   - 操作説明動画・マニュアル・紹介動画の配置
-2. **個別価格設定 & 新Stripe連携**:
-   - ツール個別課金（単体月額/週額）および全ツールまとめプランのProduct/Price ID新規作成
-   - Stripe Customer Portal および Webhook の本番接続
-3. **`mdo3.com` 基幹ポータル構築**:
-   - 総合案内、全サブドメインナビゲーション、動画講座ポータル（Cloudflare Stream連携）の構築
+### ② 個別価格・料金プラン体系の設計案 (Stripe新商品・価格)
+- **個別ツール単体利用**:
+  - 週額スポット（例: 500円〜980円/週）
+  - 月額サブスク（例: 1,500円〜2,980円/月）
+- **カテゴリ別パッケージ** (例: 基礎・擁壁パック、WRC造パック):
+  - 月額サブスク（例: 3,980円/月）
+- **全ツール使い放題 (All-Access VIP)**:
+  - 月額スタンダード（例: 5,500円/月）
+  - 年額プラン（例: 55,000円/年 ※2ヶ月分割引）
+- **動画講座・解説マニュアル単品販売**:
+  - 各種操作解説動画・講義（Stripe買い切り + Cloudflare Stream署名付きURL）
