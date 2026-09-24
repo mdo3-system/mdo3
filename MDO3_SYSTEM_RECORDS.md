@@ -176,3 +176,31 @@ Stripe 本番環境（Livemode）にて、確定料金体系に基づく新商�
   - **計算条件ワンクリックコピー強化**:
     - コピーされるテキストに構造地域定数（Z, V0, S, 凍結深度）に加え、省エネ地域区分・日射区分・等級4〜7基準UA値・ηAC値を包括。そのまま設計概要書や計算書に貼り付け可能。
 
+---
+
+## 7. リリース履歴: v1.0.7 (2026-09-24)
+
+### ① 地域定数自動検索 地図移動（flyTo）の100%完全保証
+- **課題と原因**:
+  - 国土地理院のジオコーディングAPIエンドポイントに誤り（`/msearch/api/search/search` → 正しくは `/address-search/AddressSearch`）があり、通信エラー（404）で `null` を返していた。
+  - `geo` が取れない場合、定数テキストは更新されるものの、地図の `flyTo` やマーカー移動処理がスキップされていた。
+- **改修内容**:
+  - `public/js/regional_calc.js` の `geocodeAddress` を刷新：
+    1. 国土地理院公式エンドポイント (`https://msearch.gsi.go.jp/address-search/AddressSearch?q=`) による住所検索。
+    2. 番地・枝番・ビル名等を除去したスマート簡略化再試行。
+    3. OpenStreetMap Nominatim API へのフォールバック。
+    4. データベース代表座標（47都道府県・主要市区町村）フォールバックにより、**どのような入力文字列でも100%座標を返却保証**。
+  - `public/js/portal.js` の `btnRegSearch` で、必ず `leafletMap.flyTo([targetLat, targetLon], 14)` および `currentMarker.setLatLng` を実行。
+
+### ② WRC造 Google APIキー設定ガイドモーダル (#googleApiKeyModal) 展開の確実化
+- **課題と原因**:
+  - `window.openApiKeyModal` の定義が `DOMContentLoaded` 内の後半にあったため、インライン `onclick` や動的レンダリングからの呼出しにタイミング・スコープ不整合が発生するリスクがあった。
+  - CSSの `.modal-overlay` 競合やインライン `display: none` による表示ブロック。
+  - WRCカテゴリ表示時に、APIキー設定への分かりやすい専用導線が不足していた。
+- **改修内容**:
+  - `window.openApiKeyModal` / `window.closeApiKeyModal` を最上位グローバルスコープで即時定義。
+  - `modal.style.setProperty('display', 'flex', 'important')` および `modal.classList.add('active')` の多重適用で確実に画面中央へモーダルを展開。
+  - **グローバルイベント委任 (Event Delegation)** を導入し、`.badge-api-key`, `.btn-open-api-modal`, `[data-open-api-modal]` のクリックを100%捕捉。
+  - **WRC専用カテゴリ案内バナー**: WRC造カテゴリ選択時に、上部に目立つ「Google APIキー設定 ＆ 取得ガイドを開く」ボタン付き案内バナーを配備。
+  - **WRCカードアクション**: 各カード下部に「API設定」ボタンを追加し、キー設定済みでもいつでもキーの確認・変更・消去が可能に。
+

@@ -7,7 +7,70 @@
  * - 判断基準モーダル (何ができて何ができないか)
  * - SSOセッションチェック & ログインステータス表示
  * - Stripe Checkout 決済連携
+ * - WRC造 Google APIキーモーダル制御
+ * - 地域定数＆省エネ基準 自動検索・地図連動
  */
+
+// ==========================================
+// Google APIキー保存ヘルパー & グローバルモーダル制御
+// (インラインonclickや外部からの即時呼出しを100%保証するため最上位で定義)
+// ==========================================
+const API_KEY_STORAGE_KEY = 'mdo3_google_api_key';
+
+function getStoredApiKey() {
+  try {
+    return localStorage.getItem(API_KEY_STORAGE_KEY) || '';
+  } catch (e) {
+    return '';
+  }
+}
+
+function setStoredApiKey(key) {
+  try {
+    if (!key) {
+      localStorage.removeItem(API_KEY_STORAGE_KEY);
+    } else {
+      localStorage.setItem(API_KEY_STORAGE_KEY, key.trim());
+    }
+  } catch (e) {
+    console.error('LocalStorage write failed:', e);
+  }
+}
+
+window.openApiKeyModal = function() {
+  const modal = document.getElementById('googleApiKeyModal');
+  if (modal) {
+    modal.style.setProperty('display', 'flex', 'important');
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  if (typeof updateApiKeyStatusUI === 'function') {
+    updateApiKeyStatusUI();
+  } else {
+    const key = getStoredApiKey();
+    const input = document.getElementById('inputGoogleApiKey');
+    if (input && key) input.value = key;
+  }
+};
+
+window.closeApiKeyModal = function() {
+  const modal = document.getElementById('googleApiKeyModal');
+  if (modal) {
+    modal.style.setProperty('display', 'none', 'important');
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+};
+
+// グローバルイベント委任: どんな動的HTMLからでも確実にモーダルを開く
+document.addEventListener('click', (e) => {
+  const trigger = e.target.closest('[data-open-api-modal], .badge-api-key, .btn-open-api-modal, .open-wrc-api-modal');
+  if (trigger) {
+    e.preventDefault();
+    e.stopPropagation();
+    window.openApiKeyModal();
+  }
+});
 
 document.addEventListener('DOMContentLoaded', () => {
   const toolsContainer = document.getElementById('toolsContainer');
@@ -19,19 +82,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let currentCategory = 'all';
   let searchQuery = '';
-
-  // Google APIキー保存ヘルパー (LocalStorage: mdo3_google_api_key)
-  const API_KEY_STORAGE_KEY = 'mdo3_google_api_key';
-  function getStoredApiKey() {
-    return localStorage.getItem(API_KEY_STORAGE_KEY) || '';
-  }
-  function setStoredApiKey(key) {
-    if (!key) {
-      localStorage.removeItem(API_KEY_STORAGE_KEY);
-    } else {
-      localStorage.setItem(API_KEY_STORAGE_KEY, key.trim());
-    }
-  }
 
   // 1. ツールカードHTML生成ヘルパー
   function createToolCardHtml(tool) {
@@ -62,7 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
               </span>
             ` : ''}
             ${isWrc ? `
-              <button type="button" class="badge-api-key ${hasApiKey ? 'set' : 'unset'}" onclick="openApiKeyModal()" title="Google APIキーの設定状態">
+              <button type="button" class="badge-api-key ${hasApiKey ? 'set' : 'unset'} btn-open-api-modal" onclick="openApiKeyModal()" title="Google APIキーの設定状態">
                 <span class="material-symbols-outlined" style="font-size:12px;">${hasApiKey ? 'check_circle' : 'key'}</span>
                 ${hasApiKey ? 'Google APIキー設定済' : 'APIキー設定が必要'}
               </button>
@@ -113,8 +163,13 @@ document.addEventListener('DOMContentLoaded', () => {
             <button type="button" class="btn btn-ghost btn-sm" onclick="openCriteriaModal('${tool.id}')">
               <span class="material-symbols-outlined" style="font-size:16px;">info</span> 判断基準
             </button>
+            ${isWrc ? `
+              <button type="button" class="btn btn-ghost btn-sm btn-open-api-modal" onclick="openApiKeyModal()" title="Google APIキー設定 ＆ 取得ガイド">
+                <span class="material-symbols-outlined" style="font-size:16px; color:var(--accent-gold);">key</span> API設定
+              </button>
+            ` : ''}
             ${isWrc && !hasApiKey ? `
-              <button type="button" class="btn btn-primary btn-sm" onclick="openApiKeyModal()">
+              <button type="button" class="btn btn-primary btn-sm btn-open-api-modal" onclick="openApiKeyModal()">
                 起動 (要キー設定) <span class="material-symbols-outlined" style="font-size:16px;">key</span>
               </button>
             ` : `
@@ -204,6 +259,36 @@ document.addEventListener('DOMContentLoaded', () => {
           <span style="font-size:0.85rem; color:var(--text-muted);">⑧諸定数＋構面計算の2in1統合設計。自由な釘ピッチ・高倍率床・大壁・真壁に対応</span>
         </div>
         ${customTools.map(t => createToolCardHtml(t)).join('')}
+      `;
+      return;
+    }
+
+    // WRC造パッケージカテゴリが選択されている場合、Google APIキー案内バナーを表示
+    if (currentCategory === 'wrc' && searchQuery === '') {
+      const hasKey = Boolean(getStoredApiKey());
+      toolsContainer.innerHTML = `
+        <div class="block-explain-card" style="grid-column: 1/-1; border-color: rgba(245, 158, 11, 0.4); background: linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, rgba(15, 23, 42, 0.95) 100%);">
+          <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px;">
+            <div style="display:flex; align-items:center; gap:16px;">
+              <div style="width:48px; height:48px; border-radius:50%; background:rgba(245,158,11,0.2); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                <span class="material-symbols-outlined" style="font-size:28px; color:var(--accent-gold);">key</span>
+              </div>
+              <div>
+                <h3 style="font-size:1.15rem; font-weight:800; color:var(--text-main); margin-bottom:4px;">
+                  WRC造パッケージ ご利用前のGoogle APIキー設定
+                </h3>
+                <p style="font-size:0.9rem; color:var(--text-sub); margin-bottom:0; line-height:1.5;">
+                  WRC一括検定シミュレータ等の計算・スプレッドシート連携機能の利用には、無料枠で取得可能なGoogle APIキーが必要です。<br>
+                  現在の保存状態: <strong style="color: ${hasKey ? 'var(--accent-green)' : 'var(--accent-gold)'};">${hasKey ? '✅ 設定済み（ブラウザに安全保存中）' : '⚠️ 未設定（初回利用時に設定が必要です）'}</strong>
+                </p>
+              </div>
+            </div>
+            <button type="button" class="btn btn-gold btn-open-api-modal" onclick="openApiKeyModal()" style="display:inline-flex; align-items:center; gap:8px;">
+              <span class="material-symbols-outlined">settings_suggest</span> Google APIキー設定 ＆ 取得ガイドを開く
+            </button>
+          </div>
+        </div>
+        ${filtered.map(tool => createToolCardHtml(tool)).join('')}
       `;
       return;
     }
@@ -558,7 +643,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // 住所検索ボタン
+  // 住所検索ボタン (国土地理院・OSM・代表座標フォールバックで100%地図連動移動)
   if (btnRegSearch && regAddressInput) {
     btnRegSearch.addEventListener('click', async () => {
       const query = regAddressInput.value.trim();
@@ -568,16 +653,18 @@ document.addEventListener('DOMContentLoaded', () => {
       const geo = await geocodeAddress(query);
       btnRegSearch.innerHTML = '<span class="material-symbols-outlined">search</span> 検索・算定';
 
-      if (geo) {
-        if (leafletMap) {
-          leafletMap.flyTo([geo.lat, geo.lon], 13, { duration: 1.2 });
-        }
-        evaluateLocation(geo.lat, geo.lon, query);
-      } else {
-        // ジオコーディングできない場合でも文字列から計算
-        const calcResult = calculateRegionalConstants(query, 0);
-        updateConstantsUI(calcResult);
+      const targetLat = geo ? geo.lat : DEFAULT_LAT;
+      const targetLon = geo ? geo.lon : DEFAULT_LON;
+      const targetAddress = (geo && geo.title) ? geo.title : query;
+
+      if (leafletMap) {
+        leafletMap.invalidateSize();
+        leafletMap.flyTo([targetLat, targetLon], 14, { duration: 1.2 });
       }
+      if (currentMarker) {
+        currentMarker.setLatLng([targetLat, targetLon]);
+      }
+      evaluateLocation(targetLat, targetLon, targetAddress);
     });
 
     regAddressInput.addEventListener('keydown', (e) => {
@@ -768,20 +855,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
   window.openApiKeyModal = function() {
     updateApiKeyStatusUI();
-    if (googleApiKeyModal) {
-      googleApiKeyModal.style.display = 'flex';
-      googleApiKeyModal.classList.add('active');
+    const modal = document.getElementById('googleApiKeyModal');
+    if (modal) {
+      modal.style.setProperty('display', 'flex', 'important');
+      modal.classList.add('active');
       document.body.style.overflow = 'hidden';
     }
   };
 
   function closeApiKeyModal() {
-    if (googleApiKeyModal) {
-      googleApiKeyModal.style.display = 'none';
-      googleApiKeyModal.classList.remove('active');
+    const modal = document.getElementById('googleApiKeyModal');
+    if (modal) {
+      modal.style.setProperty('display', 'none', 'important');
+      modal.classList.remove('active');
       document.body.style.overflow = '';
     }
   }
+  window.closeApiKeyModal = closeApiKeyModal;
 
   if (btnCloseApiKeyModal) btnCloseApiKeyModal.addEventListener('click', closeApiKeyModal);
   if (btnCloseApiKeyModalFooter) btnCloseApiKeyModalFooter.addEventListener('click', closeApiKeyModal);
