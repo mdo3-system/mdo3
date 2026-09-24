@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>mdo3 構造計算補助ツール群ポータル | 木造・RC構造実務クラウド</title>
-  <meta name="description" content="木造・RC構造計算実務を強力にサポートする専門クラウドツール群mdo3。基礎梁・片土圧・擁壁・柱曲げ・水平構面・WRC造など28ツールを提供。何ができて何ができないかの判断基準マニュアル・実務解説動画を完全無償公開。必要な計算だけを月額980円から。">
+  <meta name="description" content="木造・RC構造計算実務を強力にサポートする専門クラウドツール群mdo3。基礎梁・片土圧・擁壁・柱曲げ・水平構面・WRC造・AZ斜め壁CADなど29ツールを提供。何ができて何ができないかの判断基準マニュアル・実務解説動画・スマート案内図作成を完全無償公開。必要な計算だけを月額980円から。">
   <link rel="canonical" href="https://mdo3.com/">
 
   <!-- Google Fonts & Material Symbols -->
@@ -18,7 +18,7 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/portal.css?v=1.0.7">
+  <link rel="stylesheet" href="css/portal.css?v=1.0.8">
 </head>
 <body>
 
@@ -35,8 +35,9 @@
       <nav>
         <ul class="nav-links" id="mainNavLinks">
           <li><a href="#regionalSearch">地域定数検索 (Z・S・V0)</a></li>
-          <li><a href="#toolsCatalog">ツール一覧 (28)</a></li>
-          <li><a href="#proSuite">斜め壁・案内図</a></li>
+          <li><a href="#toolsCatalog">ツール一覧 (29)</a></li>
+          <li><a href="https://map.mdo3.com" target="_blank" style="color: var(--accent-green);"><span class="material-symbols-outlined" style="font-size:16px; vertical-align:text-bottom;">map</span> スマート案内図 (無償)</a></li>
+          <li><a href="https://az.mdo3.com" target="_blank" style="color: var(--accent-cyan);"><span class="material-symbols-outlined" style="font-size:16px; vertical-align:text-bottom;">architecture</span> AZ斜め壁CAD</a></li>
           <li><a href="#pricingPlans">料金プラン</a></li>
           <li><a href="#freeLearning">動画・マニュアル</a></li>
         </ul>
@@ -60,7 +61,7 @@
     <div class="container">
       <div class="hero-pill" id="heroBadge">
         <span class="material-symbols-outlined" style="font-size: 16px;">verified</span>
-        <span>実務設計者・構造審査対応 全28ツール完全配備</span>
+        <span>実務設計者・構造審査対応 全29ツール完全配備</span>
       </div>
 
       <h1 class="hero-title" id="mainHeadline">
@@ -68,8 +69,8 @@
       </h1>
 
       <p class="hero-desc" id="heroSubHeadline">
-        基礎梁水平力、片土圧、擁壁、柱曲げ、水平構面、WRC造まで網羅。<br>
-        「何ができて何ができないか」の明確な判断基準と操作動画を完全無償公開。<br>
+        基礎梁水平力、片土圧、擁壁、柱曲げ、水平構面、WRC造、AZ斜め壁CADまで網羅。<br>
+        「何ができて何ができないか」の明確な判断基準と操作動画、案内図作図ツールを完全無償公開。<br>
         必要な計算書だけを月額980円からご活用いただけます。
       </p>
 
@@ -85,11 +86,11 @@
       <!-- 実績・構成メトリクス -->
       <div class="hero-metrics" id="heroMetrics">
         <div class="metric-item">
-          <h4>28</h4>
+          <h4>29</h4>
           <p>専門構造計算ツール</p>
         </div>
         <div class="metric-item">
-          <h4>4大</h4>
+          <h4>5大</h4>
           <p>実務特化カテゴリ</p>
         </div>
         <div class="metric-item">
@@ -98,7 +99,7 @@
         </div>
         <div class="metric-item">
           <h4>¥0</h4>
-          <p>操作動画・マニュアル無料</p>
+          <p>案内図・解説動画・マニュアル</p>
         </div>
       </div>
     </div>
@@ -315,18 +316,19 @@
     <div class="container">
       <div class="section-head">
         <div class="section-tag">TOOL CATALOG</div>
-        <h2 class="section-title">全28ツール一覧 ＆ 判断基準</h2>
+        <h2 class="section-title">全29ツール一覧 ＆ 判断基準</h2>
         <p class="section-sub">実務での適用可否（できること・できないこと）をご確認のうえ、安全にご利用いただけます。</p>
       </div>
 
       <!-- フィルター & 検索コントロール -->
       <div class="catalog-controls" id="catalogControls">
         <div class="category-tabs" id="categoryTabs">
-          <button type="button" class="tab-btn active" data-category="all" id="tabAll">すべて (28)</button>
+          <button type="button" class="tab-btn active" data-category="all" id="tabAll">すべて (29)</button>
           <button type="button" class="tab-btn" data-category="foundation" id="tabFoundation">基礎・擁壁・地盤 (8)</button>
           <button type="button" class="tab-btn" data-category="timber" id="tabTimber">木造軸組・接合部 (7)</button>
           <button type="button" class="tab-btn" data-category="detail" id="tabDetail">水平構面・耐力壁 (10)</button>
-          <button type="button" class="tab-btn" data-category="wrc" id="tabWrc">WRC造パッケージ (3)</button>
+          <button type="button" class="tab-btn" data-category="wrc" id="tabWrc">WRC造パッケージ (2)</button>
+          <button type="button" class="tab-btn" data-category="cad" id="tabCad">CAD連携・無償ツール (2)</button>
         </div>
 
         <div class="search-box">
@@ -506,7 +508,7 @@
           <div class="badge-featured">一番人気・おすすめ</div>
           <div>
             <h3 class="plan-name" style="color: #fff;">全ツール使い放題</h3>
-            <p class="plan-desc">28すべての専門構造ツールを制限なく自由に使えるプロフェッショナル仕様。</p>
+            <p class="plan-desc">専門構造計算ツール群を制限なく自由に使えるプロフェッショナル仕様。</p>
             <div class="plan-price">
               <span class="currency" style="color: var(--accent-gold);">¥</span><span class="amount" style="color: var(--accent-gold);">3,980</span>
               <span class="period">/ 月 (税込)</span>
@@ -515,7 +517,7 @@
               </div>
             </div>
             <ul class="plan-features">
-              <li><span class="material-symbols-outlined">verified</span> <strong>全28ツール すべて使い放題</strong></li>
+              <li><span class="material-symbols-outlined">verified</span> <strong>構造計算補助ツール群 すべて使い放題</strong></li>
               <li><span class="material-symbols-outlined">verified</span> WRC造パッケージ (HOUSE-WL連動) 含む</li>
               <li><span class="material-symbols-outlined">verified</span> A4計算書・PDF出力 完全無制限</li>
               <li><span class="material-symbols-outlined">verified</span> 今後リリースされるすべての新ツール</li>
@@ -532,24 +534,55 @@
           </div>
         </div>
 
-        <!-- プラン4: マニュアル・解説動画 (完全無料) -->
-        <div class="pricing-card" id="planFreeDocs">
+        <!-- プラン4: AZ斜め壁CAD Pro (アーキトレンドゼロ連携) -->
+        <div class="pricing-card cad-pro" id="planAzCad">
+          <div class="badge-cad-pro">CAD自動連携 Pro</div>
           <div>
-            <h3 class="plan-name">解説動画・マニュアル</h3>
-            <p class="plan-desc">適合判断・操作フローの確認用リソース。どなたでも今すぐ閲覧可能。</p>
+            <h3 class="plan-name" style="color: var(--accent-cyan);">AZ斜め壁 構造計算補助</h3>
+            <p class="plan-desc">ARCHITREND ZEROと直結。DXF自動パース・斜め耐力壁抽出Web-CAD。</p>
             <div class="plan-price">
-              <span class="currency">¥</span><span class="amount">0</span>
-              <span class="period">/ 完全無料</span>
+              <span class="currency" style="color: var(--accent-cyan);">¥</span><span class="amount" style="color: var(--accent-cyan);">5,980</span>
+              <span class="period">/ 月 (税抜)</span>
+              <div style="font-size: 0.85rem; color: #38bdf8; margin-top: 4px; font-weight: 700;">
+                年額一括: ¥39,800/年 (約4.5ヶ月分お得)
+              </div>
             </div>
             <ul class="plan-features">
-              <li><span class="material-symbols-outlined">check</span> 全ツールの操作解説動画</li>
-              <li><span class="material-symbols-outlined">check</span> 機能・判断基準マニュアル</li>
-              <li><span class="material-symbols-outlined">check</span> 入力仕様・計算根拠解説</li>
-              <li><span class="material-symbols-outlined">check</span> 登録不要で誰でも閲覧可能</li>
+              <li><span class="material-symbols-outlined">check</span> ARCHITREND ZERO DXF読込＆パース</li>
+              <li><span class="material-symbols-outlined">check</span> 直骨格(Straight Skeleton)自動重心・壁線算定</li>
+              <li><span class="material-symbols-outlined">check</span> 3Dプレビュー＆多階層管理</li>
+              <li><span class="material-symbols-outlined">check</span> 斜め耐力壁水平力分担・偏心率根拠出力</li>
             </ul>
           </div>
-          <a href="#freeLearning" class="btn btn-ghost" style="width: 100%;">
-            無料コンテンツを見る
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <button type="button" class="btn btn-gold" style="width: 100%; cursor: pointer;" onclick="startCheckout('az_monthly', 'az')">
+              月額プランで契約 (¥5,980/月)
+            </button>
+            <button type="button" class="btn btn-ghost" style="width: 100%; cursor: pointer; font-size: 0.82rem;" onclick="startCheckout('az_annual', 'az')">
+              年額一括で申し込む (¥39,800/年)
+            </button>
+          </div>
+        </div>
+
+        <!-- プラン5: マニュアル・解説動画 ＆ 案内図 (完全無料) -->
+        <div class="pricing-card" id="planFreeDocs">
+          <div>
+            <h3 class="plan-name">解説動画・案内図作図</h3>
+            <p class="plan-desc">適合判断リソース＆案内図ツール。どなたでも完全無料で今すぐ利用可能。</p>
+            <div class="plan-price">
+              <span class="currency">¥</span><span class="amount">0</span>
+              <span class="period">/ 完全無料提供</span>
+            </div>
+            <ul class="plan-features">
+              <li><span class="material-symbols-outlined">check</span> <strong>案内図作図 (map.mdo3.com) 完全無料</strong></li>
+              <li><span class="material-symbols-outlined">check</span> 全ツールの操作解説動画</li>
+              <li><span class="material-symbols-outlined">check</span> 機能・判断基準マニュアル</li>
+              <li><span class="material-symbols-outlined">check</span> 地域定数自動検索 (Z・S・V0)</li>
+              <li><span class="material-symbols-outlined">check</span> 登録不要で誰でも閲覧・利用可能</li>
+            </ul>
+          </div>
+          <a href="https://map.mdo3.com" target="_blank" class="btn btn-ghost" style="width: 100%; border-color: rgba(16,185,129,0.4); color: var(--accent-green);">
+            <span class="material-symbols-outlined">map</span> 案内図ツールを開く (無料)
           </a>
         </div>
       </div>
@@ -755,10 +788,10 @@
         <div class="footer-col">
           <h5>サービス群</h5>
           <ul>
-            <li><a href="https://app.mdo3.com/index.html" target="_blank">構造計算補助ツール群 (28)</a></li>
+            <li><a href="https://app.mdo3.com/index.html" target="_blank">構造計算補助ツール群 (29)</a></li>
             <li><a href="#regionalSearch">地域定数自動検索 (Z・S・V0)</a></li>
             <li><a href="https://map.mdo3.com" target="_blank">案内図申請作図 (MAP / 無料)</a></li>
-            <li><a href="https://az.mdo3.com" target="_blank">斜め壁計算補助 (AZ)</a></li>
+            <li><a href="https://az.mdo3.com" target="_blank">斜め壁計算補助 (AZ / CAD)</a></li>
           </ul>
         </div>
 
@@ -790,8 +823,8 @@
   </footer>
 
   <!-- Scripts -->
-  <script src="js/tools_data.js?v=1.0.7"></script>
-  <script src="js/regional_calc.js?v=1.0.7"></script>
-  <script src="js/portal.js?v=1.0.7"></script>
+  <script src="js/tools_data.js?v=1.0.8"></script>
+  <script src="js/regional_calc.js?v=1.0.8"></script>
+  <script src="js/portal.js?v=1.0.8"></script>
 </body>
 </html>

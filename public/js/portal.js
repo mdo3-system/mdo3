@@ -89,18 +89,34 @@ document.addEventListener('DOMContentLoaded', () => {
     const isCoreEngine = tool.isCoreNailEngine === true;
     const isWrc = tool.category === 'wrc';
     const hasApiKey = isWrc && Boolean(getStoredApiKey());
+    const isAz = tool.id === 'az_skew_wall';
+    const isFreeTool = tool.isFree === true;
 
     let cardExtraClass = '';
     if (isNailSet) cardExtraClass = 'tool-card-nail-set';
     if (isCoreEngine) cardExtraClass = 'tool-card-core-engine';
+    if (isAz) cardExtraClass = 'tool-card-az-pro';
+    if (isFreeTool) cardExtraClass = 'tool-card-free-tool';
+
+    let priceBadgeText = '月額 ¥980 (税込)';
+    if (tool.priceText) {
+      priceBadgeText = tool.priceText;
+    } else if (isNailSet) {
+      priceBadgeText = 'セット利用: 月額 ¥980';
+    }
 
     return `
       <div class="tool-card ${cardExtraClass}" data-id="${tool.id}">
         <div class="card-top">
-          <div class="card-icon">
+          <div class="card-icon" style="${isAz ? 'background:rgba(91,138,254,0.15); color:#60a5fa;' : (isFreeTool ? 'background:rgba(16,185,129,0.15); color:var(--accent-green);' : '')}">
             <span class="material-symbols-outlined">${tool.icon || 'construction'}</span>
           </div>
           <div style="display:flex; flex-direction:column; align-items:flex-end; gap:4px;">
+            ${tool.badgeLabel ? `
+              <span class="badge-custom-tag" style="background:${isFreeTool ? 'rgba(16,185,129,0.15)' : 'rgba(91,138,254,0.15)'}; color:${isFreeTool ? 'var(--accent-green)' : '#60a5fa'}; border:1px solid ${isFreeTool ? 'rgba(16,185,129,0.35)' : 'rgba(91,138,254,0.35)'}; font-size:0.72rem; font-weight:800; padding:2px 8px; border-radius:12px;">
+                ${isFreeTool ? '🎁 完全無償' : '📐 CAD連携'}
+              </span>
+            ` : ''}
             ${isNailSet ? `
               <span class="badge-nail-sync" title="任意配列の前提となる⑧釘配列諸定数との連動セット">
                 <span class="material-symbols-outlined" style="font-size:12px;">sync_alt</span> ⑧釘配列 連携セット (2in1)
@@ -158,24 +174,43 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
 
         <div class="card-footer">
-          <span class="card-price-badge">${isNailSet ? 'セット利用: 月額 ¥980' : '月額 ¥980 (税込)'}</span>
+          <span class="card-price-badge" style="${isAz ? 'border-color:rgba(245,158,11,0.4); color:var(--accent-gold); font-weight:700;' : (isFreeTool ? 'border-color:rgba(16,185,129,0.4); color:var(--accent-green); font-weight:700;' : '')}">${priceBadgeText}</span>
           <div class="card-actions">
-            <button type="button" class="btn btn-ghost btn-sm" onclick="openCriteriaModal('${tool.id}')">
-              <span class="material-symbols-outlined" style="font-size:16px;">info</span> 判断基準
-            </button>
-            ${isWrc ? `
-              <button type="button" class="btn btn-ghost btn-sm btn-open-api-modal" onclick="openApiKeyModal()" title="Google APIキー設定 ＆ 取得ガイド">
-                <span class="material-symbols-outlined" style="font-size:16px; color:var(--accent-gold);">key</span> API設定
-              </button>
-            ` : ''}
-            ${isWrc && !hasApiKey ? `
-              <button type="button" class="btn btn-primary btn-sm btn-open-api-modal" onclick="openApiKeyModal()">
-                起動 (要キー設定) <span class="material-symbols-outlined" style="font-size:16px;">key</span>
-              </button>
-            ` : `
-              <a href="${tool.url}" target="_blank" class="btn btn-primary btn-sm">
-                ${isNailSet ? 'セット起動' : '開く'} <span class="material-symbols-outlined" style="font-size:16px;">launch</span>
+            ${isFreeTool ? `
+              <a href="${tool.manualUrl}" target="_blank" class="btn btn-ghost btn-sm">
+                <span class="material-symbols-outlined" style="font-size:16px;">menu_book</span> マニュアル
               </a>
+              <a href="${tool.url}" target="_blank" class="btn btn-primary btn-sm" style="background:var(--accent-green); border-color:var(--accent-green); color:#06140e; font-weight:700;">
+                今すぐ作成 (無料) <span class="material-symbols-outlined" style="font-size:16px;">launch</span>
+              </a>
+            ` : isAz ? `
+              <button type="button" class="btn btn-ghost btn-sm" onclick="openCriteriaModal('${tool.id}')">
+                <span class="material-symbols-outlined" style="font-size:16px;">info</span> 判断基準
+              </button>
+              <button type="button" class="btn btn-gold btn-sm" onclick="startCheckout('az_monthly', 'az')">
+                契約 (¥5,980/月)
+              </button>
+              <a href="${tool.url}" target="_blank" class="btn btn-primary btn-sm">
+                CAD起動 <span class="material-symbols-outlined" style="font-size:16px;">launch</span>
+              </a>
+            ` : `
+              <button type="button" class="btn btn-ghost btn-sm" onclick="openCriteriaModal('${tool.id}')">
+                <span class="material-symbols-outlined" style="font-size:16px;">info</span> 判断基準
+              </button>
+              ${isWrc ? `
+                <button type="button" class="btn btn-ghost btn-sm btn-open-api-modal" onclick="openApiKeyModal()" title="Google APIキー設定 ＆ 取得ガイド">
+                  <span class="material-symbols-outlined" style="font-size:16px; color:var(--accent-gold);">key</span> API設定
+                </button>
+              ` : ''}
+              ${isWrc && !hasApiKey ? `
+                <button type="button" class="btn btn-primary btn-sm btn-open-api-modal" onclick="openApiKeyModal()">
+                  起動 (要キー設定) <span class="material-symbols-outlined" style="font-size:16px;">key</span>
+                </button>
+              ` : `
+                <a href="${tool.url}" target="_blank" class="btn btn-primary btn-sm">
+                  ${isNailSet ? 'セット起動' : '開く'} <span class="material-symbols-outlined" style="font-size:16px;">launch</span>
+                </a>
+              `}
             `}
           </div>
         </div>
@@ -293,6 +328,29 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
+    // CAD連携・無償ツール カテゴリが選択されている場合
+    if (currentCategory === 'cad' && searchQuery === '') {
+      toolsContainer.innerHTML = `
+        <div class="block-explain-card" style="grid-column: 1/-1; border-color: rgba(56, 189, 248, 0.4); background: linear-gradient(135deg, rgba(56, 189, 248, 0.08) 0%, rgba(15, 23, 42, 0.95) 100%);">
+          <div style="display:flex; align-items:center; gap:16px;">
+            <div style="width:48px; height:48px; border-radius:50%; background:rgba(56, 189, 248, 0.2); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+              <span class="material-symbols-outlined" style="font-size:28px; color:var(--accent-cyan);">architecture</span>
+            </div>
+            <div>
+              <h3 style="font-size:1.15rem; font-weight:800; color:var(--text-main); margin-bottom:4px;">
+                CADデータ連携 ＆ 建築実務支援ツール
+              </h3>
+              <p style="font-size:0.9rem; color:var(--text-sub); margin-bottom:0; line-height:1.5;">
+                ARCHITREND ZEROと連動した斜め壁・耐力壁自動抽出Web-CADツール（月額¥5,980 / 年額¥39,800）と、どなたでも無償でご利用いただけるスマート案内図作成ツール（完全無償提供 ¥0）です。
+              </p>
+            </div>
+          </div>
+        </div>
+        ${filtered.map(tool => createToolCardHtml(tool)).join('')}
+      `;
+      return;
+    }
+
     // 全体または他カテゴリ表示
     toolsContainer.innerHTML = filtered.map(tool => createToolCardHtml(tool)).join('');
   }
@@ -344,18 +402,49 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
 
       <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px; padding-top:20px; border-top:1px solid var(--border-card);">
-        <div>
-          <span style="font-size:0.8rem; color:var(--text-muted); display:block;">ご利用料金</span>
-          <strong style="font-size:1.2rem; color:var(--accent-gold);">単体: 月額 ¥980 / 使い放題: 月額 ¥3,980</strong>
-        </div>
-        <div style="display:flex; gap:12px;">
-          <button type="button" class="btn btn-gold" onclick="startCheckout('individual_monthly', '${tool.id}')">
-            月額¥980で契約する
-          </button>
-          <a href="${tool.url}" target="_blank" class="btn btn-primary">
-            ツールを開く <span class="material-symbols-outlined">launch</span>
-          </a>
-        </div>
+        ${tool.isFree ? `
+          <div>
+            <span style="font-size:0.8rem; color:var(--text-muted); display:block;">ご利用料金</span>
+            <strong style="font-size:1.2rem; color:var(--accent-green);">完全無償提供 (¥0 / 登録不要)</strong>
+          </div>
+          <div style="display:flex; gap:12px;">
+            <a href="${tool.manualUrl}" target="_blank" class="btn btn-ghost">
+              <span class="material-symbols-outlined">menu_book</span> マニュアル
+            </a>
+            <a href="${tool.url}" target="_blank" class="btn btn-primary" style="background:var(--accent-green); border-color:var(--accent-green); color:#06140e; font-weight:700;">
+              エディタを開く <span class="material-symbols-outlined">launch</span>
+            </a>
+          </div>
+        ` : tool.id === 'az_skew_wall' ? `
+          <div>
+            <span style="font-size:0.8rem; color:var(--text-muted); display:block;">ご利用料金</span>
+            <strong style="font-size:1.2rem; color:var(--accent-gold);">月額 ¥5,980 / 年額 ¥39,800</strong>
+          </div>
+          <div style="display:flex; flex-wrap:wrap; gap:10px;">
+            <button type="button" class="btn btn-gold" onclick="startCheckout('az_monthly', 'az')">
+              月額¥5,980で契約
+            </button>
+            <button type="button" class="btn btn-gold" onclick="startCheckout('az_annual', 'az')" style="background:linear-gradient(135deg,#f59e0b,#d97706);">
+              年額¥39,800で契約 (お得)
+            </button>
+            <a href="${tool.url}" target="_blank" class="btn btn-primary">
+              CAD起動 <span class="material-symbols-outlined">launch</span>
+            </a>
+          </div>
+        ` : `
+          <div>
+            <span style="font-size:0.8rem; color:var(--text-muted); display:block;">ご利用料金</span>
+            <strong style="font-size:1.2rem; color:var(--accent-gold);">単体: 月額 ¥980 / 使い放題: 月額 ¥3,980</strong>
+          </div>
+          <div style="display:flex; gap:12px;">
+            <button type="button" class="btn btn-gold" onclick="startCheckout('individual_monthly', '${tool.id}')">
+              月額¥980で契約する
+            </button>
+            <a href="${tool.url}" target="_blank" class="btn btn-primary">
+              ツールを開く <span class="material-symbols-outlined">launch</span>
+            </a>
+          </div>
+        `}
       </div>
     `;
 

@@ -53,12 +53,20 @@ try {
     curl_setopt($ch, CURLOPT_USERPWD, $stripeSecretKey . ':');
     curl_setopt($ch, CURLOPT_POST, true);
 
+    $isAz = ($targetTool === 'az' || strpos($planKey, 'az_') === 0);
+    $successUrl = $isAz 
+        ? 'https://az.mdo3.com/?session_id={CHECKOUT_SESSION_ID}&payment=success'
+        : 'https://app.mdo3.com/portal.php?session_id={CHECKOUT_SESSION_ID}&payment=success';
+    $cancelUrl = $isAz
+        ? 'https://az.mdo3.com/'
+        : 'https://mdo3.com/#pricingPlans';
+
     $postData = [
         'mode'                   => 'subscription',
         'customer_email'         => $currentUser['email'],
         'client_reference_id'    => (string)$currentUser['id'],
-        'success_url'            => 'https://app.mdo3.com/portal.php?session_id={CHECKOUT_SESSION_ID}&payment=success',
-        'cancel_url'             => 'https://mdo3.com/#pricingPlans',
+        'success_url'            => $successUrl,
+        'cancel_url'             => $cancelUrl,
         'line_items[0][price]'   => $targetPlan['price_id'],
         'line_items[0][quantity]'=> 1,
         'payment_method_types[0]'=> 'card',

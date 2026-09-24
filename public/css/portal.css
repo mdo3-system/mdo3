@@ -567,8 +567,8 @@ body {
 
 .pricing-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
   margin-top: 40px;
 }
 
@@ -608,6 +608,28 @@ body {
   padding: 4px 14px;
   border-radius: var(--radius-full);
   letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.pricing-card.cad-pro {
+  background: linear-gradient(180deg, rgba(14, 116, 144, 0.2) 0%, rgba(15, 23, 42, 0.95) 100%);
+  border: 2px solid var(--accent-cyan);
+  box-shadow: 0 10px 30px rgba(56, 189, 248, 0.15);
+}
+
+.badge-cad-pro {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #0284c7, #38bdf8);
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 4px 14px;
+  border-radius: var(--radius-full);
+  letter-spacing: 0.5px;
+  white-space: nowrap;
 }
 
 .plan-name {

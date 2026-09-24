@@ -638,26 +638,60 @@ const MDO3_TOOLS_CATALOG = [
     ],
     cannotDo: [
       "地盤の不等沈下による応力再配分連成計算"
+  },
+
+  // ==========================================
+  // カテゴリ5: CAD連携 ＆ 無償実務エディタ (2ツール)
+  // ①AZ斜め壁 Web-CAD (アーキトレンドゼロ連携), ②スマート案内図作成エディタ (確認申請・完全無償)
+  // ==========================================
+  {
+    id: "az_skew_wall",
+    category: "cad",
+    categoryName: "CAD連携・斜め壁Web-CAD",
+    sortOrder: 1,
+    title: "AZ斜め壁 構造計算補助Web-CAD (アーキトレンドゼロ連携)",
+    summary: "アーキトレンドゼロDXF図面連携。任意多角形スラブの荷重自動分配（直骨格アルゴリズム）＆基礎梁検定・Excel/CSV出力。",
+    icon: "polyline",
+    url: "https://az.mdo3.com/",
+    videoUrl: "#video-az",
+    manualUrl: "https://az.mdo3.com/frontend/manual.html",
+    pricing: { individual: 5980, annual: 39800, specialPlan: true },
+    priceText: "月額 ¥5,980 / 年額 ¥39,800",
+    badgeLabel: "CAD連携",
+    canDo: [
+      "アーキトレンドゼロ等のDXF構造図面ダイレクト読込・壁・スラブ自動認識",
+      "Straight-Skeleton（直骨格）幾何解析による変形スラブの荷重自動分配",
+      "柱・耐力壁・基礎梁の長期／短期応力検定および断面算定",
+      "全階層（1F/2F/3F/R/PH）Web-CADリアルタイム形状編集＆計算書出力"
+    ],
+    cannotDo: [
+      "木造3階建て以上の立体時刻歴応答解析（限界耐力計算）",
+      "S造・RC造ラーメン架構の3次元有限要素法解析"
     ]
   },
   {
-    id: "jintsuko_bf",
-    category: "wrc",
-    categoryName: "WRC造パッケージ",
-    sortOrder: 3,
-    title: "開口部補強・割増検討",
-    summary: "WRC壁・スラブ等の開口部周辺における割増応力検討および補強筋算定。",
-    icon: "tab_unselected",
-    url: "https://app.mdo3.com/tools/jintsuko_bf.html",
-    videoUrl: "#video-jintsuko-bf",
-    manualUrl: "#manual-jintsuko-bf",
-    pricing: { individual: 980, categoryPack: 1980, allAccess: 3980 },
+    id: "map_editor",
+    category: "cad",
+    categoryName: "CAD連携・無償実務ツール",
+    sortOrder: 2,
+    title: "スマート案内図作成エディタ (確認申請 敷地案内図)",
+    summary: "建築確認申請書第1面に必須の敷地案内図を地図からスプリット・トレース方式で直感作図。方位・縮尺・朱書き枠付A4高解像度出力。実務設計者への完全無償提供ツール。",
+    icon: "map",
+    url: "https://map.mdo3.com/",
+    videoUrl: "#video-map",
+    manualUrl: "https://map.mdo3.com/manual.html",
+    isFree: true,
+    priceText: "完全無償 (¥0)",
+    badgeLabel: "完全無償",
     canDo: [
-      "耐力壁・スラブ開口周りの割増応力係数の算定",
-      "開口補強筋の必要断面積判定書作成"
+      "国土地理院地図・オープンマップを下絵にした道路・敷地トレース作図",
+      "確認申請第1面適合の朱書き案内枠・縮尺バー・方位記号の自動配置",
+      "A4縦横高解像度画像（PNG）および印刷PDFワンクリック出力",
+      "物件JSONデータ保存・復元機能"
     ],
     cannotDo: [
-      "3次元塑性ひび割れ進展解析"
+      "3次元立体鳥瞰パースの自動レンダリング",
+      "法務局登記所備付地図（公図XML）の地番座標自動結合"
     ]
   }
 ];
