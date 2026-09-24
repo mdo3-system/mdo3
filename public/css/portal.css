@@ -782,12 +782,464 @@ body {
   border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-/* レスポンシブ */
+/* ========================================================
+   新機能: 設計用 地域定数 自動検索ウィジェット
+   ======================================================== */
+.regional-section {
+  padding: 40px 0 60px;
+  position: relative;
+}
+
+.regional-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-lg);
+  padding: 36px;
+  box-shadow: var(--shadow-md);
+  backdrop-filter: blur(16px);
+  position: relative;
+  overflow: hidden;
+}
+
+.regional-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent-gold), var(--accent-cyan), var(--accent-blue));
+}
+
+.regional-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.regional-badge-free {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  color: var(--accent-gold);
+  font-size: 0.85rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.regional-search-bar {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.search-input-wrapper {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: rgba(9, 13, 22, 0.7);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-md);
+  padding: 6px 8px 6px 16px;
+  transition: all 0.25s ease;
+}
+
+.search-input-wrapper:focus-within {
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.15);
+}
+
+.search-input-wrapper .search-icon {
+  color: var(--accent-cyan);
+  font-size: 22px;
+  margin-right: 10px;
+}
+
+.search-input-wrapper input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-main);
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+.search-input-wrapper input::placeholder {
+  color: var(--text-muted);
+}
+
+.regional-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.regional-map-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+#regionalMap {
+  border: 1px solid var(--border-card);
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.5);
+  z-index: 1;
+}
+
+.map-hint {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: var(--text-sub);
+}
+
+.regional-results {
+  background: rgba(9, 13, 22, 0.6);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.results-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-card);
+  margin-bottom: 16px;
+}
+
+.results-sub {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.results-address {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin: 4px 0 6px;
+}
+
+.results-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.88rem;
+  color: var(--text-sub);
+}
+
+.badge-tag {
+  padding: 2px 10px;
+  border-radius: var(--radius-full);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.constants-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.const-box {
+  background: rgba(18, 25, 44, 0.85);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  transition: all 0.2s ease;
+}
+
+.const-box:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.const-label {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 6px;
+}
+
+.const-name {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-sub);
+}
+
+.const-law {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+}
+
+.const-value-row {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.const-value {
+  font-size: 2.1rem;
+  font-weight: 900;
+  line-height: 1.1;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.const-unit {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-sub);
+}
+
+.const-desc {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  display: block;
+  margin-top: 4px;
+}
+
+.regional-notes {
+  background: rgba(245, 158, 11, 0.08);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  font-size: 0.82rem;
+  color: var(--text-sub);
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  line-height: 1.5;
+}
+
+/* ========================================================
+   水平構面: 基本仕様 vs 任意配列・連動セット用UI
+   ======================================================== */
+.block-explain-card {
+  background: linear-gradient(135deg, rgba(18, 25, 44, 0.9) 0%, rgba(9, 13, 22, 0.95) 100%);
+  border: 1px solid rgba(6, 182, 212, 0.3);
+  border-radius: var(--radius-md);
+  padding: 24px 28px;
+  margin-bottom: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.explain-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.explain-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.explain-col h4 {
+  font-size: 0.95rem;
+  margin-bottom: 6px;
+}
+
+.explain-col p {
+  font-size: 0.85rem;
+  color: var(--text-sub);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.subgroup-divider {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 0 6px;
+  border-bottom: 1px solid var(--border-card);
+}
+
+.badge-subgroup {
+  padding: 4px 14px;
+  border-radius: var(--radius-full);
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.tool-card-linked {
+  border-color: rgba(245, 158, 11, 0.4) !important;
+  background: linear-gradient(180deg, rgba(245, 158, 11, 0.04) 0%, rgba(18, 25, 44, 0.8) 100%) !important;
+  position: relative;
+}
+
+.tool-card-linked::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--gradient-gold);
+}
+
+.badge-linked-set {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  background: rgba(245, 158, 11, 0.2);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  color: var(--accent-gold);
+  border-radius: var(--radius-full);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+/* ========================================================
+   PRO ARCHITECTURE SUITE (斜め壁 az ＆ 案内図 map)
+   ======================================================== */
+.pro-suite-section {
+  padding: 80px 0;
+  background: rgba(9, 13, 22, 0.6);
+  border-top: 1px solid var(--border-card);
+  border-bottom: 1px solid var(--border-card);
+  position: relative;
+}
+
+.pro-suite-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 28px;
+}
+
+.pro-suite-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-lg);
+  padding: 36px 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: var(--shadow-md);
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.pro-suite-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.pro-suite-card.featured-free {
+  border-color: rgba(16, 185, 129, 0.4);
+  background: linear-gradient(180deg, rgba(16, 185, 129, 0.06) 0%, rgba(18, 25, 44, 0.85) 100%);
+}
+
+.suite-badge-free {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  padding: 4px 12px;
+  background: rgba(16, 185, 129, 0.2);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  color: var(--accent-green);
+  border-radius: var(--radius-full);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.suite-badge {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.suite-icon-box {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.suite-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 4px;
+}
+
+.suite-domain {
+  font-size: 0.85rem;
+  color: var(--accent-cyan);
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.suite-desc {
+  font-size: 0.92rem;
+  color: var(--text-sub);
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.suite-points {
+  list-style: none;
+  margin-bottom: 28px;
+}
+
+.suite-points li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 0.88rem;
+  color: var(--text-main);
+  margin-bottom: 8px;
+}
+
+.suite-points li span {
+  color: var(--accent-green);
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+/* レスポンシブ追加 */
 @media (max-width: 1024px) {
   .pricing-grid {
     grid-template-columns: repeat(2, 1fr);
   }
   .learning-banner {
+    grid-template-columns: 1fr;
+  }
+  .regional-layout {
+    grid-template-columns: 1fr;
+  }
+  .pro-suite-grid {
+    grid-template-columns: 1fr;
+  }
+  .explain-grid {
     grid-template-columns: 1fr;
   }
 }
@@ -810,5 +1262,14 @@ body {
   }
   .nav-links {
     display: none;
+  }
+  .regional-card {
+    padding: 20px;
+  }
+  .regional-search-bar {
+    flex-direction: column;
+  }
+  .constants-grid {
+    grid-template-columns: 1fr;
   }
 }

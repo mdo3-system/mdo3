@@ -13,6 +13,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;800&family=Plus+Jakarta+Sans:wght@500;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
 
+  <!-- Leaflet CSS & JS for Interactive Map -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
   <!-- Custom CSS -->
   <link rel="stylesheet" href="css/portal.css">
 </head>
@@ -30,11 +34,11 @@
 
       <nav>
         <ul class="nav-links" id="mainNavLinks">
+          <li><a href="#regionalSearch">地域定数検索 (Z・S・V0)</a></li>
           <li><a href="#toolsCatalog">ツール一覧 (28)</a></li>
-          <li><a href="#freeLearning">無料動画・マニュアル</a></li>
+          <li><a href="#proSuite">斜め壁・案内図</a></li>
           <li><a href="#pricingPlans">料金プラン</a></li>
-          <li><a href="https://2025.eie.jp" target="_blank">壁量計算WEB</a></li>
-          <li><a href="https://az.mdo3.com" target="_blank">斜め壁 (AZ)</a></li>
+          <li><a href="#freeLearning">動画・マニュアル</a></li>
         </ul>
       </nav>
 
@@ -101,6 +105,129 @@
   </section>
 
   <!-- ==========================================
+       設計用地域定数 自動検索ウィジェット (Z, S, V0, 凍結深度)
+       ========================================== -->
+  <section class="regional-section" id="regionalSearch">
+    <div class="container">
+      <div class="regional-card">
+        <div class="regional-head">
+          <div>
+            <div class="section-tag" style="color: var(--accent-gold);">REGIONAL DESIGN CONSTANTS</div>
+            <h2 class="section-title" style="margin-bottom: 8px;">設計用 地域定数 自動検索</h2>
+            <p class="section-sub" style="margin-bottom: 0;">
+              建設地の住所入力または地図クリックで、構造計算に必要な <strong>Z（地震地域係数）、V0（基準風速）、S（垂直積雪量）、凍結深度</strong> を即座に自動判定。
+            </p>
+          </div>
+          <div class="regional-badge-free">
+            <span class="material-symbols-outlined">public</span> 実務者無償公開
+          </div>
+        </div>
+
+        <div class="regional-search-bar">
+          <div class="search-input-wrapper">
+            <span class="material-symbols-outlined search-icon">location_on</span>
+            <input type="text" id="regAddressInput" placeholder="建設地の住所・地名地番を入力（例: 長野県松本市中央1丁目、東京都新宿区西新宿2丁目...）" value="長野県松本市中央1丁目">
+            <button type="button" class="btn btn-primary" id="btnRegSearch">
+              <span class="material-symbols-outlined">search</span> 検索・算定
+            </button>
+          </div>
+          <button type="button" class="btn btn-ghost" id="btnCurrentLocation" title="現在地を取得">
+            <span class="material-symbols-outlined">my_location</span> 現在地
+          </button>
+        </div>
+
+        <!-- 2カラム: 左側地図、右側結果カード -->
+        <div class="regional-layout">
+          <!-- インタラクティブ地図 -->
+          <div class="regional-map-container">
+            <div id="regionalMap" style="height: 380px; width: 100%; border-radius: var(--radius-md);"></div>
+            <div class="map-hint">
+              <span class="material-symbols-outlined" style="font-size: 16px;">touch_app</span> 地図上をクリックすると、その地点の住所・標高から地域定数を自動再計算します。
+            </div>
+          </div>
+
+          <!-- 定数結果パネル -->
+          <div class="regional-results" id="regionalResultsPanel">
+            <div class="results-header">
+              <div>
+                <span class="results-sub">判定対象地点:</span>
+                <h4 id="resTargetAddress" class="results-address">長野県松本市中央1丁目</h4>
+                <div class="results-meta">
+                  <span>標高: <strong id="resElevation" style="color: var(--accent-cyan);">592 m</strong> (国土地理院)</span>
+                  <span id="resSnowCategory" class="badge-tag">一般区域</span>
+                </div>
+              </div>
+              <button type="button" class="btn btn-ghost btn-sm" id="btnCopyConditions" title="計算条件テキストをコピー">
+                <span class="material-symbols-outlined" style="font-size:16px;">content_copy</span> 条件コピー
+              </button>
+            </div>
+
+            <!-- 4大定数グリッド -->
+            <div class="constants-grid">
+              <!-- Z -->
+              <div class="const-box">
+                <div class="const-label">
+                  <span class="const-name">地震地域係数 Z</span>
+                  <span class="const-law">告示第1793号</span>
+                </div>
+                <div class="const-value-row">
+                  <span class="const-value" id="valZ" style="color: var(--accent-gold);">1.0</span>
+                </div>
+                <small class="const-desc" id="descZ">標準地域 (割増規定確認)</small>
+              </div>
+
+              <!-- V0 -->
+              <div class="const-box">
+                <div class="const-label">
+                  <span class="const-name">基準風速 V0</span>
+                  <span class="const-law">告示第1454号</span>
+                </div>
+                <div class="const-value-row">
+                  <span class="const-value" id="valV0" style="color: #60a5fa;">30</span>
+                  <span class="const-unit">m/s</span>
+                </div>
+                <small class="const-desc" id="descV0">松本市基準値 (内陸部)</small>
+              </div>
+
+              <!-- S -->
+              <div class="const-box">
+                <div class="const-label">
+                  <span class="const-name">垂直積雪量 S</span>
+                  <span class="const-law">告示第594号</span>
+                </div>
+                <div class="const-value-row">
+                  <span class="const-value" id="valS" style="color: #34d399;">55</span>
+                  <span class="const-unit">cm</span>
+                </div>
+                <small class="const-desc" id="descS">特定行政庁基準・標高考慮</small>
+              </div>
+
+              <!-- 凍結深度 -->
+              <div class="const-box">
+                <div class="const-label">
+                  <span class="const-name">設計 凍結深度</span>
+                  <span class="const-law">特定行政庁細則</span>
+                </div>
+                <div class="const-value-row">
+                  <span class="const-value" id="valFreeze" style="color: #f472b6; font-size: 1.8rem;">60</span>
+                  <span class="const-unit">cm</span>
+                </div>
+                <small class="const-desc" id="descFreeze">松本市建築基準法施行細則</small>
+              </div>
+            </div>
+
+            <!-- 特記事項 -->
+            <div class="regional-notes" id="regionalNotesBox">
+              <span class="material-symbols-outlined" style="color: var(--accent-gold); font-size: 18px; flex-shrink: 0;">info</span>
+              <span id="regionalSpecialNote">特定行政庁・確認審査機関により細則が異なる場合があります。申請前に所管自治体の建築指導課基準をご確認ください。</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
        ツールカタログ & フィルター
        ========================================== -->
   <section class="catalog-section" id="toolsCatalog">
@@ -117,8 +244,8 @@
           <button type="button" class="tab-btn active" data-category="all" id="tabAll">すべて (28)</button>
           <button type="button" class="tab-btn" data-category="foundation" id="tabFoundation">基礎・擁壁・地盤 (8)</button>
           <button type="button" class="tab-btn" data-category="timber" id="tabTimber">木造軸組・接合部 (7)</button>
-          <button type="button" class="tab-btn" data-category="detail" id="tabDetail">水平構面・詳細 (11)</button>
-          <button type="button" class="tab-btn" data-category="wrc" id="tabWrc">WRC造パッケージ (2)</button>
+          <button type="button" class="tab-btn" data-category="detail" id="tabDetail">水平構面・耐力壁 (10)</button>
+          <button type="button" class="tab-btn" data-category="wrc" id="tabWrc">WRC造パッケージ (3)</button>
         </div>
 
         <div class="search-box">
@@ -175,6 +302,65 @@
             <strong>高速 WebAssembly</strong>
             <small>最新Wasm技術による高精度かつ瞬時の構造計算エンジン。</small>
           </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       PRO ARCHITECTURE SUITE (斜め壁 az.mdo3.com ＆ 案内図作図 map.mdo3.com)
+       ========================================== -->
+  <section class="pro-suite-section" id="proSuite">
+    <div class="container">
+      <div class="section-head">
+        <div class="section-tag" style="color: var(--accent-cyan);">EXPANDED ARCHITECTURE SUITE</div>
+        <h2 class="section-title">実務直結 専門連携クラウド</h2>
+        <p class="section-sub">構造計算補助ツール群と連携し、確認申請から意匠・構造の急所までワンストップで解決。</p>
+      </div>
+
+      <div class="pro-suite-grid">
+        <!-- 案内図作図ツール (完全無償提供) -->
+        <div class="pro-suite-card featured-free">
+          <div class="suite-badge-free">完全無料 / 登録不要</div>
+          <div class="suite-icon-box" style="background: rgba(16, 185, 129, 0.15); color: var(--accent-green);">
+            <span class="material-symbols-outlined" style="font-size: 36px;">map</span>
+          </div>
+          <h3 class="suite-title">建築確認申請 案内図作図ツール</h3>
+          <p class="suite-domain">map.mdo3.com</p>
+          <p class="suite-desc">
+            確認申請書の第1面に必須の「敷地案内図」を地図APIから瞬時に自動作図。方位記号、縮尺バー、案内文、敷地朱書き枠を自在にレイアウトし、A4高解像度PDFや画像としてワンクリック出力。実務設計者への無償提供ツールです。
+          </p>
+          <ul class="suite-points">
+            <li><span class="material-symbols-outlined">check</span> 地図自動取得・方位＆スケール自動挿入</li>
+            <li><span class="material-symbols-outlined">check</span> 敷地朱書き・最寄り駅からの案内ルート表記</li>
+            <li><span class="material-symbols-outlined">check</span> 会員登録不要・完全無料ですぐに利用可能</li>
+          </ul>
+          <a href="https://map.mdo3.com" target="_blank" class="btn btn-primary" style="width: 100%;">
+            案内図作図ツールを開く (無料) <span class="material-symbols-outlined">launch</span>
+          </a>
+        </div>
+
+        <!-- 斜め壁計算補助ツール (az.mdo3.com) -->
+        <div class="pro-suite-card">
+          <div class="suite-badge" style="background: rgba(99, 102, 241, 0.2); color: #a5b4fc; border: 1px solid rgba(99, 102, 241, 0.4);">
+            2025年法改正・4号縮小対応
+          </div>
+          <div class="suite-icon-box" style="background: rgba(59, 130, 246, 0.15); color: #60a5fa;">
+            <span class="material-symbols-outlined" style="font-size: 36px;">change_history</span>
+          </div>
+          <h3 class="suite-title">斜め壁 構造計算補助 (AZ)</h3>
+          <p class="suite-domain">az.mdo3.com</p>
+          <p class="suite-desc">
+            敷地形状や意匠計画による「斜め耐力壁・非直交軸組」の許容応力度計算を強力アシスト。角度補正、水平力分担、剛性評価、偏心率への影響を正確かつスピーディに算定し、審査機関への明快な根拠書類を作成します。
+          </p>
+          <ul class="suite-points">
+            <li><span class="material-symbols-outlined">check</span> 任意角度の斜め耐力壁・水平力負担算定</li>
+            <li><span class="material-symbols-outlined">check</span> 剛性マトリクス補正と偏心率計算の連携</li>
+            <li><span class="material-symbols-outlined">check</span> 2025新基準（木造構造計算義務化）完全対応</li>
+          </ul>
+          <a href="https://az.mdo3.com" target="_blank" class="btn btn-ghost" style="width: 100%;">
+            斜め壁ツール (AZ) を開く <span class="material-symbols-outlined">launch</span>
+          </a>
         </div>
       </div>
     </div>
@@ -319,9 +505,9 @@
           <h5>サービス群</h5>
           <ul>
             <li><a href="https://app.mdo3.com/index.html" target="_blank">構造計算補助ツール群 (28)</a></li>
-            <li><a href="https://2025.eie.jp" target="_blank">壁量計算WEB (最新2025法改正版)</a></li>
+            <li><a href="#regionalSearch">地域定数自動検索 (Z・S・V0)</a></li>
+            <li><a href="https://map.mdo3.com" target="_blank">案内図申請作図 (MAP / 無料)</a></li>
             <li><a href="https://az.mdo3.com" target="_blank">斜め壁計算補助 (AZ)</a></li>
-            <li><a href="https://map.mdo3.com" target="_blank">案内図申請作図 (MAP)</a></li>
           </ul>
         </div>
 
@@ -340,7 +526,7 @@
           <ul>
             <li><a href="https://app.mdo3.com/lp/terms/index.html" target="_blank">利用規約</a></li>
             <li><a href="https://app.mdo3.com/lp/privacy/index.html" target="_blank">プライバシーポリシー</a></li>
-            <li><a href="https://2025.eie.jp/tokusho.html" target="_blank">特定商取引法に基づく表記</a></li>
+            <li><a href="https://app.mdo3.com/lp/tokusho/index.html" target="_blank">特定商取引法に基づく表記</a></li>
             <li><a href="https://t-smile.co.jp" target="_blank">運営会社概要</a></li>
           </ul>
         </div>
@@ -354,6 +540,7 @@
 
   <!-- Scripts -->
   <script src="js/tools_data.js"></script>
+  <script src="js/regional_calc.js"></script>
   <script src="js/portal.js"></script>
 </body>
 </html>
