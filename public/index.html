@@ -136,13 +136,34 @@
           </button>
         </div>
 
+        <!-- 全国省エネ地域区分 (1〜8地域) クイックセレクターバー -->
+        <div class="energy-quick-bar">
+          <span class="energy-quick-label">
+            <span class="material-symbols-outlined" style="font-size: 16px; vertical-align: -2px; color: var(--accent-emerald);">thermostat</span>
+            省エネ地域区分クイック選択:
+          </span>
+          <div class="energy-chips" id="energyChips">
+            <button type="button" class="chip-btn" data-region="1" style="--chip-c: #38bdf8;">1地域 <small>旭川等</small></button>
+            <button type="button" class="chip-btn" data-region="2" style="--chip-c: #0ea5e9;">2地域 <small>札幌等</small></button>
+            <button type="button" class="chip-btn" data-region="3" style="--chip-c: #2dd4bf;">3地域 <small>盛岡等</small></button>
+            <button type="button" class="chip-btn active" data-region="4" style="--chip-c: #10b981;">4地域 <small>松本等</small></button>
+            <button type="button" class="chip-btn" data-region="5" style="--chip-c: #eab308;">5地域 <small>金沢等</small></button>
+            <button type="button" class="chip-btn" data-region="6" style="--chip-c: #f97316;">6地域 <small>東京等</small></button>
+            <button type="button" class="chip-btn" data-region="7" style="--chip-c: #ef4444;">7地域 <small>鹿児島等</small></button>
+            <button type="button" class="chip-btn" data-region="8" style="--chip-c: #ec4899;">8地域 <small>沖縄等</small></button>
+          </div>
+          <button type="button" class="btn btn-ghost btn-sm" id="btnOpenEnergyModal" style="margin-left: auto;">
+            <span class="material-symbols-outlined" style="font-size: 16px;">map</span> 全国省エネマップ早見表
+          </button>
+        </div>
+
         <!-- 2カラム: 左側地図、右側結果カード -->
         <div class="regional-layout">
           <!-- インタラクティブ地図 -->
           <div class="regional-map-container">
-            <div id="regionalMap" style="height: 380px; width: 100%; border-radius: var(--radius-md);"></div>
+            <div id="regionalMap" style="height: 480px; width: 100%; border-radius: var(--radius-md);"></div>
             <div class="map-hint">
-              <span class="material-symbols-outlined" style="font-size: 16px;">touch_app</span> 地図上をクリックすると、その地点の住所・標高から地域定数を自動再計算します。
+              <span class="material-symbols-outlined" style="font-size: 16px;">touch_app</span> 地図上をクリックすると、その地点の住所・標高から構造地域定数および省エネ地域区分・断熱等級基準を自動再計算します。
             </div>
           </div>
 
@@ -155,6 +176,8 @@
                 <div class="results-meta">
                   <span>標高: <strong id="resElevation" style="color: var(--accent-cyan);">592 m</strong> (国土地理院)</span>
                   <span id="resSnowCategory" class="badge-tag">一般区域</span>
+                  <span id="resEnergyBadge" class="badge-tag" style="background: rgba(16,185,129,0.15); color: #34d399; border: 1px solid rgba(16,185,129,0.3);">4地域 (甲信)</span>
+                  <span id="resSolarBadge" class="badge-tag" style="background: rgba(245,158,11,0.15); color: #fbbf24; border: 1px solid rgba(245,158,11,0.3);">日射 A3</span>
                 </div>
               </div>
               <button type="button" class="btn btn-ghost btn-sm" id="btnCopyConditions" title="計算条件テキストをコピー">
@@ -162,7 +185,7 @@
               </button>
             </div>
 
-            <!-- 4大定数グリッド -->
+            <!-- 4大構造定数グリッド -->
             <div class="constants-grid">
               <!-- Z -->
               <div class="const-box">
@@ -213,6 +236,64 @@
                   <span class="const-unit">cm</span>
                 </div>
                 <small class="const-desc" id="descFreeze">松本市建築基準法施行細則</small>
+              </div>
+            </div>
+
+            <!-- 全国省エネ地域区分 & 断熱等性能等級基準 (UA値・ηAC値) パネル -->
+            <div class="insulation-panel" id="insulationPanel">
+              <div class="insulation-panel-header">
+                <div class="ins-title-wrap">
+                  <span class="material-symbols-outlined" style="color: var(--accent-emerald); font-size: 18px;">home_health</span>
+                  <span class="ins-title">省エネ地域区分・断熱等性能等級 基準値</span>
+                </div>
+                <span class="ins-region-label" id="insRegionSummary">4地域 (南東北・甲信・北関東高冷地)</span>
+              </div>
+
+              <div class="insulation-grid">
+                <div class="ins-box" id="insBox4">
+                  <div class="ins-grade-tag">等級4 (省エネ基準)</div>
+                  <div class="ins-val-wrap">
+                    <span class="ins-ua-label">基準UA ≦</span>
+                    <span class="ins-ua-val" id="valUaGrade4">0.75</span>
+                  </div>
+                  <small class="ins-sub">2025年4月〜 適合義務化水準</small>
+                </div>
+
+                <div class="ins-box" id="insBox5">
+                  <div class="ins-grade-tag grade-5">等級5 (ZEH水準)</div>
+                  <div class="ins-val-wrap">
+                    <span class="ins-ua-label">基準UA ≦</span>
+                    <span class="ins-ua-val" id="valUaGrade5">0.60</span>
+                  </div>
+                  <small class="ins-sub">ZEH / 長期優良住宅 適合</small>
+                </div>
+
+                <div class="ins-box highlight" id="insBox6">
+                  <div class="ins-grade-tag grade-6">等級6 (HEAT20 G2)</div>
+                  <div class="ins-val-wrap">
+                    <span class="ins-ua-label">基準UA ≦</span>
+                    <span class="ins-ua-val" id="valUaGrade6">0.34</span>
+                  </div>
+                  <small class="ins-sub">実質ゼロエネ・高断熱仕様</small>
+                </div>
+
+                <div class="ins-box" id="insBox7">
+                  <div class="ins-grade-tag grade-7">等級7 (HEAT20 G3)</div>
+                  <div class="ins-val-wrap">
+                    <span class="ins-ua-label">基準UA ≦</span>
+                    <span class="ins-ua-val" id="valUaGrade7">0.23</span>
+                  </div>
+                  <small class="ins-sub">最高峰断熱・無暖房住宅水準</small>
+                </div>
+
+                <div class="ins-box eta" id="insBoxEta">
+                  <div class="ins-grade-tag eta">冷房期日射取得率</div>
+                  <div class="ins-val-wrap">
+                    <span class="ins-ua-label">基準ηAC ≦</span>
+                    <span class="ins-ua-val" id="valEtaAc">—</span>
+                  </div>
+                  <small class="ins-sub" id="descEtaAc">1〜4地域は基準値なし</small>
+                </div>
               </div>
             </div>
 
@@ -483,6 +564,176 @@
       <button type="button" class="modal-close" id="modalCloseBtn" aria-label="閉じる">&times;</button>
       <div id="modalBody">
         <!-- JavaScript (portal.js) により動的挿入 -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       モーダル群
+       ========================================== -->
+
+  <!-- 1. Google APIキー設定 & 取得ガイド モーダル (WRC造パッケージ用) -->
+  <div class="modal-overlay" id="googleApiKeyModal" style="display: none;">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <span class="material-symbols-outlined" style="color: var(--accent-gold); font-size: 24px;">key</span>
+          <div>
+            <h3 class="modal-title">WRC造パッケージ Google APIキー設定 ＆ 取得ガイド</h3>
+            <span class="modal-sub">WRC一括検定シミュレータ等の計算・スプレッドシート連携機能を利用するための設定です</span>
+          </div>
+        </div>
+        <button type="button" class="btn-close-modal" id="btnCloseApiKeyModal" aria-label="閉じる">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <!-- セキュリティ案内 -->
+        <div class="api-security-notice">
+          <span class="material-symbols-outlined" style="color: var(--accent-emerald);">verified_user</span>
+          <div>
+            <strong>ローカルセキュア保存</strong>
+            <p>入力されたAPIキーはお使いのブラウザ（LocalStorage）にのみ安全に保存されます。当サービス外部のサーバーへ送信・保存されることは一切ありません。</p>
+          </div>
+        </div>
+
+        <!-- キー入力フォーム -->
+        <div class="api-key-form-card">
+          <label for="inputGoogleApiKey" class="form-label">
+            Google API キー (Google Cloud Consoleで発行)
+          </label>
+          <div class="api-key-input-row">
+            <div class="input-password-wrap">
+              <span class="material-symbols-outlined key-icon">vpn_key</span>
+              <input type="password" id="inputGoogleApiKey" placeholder="AIzaSy..." autocomplete="off">
+              <button type="button" class="btn-toggle-eye" id="btnToggleApiKeyEye" title="表示/非表示切替">
+                <span class="material-symbols-outlined" id="eyeIcon">visibility</span>
+              </button>
+            </div>
+            <button type="button" class="btn btn-ghost" id="btnPasteApiKey">
+              <span class="material-symbols-outlined">content_paste</span> 貼付け
+            </button>
+            <button type="button" class="btn btn-primary" id="btnSaveApiKey">
+              <span class="material-symbols-outlined">save</span> キーを保存
+            </button>
+          </div>
+          <div class="api-key-status" id="apiKeyStatusRow">
+            <span class="status-indicator" id="apiKeyStatusIndicator"></span>
+            <span id="apiKeyStatusText">ブラウザに保存されたAPIキーはありません</span>
+            <button type="button" class="btn-text-danger" id="btnDeleteApiKey" style="display: none; margin-left: auto;">
+              <span class="material-symbols-outlined" style="font-size: 14px;">delete</span> キーを消去
+            </button>
+          </div>
+        </div>
+
+        <!-- ステップバイステップ 取得手順ガイド -->
+        <div class="api-guide-section">
+          <h4 class="guide-title">
+            <span class="material-symbols-outlined" style="color: var(--accent-cyan);">help</span>
+            APIキーの取得手順（所要時間：約3分・無料枠内で利用可能）
+          </h4>
+
+          <div class="guide-steps-grid">
+            <!-- Step 1 -->
+            <div class="guide-step-card">
+              <div class="step-num">STEP 1</div>
+              <h5>Google Cloud Console へアクセス</h5>
+              <p>Googleアカウントでログインし、コンソール画面を開きます。</p>
+              <a href="https://console.cloud.google.com/" target="_blank" rel="noopener noreferrer" class="btn btn-ghost btn-sm guide-link">
+                <span class="material-symbols-outlined" style="font-size: 14px;">open_in_new</span> Consoleを開く
+              </a>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="guide-step-card">
+              <div class="step-num">STEP 2</div>
+              <h5>プロジェクトを作成</h5>
+              <p>上部プロジェクト選択バーから「新しいプロジェクト」を作成します（例: <code>mdo3-wrc-calc</code>）。</p>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="guide-step-card">
+              <div class="step-num">STEP 3</div>
+              <h5>必要なAPIを有効化</h5>
+              <p>左メニュー「APIとサービス」→「ライブラリ」から以下を検索して<strong>「有効にする」</strong>をクリックします：</p>
+              <ul class="step-api-list">
+                <li><code>Google Sheets API</code> (必須)</li>
+                <li><code>Google Drive API</code> (推奨)</li>
+              </ul>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="guide-step-card">
+              <div class="step-num">STEP 4</div>
+              <h5>APIキーを発行 & コピー</h5>
+              <p>「認証情報」→「＋認証情報を作成」→<strong>「APIキー」</strong>を選択。発行された <code>AIzaSy...</code> から始まる文字列をコピーします。</p>
+              <div class="step-tip">
+                <small>※「キーを制限」でGoogle Sheets APIのみに限定設定するとより安全です。</small>
+              </div>
+            </div>
+
+            <!-- Step 5 -->
+            <div class="guide-step-card highlight">
+              <div class="step-num">STEP 5</div>
+              <h5>上記フォームに貼り付けて保存</h5>
+              <p>上の入力欄にペーストして「キーを保存」を押せば完了です。WRC造の全ツールが即座に利用可能になります。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-ghost" id="btnCloseApiKeyModalFooter">閉じる</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. 全国省エネ地域区分・断熱等級基準 総合早見表モーダル -->
+  <div class="modal-overlay" id="energyMapModal" style="display: none;">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <span class="material-symbols-outlined" style="color: var(--accent-emerald); font-size: 24px;">public</span>
+          <div>
+            <h3 class="modal-title">全国省エネ地域区分 ＆ 断熱等性能等級 総合基準マップ</h3>
+            <span class="modal-sub">国土交通省告示・住宅省エネ基準準拠 / 1地域（旭川）〜 8地域（沖縄）</span>
+          </div>
+        </div>
+        <button type="button" class="btn-close-modal" id="btnCloseEnergyModal" aria-label="閉じる">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <p class="modal-desc">
+          2025年4月より「省エネ基準（等級4）」への適合が完全義務化されました。さらにZEH水準（等級5）やHEAT20水準（等級6・7）の基準UA値を行政庁・気候区分ごとに即座に把握できます。行をクリックすると、地図が該当地点にジャンプし構造地域定数と断熱基準を同時に算定します。
+        </p>
+
+        <div class="energy-table-wrapper">
+          <table class="energy-master-table">
+            <thead>
+              <tr>
+                <th style="width: 90px;">地域区分</th>
+                <th style="width: 140px;">代表都市</th>
+                <th>等級4 (義務化)</th>
+                <th>等級5 (ZEH)</th>
+                <th>等級6 (HEAT20 G2)</th>
+                <th>等級7 (HEAT20 G3)</th>
+                <th>冷房期ηAC</th>
+                <th>主な気候・対象地域</th>
+                <th style="width: 80px;">連動</th>
+              </tr>
+            </thead>
+            <tbody id="energyMasterTableBody">
+              <!-- portal.js で動的描画 -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-ghost" id="btnCloseEnergyModalFooter">閉じる</button>
       </div>
     </div>
   </div>

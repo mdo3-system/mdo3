@@ -20,22 +20,80 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentCategory = 'all';
   let searchQuery = '';
 
+  // Google APIキー保存ヘルパー (LocalStorage: mdo3_google_api_key)
+  const API_KEY_STORAGE_KEY = 'mdo3_google_api_key';
+  function getStoredApiKey() {
+    return localStorage.getItem(API_KEY_STORAGE_KEY) || '';
+  }
+  function setStoredApiKey(key) {
+    if (!key) {
+      localStorage.removeItem(API_KEY_STORAGE_KEY);
+    } else {
+      localStorage.setItem(API_KEY_STORAGE_KEY, key.trim());
+    }
+  }
+
   // 1. ツールカードHTML生成ヘルパー
-  function createToolCardHtml(tool, isLinked = false) {
+  function createToolCardHtml(tool) {
+    const isNailSet = tool.linkedNailSet === true;
+    const isCoreEngine = tool.isCoreNailEngine === true;
+    const isWrc = tool.category === 'wrc';
+    const hasApiKey = isWrc && Boolean(getStoredApiKey());
+
+    let cardExtraClass = '';
+    if (isNailSet) cardExtraClass = 'tool-card-nail-set';
+    if (isCoreEngine) cardExtraClass = 'tool-card-core-engine';
+
     return `
-      <div class="tool-card ${isLinked ? 'tool-card-linked' : ''}" data-id="${tool.id}">
+      <div class="tool-card ${cardExtraClass}" data-id="${tool.id}">
         <div class="card-top">
           <div class="card-icon">
             <span class="material-symbols-outlined">${tool.icon || 'construction'}</span>
           </div>
-          <div style="display:flex; align-items:center; gap:6px;">
-            ${isLinked ? '<span class="badge-linked-set"><span class="material-symbols-outlined" style="font-size:12px;">sync</span> 連動セット</span>' : ''}
+          <div style="display:flex; flex-direction:column; align-items:flex-end; gap:4px;">
+            ${isNailSet ? `
+              <span class="badge-nail-sync" title="任意配列の前提となる⑧釘配列諸定数との連動セット">
+                <span class="material-symbols-outlined" style="font-size:12px;">sync_alt</span> ⑧釘配列 連携セット (2in1)
+              </span>
+            ` : ''}
+            ${isCoreEngine ? `
+              <span class="badge-core-engine" title="任意配列の全構面計算の基盤となる計算エンジン">
+                <span class="material-symbols-outlined" style="font-size:12px;">hub</span> 任意配列 共通コアエンジン
+              </span>
+            ` : ''}
+            ${isWrc ? `
+              <button type="button" class="badge-api-key ${hasApiKey ? 'set' : 'unset'}" onclick="openApiKeyModal()" title="Google APIキーの設定状態">
+                <span class="material-symbols-outlined" style="font-size:12px;">${hasApiKey ? 'check_circle' : 'key'}</span>
+                ${hasApiKey ? 'Google APIキー設定済' : 'APIキー設定が必要'}
+              </button>
+            ` : ''}
             <span class="card-category">${tool.categoryName}</span>
           </div>
         </div>
         
         <h3 class="card-title">${tool.title}</h3>
         <p class="card-desc">${tool.summary}</p>
+
+        <!-- 釘配列連動セット（2in1）のワークフローステップ表示 -->
+        ${isNailSet ? `
+          <div class="nail-set-flow-box">
+            <div class="flow-header">
+              <span class="material-symbols-outlined" style="font-size:14px; color:var(--accent-gold);">schema</span>
+              <span>連動セット ワークフロー (2in1):</span>
+            </div>
+            <div class="flow-steps">
+              <div class="flow-step">
+                <span class="step-badge">STEP 1</span>
+                <span>⑧ 釘配列諸定数（外周・中通り釘ピッチ・釘耐力）</span>
+              </div>
+              <span class="material-symbols-outlined flow-arrow">arrow_downward</span>
+              <div class="flow-step highlight">
+                <span class="step-badge">STEP 2</span>
+                <span>対象構面（許容せん断耐力・剛性・倍率算定）</span>
+              </div>
+            </div>
+          </div>
+        ` : ''}
 
         <!-- 判断基準プレビュー枠 -->
         <div class="card-criteria-box">
@@ -50,21 +108,27 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
 
         <div class="card-footer">
-          <span class="card-price-badge">月額 ¥980 (税込)</span>
+          <span class="card-price-badge">${isNailSet ? 'セット利用: 月額 ¥980' : '月額 ¥980 (税込)'}</span>
           <div class="card-actions">
             <button type="button" class="btn btn-ghost btn-sm" onclick="openCriteriaModal('${tool.id}')">
               <span class="material-symbols-outlined" style="font-size:16px;">info</span> 判断基準
             </button>
-            <a href="${tool.url}" target="_blank" class="btn btn-primary btn-sm">
-              開く <span class="material-symbols-outlined" style="font-size:16px;">launch</span>
-            </a>
+            ${isWrc && !hasApiKey ? `
+              <button type="button" class="btn btn-primary btn-sm" onclick="openApiKeyModal()">
+                起動 (要キー設定) <span class="material-symbols-outlined" style="font-size:16px;">key</span>
+              </button>
+            ` : `
+              <a href="${tool.url}" target="_blank" class="btn btn-primary btn-sm">
+                ${isNailSet ? 'セット起動' : '開く'} <span class="material-symbols-outlined" style="font-size:16px;">launch</span>
+              </a>
+            `}
           </div>
         </div>
       </div>
     `;
   }
 
-  // 2. ツールカタログ描画関数 (水平構面の2ブロック化 ＆ ⑧〜⑩連動セット対応)
+  // 2. ツールカタログ描画関数 (水平構面の2ブロック化 ＆ ⑧釘配列＋*セット対応)
   function renderTools() {
     if (!toolsContainer) return;
 
@@ -100,10 +164,10 @@ document.addEventListener('DOMContentLoaded', () => {
             <span class="material-symbols-outlined" style="color:var(--accent-cyan); font-size:28px;">compare_arrows</span>
             <div>
               <h3 style="font-size:1.15rem; font-weight:800; color:var(--text-main); margin-bottom:4px;">
-                水平構面における「基本仕様」と「任意配列・詳細算定」の違い
+                水平構面における「基本仕様」と「任意配列・詳細算定（⑧釘配列連動セット）」の違い
               </h3>
               <p style="font-size:0.9rem; color:var(--text-sub); margin-bottom:0; line-height:1.6;">
-                用途や要求耐力に応じて最適なアプローチを選択できます。
+                告示基準の定型計算から、任意釘ピッチ・高倍率・伝統真壁まで用途に応じて使い分けいただけます。
               </p>
             </div>
           </div>
@@ -114,11 +178,11 @@ document.addEventListener('DOMContentLoaded', () => {
               </h4>
               <p>建築基準法告示・住宅金融支援機構の標準仕様に準拠した定型ピッチ。標準的な釘種・間隔で即座に水平構面倍率や剛性を手軽に算定できるスピード実務向け。</p>
             </div>
-            <div class="explain-col">
+            <div class="explain-col highlight-gold">
               <h4 style="color:var(--accent-gold); display:flex; align-items:center; gap:6px;">
-                <span class="material-symbols-outlined" style="font-size:18px;">auto_awesome</span> ⑤〜⑩ 【任意配列・高倍率・詳細算定】
+                <span class="material-symbols-outlined" style="font-size:18px;">auto_awesome</span> ⑤〜⑩ 【任意配列・高倍率・詳細算定（⑧諸定数セット）】
               </h4>
-              <p>現場の変則ピッチや高倍率（床倍率3.0以上など）に対応。特に「⑧釘配列諸定数」「⑨大壁」「⑩真壁」は相互に連動し、任意釘ピッチに応じた精緻な許容応力度設計を実現します。</p>
+              <p>現場の変則ピッチや高倍率（床倍率3.0以上など）に対応。<strong>任意配列の計算にはすべて「⑧ 釘配列諸定数」の計算が必要です。</strong>そのため各ツールは【⑧釘配列 ＋ 各構面】の1つの連携セット（2in1）としてワンストップでご利用いただけます。</p>
             </div>
           </div>
         </div>
@@ -126,29 +190,26 @@ document.addEventListener('DOMContentLoaded', () => {
         <!-- ブロック1: 基本仕様 -->
         <div class="subgroup-divider" style="grid-column: 1/-1;">
           <span class="badge-subgroup" style="background:rgba(59, 130, 246, 0.15); color:#60a5fa; border:1px solid rgba(59, 130, 246, 0.3);">
-            ブロック1: 基本仕様 (告示基準・定型)
+            ブロック1: 基本仕様 (告示基準・定型) [4ツール]
           </span>
           <span style="font-size:0.85rem; color:var(--text-muted);">標準規格仕様による迅速な倍率・剛性算定</span>
         </div>
-        ${basicTools.map(t => createToolCardHtml(t, false)).join('')}
+        ${basicTools.map(t => createToolCardHtml(t)).join('')}
 
         <!-- ブロック2: 任意配列・高倍率・詳細 -->
         <div class="subgroup-divider" style="grid-column: 1/-1; margin-top:24px;">
           <span class="badge-subgroup" style="background:rgba(245, 158, 11, 0.15); color:var(--accent-gold); border:1px solid rgba(245, 158, 11, 0.3);">
-            ブロック2: 任意配列・高倍率・詳細 (⑧〜⑩は連動セット)
+            ブロック2: 任意配列・高倍率・詳細 (⑧釘配列諸定数 連携セット) [6ツール]
           </span>
-          <span style="font-size:0.85rem; color:var(--text-muted);">自由な釘ピッチ・高倍率床、および釘配列・大壁・真壁の連動設計</span>
+          <span style="font-size:0.85rem; color:var(--text-muted);">⑧諸定数＋構面計算の2in1統合設計。自由な釘ピッチ・高倍率床・大壁・真壁に対応</span>
         </div>
-        ${customTools.map(t => createToolCardHtml(t, t.linkedGroup === 'wall_nail_set')).join('')}
+        ${customTools.map(t => createToolCardHtml(t)).join('')}
       `;
       return;
     }
 
     // 全体または他カテゴリ表示
-    toolsContainer.innerHTML = filtered.map(tool => {
-      const isLinked = tool.linkedGroup === 'wall_nail_set';
-      return createToolCardHtml(tool, isLinked);
-    }).join('');
+    toolsContainer.innerHTML = filtered.map(tool => createToolCardHtml(tool)).join('');
   }
 
   // 3. モーダル展開ロジック (何ができて何ができないか)
@@ -325,7 +386,18 @@ document.addEventListener('DOMContentLoaded', () => {
   const DEFAULT_LAT = 36.238;
   const DEFAULT_LON = 137.971;
 
-  // 地域定数UI反映
+  // 省エネ・断熱関連UIエレメント
+  const resEnergyBadge = document.getElementById('resEnergyBadge');
+  const resSolarBadge = document.getElementById('resSolarBadge');
+  const insRegionSummary = document.getElementById('insRegionSummary');
+  const valUaGrade4 = document.getElementById('valUaGrade4');
+  const valUaGrade5 = document.getElementById('valUaGrade5');
+  const valUaGrade6 = document.getElementById('valUaGrade6');
+  const valUaGrade7 = document.getElementById('valUaGrade7');
+  const valEtaAc = document.getElementById('valEtaAc');
+  const descEtaAc = document.getElementById('descEtaAc');
+
+  // 地域定数 & 省エネ基準UI反映
   function updateConstantsUI(results) {
     currentConstants = results;
     if (resTargetAddress) resTargetAddress.textContent = results.address;
@@ -336,6 +408,7 @@ document.addEventListener('DOMContentLoaded', () => {
       resSnowCategory.style.color = results.isSnowHeavy ? '#ef4444' : '#60a5fa';
     }
 
+    // 4大構造定数
     if (valZ) valZ.textContent = results.z.toFixed(results.z % 1 === 0 ? 1 : 2);
     if (valV0) valV0.textContent = results.v0;
     if (valS) valS.textContent = results.snowDepth;
@@ -355,6 +428,44 @@ document.addEventListener('DOMContentLoaded', () => {
     if (descFreeze) {
       descFreeze.textContent = `${results.pref}特定行政庁細則・公庫基準`;
     }
+
+    // 省エネ地域区分 ＆ 断熱等級基準反映
+    const energyReg = results.energyRegion || 6;
+    const ins = results.insulation || REGIONAL_DATABASE.insulationGrades[6];
+    const meta = results.regionMeta || REGIONAL_DATABASE.energyRegionMaster[6];
+
+    if (resEnergyBadge) {
+      resEnergyBadge.textContent = `${energyReg}地域 (${results.pref || meta.name})`;
+      resEnergyBadge.style.borderColor = meta.color || '#10b981';
+      resEnergyBadge.style.color = meta.color || '#34d399';
+    }
+    if (resSolarBadge) {
+      resSolarBadge.textContent = `日射 ${results.solarRegion || 'A4'}`;
+    }
+    if (insRegionSummary) {
+      insRegionSummary.textContent = `${ins.label} [暖房期日射量: ${results.solarRegion}区分]`;
+    }
+
+    if (valUaGrade4) valUaGrade4.textContent = ins.grade4 !== undefined ? ins.grade4 : '—';
+    if (valUaGrade5) valUaGrade5.textContent = ins.grade5 !== undefined ? ins.grade5 : '—';
+    if (valUaGrade6) valUaGrade6.textContent = ins.grade6 !== undefined ? ins.grade6 : '—';
+    if (valUaGrade7) valUaGrade7.textContent = ins.grade7 !== undefined ? ins.grade7 : '—';
+    if (valEtaAc) valEtaAc.textContent = ins.etaAC !== undefined ? ins.etaAC : '—';
+    if (descEtaAc) {
+      descEtaAc.textContent = (energyReg >= 5 && ins.etaAC !== '—') 
+        ? `${energyReg}地域 基準値 (冷房期遮熱)` 
+        : '1〜4地域は基準値規定なし';
+    }
+
+    // クイックセレクターバーのアクティブ表示切替
+    document.querySelectorAll('#energyChips .chip-btn').forEach(btn => {
+      const btnReg = parseInt(btn.getAttribute('data-region'), 10);
+      if (btnReg === energyReg) {
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
+      }
+    });
 
     if (regionalSpecialNote) {
       regionalSpecialNote.textContent = results.note || 
@@ -392,7 +503,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // マーカー移動
     if (leafletMap && currentMarker) {
       currentMarker.setLatLng([lat, lon]);
-      currentMarker.bindPopup(`<strong>${calcResult.pref}</strong><br>標高: ${elevation}m<br>Z=${calcResult.z}, V0=${calcResult.v0}m/s`).openPopup();
+      currentMarker.bindPopup(`
+        <strong>${calcResult.pref} (${calcResult.energyRegion}地域)</strong><br>
+        標高: ${elevation}m<br>
+        Z=${calcResult.z}, V0=${calcResult.v0}m/s<br>
+        <span style="color:#10b981;">等級6 UA≦${calcResult.insulation.grade6}</span>
+      `).openPopup();
     }
   }
 
@@ -427,6 +543,21 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // 全国省エネ地域区分 (1〜8地域) クイック選択チップ
+  document.querySelectorAll('#energyChips .chip-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const region = parseInt(btn.getAttribute('data-region'), 10);
+      const meta = REGIONAL_DATABASE.energyRegionMaster[region];
+      if (!meta) return;
+
+      if (regAddressInput) regAddressInput.value = meta.repCity;
+      if (leafletMap) {
+        leafletMap.flyTo([meta.lat, meta.lon], 11, { duration: 1.2 });
+      }
+      evaluateLocation(meta.lat, meta.lon, meta.repCity);
+    });
+  });
+
   // 住所検索ボタン
   if (btnRegSearch && regAddressInput) {
     btnRegSearch.addEventListener('click', async () => {
@@ -439,7 +570,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (geo) {
         if (leafletMap) {
-          leafletMap.setView([geo.lat, geo.lon], 14);
+          leafletMap.flyTo([geo.lat, geo.lon], 13, { duration: 1.2 });
         }
         evaluateLocation(geo.lat, geo.lon, query);
       } else {
@@ -463,7 +594,7 @@ document.addEventListener('DOMContentLoaded', () => {
         pos => {
           const lat = pos.coords.latitude;
           const lon = pos.coords.longitude;
-          if (leafletMap) leafletMap.setView([lat, lon], 14);
+          if (leafletMap) leafletMap.flyTo([lat, lon], 14, { duration: 1.2 });
           evaluateLocation(lat, lon);
         },
         err => {
@@ -473,26 +604,238 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 計算条件コピー
+  // 計算条件コピー (構造定数 ＋ 省エネ断熱基準を一括出力)
   if (btnCopyConditions) {
     btnCopyConditions.addEventListener('click', () => {
       if (!currentConstants) return;
-      const text = `【設計用地域定数 算定結果（mdo3.com）】
+      const ins = currentConstants.insulation;
+      const text = `【構造地域定数 ＆ 省エネ・断熱基準 算定結果（mdo3.com）】
 ■ 建設地住所: ${currentConstants.address}
 ■ 標高: ${currentConstants.elevation} m (国土地理院API)
-■ 地震地域係数 Z: ${currentConstants.z} (昭和55年建設省告示第1793号)
-■ 基準風速 V0: ${currentConstants.v0} m/s (平成12年建設省告示第1454号)
-■ 垂直積雪量 S: ${currentConstants.snowDepth} cm (平成19年国土交通省告示第594号 / ${currentConstants.isSnowHeavy ? '多雪区域' : '一般区域'})
-■ 設計凍結深度: ${currentConstants.freezeDepth} (特定行政庁細則・公庫基準)
+----------------------------------------
+【1. 構造設計用 地域定数】
+・地震地域係数 Z: ${currentConstants.z} (昭和55年建設省告示第1793号)
+・基準風速 V0: ${currentConstants.v0} m/s (平成12年建設省告示第1454号)
+・垂直積雪量 S: ${currentConstants.snowDepth} cm (平成19年国交省告示第594号 / ${currentConstants.isSnowHeavy ? '多雪区域' : '一般区域'})
+・設計凍結深度: ${currentConstants.freezeDepth} (特定行政庁細則・公庫基準)
+----------------------------------------
+【2. 省エネ地域区分 ＆ 断熱等性能等級基準】
+・地域区分: ${currentConstants.energyRegion}地域 (${currentConstants.regionMeta.name})
+・暖房期日射量区分: ${currentConstants.solarRegion}区分
+・等級4 (省エネ基準 / 義務化): UA ≦ ${ins.grade4} W/(㎡・K)
+・等級5 (ZEH水準 / 長期優良): UA ≦ ${ins.grade5} W/(㎡・K)
+・等級6 (HEAT20 G2水準): UA ≦ ${ins.grade6} W/(㎡・K)
+・等級7 (HEAT20 G3水準): UA ≦ ${ins.grade7} W/(㎡・K)
+・冷房期日射取得率 ηAC: ${ins.etaAC !== '—' ? `ηAC ≦ ${ins.etaAC}` : '基準値なし'}
+----------------------------------------
 ※ ${currentConstants.note || '特定行政庁・所管審査機関の最新基準をご確認ください。'}`;
 
       navigator.clipboard.writeText(text).then(() => {
         const originalHtml = btnCopyConditions.innerHTML;
-        btnCopyConditions.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px; color:var(--accent-green);">done</span> コピー完了!';
+        btnCopyConditions.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px; color:var(--accent-green);">done</span> 条件コピー完了!';
         setTimeout(() => {
           btnCopyConditions.innerHTML = originalHtml;
         }, 2200);
       });
+    });
+  }
+
+  // ==========================================
+  // 10. 全国省エネ地域区分・断熱等級基準 総合早見表モーダル
+  // ==========================================
+  const energyMapModal = document.getElementById('energyMapModal');
+  const btnOpenEnergyModal = document.getElementById('btnOpenEnergyModal');
+  const btnCloseEnergyModal = document.getElementById('btnCloseEnergyModal');
+  const btnCloseEnergyModalFooter = document.getElementById('btnCloseEnergyModalFooter');
+  const energyMasterTableBody = document.getElementById('energyMasterTableBody');
+
+  function renderEnergyMasterTable() {
+    if (!energyMasterTableBody) return;
+    const grades = REGIONAL_DATABASE.insulationGrades;
+    const masters = REGIONAL_DATABASE.energyRegionMaster;
+
+    energyMasterTableBody.innerHTML = Object.keys(grades).map(regKey => {
+      const reg = parseInt(regKey, 10);
+      const g = grades[reg];
+      const m = masters[reg];
+
+      return `
+        <tr>
+          <td>
+            <span class="region-pill" style="background:${m.color}22; color:${m.color}; border:1px solid ${m.color}55;">
+              ${m.name}
+            </span>
+          </td>
+          <td><strong>${m.repCity}</strong></td>
+          <td>${g.grade4}</td>
+          <td>${g.grade5}</td>
+          <td style="font-weight:700; color:var(--accent-emerald);">${g.grade6}</td>
+          <td style="font-weight:700; color:#38bdf8;">${g.grade7}</td>
+          <td>${g.etaAC}</td>
+          <td style="font-size:0.85rem; color:var(--text-sub);">${m.desc}</td>
+          <td>
+            <button type="button" class="btn btn-ghost btn-sm" onclick="selectEnergyRegionAndFly(${reg})">
+              選択
+            </button>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  window.selectEnergyRegionAndFly = function(region) {
+    const meta = REGIONAL_DATABASE.energyRegionMaster[region];
+    if (!meta) return;
+
+    if (energyMapModal) energyMapModal.style.display = 'none';
+    document.body.style.overflow = '';
+
+    if (regAddressInput) regAddressInput.value = meta.repCity;
+    if (leafletMap) {
+      leafletMap.flyTo([meta.lat, meta.lon], 11, { duration: 1.2 });
+    }
+    evaluateLocation(meta.lat, meta.lon, meta.repCity);
+
+    // スムーズスクロール
+    const targetSection = document.getElementById('regionalSearch');
+    if (targetSection) {
+      targetSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  if (btnOpenEnergyModal) {
+    btnOpenEnergyModal.addEventListener('click', () => {
+      renderEnergyMasterTable();
+      if (energyMapModal) {
+        energyMapModal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+      }
+    });
+  }
+
+  function closeEnergyModal() {
+    if (energyMapModal) {
+      energyMapModal.style.display = 'none';
+      document.body.style.overflow = '';
+    }
+  }
+  if (btnCloseEnergyModal) btnCloseEnergyModal.addEventListener('click', closeEnergyModal);
+  if (btnCloseEnergyModalFooter) btnCloseEnergyModalFooter.addEventListener('click', closeEnergyModal);
+  if (energyMapModal) {
+    energyMapModal.addEventListener('click', (e) => {
+      if (e.target === energyMapModal) closeEnergyModal();
+    });
+  }
+
+  // ==========================================
+  // 11. Google APIキー設定 & 取得ガイド モーダル (WRC造用)
+  // ==========================================
+  const googleApiKeyModal = document.getElementById('googleApiKeyModal');
+  const btnCloseApiKeyModal = document.getElementById('btnCloseApiKeyModal');
+  const btnCloseApiKeyModalFooter = document.getElementById('btnCloseApiKeyModalFooter');
+  const inputGoogleApiKey = document.getElementById('inputGoogleApiKey');
+  const btnToggleApiKeyEye = document.getElementById('btnToggleApiKeyEye');
+  const eyeIcon = document.getElementById('eyeIcon');
+  const btnPasteApiKey = document.getElementById('btnPasteApiKey');
+  const btnSaveApiKey = document.getElementById('btnSaveApiKey');
+  const btnDeleteApiKey = document.getElementById('btnDeleteApiKey');
+  const apiKeyStatusIndicator = document.getElementById('apiKeyStatusIndicator');
+  const apiKeyStatusText = document.getElementById('apiKeyStatusText');
+
+  // APIキーモーダル状態更新
+  function updateApiKeyStatusUI() {
+    const key = getStoredApiKey();
+    if (key) {
+      if (inputGoogleApiKey) inputGoogleApiKey.value = key;
+      if (apiKeyStatusIndicator) apiKeyStatusIndicator.className = 'status-indicator active';
+      if (apiKeyStatusText) {
+        const masked = key.length > 8 ? `${key.substring(0, 6)}...${key.substring(key.length - 4)}` : '設定済み';
+        apiKeyStatusText.innerHTML = `ブラウザに安全に保存されています: <code style="color:var(--accent-emerald);">${masked}</code>`;
+      }
+      if (btnDeleteApiKey) btnDeleteApiKey.style.display = 'inline-flex';
+    } else {
+      if (inputGoogleApiKey) inputGoogleApiKey.value = '';
+      if (apiKeyStatusIndicator) apiKeyStatusIndicator.className = 'status-indicator inactive';
+      if (apiKeyStatusText) apiKeyStatusText.textContent = 'ブラウザに保存されたAPIキーはありません';
+      if (btnDeleteApiKey) btnDeleteApiKey.style.display = 'none';
+    }
+  }
+
+  window.openApiKeyModal = function() {
+    updateApiKeyStatusUI();
+    if (googleApiKeyModal) {
+      googleApiKeyModal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+  };
+
+  function closeApiKeyModal() {
+    if (googleApiKeyModal) {
+      googleApiKeyModal.style.display = 'none';
+      document.body.style.overflow = '';
+    }
+  }
+
+  if (btnCloseApiKeyModal) btnCloseApiKeyModal.addEventListener('click', closeApiKeyModal);
+  if (btnCloseApiKeyModalFooter) btnCloseApiKeyModalFooter.addEventListener('click', closeApiKeyModal);
+  if (googleApiKeyModal) {
+    googleApiKeyModal.addEventListener('click', (e) => {
+      if (e.target === googleApiKeyModal) closeApiKeyModal();
+    });
+  }
+
+  // 目玉アイコン切替
+  if (btnToggleApiKeyEye && inputGoogleApiKey && eyeIcon) {
+    btnToggleApiKeyEye.addEventListener('click', () => {
+      const isPassword = inputGoogleApiKey.type === 'password';
+      inputGoogleApiKey.type = isPassword ? 'text' : 'password';
+      eyeIcon.textContent = isPassword ? 'visibility_off' : 'visibility';
+    });
+  }
+
+  // クリップボードから貼り付け
+  if (btnPasteApiKey && inputGoogleApiKey) {
+    btnPasteApiKey.addEventListener('click', async () => {
+      try {
+        const text = await navigator.clipboard.readText();
+        if (text) {
+          inputGoogleApiKey.value = text.trim();
+        }
+      } catch (err) {
+        alert('クリップボードの読み取りが拒否されました。入力欄に直接ペーストしてください。');
+      }
+    });
+  }
+
+  // キー保存
+  if (btnSaveApiKey && inputGoogleApiKey) {
+    btnSaveApiKey.addEventListener('click', () => {
+      const key = inputGoogleApiKey.value.trim();
+      if (!key) {
+        alert('APIキーを入力してください。');
+        return;
+      }
+      if (!key.startsWith('AIzaSy') && key.length < 20) {
+        if (!confirm('一般的なGoogle APIキーの形式（AIzaSy...）と異なるようですが、このまま保存しますか？')) {
+          return;
+        }
+      }
+      setStoredApiKey(key);
+      updateApiKeyStatusUI();
+      renderTools(); // WRCツールのバッジを即時更新
+      alert('Google APIキーをブラウザに安全に保存しました！WRC造の各ツールをご利用いただけます。');
+      closeApiKeyModal();
+    });
+  }
+
+  // キー消去
+  if (btnDeleteApiKey) {
+    btnDeleteApiKey.addEventListener('click', () => {
+      if (confirm('保存されているGoogle APIキーを削除しますか？')) {
+        setStoredApiKey('');
+        updateApiKeyStatusUI();
+        renderTools();
+      }
     });
   }
 

@@ -1273,3 +1273,673 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+/* ========================================================
+   全国省エネ地域区分 (1〜8地域) クイックバー
+   ======================================================== */
+.energy-quick-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  padding: 12px 18px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-md);
+}
+
+.energy-quick-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-sub);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.energy-chips {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.chip-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-main);
+  padding: 5px 12px;
+  border-radius: var(--radius-full);
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.chip-btn small {
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 400;
+}
+
+.chip-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: var(--chip-c, #38bdf8);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.chip-btn.active {
+  background: var(--chip-c, #10b981);
+  border-color: var(--chip-c, #10b981);
+  color: #090d16;
+  box-shadow: 0 0 12px var(--chip-c, rgba(16, 185, 129, 0.5));
+}
+
+.chip-btn.active small {
+  color: rgba(9, 13, 22, 0.8);
+  font-weight: 700;
+}
+
+/* ========================================================
+   省エネ・断熱等性能等級 (UA値 / ηAC値) パネル
+   ======================================================== */
+.insulation-panel {
+  margin-top: 18px;
+  padding: 16px 18px;
+  background: rgba(16, 185, 129, 0.04);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  border-radius: var(--radius-md);
+}
+
+.insulation-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.ins-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ins-title {
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: #34d399;
+}
+
+.ins-region-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-sub);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+}
+
+.insulation-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+}
+
+.ins-box {
+  background: rgba(18, 25, 44, 0.7);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.ins-box:hover {
+  border-color: rgba(16, 185, 129, 0.4);
+  transform: translateY(-1px);
+}
+
+.ins-box.highlight {
+  border-color: rgba(16, 185, 129, 0.5);
+  background: rgba(16, 185, 129, 0.08);
+  box-shadow: 0 0 14px rgba(16, 185, 129, 0.15);
+}
+
+.ins-grade-tag {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+
+.ins-grade-tag.grade-5 { color: #60a5fa; }
+.ins-grade-tag.grade-6 { color: #34d399; }
+.ins-grade-tag.grade-7 { color: #38bdf8; }
+.ins-grade-tag.eta { color: #fbbf24; }
+
+.ins-val-wrap {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 4px;
+}
+
+.ins-ua-label {
+  font-size: 0.72rem;
+  color: var(--text-sub);
+}
+
+.ins-ua-val {
+  font-size: 1.45rem;
+  font-weight: 900;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  color: var(--text-main);
+  line-height: 1.1;
+}
+
+.ins-box.highlight .ins-ua-val {
+  color: #34d399;
+}
+
+.ins-box.eta .ins-ua-val {
+  color: #fbbf24;
+}
+
+.ins-sub {
+  display: block;
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+@media (max-width: 900px) {
+  .insulation-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ========================================================
+   釘配列連動セット (2in1) 専用カードスタイル
+   ======================================================== */
+.tool-card.tool-card-nail-set {
+  border-color: rgba(245, 158, 11, 0.35);
+  background: linear-gradient(180deg, rgba(245, 158, 11, 0.04) 0%, rgba(18, 25, 44, 0.85) 100%);
+  position: relative;
+}
+
+.tool-card.tool-card-nail-set:hover {
+  border-color: var(--accent-gold);
+  box-shadow: 0 10px 30px -5px rgba(245, 158, 11, 0.25);
+}
+
+.badge-nail-sync {
+  background: rgba(245, 158, 11, 0.15);
+  color: var(--accent-gold);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  letter-spacing: 0.02em;
+}
+
+.tool-card.tool-card-core-engine {
+  border-color: rgba(6, 182, 212, 0.4);
+  background: linear-gradient(180deg, rgba(6, 182, 212, 0.05) 0%, rgba(18, 25, 44, 0.85) 100%);
+}
+
+.badge-core-engine {
+  background: rgba(6, 182, 212, 0.15);
+  color: var(--accent-cyan);
+  border: 1px solid rgba(6, 182, 212, 0.35);
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ワークフローステップ案内 */
+.nail-set-flow-box {
+  margin: 12px 0 14px 0;
+  padding: 10px 12px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  border-radius: var(--radius-sm);
+}
+
+.flow-header {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--accent-gold);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.flow-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.flow-step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.76rem;
+  color: var(--text-sub);
+  background: rgba(255, 255, 255, 0.03);
+  padding: 5px 8px;
+  border-radius: 4px;
+}
+
+.flow-step.highlight {
+  background: rgba(245, 158, 11, 0.1);
+  color: #fde68a;
+  border: 1px dashed rgba(245, 158, 11, 0.3);
+}
+
+.flow-arrow {
+  font-size: 13px;
+  color: var(--accent-gold);
+  margin-left: 20px;
+  opacity: 0.7;
+}
+
+.step-badge {
+  font-size: 0.65rem;
+  font-weight: 800;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-main);
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+
+/* ========================================================
+   WRC造 Google APIキー バッジ
+   ======================================================== */
+.badge-api-key {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.badge-api-key.set {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.35);
+}
+
+.badge-api-key.unset {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  animation: pulseWarning 2s infinite ease-in-out;
+}
+
+@keyframes pulseWarning {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
+  50% { box-shadow: 0 0 0 6px rgba(245, 158, 11, 0); }
+}
+
+/* ========================================================
+   共通モーダルコンテナ
+   ======================================================== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(9, 13, 22, 0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+  animation: modalFadeIn 0.25s ease;
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-dialog {
+  background: #0f172a;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-md);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+  width: 100%;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.modal-dialog.modal-lg { max-width: 820px; }
+.modal-dialog.modal-xl { max-width: 1080px; }
+
+.modal-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border-card);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.modal-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.modal-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 2px;
+}
+
+.modal-sub {
+  font-size: 0.82rem;
+  color: var(--text-sub);
+}
+
+.btn-close-modal {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.btn-close-modal:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-main);
+}
+
+.modal-body {
+  padding: 24px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.modal-footer {
+  padding: 16px 24px;
+  border-top: 1px solid var(--border-card);
+  display: flex;
+  justify-content: flex-end;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* Google APIキー モーダル内UI */
+.api-security-notice {
+  display: flex;
+  gap: 12px;
+  padding: 14px 16px;
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  border-radius: var(--radius-sm);
+  margin-bottom: 20px;
+}
+
+.api-security-notice strong {
+  color: #34d399;
+  font-size: 0.9rem;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.api-security-notice p {
+  font-size: 0.82rem;
+  color: var(--text-sub);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.api-key-form-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-sm);
+  padding: 18px;
+  margin-bottom: 24px;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 8px;
+}
+
+.api-key-input-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.input-password-wrap {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.key-icon {
+  position: absolute;
+  left: 12px;
+  color: var(--accent-gold);
+  font-size: 18px;
+  pointer-events: none;
+}
+
+.input-password-wrap input {
+  width: 100%;
+  padding: 11px 44px 11px 38px;
+  background: #090d16;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-sm);
+  color: var(--text-main);
+  font-family: monospace;
+  font-size: 0.95rem;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.input-password-wrap input:focus {
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 10px rgba(6, 182, 212, 0.3);
+}
+
+.btn-toggle-eye {
+  position: absolute;
+  right: 8px;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+}
+
+.api-key-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  color: var(--text-sub);
+}
+
+.status-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.status-indicator.active {
+  background: var(--accent-green);
+  box-shadow: 0 0 8px var(--accent-green);
+}
+
+.status-indicator.inactive {
+  background: var(--text-muted);
+}
+
+.btn-text-danger {
+  background: transparent;
+  border: none;
+  color: #ef4444;
+  font-size: 0.78rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.btn-text-danger:hover {
+  text-decoration: underline;
+}
+
+/* ガイドステップグリッド */
+.guide-title {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.guide-steps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.guide-step-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  position: relative;
+}
+
+.guide-step-card.highlight {
+  border-color: rgba(6, 182, 212, 0.4);
+  background: rgba(6, 182, 212, 0.05);
+}
+
+.step-num {
+  font-size: 0.7rem;
+  font-weight: 900;
+  color: var(--accent-cyan);
+  margin-bottom: 6px;
+  letter-spacing: 0.05em;
+}
+
+.guide-step-card h5 {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 6px;
+}
+
+.guide-step-card p {
+  font-size: 0.78rem;
+  color: var(--text-sub);
+  line-height: 1.5;
+  margin-bottom: 8px;
+}
+
+.guide-link {
+  margin-top: 4px;
+}
+
+.step-api-list {
+  padding-left: 18px;
+  font-size: 0.76rem;
+  color: var(--accent-emerald);
+  margin-bottom: 4px;
+}
+
+.step-tip {
+  margin-top: 6px;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+/* 全国省エネ基準マスターテーブル */
+.energy-table-wrapper {
+  overflow-x: auto;
+  margin-top: 16px;
+}
+
+.energy-master-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+.energy-master-table th,
+.energy-master-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border-card);
+  text-align: left;
+}
+
+.energy-master-table th {
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-sub);
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+
+.energy-master-table tbody tr {
+  transition: all 0.2s ease;
+}
+
+.energy-master-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.region-pill {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+}
+

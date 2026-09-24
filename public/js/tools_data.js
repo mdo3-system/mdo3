@@ -444,24 +444,27 @@ const MDO3_TOOLS_CATALOG = [
       "根太の経年乾燥収縮による床鳴りシミュレーション"
     ]
   },
-  // --- ブロック2: 任意配列・高倍率・詳細 ---
+  // --- ブロック2: 任意配列・高倍率・詳細 (※すべて「釘配列諸定数計算」とのセットツール) ---
   {
     id: "shosai_tarukiyane",
     category: "detail",
     subGroup: "custom",
+    linkedNailSet: true,
     categoryName: "水平構面・耐力壁系",
     sortOrder: 5,
-    title: "垂木工法勾配屋根 (任意配列)",
-    summary: "垂木工法による勾配屋根水平構面の倍率・剛性算定。",
+    title: "【釘配列セット】垂木工法勾配屋根 (任意配列)",
+    summary: "任意垂木間隔・釘配列による勾配屋根構面の算定。前提となる「釘配列諸定数」の計算とセットで完結。",
     icon: "roofing",
     url: "https://app.mdo3.com/tools/shosai-tarukiyane.html",
+    nailSetUrl: "https://app.mdo3.com/tools/kugihairetsushoteisu.html",
     videoUrl: "#video-taruki-yane",
     manualUrl: "#manual-taruki-yane",
     pricing: { individual: 980, categoryPack: 1980, allAccess: 3980 },
     canDo: [
       "勾配屋根の傾斜角補正を考慮した水平構面倍率算定",
-      "任意垂木間隔・釘配列による許容せん断耐力計算",
-      "吹抜け周辺の屋根面剛性評価"
+      "【セット機能】任意垂木間隔・釘配列による許容せん断耐力計算",
+      "吹抜け周辺の屋根面剛性評価",
+      "釘配列諸定数計算ツールとのシームレスデータ連携"
     ],
     cannotDo: [
       "円弧ドーム・ヴォールト屋根の面内せん断算定",
@@ -472,18 +475,21 @@ const MDO3_TOOLS_CATALOG = [
     id: "shosai_yanejikabari",
     category: "detail",
     subGroup: "custom",
+    linkedNailSet: true,
     categoryName: "水平構面・耐力壁系",
     sortOrder: 6,
-    title: "面材直張り勾配屋根 (任意配列)",
-    summary: "垂木を介さず母屋直張りとする勾配屋根水平構面の算定。",
+    title: "【釘配列セット】面材直張り勾配屋根 (任意配列)",
+    summary: "母屋直張り勾配屋根構面の算定。前提となる「釘配列諸定数」の計算とセットで完結。",
     icon: "splitscreen",
     url: "https://app.mdo3.com/tools/shosai-yanejikabari.html",
+    nailSetUrl: "https://app.mdo3.com/tools/kugihairetsushoteisu.html",
     videoUrl: "#video-yanejika",
     manualUrl: "#manual-yanejika",
     pricing: { individual: 980, categoryPack: 1980, allAccess: 3980 },
     canDo: [
       "母屋ピッチ910mm/1000mm等の面材直張り屋根水平構面算定",
-      "傾斜屋根の面内せん断力伝達計算および釘耐力照査"
+      "【セット機能】傾斜屋根の面内せん断力伝達計算および釘耐力照査",
+      "釘配列諸定数計算ツールとのシームレスデータ連携"
     ],
     cannotDo: [
       "断熱材挟み込み工法のせん断すべり粘弾性計算"
@@ -493,66 +499,44 @@ const MDO3_TOOLS_CATALOG = [
     id: "shosai_yuka",
     category: "detail",
     subGroup: "custom",
+    linkedNailSet: true,
     categoryName: "水平構面・耐力壁系",
     sortOrder: 7,
-    title: "面材張り床 (任意配列・高倍率検討)",
-    summary: "根太間隔・釘ピッチを自由に設定できる床水平構面の耐力算定。",
+    title: "【釘配列セット】面材張り床 (任意配列・高倍率)",
+    summary: "根太間隔・釘ピッチを自由に設定できる床構面耐力算定。前提となる「釘配列諸定数」の計算とセットで完結。",
     icon: "grid_view",
     url: "https://app.mdo3.com/tools/shosai-yuka.html",
+    nailSetUrl: "https://app.mdo3.com/tools/kugihairetsushoteisu.html",
     videoUrl: "#video-yuka-opt",
     manualUrl: "#manual-yuka-opt",
     pricing: { individual: 980, categoryPack: 1980, allAccess: 3980 },
     canDo: [
       "24mm/28mm剛床および根太あり床の自由な釘ピッチせん断耐力算定",
-      "高倍率床構面（倍率3.0倍以上）の許容応力度設計計算書作成",
-      "床剛性値の自動算出"
+      "【セット機能】高倍率床構面（倍率3.0倍以上）の許容応力度設計計算書作成",
+      "床剛性値の自動算出と釘配列連動"
     ],
     cannotDo: [
       "床開口率30%超の特殊形状における2次元有限要素法応力集中解析"
-    ]
-  },
-  // --- ⑧〜⑩ 連動セット: 釘配列・大壁・真壁 ---
-  {
-    id: "kugihairetsushoteisu",
-    category: "detail",
-    subGroup: "custom",
-    linkedGroup: "wall_nail_set",
-    categoryName: "水平構面・耐力壁系",
-    sortOrder: 8,
-    title: "釘配列諸定数 計算",
-    summary: "【連動セット】面材留め付け釘の間隔・配列に応じた諸定数・せん断耐力の詳細算定。大壁・真壁計算と連携。",
-    icon: "density_medium",
-    url: "https://app.mdo3.com/tools/kugihairetsushoteisu.html",
-    videoUrl: "#video-kugi",
-    manualUrl: "#manual-kugi",
-    pricing: { individual: 980, categoryPack: 1980, allAccess: 3980 },
-    canDo: [
-      "外周釘ピッチ・中通り釘ピッチによるせん断耐力・面材倍率の算定",
-      "CN50/CN65/N50/N65/N75等各種JIS釘および専用ビスに対応",
-      "大壁・真壁の耐力・剛性算定ツールとシームレス連携"
-    ],
-    cannotDo: [
-      "釘の引き抜き・錆による経年劣化係数の推定",
-      "特殊接着剤併用時の複合せん断剥離解析"
     ]
   },
   {
     id: "shosai_okabe",
     category: "detail",
     subGroup: "custom",
-    linkedGroup: "wall_nail_set",
+    linkedNailSet: true,
     categoryName: "水平構面・耐力壁系",
-    sortOrder: 9,
-    title: "面材張り大壁 (許容応力度・剛性算定)",
-    summary: "【連動セット】大壁仕様耐力壁の倍率・許容せん断耐力・剛性の精緻算定。釘配列諸定数と連動。",
+    sortOrder: 8,
+    title: "【釘配列セット】面材張り大壁 (許容応力度・剛性算定)",
+    summary: "大壁仕様耐力壁の倍率・剛性算定。前提となる「釘配列諸定数」の計算とセットで完結。",
     icon: "view_quilt",
     url: "https://app.mdo3.com/tools/shosai-okabe.html",
+    nailSetUrl: "https://app.mdo3.com/tools/kugihairetsushoteisu.html",
     videoUrl: "#video-shosai-okabe",
     manualUrl: "#manual-shosai-okabe",
     pricing: { individual: 980, categoryPack: 1980, allAccess: 3980 },
     canDo: [
       "構造用合板、OSB、パーティクルボード、石膏ボード等の大壁耐力算定",
-      "告示倍率を超える高耐力壁の許容応力度設計計算書作成",
+      "【セット機能】告示倍率を超える高耐力壁の許容応力度設計計算書作成",
       "壁せん断剛性Kの算出（偏心率計算用データ導出）"
     ],
     cannotDo: [
@@ -564,24 +548,49 @@ const MDO3_TOOLS_CATALOG = [
     id: "shosai_shinkabe",
     category: "detail",
     subGroup: "custom",
-    linkedGroup: "wall_nail_set",
+    linkedNailSet: true,
     categoryName: "水平構面・耐力壁系",
-    sortOrder: 10,
-    title: "面材張り真壁 (伝統仕様算定)",
-    summary: "【連動セット】伝統的真壁仕様における面材直張り耐力壁の算定。釘配列諸定数と連動。",
+    sortOrder: 9,
+    title: "【釘配列セット】面材張り真壁 (伝統仕様算定)",
+    summary: "伝統的真壁仕様における面材直張り耐力壁の算定。前提となる「釘配列諸定数」の計算とセットで完結。",
     icon: "table_rows",
     url: "https://app.mdo3.com/tools/shosai-shinkabe.html",
+    nailSetUrl: "https://app.mdo3.com/tools/kugihairetsushoteisu.html",
     videoUrl: "#video-shosai-shinkabe",
     manualUrl: "#manual-shosai-shinkabe",
     pricing: { individual: 980, categoryPack: 1980, allAccess: 3980 },
     canDo: [
       "柱・梁のチリ寸法を考慮した真壁面材の受材留め付け・直張り耐力評価",
-      "真壁仕様独自の有効倍率およびせん断剛性算定",
+      "【セット機能】真壁仕様独自の有効倍率およびせん断剛性算定",
       "和風住宅・古民家改修における耐震補強計算"
     ],
     cannotDo: [
       "土塗り壁（小舞竹下地）の復元力特性実験値同定",
       "伝統仕口（長ほぞ差し等）の非破壊強度推定"
+    ]
+  },
+  {
+    id: "kugihairetsushoteisu",
+    category: "detail",
+    subGroup: "custom",
+    isCoreNailEngine: true,
+    categoryName: "水平構面・耐力壁系",
+    sortOrder: 10,
+    title: "釘配列諸定数 計算 (任意配列コアエンジン)",
+    summary: "任意配列の全計算（屋根・床・大壁・真壁）の基盤となる釘間隔・せん断耐力の詳細算定ツール。",
+    icon: "density_medium",
+    url: "https://app.mdo3.com/tools/kugihairetsushoteisu.html",
+    videoUrl: "#video-kugi",
+    manualUrl: "#manual-kugi",
+    pricing: { individual: 980, categoryPack: 1980, allAccess: 3980 },
+    canDo: [
+      "外周釘ピッチ・中通り釘ピッチによるせん断耐力・面材倍率の算定",
+      "CN50/CN65/N50/N65/N75等各種JIS釘および専用ビスに対応",
+      "任意配列の全構面・耐力壁ツールへの計算定数直接受け渡し"
+    ],
+    cannotDo: [
+      "釘の引き抜き・錆による経年劣化係数の推定",
+      "特殊接着剤併用時の複合せん断剥離解析"
     ]
   },
 
