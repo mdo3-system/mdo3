@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>mdo3 構造計算補助ツール群ポータル | 木造・RC構造実務クラウド</title>
+  <meta name="description" content="木造・RC構造計算実務を強力にサポートする専門クラウドツール群mdo3。基礎梁・片土圧・擁壁・柱曲げ・水平構面・WRC造など28ツールを提供。何ができて何ができないかの判断基準マニュアル・実務解説動画を完全無償公開。必要な計算だけを月額980円から。">
+  <link rel="canonical" href="https://mdo3.com/">
+
+  <!-- Google Fonts & Material Symbols -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;800&family=Plus+Jakarta+Sans:wght@500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="css/portal.css">
+</head>
+<body>
+
+  <!-- ==========================================
+       ヘッダー
+       ========================================== -->
+  <header class="site-header" id="mainHeader">
+    <div class="container header-inner">
+      <a href="/" class="brand-logo" id="headerBrandLogo">
+        <div class="logo-badge">M</div>
+        <div class="brand-name">mdo3<span>.com</span></div>
+      </a>
+
+      <nav>
+        <ul class="nav-links" id="mainNavLinks">
+          <li><a href="#toolsCatalog">ツール一覧 (28)</a></li>
+          <li><a href="#freeLearning">無料動画・マニュアル</a></li>
+          <li><a href="#pricingPlans">料金プラン</a></li>
+          <li><a href="https://2025.eie.jp" target="_blank">壁量計算WEB</a></li>
+          <li><a href="https://az.mdo3.com" target="_blank">斜め壁 (AZ)</a></li>
+        </ul>
+      </nav>
+
+      <div class="header-actions" id="authNavContainer">
+        <a href="https://app.mdo3.com/login" class="btn btn-ghost" id="headerLoginBtn">
+          <span class="material-symbols-outlined">login</span> ログイン
+        </a>
+        <a href="#pricingPlans" class="btn btn-primary" id="headerCtaBtn">
+          利用プランを見る
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==========================================
+       ヒーローセクション
+       ========================================== -->
+  <section class="hero-section" id="heroSection">
+    <div class="container">
+      <div class="hero-pill" id="heroBadge">
+        <span class="material-symbols-outlined" style="font-size: 16px;">verified</span>
+        <span>実務設計者・構造審査対応 全28ツール完全配備</span>
+      </div>
+
+      <h1 class="hero-title" id="mainHeadline">
+        木造・RC構造実務のすべてを、<br>クラウドで瞬時に解く。
+      </h1>
+
+      <p class="hero-desc" id="heroSubHeadline">
+        基礎梁水平力、片土圧、擁壁、柱曲げ、水平構面、WRC造まで網羅。<br>
+        「何ができて何ができないか」の明確な判断基準と操作動画を完全無償公開。<br>
+        必要な計算書だけを月額980円からご活用いただけます。
+      </p>
+
+      <div class="hero-cta" id="heroCtaGroup">
+        <a href="#toolsCatalog" class="btn btn-primary" style="padding: 14px 32px; font-size: 1.05rem;" id="heroExploreBtn">
+          <span class="material-symbols-outlined">apps</span> ツール一覧・判断基準を見る
+        </a>
+        <a href="#pricingPlans" class="btn btn-gold" style="padding: 14px 28px; font-size: 1.05rem;" id="heroPricingBtn">
+          料金プランを見る (月額¥980〜)
+        </a>
+      </div>
+
+      <!-- 実績・構成メトリクス -->
+      <div class="hero-metrics" id="heroMetrics">
+        <div class="metric-item">
+          <h4>28</h4>
+          <p>専門構造計算ツール</p>
+        </div>
+        <div class="metric-item">
+          <h4>4大</h4>
+          <p>実務特化カテゴリ</p>
+        </div>
+        <div class="metric-item">
+          <h4>A4 1枚</h4>
+          <p>審査・確認申請直結計算書</p>
+        </div>
+        <div class="metric-item">
+          <h4>¥0</h4>
+          <p>操作動画・マニュアル無料</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       ツールカタログ & フィルター
+       ========================================== -->
+  <section class="catalog-section" id="toolsCatalog">
+    <div class="container">
+      <div class="section-head">
+        <div class="section-tag">TOOL CATALOG</div>
+        <h2 class="section-title">全28ツール一覧 ＆ 判断基準</h2>
+        <p class="section-sub">実務での適用可否（できること・できないこと）をご確認のうえ、安全にご利用いただけます。</p>
+      </div>
+
+      <!-- フィルター & 検索コントロール -->
+      <div class="catalog-controls" id="catalogControls">
+        <div class="category-tabs" id="categoryTabs">
+          <button type="button" class="tab-btn active" data-category="all" id="tabAll">すべて (28)</button>
+          <button type="button" class="tab-btn" data-category="foundation" id="tabFoundation">基礎・擁壁・地盤 (8)</button>
+          <button type="button" class="tab-btn" data-category="timber" id="tabTimber">木造軸組・接合部 (7)</button>
+          <button type="button" class="tab-btn" data-category="detail" id="tabDetail">水平構面・詳細 (11)</button>
+          <button type="button" class="tab-btn" data-category="wrc" id="tabWrc">WRC造パッケージ (2)</button>
+        </div>
+
+        <div class="search-box">
+          <span class="material-symbols-outlined">search</span>
+          <input type="text" id="toolSearchInput" placeholder="ツール名・用途で検索..." aria-label="ツール名検索">
+        </div>
+      </div>
+
+      <!-- ツールカード動的グリッド -->
+      <div class="tools-grid" id="toolsContainer">
+        <!-- JavaScript (portal.js) により動的レンダリング -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       無料マニュアル & 操作解説動画セクション (判断基準)
+       ========================================== -->
+  <section class="free-learning-section" id="freeLearning">
+    <div class="container">
+      <div class="learning-banner">
+        <div class="learning-content">
+          <div class="section-tag" style="color: var(--accent-green);">FREE RESOURCES</div>
+          <h3>「何ができて・何ができないか」を事前に確認。<br>全ツールの実務動画＆マニュアルを完全無料公開。</h3>
+          <p>
+            「この物件の基礎梁形状に対応しているか？」「手計算とどう整合するか？」——<br>
+            ご契約前に適合性を正しくご判断いただくため、全ツールの入力手順、計算根拠、計算書サンプル、および操作解説動画を会員登録なしで無償提供しております。
+          </p>
+          <div style="display: flex; gap: 14px;">
+            <a href="https://app.mdo3.com/index.html" target="_blank" class="btn btn-primary" id="btnGoToFreeDocs">
+              <span class="material-symbols-outlined">menu_book</span> マニュアル・解説動画を閲覧する (無料)
+            </a>
+          </div>
+        </div>
+
+        <div class="learning-features">
+          <div class="learning-feature-item">
+            <span class="material-symbols-outlined">smart_display</span>
+            <strong>実務操作解説動画</strong>
+            <small>各ツールの入力ステップと判断の急所を1〜3分で明快解説。</small>
+          </div>
+          <div class="learning-feature-item">
+            <span class="material-symbols-outlined">description</span>
+            <strong>審査提出用 計算書仕様</strong>
+            <small>確認申請機関・適合判定にそのまま添付できるA4出力見本。</small>
+          </div>
+          <div class="learning-feature-item">
+            <span class="material-symbols-outlined">sync_saved_locally</span>
+            <strong>JSON / 自動保存機能</strong>
+            <small>ブラウザLocalStorageとJSON書き出しによる物件データ保護。</small>
+          </div>
+          <div class="learning-feature-item">
+            <span class="material-symbols-outlined">memory</span>
+            <strong>高速 WebAssembly</strong>
+            <small>最新Wasm技術による高精度かつ瞬時の構造計算エンジン。</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       確定料金プラン (Pricing Table)
+       ========================================== -->
+  <section class="pricing-section" id="pricingPlans">
+    <div class="container">
+      <div class="section-head">
+        <div class="section-tag">PLANS & PRICING</div>
+        <h2 class="section-title">明確でリーズナブルな料金プラン</h2>
+        <p class="section-sub">スポットの1計算から、事務所全体の全ツール使い放題まで。無駄のないプランをお選びいただけます。</p>
+      </div>
+
+      <div class="pricing-grid" id="pricingGrid">
+        <!-- プラン1: ツール個別プラン -->
+        <div class="pricing-card" id="planIndividual">
+          <div>
+            <h3 class="plan-name">ツール個別プラン</h3>
+            <p class="plan-desc">必要なツールだけをピンポイントで契約したい設計者様向け。</p>
+            <div class="plan-price">
+              <span class="currency">¥</span><span class="amount">980</span>
+              <span class="period">/ 月 (税込)</span>
+            </div>
+            <ul class="plan-features">
+              <li><span class="material-symbols-outlined">check</span> 選択した対象ツール 1件</li>
+              <li><span class="material-symbols-outlined">check</span> A4計算書出力 (無制限)</li>
+              <li><span class="material-symbols-outlined">check</span> JSON保存・復元機能</li>
+              <li><span class="material-symbols-outlined">check</span> 操作動画・マニュアル閲覧</li>
+            </ul>
+          </div>
+          <a href="https://app.mdo3.com/login" class="btn btn-ghost" style="width: 100%;">
+            ツールを選んで登録
+          </a>
+        </div>
+
+        <!-- プラン2: カテゴリ別パック -->
+        <div class="pricing-card" id="planCategory">
+          <div>
+            <h3 class="plan-name">カテゴリ別パック</h3>
+            <p class="plan-desc">「基礎・擁壁」や「木造軸組」など、特定分野のツール群を使い放題。</p>
+            <div class="plan-price">
+              <span class="currency">¥</span><span class="amount">1,980</span>
+              <span class="period">/ 月 (税込)</span>
+            </div>
+            <ul class="plan-features">
+              <li><span class="material-symbols-outlined">check</span> 対象カテゴリ内 全ツール使い放題</li>
+              <li><span class="material-symbols-outlined">check</span> 基礎・擁壁系なら8ツールすべて対応</li>
+              <li><span class="material-symbols-outlined">check</span> A4計算書出力 (無制限)</li>
+              <li><span class="material-symbols-outlined">check</span> 将来追加される同一カテゴリ新ツール</li>
+            </ul>
+          </div>
+          <a href="https://app.mdo3.com/login" class="btn btn-ghost" style="width: 100%;">
+            カテゴリを選択して登録
+          </a>
+        </div>
+
+        <!-- プラン3: 全ツール使い放題 (VIP・おすすめ) -->
+        <div class="pricing-card featured" id="planAllAccess">
+          <div class="badge-featured">一番人気・おすすめ</div>
+          <div>
+            <h3 class="plan-name" style="color: #fff;">全ツール使い放題</h3>
+            <p class="plan-desc">28すべての専門構造ツールを制限なく自由に使えるプロフェッショナル仕様。</p>
+            <div class="plan-price">
+              <span class="currency" style="color: var(--accent-gold);">¥</span><span class="amount" style="color: var(--accent-gold);">3,980</span>
+              <span class="period">/ 月 (税込)</span>
+              <div style="font-size: 0.85rem; color: #a5b4fc; margin-top: 4px; font-weight: 700;">
+                年額一括: ¥39,800/年 (実質2ヶ月分無料)
+              </div>
+            </div>
+            <ul class="plan-features">
+              <li><span class="material-symbols-outlined">verified</span> <strong>全28ツール すべて使い放題</strong></li>
+              <li><span class="material-symbols-outlined">verified</span> WRC造パッケージ (HOUSE-WL連動) 含む</li>
+              <li><span class="material-symbols-outlined">verified</span> A4計算書・PDF出力 完全無制限</li>
+              <li><span class="material-symbols-outlined">verified</span> 今後リリースされるすべての新ツール</li>
+              <li><span class="material-symbols-outlined">verified</span> ドメイン共通SSO (1回ログインで全開通)</li>
+            </ul>
+          </div>
+          <a href="https://app.mdo3.com/login" class="btn btn-gold" style="width: 100%;">
+            全ツール使い放題を始める
+          </a>
+        </div>
+
+        <!-- プラン4: マニュアル・解説動画 (完全無料) -->
+        <div class="pricing-card" id="planFreeDocs">
+          <div>
+            <h3 class="plan-name">解説動画・マニュアル</h3>
+            <p class="plan-desc">適合判断・操作フローの確認用リソース。どなたでも今すぐ閲覧可能。</p>
+            <div class="plan-price">
+              <span class="currency">¥</span><span class="amount">0</span>
+              <span class="period">/ 完全無料</span>
+            </div>
+            <ul class="plan-features">
+              <li><span class="material-symbols-outlined">check</span> 全ツールの操作解説動画</li>
+              <li><span class="material-symbols-outlined">check</span> 機能・判断基準マニュアル</li>
+              <li><span class="material-symbols-outlined">check</span> 入力仕様・計算根拠解説</li>
+              <li><span class="material-symbols-outlined">check</span> 登録不要で誰でも閲覧可能</li>
+            </ul>
+          </div>
+          <a href="#freeLearning" class="btn btn-ghost" style="width: 100%;">
+            無料コンテンツを見る
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       判断基準モーダル (何ができて何ができないか)
+       ========================================== -->
+  <div class="modal-overlay" id="criteriaModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-content">
+      <button type="button" class="modal-close" id="modalCloseBtn" aria-label="閉じる">&times;</button>
+      <div id="modalBody">
+        <!-- JavaScript (portal.js) により動的挿入 -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       フッター
+       ========================================== -->
+  <footer class="site-footer" id="siteFooter">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <h4>mdo3.com</h4>
+          <p style="margin-bottom: 12px; font-size: 0.85rem; line-height: 1.6;">
+            木造住宅・RC造の構造計算・設計実務をスマートに解決するクラウドプラットフォーム。
+          </p>
+          <small>&copy; 2026 株式会社ティー・スマイル (T-Smile Co., Ltd.) All Rights Reserved.</small>
+        </div>
+
+        <div class="footer-col">
+          <h5>サービス群</h5>
+          <ul>
+            <li><a href="https://app.mdo3.com/index.html" target="_blank">構造計算補助ツール群 (28)</a></li>
+            <li><a href="https://2025.eie.jp" target="_blank">壁量計算WEB (最新2025法改正版)</a></li>
+            <li><a href="https://az.mdo3.com" target="_blank">斜め壁計算補助 (AZ)</a></li>
+            <li><a href="https://map.mdo3.com" target="_blank">案内図申請作図 (MAP)</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h5>ご利用案内</h5>
+          <ul>
+            <li><a href="#toolsCatalog">ツール一覧 & 判断基準</a></li>
+            <li><a href="#freeLearning">操作解説動画・マニュアル</a></li>
+            <li><a href="#pricingPlans">料金プラン案内</a></li>
+            <li><a href="https://app.mdo3.com/login">ログイン / 会員登録</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h5>規約・企業情報</h5>
+          <ul>
+            <li><a href="https://app.mdo3.com/lp/terms/index.html" target="_blank">利用規約</a></li>
+            <li><a href="https://app.mdo3.com/lp/privacy/index.html" target="_blank">プライバシーポリシー</a></li>
+            <li><a href="https://2025.eie.jp/tokusho.html" target="_blank">特定商取引法に基づく表記</a></li>
+            <li><a href="https://t-smile.co.jp" target="_blank">運営会社概要</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <small>mdo3.com 基幹ポータルシステム | Single Sign-On 共通認証基盤稼働中</small>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/tools_data.js"></script>
+  <script src="js/portal.js"></script>
+</body>
+</html>
