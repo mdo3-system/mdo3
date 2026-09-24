@@ -196,8 +196,14 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         ` : ''}
 
-        <!-- 判断基準プレビュー枠 -->
+        <!-- 判断基準 ＆ 準拠基準プレビュー枠 -->
         <div class="card-criteria-box">
+          ${tool.standards && tool.standards.length > 0 ? `
+            <div class="criteria-item" style="margin-bottom:6px; color:var(--accent-cyan); font-size:0.78rem;">
+              <span class="material-symbols-outlined" style="font-size:16px; color:var(--accent-cyan);">gavel</span>
+              <span><strong>準拠基準:</strong> ${tool.standards[0]}</span>
+            </div>
+          ` : ''}
           <div class="criteria-item">
             <span class="material-symbols-outlined criteria-icon-ok">check_circle</span>
             <span><strong>できること:</strong> ${tool.canDo[0]}</span>
@@ -406,7 +412,23 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       </div>
 
-      <p style="color:var(--text-sub); margin-bottom:24px; font-size:0.95rem; line-height:1.6;">${tool.summary}</p>
+      <p style="color:var(--text-sub); margin-bottom:20px; font-size:0.95rem; line-height:1.6;">${tool.summary}</p>
+
+      ${tool.standards && tool.standards.length > 0 ? `
+        <div style="background:rgba(56, 189, 248, 0.08); border:1px solid rgba(56, 189, 248, 0.25); border-radius:var(--radius-sm); padding:16px; margin-bottom:18px;">
+          <h4 style="color:var(--accent-cyan); font-size:0.95rem; font-weight:700; margin-bottom:10px; display:flex; align-items:center; gap:8px;">
+            <span class="material-symbols-outlined">gavel</span> 準拠している基準・関連法令・設計指針
+          </h4>
+          <ul style="list-style:none; padding-left:4px;">
+            ${tool.standards.map(item => `
+              <li style="display:flex; align-items:flex-start; gap:8px; font-size:0.88rem; color:var(--text-main); margin-bottom:6px;">
+                <span class="material-symbols-outlined" style="color:var(--accent-cyan); font-size:16px; flex-shrink:0; margin-top:2px;">verified</span>
+                <span>${item}</span>
+              </li>
+            `).join('')}
+          </ul>
+        </div>
+      ` : ''}
 
       <div style="background:rgba(16, 185, 129, 0.08); border:1px solid rgba(16, 185, 129, 0.25); border-radius:var(--radius-sm); padding:18px; margin-bottom:18px;">
         <h4 style="color:var(--accent-green); font-size:1rem; font-weight:700; margin-bottom:12px; display:flex; align-items:center; gap:8px;">
