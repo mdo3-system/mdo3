@@ -381,8 +381,23 @@ WRC造の「開口部補強・割増検討（jintsuko_bf）」は削除。新た
   - 旧「上善如水（2025.eie.jp）」との完全ブランド分離方針。
   - X公式プロフィール（160字）、固定ポスト文案、即時速報フロー。
   - note+ 公式プロフィール、ヘッダー設計、看板記事構成、LP型記事テンプレート。
+---
 
+## 14. リリース履歴: v1.4.1 (2026-09-25)
 
+### ① 公式SNS認証情報管理台帳の整備 (Git除外・セキュア設計)
+- **背景**: note+, X, Instagram, YouTube 等の公式アカウント運用の本格化に伴い、パスワードや二段階認証情報の安全な保管体制を確立。
+- **実装内容**:
+  - `.gitignore` に `secrets/`, `*.local.*`, `.env*` を厳格追加。GitHubへの誤コミットやXServer公開ディレクトリへの誤アップロードを完全防止。
+  - ローカル専用管理台帳 [`secrets/sns_credentials.local.json`](file:///d:/Dropbox/■設計ｻﾎﾟｰﾄ/■note/antigravity/mdo3/secrets/sns_credentials.local.json) を配備。Dropbox同期によりPC間での安全な保持を実現。
 
-
+### ② Instagram ＆ YouTube 公式アカウント開設キット ＆ ブランディングアセット生成
+- **アーティファクト**: [`mdo3_sns_official_setup_guide.md`](file:///C:/Users/049sm/.gemini/antigravity-ide/brain/6f66fd36-03c9-4af3-8b41-65619c184510/mdo3_sns_official_setup_guide.md)
+- **生成・配備アセット**:
+  - 公式アバターロゴ (1:1): `public/assets/branding/mdo3_official_avatar.jpg`
+  - YouTubeチャンネルバナー (16:9 2560x1440 セーフエリア対応): `public/assets/branding/mdo3_youtube_banner.jpg`
+  - XServer本番サーバー（`/public_html/assets/branding/`）へアップロード完了。
+- **アカウント設計仕様**:
+  - **Instagram**: プロアカウント（クリエイター）、ユーザー名 `@mdo3_official`、150字Bio、Reels（Veo 3広告・30秒デモ動画）配信設計。
+  - **YouTube**: Googleアカウント（`s2712350@gmail.com`）のブランドチャンネル、チャンネル名 `mdo3 ARCHITECTURAL TECH`、ハンドル `@mdo3_official`、横型4K解説マニュアル＆Shorts配信設計。
 
