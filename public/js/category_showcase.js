@@ -188,6 +188,17 @@
   }
 
   function renderCardContent(tool, cat, idx, total) {
+    const isSpecialPlan = tool.pricing?.specialPlan || tool.id === 'az_skew_wall' || cat.id === 'cad';
+    const isFree = tool.isFree === true || tool.id === 'annai_map';
+    let priceLabel = '月額¥980〜';
+    if (isSpecialPlan) {
+      priceLabel = '月額¥5,980 (年額¥39,800)';
+    } else if (isFree) {
+      priceLabel = '🎁 完全無償';
+    }
+
+    const videoUrl = tool.videoUrl || 'https://www.youtube.com/@mdo3_official';
+
     return `
       <div class="showcase-tool-header">
         <div class="showcase-icon-box" style="background: ${cat.color}20; color: ${cat.color};">
@@ -202,11 +213,16 @@
       <h4 class="showcase-tool-name">${tool.title}</h4>
       <p class="showcase-tool-desc">${tool.summary || '実務計算と判断基準の判定に対応。'}</p>
 
-      <div class="showcase-action-row">
+      <div class="showcase-action-row" style="margin-top:auto; padding-top:8px;">
         <span class="showcase-view-link">
           判断基準を見る <span class="material-symbols-outlined" style="font-size:14px;">arrow_forward</span>
         </span>
-        <span class="showcase-price-tag">月額¥980〜</span>
+        <span class="showcase-price-tag" style="${isSpecialPlan ? 'background:rgba(245,158,11,0.15); color:var(--accent-gold); border:1px solid rgba(245,158,11,0.3);' : ''}">${priceLabel}</span>
+      </div>
+      <div style="margin-top:6px; display:flex; justify-content:space-between; align-items:center;">
+        <a href="${videoUrl}" target="_blank" rel="noopener" class="showcase-video-link" onclick="event.stopPropagation();" style="display:inline-flex; align-items:center; gap:4px; font-size:0.75rem; color:#ef4444; font-weight:700; text-decoration:none;">
+          <span class="material-symbols-outlined" style="font-size:15px;">play_circle</span> 解説動画 (登録不要)
+        </a>
       </div>
     `;
   }

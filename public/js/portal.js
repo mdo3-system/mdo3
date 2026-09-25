@@ -217,11 +217,16 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="card-footer">
           <span class="card-price-badge" style="${isAz ? 'border-color:rgba(245,158,11,0.4); color:var(--accent-gold); font-weight:700;' : (isFreeTool ? 'border-color:rgba(16,185,129,0.4); color:var(--accent-green); font-weight:700;' : '')}">${priceBadgeText}</span>
           <div class="card-actions">
+            <!-- マニュアル解説動画 (ユーザー登録不要・直結リンク) -->
+            <a href="${tool.videoUrl || 'https://www.youtube.com/@mdo3_official'}" target="_blank" rel="noopener" class="btn btn-ghost btn-sm" title="マニュアル解説動画 (登録不要・無料閲覧)" style="color:#ef4444; border-color:rgba(239,68,68,0.25);">
+              <span class="material-symbols-outlined" style="font-size:16px;">play_circle</span> 動画
+            </a>
+
             ${isFreeTool ? `
-              <a href="${tool.manualUrl}" target="_blank" class="btn btn-ghost btn-sm">
+              <a href="${tool.manualUrl}" target="_blank" rel="noopener" class="btn btn-ghost btn-sm">
                 <span class="material-symbols-outlined" style="font-size:16px;">menu_book</span> マニュアル
               </a>
-              <a href="${tool.url}" target="_blank" class="btn btn-primary btn-sm" style="background:var(--accent-green); border-color:var(--accent-green); color:#06140e; font-weight:700;">
+              <a href="${tool.url}" target="_blank" rel="noopener" class="btn btn-primary btn-sm" style="background:var(--accent-green); border-color:var(--accent-green); color:#06140e; font-weight:700;">
                 今すぐ作成 (無料) <span class="material-symbols-outlined" style="font-size:16px;">launch</span>
               </a>
             ` : isAz ? `
@@ -231,7 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
               <button type="button" class="btn btn-gold btn-sm" onclick="startCheckout('az_monthly', 'az')">
                 契約 (¥5,980/月)
               </button>
-              <a href="${tool.url}" target="_blank" class="btn btn-primary btn-sm">
+              <a href="${tool.url}" target="_blank" rel="noopener" class="btn btn-primary btn-sm">
                 CAD起動 <span class="material-symbols-outlined" style="font-size:16px;">launch</span>
               </a>
             ` : `
@@ -248,7 +253,7 @@ document.addEventListener('DOMContentLoaded', () => {
                   起動 (要キー設定) <span class="material-symbols-outlined" style="font-size:16px;">key</span>
                 </button>
               ` : `
-                <a href="${tool.url}" target="_blank" class="btn btn-primary btn-sm">
+                <a href="${tool.url}" target="_blank" rel="noopener" class="btn btn-primary btn-sm">
                   ${isNailSet ? 'セット起動' : '開く'} <span class="material-symbols-outlined" style="font-size:16px;">launch</span>
                 </a>
               `}
@@ -644,6 +649,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const energyReg = results.energyRegion || 6;
     const ins = results.insulation || REGIONAL_DATABASE.insulationGrades[6];
     const meta = results.regionMeta || REGIONAL_DATABASE.energyRegionMaster[6];
+    const solarProf = results.solarProfile || REGIONAL_DATABASE.solarRegionProfiles[results.solarRegion || 'A4'] || REGIONAL_DATABASE.solarRegionProfiles['A4'];
 
     if (resEnergyBadge) {
       resEnergyBadge.textContent = `${energyReg}地域 (${results.pref || meta.name})`;
@@ -651,10 +657,10 @@ document.addEventListener('DOMContentLoaded', () => {
       resEnergyBadge.style.color = meta.color || '#34d399';
     }
     if (resSolarBadge) {
-      resSolarBadge.textContent = `日射 ${results.solarRegion || 'A4'}`;
+      resSolarBadge.textContent = `日射 ${results.solarRegion || meta.solarDefault || 'A4'}区分`;
     }
     if (insRegionSummary) {
-      insRegionSummary.textContent = `${ins.label} [暖房期日射量: ${results.solarRegion}区分]`;
+      insRegionSummary.textContent = `${ins.label} [告示第1号: ${meta.categoryName || '標準地域'}]`;
     }
 
     if (valUaGrade4) valUaGrade4.textContent = ins.grade4 !== undefined ? ins.grade4 : '—';
@@ -662,10 +668,40 @@ document.addEventListener('DOMContentLoaded', () => {
     if (valUaGrade6) valUaGrade6.textContent = ins.grade6 !== undefined ? ins.grade6 : '—';
     if (valUaGrade7) valUaGrade7.textContent = ins.grade7 !== undefined ? ins.grade7 : '—';
     if (valEtaAc) valEtaAc.textContent = ins.etaAC !== undefined ? ins.etaAC : '—';
-    if (descEtaAc) {
-      descEtaAc.textContent = (energyReg >= 5 && ins.etaAC !== '—') 
-        ? `${energyReg}地域 基準値 (冷房期遮熱)` 
-        : '1〜4地域は基準値規定なし';
+
+    // 気象庁平年値・日射特性・気候傾向・標高差設計参考の反映
+    const resClimateHeaderMeta = document.getElementById('resClimateHeaderMeta');
+    if (resClimateHeaderMeta) {
+      resClimateHeaderMeta.textContent = `${results.pref || ''} ${results.cityName || ''} (標高${results.elevation}m) / H25経産省・国交省告示第1号`;
+    }
+
+    const valTempYear = document.getElementById('valTempYear');
+    if (valTempYear) valTempYear.textContent = meta.climateNormals?.tempYear || '—';
+    const valTempCold = document.getElementById('valTempCold');
+    if (valTempCold) valTempCold.textContent = meta.climateNormals?.tempColdest || '—';
+    const valTempWarm = document.getElementById('valTempWarm');
+    if (valTempWarm) valTempWarm.textContent = meta.climateNormals?.tempWarmest || '—';
+    const valAnnualSun = document.getElementById('valAnnualSun');
+    if (valAnnualSun) valAnnualSun.textContent = meta.climateNormals?.annualSun || '—';
+    const valAnnualRain = document.getElementById('valAnnualRain');
+    if (valAnnualRain) valAnnualRain.textContent = meta.climateNormals?.annualRain || '—';
+
+    const resSolarProfileDesc = document.getElementById('resSolarProfileDesc');
+    if (resSolarProfileDesc) {
+      resSolarProfileDesc.textContent = solarProf.description || '日射量に応じた開口部パッシブ設計指針';
+    }
+    const resSolarTips = document.getElementById('resSolarTips');
+    if (resSolarTips) {
+      resSolarTips.textContent = `・暖房期日射取得率: ${solarProf.heatingSolar} / 冷房期遮熱: ${solarProf.coolingSolar}`;
+    }
+
+    const resClimateTrends = document.getElementById('resClimateTrends');
+    if (resClimateTrends) {
+      resClimateTrends.textContent = meta.climateTrends || '局地的大雨・猛暑日増加に伴う外皮・排水設計';
+    }
+    const resElevationDesignNote = document.getElementById('resElevationDesignNote');
+    if (resElevationDesignNote) {
+      resElevationDesignNote.textContent = results.elevationDesignNote || meta.elevationGuidance || '';
     }
 
     // クイックセレクターバーのアクティブ表示切替
@@ -878,19 +914,31 @@ document.addEventListener('DOMContentLoaded', () => {
       return `
         <tr>
           <td>
-            <span class="region-pill" style="background:${m.color}22; color:${m.color}; border:1px solid ${m.color}55;">
+            <span class="region-pill" style="background:${m.color}22; color:${m.color}; border:1px solid ${m.color}55; font-weight:800;">
               ${m.name}
             </span>
           </td>
-          <td><strong>${m.repCity}</strong></td>
-          <td>${g.grade4}</td>
-          <td>${g.grade5}</td>
-          <td style="font-weight:700; color:var(--accent-emerald);">${g.grade6}</td>
-          <td style="font-weight:700; color:#38bdf8;">${g.grade7}</td>
-          <td>${g.etaAC}</td>
-          <td style="font-size:0.85rem; color:var(--text-sub);">${m.desc}</td>
           <td>
-            <button type="button" class="btn btn-ghost btn-sm" onclick="selectEnergyRegionAndFly(${reg})">
+            <strong style="font-size:0.82rem; color:var(--text-main);">${m.categoryName}</strong>
+          </td>
+          <td>
+            <span class="badge-tag" style="background:rgba(234,179,8,0.15); color:#facc15; border:1px solid rgba(234,179,8,0.3); font-size:0.75rem; font-weight:700;">
+              ${m.solarDefault}
+            </span>
+          </td>
+          <td style="font-size:0.82rem;"><strong>${m.repCity.replace(/([都道府県市区町村]+[0-9丁目番地]*)/, '$1')}</strong></td>
+          <td style="font-size:0.85rem;">${g.grade4}</td>
+          <td style="font-size:0.85rem;">${g.grade5}</td>
+          <td style="font-weight:700; color:var(--accent-emerald); font-size:0.88rem;">${g.grade6}</td>
+          <td style="font-weight:700; color:#38bdf8; font-size:0.88rem;">${g.grade7}</td>
+          <td style="font-size:0.85rem;">${g.etaAC}</td>
+          <td style="font-size:0.76rem; color:var(--text-sub); line-height:1.4; max-width:320px;">
+            <div style="margin-bottom:3px;"><strong style="color:var(--accent-emerald);">平年値:</strong> 年${m.climateNormals.tempYear} / 最寒${m.climateNormals.tempColdest} / 降水${m.climateNormals.annualRain}</div>
+            <div style="margin-bottom:3px;"><strong style="color:#f59e0b;">近年の傾向:</strong> ${m.climateTrends}</div>
+            <div><strong style="color:#38bdf8;">標高差参考:</strong> ${m.elevationGuidance}</div>
+          </td>
+          <td>
+            <button type="button" class="btn btn-ghost btn-sm" onclick="selectEnergyRegionAndFly(${reg})" style="white-space:nowrap;">
               選択
             </button>
           </td>

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>mdo3 構造計算補助ツール群ポータル | 木造・RC構造実務クラウド</title>
-  <meta name="description" content="木造・RC構造計算実務を強力にサポートする専門クラウドツール群mdo3。基礎梁・片土圧・擁壁・柱曲げ・水平構面・WRC造・AZ斜め壁CADなど29ツールを提供。何ができて何ができないかの判断基準マニュアル・実務解説動画・スマート案内図作成を完全無償公開。必要な計算だけを月額980円から。">
+  <meta name="description" content="木造・RC構造計算実務を強力にサポートする専門クラウドツール群mdo3。基礎梁・片土圧・擁壁・柱曲げ・水平構面・WRC造、およびARCHITREND連動AZ斜め壁CADなど全29ツールを提供。何ができて何ができないかの判断基準マニュアル・実務解説動画・スマート案内図作成を完全無償公開。単体ツール月額980円から、AZ斜め壁CADは月額¥5,980。">
   <link rel="canonical" href="https://mdo3.com/">
 
   <!-- Google Fonts & Material Symbols -->
@@ -18,7 +18,7 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/portal.css?v=1.5.5">
+  <link rel="stylesheet" href="css/portal.css?v=1.5.6">
 </head>
 <body>
 
@@ -71,7 +71,7 @@
         </div>
         <h2 class="showcase-title">構造計算・設計実務 5大専門カテゴリ</h2>
         <p class="showcase-desc">
-          必要なツールだけを月額980円から。全29の専門Webアプリがブラウザ上で瞬時に動作し、A4審査計算書を出力します。
+          単体ツール月額980円から、ARCHITREND連動AZ斜め壁は月額¥5,980。全29の専門Webアプリがブラウザ上で瞬時に動作し、A4審査計算書を出力します。
         </p>
       </div>
 
@@ -99,7 +99,7 @@
       <p class="hero-desc" id="heroSubHeadline">
         基礎梁水平力、片土圧、擁壁、柱曲げ、水平構面、WRC造、AZ斜め壁CADまで網羅。<br>
         「何ができて何ができないか」の明確な判断基準と操作動画、案内図作図ツールを完全無償公開。<br>
-        必要な計算書だけを月額980円からご活用いただけます。
+        単体ツールは月額980円から、CAD連携斜め壁は月額¥5,980（年額¥39,800）でご活用いただけます。
       </p>
 
       <div class="hero-cta" id="heroCtaGroup">
@@ -323,14 +323,18 @@
               <div class="insulation-panel-header">
                 <div class="ins-title-wrap">
                   <span class="material-symbols-outlined" style="color: var(--accent-emerald); font-size: 16px;">home_health</span>
-                  <span class="ins-title" style="font-size:0.82rem;">断熱等性能等級基準 (基準UA値)</span>
+                  <span class="ins-title" style="font-size:0.82rem;">省エネ地域区分・日射地域区分 ＆ 断熱等級基準</span>
                 </div>
-                <span class="ins-region-label" id="insRegionSummary" style="font-size:0.75rem;">6地域</span>
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span class="badge-tag" id="resSolarBadge" style="background:rgba(234,179,8,0.15); color:#facc15; border:1px solid rgba(234,179,8,0.3); font-size:0.75rem;">日射 A4区分</span>
+                  <span class="ins-region-label" id="insRegionSummary" style="font-size:0.75rem;">6地域</span>
+                </div>
               </div>
 
+              <!-- 断熱等性能等級 (UA値) グリッド -->
               <div class="insulation-grid">
                 <div class="ins-box" id="insBox4">
-                  <div class="ins-grade-tag">等級4</div>
+                  <div class="ins-grade-tag">等級4 (義務化)</div>
                   <div class="ins-val-wrap">
                     <span class="ins-ua-label">UA ≦</span>
                     <span class="ins-ua-val" id="valUaGrade4">0.87</span>
@@ -338,7 +342,7 @@
                 </div>
 
                 <div class="ins-box" id="insBox5">
-                  <div class="ins-grade-tag grade-5">等級5</div>
+                  <div class="ins-grade-tag grade-5">等級5 (ZEH)</div>
                   <div class="ins-val-wrap">
                     <span class="ins-ua-label">UA ≦</span>
                     <span class="ins-ua-val" id="valUaGrade5">0.60</span>
@@ -346,7 +350,7 @@
                 </div>
 
                 <div class="ins-box highlight" id="insBox6">
-                  <div class="ins-grade-tag grade-6">等級6</div>
+                  <div class="ins-grade-tag grade-6">等級6 (HEAT20 G2)</div>
                   <div class="ins-val-wrap">
                     <span class="ins-ua-label">UA ≦</span>
                     <span class="ins-ua-val" id="valUaGrade6">0.46</span>
@@ -354,12 +358,75 @@
                 </div>
 
                 <div class="ins-box" id="insBox7">
-                  <div class="ins-grade-tag grade-7">等級7</div>
+                  <div class="ins-grade-tag grade-7">等級7 (HEAT20 G3)</div>
                   <div class="ins-val-wrap">
                     <span class="ins-ua-label">UA ≦</span>
                     <span class="ins-ua-val" id="valUaGrade7">0.26</span>
                   </div>
                 </div>
+
+                <div class="ins-box" id="insBoxEta">
+                  <div class="ins-grade-tag" style="background:rgba(56,189,248,0.18); color:#38bdf8; border:1px solid rgba(56,189,248,0.3);">冷房期 ηAC</div>
+                  <div class="ins-val-wrap">
+                    <span class="ins-ua-label">ηAC ≦</span>
+                    <span class="ins-ua-val" id="valEtaAc">2.8</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ★ 気象庁平年値・近年の気候傾向・標高差設計参考 パネル -->
+            <div class="climate-reference-panel" id="climateRefPanel" style="margin-top:14px; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.08); border-radius:var(--radius-sm); padding:14px 16px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; border-bottom:1px solid rgba(255,255,255,0.06); padding-bottom:8px;">
+                <div style="display:flex; align-items:center; gap:6px;">
+                  <span class="material-symbols-outlined" style="font-size:18px; color:var(--accent-cyan);">cloud_sync</span>
+                  <strong style="font-size:0.85rem; color:var(--text-main);">気象庁平年値 ＆ 近年の気候傾向 ＆ 標高差設計参考</strong>
+                </div>
+                <span style="font-size:0.72rem; color:var(--text-sub);" id="resClimateHeaderMeta">H25経産省・国交省告示第1号 / 気象庁1991-2020年統計</span>
+              </div>
+
+              <!-- 3カラム・グリッド -->
+              <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap:12px;">
+                
+                <!-- 1. 気象庁平年値 -->
+                <div style="background:rgba(255,255,255,0.03); border-radius:6px; padding:10px 12px; border:1px solid rgba(255,255,255,0.05);">
+                  <div style="font-size:0.78rem; font-weight:800; color:var(--accent-emerald); margin-bottom:6px; display:flex; align-items:center; gap:4px;">
+                    <span class="material-symbols-outlined" style="font-size:15px;">thermostat</span> 気象庁平年値 (代表地点)
+                  </div>
+                  <ul id="listClimateNormals" style="list-style:none; padding:0; margin:0; font-size:0.76rem; color:var(--text-sub); display:flex; flex-direction:column; gap:4px;">
+                    <li>・年平均気温: <strong id="valTempYear" style="color:var(--text-main);">15.4℃</strong></li>
+                    <li>・最寒月気温: <strong id="valTempCold" style="color:var(--text-main);">3.8℃</strong> / 最暖月: <strong id="valTempWarm" style="color:var(--text-main);">27.5℃</strong></li>
+                    <li>・年間日照時間: <strong id="valAnnualSun" style="color:var(--text-main);">1,950時間</strong></li>
+                    <li>・年間降水量: <strong id="valAnnualRain" style="color:var(--text-main);">1,450mm</strong></li>
+                  </ul>
+                </div>
+
+                <!-- 2. 日射地域区分 ＆ パッシブ設計指針 -->
+                <div style="background:rgba(255,255,255,0.03); border-radius:6px; padding:10px 12px; border:1px solid rgba(255,255,255,0.05);">
+                  <div style="font-size:0.78rem; font-weight:800; color:var(--accent-gold); margin-bottom:6px; display:flex; align-items:center; gap:4px;">
+                    <span class="material-symbols-outlined" style="font-size:15px;">wb_sunny</span> 日射地域区分 (A1〜A5) 特性
+                  </div>
+                  <p id="resSolarProfileDesc" style="font-size:0.75rem; color:var(--text-sub); margin:0 0 6px 0; line-height:1.45;">
+                    暖房期日射量区分 A4。太平洋側特有の冬期晴天日数が多く、南面開口からの日射取得が暖房エネルギー削減に極めて有効。夏期の深い軒・庇による日射遮蔽とセット設計が必須。
+                  </p>
+                  <div style="font-size:0.72rem; color:var(--accent-cyan);" id="resSolarTips">
+                    ・暖房期: 南面ガラスの日射取得率(ηH)確保 / 冷房期: 庇・アウターシェード推奨
+                  </div>
+                </div>
+
+                <!-- 3. 近年の気候傾向 ＆ 標高差による設計参考 -->
+                <div style="background:rgba(255,255,255,0.03); border-radius:6px; padding:10px 12px; border:1px solid rgba(255,255,255,0.05);">
+                  <div style="font-size:0.78rem; font-weight:800; color:#38bdf8; margin-bottom:6px; display:flex; align-items:center; gap:4px;">
+                    <span class="material-symbols-outlined" style="font-size:15px;">trending_up</span> 近年の気候傾向 ＆ 標高差設計参考
+                  </div>
+                  <div style="font-size:0.75rem; color:var(--text-sub); line-height:1.45; margin-bottom:6px;">
+                    <strong style="color:var(--text-main);">気候傾向:</strong> <span id="resClimateTrends">夏期の猛暑日・熱帯夜の継続化と局地的豪雨（線状降水帯）リスク増加。</span>
+                  </div>
+                  <div style="font-size:0.75rem; color:var(--accent-cyan); line-height:1.45; background:rgba(6,182,212,0.08); padding:6px 8px; border-radius:4px; border:1px solid rgba(6,182,212,0.2);">
+                    <strong style="color:#67e8f9;">標高差設計参考:</strong> <span id="resElevationDesignNote">標高18m。ゲリラ豪雨・内水氾濫に備え、基礎立上り天端高（GL+400mm以上）および外壁水切りの確実な排水勾配を推奨。</span>
+                  </div>
+                </div>
+
               </div>
             </div>
           </div>
@@ -388,16 +455,33 @@
               
               <!-- 基礎梁成 D -->
               <div class="dt-field" style="margin-bottom: 12px;">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; flex-wrap:wrap; gap:6px;">
                   <label style="font-weight:800; color:var(--text-main); font-size:0.82rem;">基礎梁成 D (梁高さ mm):</label>
                   <div class="dt-quick-d-group">
-                    <button type="button" class="dt-quick-d-btn" data-d="450">450</button>
-                    <button type="button" class="dt-quick-d-btn" data-d="600">600</button>
                     <button type="button" class="dt-quick-d-btn active" data-d="640">640</button>
-                    <button type="button" class="dt-quick-d-btn" data-d="750">750</button>
+                    <button type="button" class="dt-quick-d-btn" data-d="490">490</button>
+                    <button type="button" class="dt-quick-d-btn" data-d="300">300</button>
                   </div>
                 </div>
                 <input type="number" id="dtBeamHeight" value="640" min="300" max="2000" step="10" style="font-size:1.1rem; font-weight:700; color:var(--accent-gold); padding:8px 12px;">
+                <div style="font-size:0.75rem; color:var(--accent-cyan); margin-top:4px; display:flex; align-items:center; gap:4px;">
+                  <span class="material-symbols-outlined" style="font-size:14px;">info</span>
+                  <span>※10mmをレベラーとして見込んでいます（実質有効天端高）</span>
+                </div>
+              </div>
+
+              <!-- スターラップ (あばら筋呼び径 D10 / D13) -->
+              <div class="dt-field" style="margin-bottom: 12px;">
+                <label style="font-weight:700; color:var(--text-main); font-size:0.82rem; margin-bottom:4px; display:block;">
+                  スターラップ呼び径 (あばら筋):
+                </label>
+                <div style="display:flex; gap:10px; align-items:center;">
+                  <select id="dtStpDia" style="padding:6px 12px; font-weight:700; font-size:0.9rem; border-radius:var(--radius-sm); background:var(--bg-card); color:var(--text-main); border:1px solid var(--border-color); width:160px;">
+                    <option value="10" selected>D10 (標準)</option>
+                    <option value="13">D13</option>
+                  </select>
+                  <span style="font-size:0.75rem; color:var(--text-sub);">※主筋の外周に配置されるあばら筋径</span>
+                </div>
               </div>
 
               <!-- 配筋選択グリッド (上主筋 & 下主筋) -->
@@ -412,7 +496,7 @@
                     <div class="dt-field">
                       <label>1段筋 (主筋径):</label>
                       <select id="dtTopBar1Dia">
-                        <option value="13" selected>D13 (1本)</option>
+                        <option value="13" selected>D13 (標準・1本)</option>
                         <option value="16">D16 (1本)</option>
                         <option value="19">D19 (1本)</option>
                       </select>
@@ -420,14 +504,23 @@
                     <div class="dt-field">
                       <label>2段筋 (配筋有無・径):</label>
                       <select id="dtTopBar2Dia">
-                        <option value="0" selected>なし (1段配筋)</option>
+                        <option value="0" selected>なし (標準・1段配筋)</option>
                         <option value="13">D13 (1本追加)</option>
                         <option value="16">D16 (1本追加)</option>
                         <option value="19">D19 (1本追加)</option>
                       </select>
                     </div>
                   </div>
-                  <div class="dt-spec-note">上端かぶり 40mm / あばら筋 D10</div>
+
+                  <!-- 上端スターラップ見込み有無トグル -->
+                  <div class="dt-field" style="margin-top: 8px;">
+                    <label style="font-size:0.75rem; color:var(--text-sub); display:block; margin-bottom:4px;">上端スターラップ筋の見込み:</label>
+                    <div class="dt-toggle-group" style="display:flex; gap:6px;">
+                      <button type="button" class="btn-toggle-option active" id="btnStpTopYes">見込む (標準)</button>
+                      <button type="button" class="btn-toggle-option" id="btnStpTopNo">見込まない (折返無・ユニット筋)</button>
+                    </div>
+                  </div>
+                  <div class="dt-spec-note" id="descStpTop">上端かぶり 40mm / STP(D10)見込み有</div>
                 </div>
 
                 <!-- 下主筋ブロック -->
@@ -439,7 +532,7 @@
                     <div class="dt-field">
                       <label>1段筋 (主筋径):</label>
                       <select id="dtBotBar1Dia">
-                        <option value="13" selected>D13 (1本)</option>
+                        <option value="13" selected>D13 (標準・1本)</option>
                         <option value="16">D16 (1本)</option>
                         <option value="19">D19 (1本)</option>
                       </select>
@@ -447,20 +540,28 @@
                     <div class="dt-field">
                       <label>2段筋 (配筋有無・径):</label>
                       <select id="dtBotBar2Dia">
-                        <option value="0">なし (1段配筋)</option>
+                        <option value="0" selected>なし (標準・1段配筋)</option>
                         <option value="13">D13 (1本追加)</option>
-                        <option value="16" selected>D16 (1本追加)</option>
+                        <option value="16">D16 (1本追加)</option>
                         <option value="19">D19 (1本追加)</option>
                       </select>
                     </div>
                   </div>
-                  <div class="dt-spec-note">下端かぶり 60mm (土に接する部分) / あばら筋 D10</div>
+
+                  <!-- 下端スターラップ見込み有無トグル -->
+                  <div class="dt-field" style="margin-top: 8px;">
+                    <label style="font-size:0.75rem; color:var(--text-sub); display:block; margin-bottom:4px;">下端スターラップ筋の見込み:</label>
+                    <div class="dt-toggle-group" style="display:flex; gap:6px;">
+                      <button type="button" class="btn-toggle-option active" id="btnStpBotYes">見込む (標準)</button>
+                      <button type="button" class="btn-toggle-option" id="btnStpBotNo">見込まない (折返無・ユニット筋)</button>
+                    </div>
+                  </div>
+                  <div class="dt-spec-note" id="descStpBot">下端かぶり 60mm (土に接する部分) / STP(D10)見込み有</div>
                 </div>
 
               </div>
 
-              <!-- 補足仕様固定パラメータ (隠しフィールド＋ガイド) -->
-              <input type="hidden" id="dtStpDia" value="10">
+              <!-- 補足仕様固定パラメータ (かぶり厚さ) -->
               <input type="hidden" id="dtCoverTop" value="40">
               <input type="hidden" id="dtCoverBot" value="60">
 
@@ -971,15 +1072,17 @@
           <table class="energy-master-table">
             <thead>
               <tr>
-                <th style="width: 90px;">地域区分</th>
-                <th style="width: 140px;">代表都市</th>
+                <th style="width: 85px;">省エネ区分</th>
+                <th style="width: 140px;">告示上の区分 (告示第1号)</th>
+                <th style="width: 80px;">日射区分</th>
+                <th style="width: 120px;">代表都市</th>
                 <th>等級4 (義務化)</th>
                 <th>等級5 (ZEH)</th>
-                <th>等級6 (HEAT20 G2)</th>
-                <th>等級7 (HEAT20 G3)</th>
+                <th>等級6 (G2)</th>
+                <th>等級7 (G3)</th>
                 <th>冷房期ηAC</th>
-                <th>主な気候・対象地域</th>
-                <th style="width: 80px;">連動</th>
+                <th>気象平年値・近年の気候傾向・標高差設計参考</th>
+                <th style="width: 70px;">連動</th>
               </tr>
             </thead>
             <tbody id="energyMasterTableBody">
@@ -1062,10 +1165,10 @@
   </footer>
 
   <!-- Scripts -->
-  <script src="js/tools_data.js?v=1.5.5"></script>
-  <script src="js/regional_calc.js?v=1.5.5"></script>
-  <script src="js/dt_calc.js?v=1.5.5"></script>
-  <script src="js/category_showcase.js?v=1.5.5"></script>
-  <script src="js/portal.js?v=1.5.5"></script>
+  <script src="js/tools_data.js?v=1.5.6"></script>
+  <script src="js/regional_calc.js?v=1.5.6"></script>
+  <script src="js/dt_calc.js?v=1.5.6"></script>
+  <script src="js/category_showcase.js?v=1.5.6"></script>
+  <script src="js/portal.js?v=1.5.6"></script>
 </body>
 </html>

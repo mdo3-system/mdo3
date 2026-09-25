@@ -9,7 +9,8 @@
  * - 垂直積雪量 S (平成19年国交省告示第594号 / 特定行政庁規則)
  * - 凍結深度 (各自治体施行細則・公庫共通仕様書基準)
  * - 省エネ地域区分 (平成25年経産省・国交省告示第1号 / 建築物省エネ法 1〜8地域)
- * - 年間日射地域区分 (A1〜A5区分)
+ * - 年間日射地域区分 (A1〜A5区分 & パッシブ設計指針)
+ * - 気象庁平年値 (気温・日照・降水・積雪) & 近年の気候傾向 & 標高差設計参考
  * - 国土地理院 ジオコーディングAPI & 標高API連携
  */
 
@@ -24,6 +25,199 @@ const REGIONAL_DATABASE = {
     6: { grade4: 0.87, grade5: 0.60, grade6: 0.46, grade7: 0.26, etaAC: 2.8, label: "6地域 (関東・東海・近畿・山陽・九州の主要平野部)" },
     7: { grade4: 0.87, grade5: 0.60, grade6: 0.46, grade7: 0.26, etaAC: 2.7, label: "7地域 (南国温暖地・太平洋沿岸)" },
     8: { grade4: "—",  grade5: "—",  grade6: "—",  grade7: "—",  etaAC: 3.2, label: "8地域 (沖縄・奄美・小笠原など亜熱帯)" }
+  },
+
+  // 省エネ地域区分マスター (早見表・気候平年値・近年の気候傾向・標高連動ガイダンス)
+  energyRegionMaster: {
+    1: {
+      name: "1地域",
+      categoryName: "極寒冷地 (北海道北東部・内陸部)",
+      repCity: "北海道旭川市6条通9丁目",
+      lat: 43.7706,
+      lon: 142.3650,
+      color: "#38bdf8",
+      solarDefault: "A1",
+      desc: "旭川・北見・帯広・稚内など。厳冬期に氷点下20℃以下に達する日本最強の寒冷気候。高気密・超高断熱（等級6/7）、第一種熱交換換気および基礎・外皮の凍結破断対策が必須。",
+      climateNormals: {
+        tempYear: "6.9℃",
+        tempColdest: "-7.5℃ (最低極値 -25℃以下)",
+        tempWarmest: "21.1℃ (最高 33℃超)",
+        annualSun: "1,640時間",
+        annualRain: "1,040mm",
+        snowDepth: "120〜150cm (最深)"
+      },
+      climateTrends: "冬期の局地的大雪・ホワイトアウトと急激な寒暖差。夏期の局地的真夏日・猛暑日増加に伴う冷房需要の発生。",
+      elevationGuidance: "標高100m上昇で約0.6℃低下。山間部は凍結深度100cm超、D18暖房度日（デグリーデー）が大幅増大。"
+    },
+    2: {
+      name: "2地域",
+      categoryName: "寒冷地 (北海道中南部・札幌・道南)",
+      repCity: "北海道札幌市中央区北1条西2丁目",
+      lat: 43.0621,
+      lon: 141.3544,
+      color: "#0ea5e9",
+      solarDefault: "A1",
+      desc: "札幌・函館・小樽・室蘭・釧路など。冬の寒冷期間が長く多雪を伴う地域。外皮付加断熱や樹脂トリプルサッシ、基礎根入れ深さ60cm以上が標準設計要件。",
+      climateNormals: {
+        tempYear: "9.2℃",
+        tempColdest: "-3.2℃ (最低極値 -12℃)",
+        tempWarmest: "22.3℃",
+        annualSun: "1,740時間",
+        annualRain: "1,150mm",
+        snowDepth: "100〜140cm"
+      },
+      climateTrends: "暖冬年の急激なドカ雪・湿雪による屋根雪荷重増加、夏季の30℃超え日数の継続化。",
+      elevationGuidance: "丘陵・山麓部では標高による積雪荷重急増、基礎凍結深度70〜80cmへの拡張検討。"
+    },
+    3: {
+      name: "3地域",
+      categoryName: "北東北・寒冷高冷地",
+      repCity: "岩手県盛岡市内丸",
+      lat: 39.7036,
+      lon: 141.1527,
+      color: "#2dd4bf",
+      solarDefault: "A2",
+      desc: "盛岡・青森・秋田・会津地方など。冬期の寒風と日照の少なさ、豪雪対策が重要。等級6（UA≦0.38）推奨、日射取得と給排気換気口の凍結・雪埋没防止設計。",
+      climateNormals: {
+        tempYear: "10.4℃",
+        tempColdest: "-1.5℃ (朝方 -10℃前後)",
+        tempWarmest: "24.1℃",
+        annualSun: "1,600時間",
+        annualRain: "1,280mm",
+        snowDepth: "70〜150cm"
+      },
+      climateTrends: "短時間大雪や雨雪混在による屋根荷重増大、秋〜初冬の集中豪雨リスク。",
+      elevationGuidance: "標高200m超の盆地・山間部では冷気湖（放射冷却）による朝の極低温と基礎凍結深度50〜60cm確保。"
+    },
+    4: {
+      name: "4地域",
+      categoryName: "南東北・甲信・北関東高冷地",
+      repCity: "長野県松本市中央1丁目",
+      lat: 36.2381,
+      lon: 137.9720,
+      color: "#10b981",
+      solarDefault: "A3",
+      desc: "仙台・山形・福島・松本・長野・日光・軽井沢など。朝晩の冷え込みと日射の寒暖差が大きい。等級6（UA≦0.34）でHEAT20 G2レベル、日射遮蔽と蓄熱のバランス設計。",
+      climateNormals: {
+        tempYear: "12.1℃",
+        tempColdest: "-0.5℃ (朝方 -8℃)",
+        tempWarmest: "25.0℃ (昼間 35℃超)",
+        annualSun: "2,050時間 (日照豊富)",
+        annualRain: "1,020mm",
+        snowDepth: "30〜60cm"
+      },
+      climateTrends: "内陸特有の猛暑日増加（夏期35℃以上）と冬期放射冷却の二重負荷。昼夜気温差20℃超への追従。",
+      elevationGuidance: "標高500〜1,000mでは平野部比で3〜6℃低温。凍結深度60〜80cm、給排水管の凍結防止帯施工。"
+    },
+    5: {
+      name: "5地域",
+      categoryName: "北陸・関東北部・中部山間部",
+      repCity: "栃木県宇都宮市旭1丁目",
+      lat: 36.5551,
+      lon: 139.8828,
+      color: "#eab308",
+      solarDefault: "A3",
+      desc: "宇都宮・前橋・水戸・富山・金沢・福井・岐阜山間など。冬の乾燥寒風（からっ風）または日本海側の湿雪。等級6（UA≦0.34）冷房期ηAC≦3.0、夏冬の季節風対策。",
+      climateNormals: {
+        tempYear: "14.2℃",
+        tempColdest: "2.8℃",
+        tempWarmest: "26.3℃ (猛暑日多発)",
+        annualSun: "2,080時間",
+        annualRain: "1,450mm (夏期雷雨多)",
+        snowDepth: "30cm (平野部) / 100cm超(日本海側)"
+      },
+      climateTrends: "夏期のゲリラ豪雨・落雷・線状降水帯、40℃に迫るフェーン現象型猛暑の常態化。",
+      elevationGuidance: "山麓・丘陵地では土砂災害警戒および敷地地表面排水勾配の徹底（GL+400mm以上推奨）。"
+    },
+    6: {
+      name: "6地域",
+      categoryName: "関東・東海・近畿・山陽・九州主要平野部",
+      repCity: "埼玉県川越市幸町",
+      lat: 35.9247,
+      lon: 139.4842,
+      color: "#f97316",
+      solarDefault: "A4",
+      desc: "東京・さいたま・川越・横浜・名古屋・大阪・神戸・広島・福岡など日本の人口・住宅の過半を占める標準地域。夏の猛暑（冷房遮熱ηAC≦2.8）と冬の快適暖房（等級6 UA≦0.46 / 等級7 UA≦0.26）の両立が最重要。",
+      climateNormals: {
+        tempYear: "15.8℃",
+        tempColdest: "4.5℃",
+        tempWarmest: "27.8℃ (最高38℃超)",
+        annualSun: "2,000時間",
+        annualRain: "1,530mm",
+        snowDepth: "30cm (一般平野部)"
+      },
+      climateTrends: "都市熱環境（ヒートアイランド）の深刻化、猛暑日・熱帯夜の連続日数の更新、時間100mm級豪雨への対応。",
+      elevationGuidance: "平野部〜丘陵地（標高10〜150m）。ゲリラ豪雨対策として基礎立上り天端高（GL+400mm以上）と通気層水切りの確保。"
+    },
+    7: {
+      name: "7地域",
+      categoryName: "南国温暖地・太平洋沿岸",
+      repCity: "宮崎県宮崎市橘通東",
+      lat: 31.9111,
+      lon: 131.4239,
+      color: "#ef4444",
+      solarDefault: "A5",
+      desc: "静岡沿岸・和歌山南部・高知・宮崎・鹿児島など。強い日射と温暖多雨、台風常襲。等級6（UA≦0.46）、冷房期遮熱（ηAC≦2.7）および庇・通風・屋根遮熱構造が生命線。",
+      climateNormals: {
+        tempYear: "17.6℃",
+        tempColdest: "7.8℃",
+        tempWarmest: "28.3℃",
+        annualSun: "2,150時間",
+        annualRain: "2,500mm (極めて多雨)",
+        snowDepth: "0〜30cm"
+      },
+      climateTrends: "超大型台風の接近頻度増加、台風時の暴風雨・吹き込み防止サッシ仕様の選定。",
+      elevationGuidance: "沿岸低地では高潮・津波ハザード確認、急傾斜地では大雨による法面崩壊配慮。"
+    },
+    8: {
+      name: "8地域",
+      categoryName: "亜熱帯地域 (沖縄・奄美・小笠原)",
+      repCity: "沖縄県那覇市泉崎",
+      lat: 26.2124,
+      lon: 127.6809,
+      color: "#ec4899",
+      solarDefault: "A5",
+      desc: "沖縄本島・先島諸島・奄美・小笠原など。年間を通じて温暖多湿、冬期暖房需要は極小で冷房遮熱（ηAC≦3.2）が主体。最大瞬間風速60m/s超の猛烈な台風対策・塩害対策が必須。",
+      climateNormals: {
+        tempYear: "23.3℃",
+        tempColdest: "17.3℃",
+        tempWarmest: "29.1℃",
+        annualSun: "1,770時間",
+        annualRain: "2,100mm",
+        snowDepth: "0cm (降雪なし)"
+      },
+      climateTrends: "海水温上昇に伴う猛烈な台風の勢力維持上陸、スコール状集中豪雨の激甚化。",
+      elevationGuidance: "強風による風圧荷重割増（V0=42〜46m/s）、瓦留め・雨戸シャッター等の耐風設計徹底。"
+    }
+  },
+
+  // 年間日射地域区分 (A1〜A5) ガイダンスマスター
+  solarRegionProfiles: {
+    "A1": {
+      name: "A1区分",
+      sunshine: "極寡照 (日本海側北部・北海道)",
+      guide: "冬期の日射取得は極めて稀。付加断熱および熱交換換気による保温を最優先とし、窓からの逃げる熱を最小化。"
+    },
+    "A2": {
+      name: "A2区分",
+      sunshine: "寡照 (東北日本海側・北陸)",
+      guide: "冬期の降雪・曇天が多い。開口部の日射取得よりも高断熱化（樹脂サッシ・Low-Eペア/トリプル）が熱収支上有効。"
+    },
+    "A3": {
+      name: "A3区分",
+      sunshine: "中位 (内陸盆地・北日本太平洋側)",
+      guide: "冬期の晴天と曇天が混在。南面開口からの日射取得と、夜間の熱損失防止（断熱ハニカムスクリーン等）の併用が急所。"
+    },
+    "A4": {
+      name: "A4区分",
+      sunshine: "多照 (太平洋側主要平野部・瀬戸内)",
+      guide: "冬期は晴天率が高く豊富な日射取得が可能。南面大開口＋適切な庇（夏の日射遮蔽）によるパッシブソーラー効果大。"
+    },
+    "A5": {
+      name: "A5区分",
+      sunshine: "極多照 (南岸太平洋沿岸・沖縄)",
+      guide: "年間を通じて極めて強い日照。冷房期の遮熱対策（深い軒、外付けルーバー、アウターシェード）が消費エネルギー削減の決定打。"
+    }
   },
 
   // 都道府県デフォルト値 (47都道府県 告示1793号・告示1454号・静岡県条例完全準拠)
@@ -2029,12 +2223,23 @@ function calculateRegionalConstants(address, elevation = 0) {
     snowDepth = Math.round(baseSnow + ((elevation - 100) / 100) * 10);
   }
 
-  // 断熱等級基準
+  // 断熱等級基準 & 省エネ地域マスター
   const insulation = REGIONAL_DATABASE.insulationGrades[energyRegion] || REGIONAL_DATABASE.insulationGrades[6];
-  const regionMeta = {
-    name: matchedPref || "全国標準",
-    color: energyRegion <= 2 ? "#3b82f6" : (energyRegion <= 4 ? "#06b6d4" : (energyRegion <= 6 ? "#10b981" : "#f59e0b"))
-  };
+  const regionMeta = REGIONAL_DATABASE.energyRegionMaster[energyRegion] || REGIONAL_DATABASE.energyRegionMaster[6];
+  const solarProfile = REGIONAL_DATABASE.solarRegionProfiles[solarRegion] || REGIONAL_DATABASE.solarRegionProfiles["A4"];
+
+  // 標高差による設計参考 (気温逓減率: -0.6℃ / 100m)
+  const tempDiff = (elevation * 0.006).toFixed(1);
+  let elevationDesignNote = "";
+  if (elevation < 100) {
+    elevationDesignNote = `標高${Math.round(elevation)}m (平野部)。ゲリラ豪雨・内水氾濫に備え、基礎立上り天端高（GL+400mm以上）および外壁水切りの確実な排水勾配を推奨。`;
+  } else if (elevation < 300) {
+    elevationDesignNote = `標高${Math.round(elevation)}m (丘陵地)。平野部比で約 -${tempDiff}℃ 低温。朝晩の外皮結露リスクに留意し、壁体内通気層および防湿気密層の施工精度を確保。`;
+  } else if (elevation < 600) {
+    elevationDesignNote = `標高${Math.round(elevation)}m (準高原)。平野部比で約 -${tempDiff}℃ 低温。暖房負荷（D18度日）が増大。基礎根入れ深さの再確認と屋外給排水管の凍結防止施工。`;
+  } else {
+    elevationDesignNote = `標高${Math.round(elevation)}m (高冷地・山間部)。平野部比で約 -${tempDiff}℃ 大幅低温。外皮断熱等級6以上推奨、凍結深度の厳格確保、屋根雪・氷柱落下の安全離隔。`;
+  }
 
   let note = "";
   if (matchedPref === "静岡県") {
@@ -2061,16 +2266,17 @@ function calculateRegionalConstants(address, elevation = 0) {
     solarRegion: solarRegion,
     insulation: insulation,
     regionMeta: regionMeta,
+    solarProfile: solarProfile,
+    climateNormals: regionMeta.climateNormals,
+    climateTrends: regionMeta.climateTrends,
+    elevationDesignNote: elevationDesignNote,
+    tempDiff: tempDiff,
     note: note
   };
 }
 
 /**
  * 国土地理院 ジオコーディング (住所 → 緯度・経度)
- * 1. 国土地理院 AddressSearch API (公式エンドポイント: /address-search/AddressSearch?q=)
- * 2. 番地・枝番・詳細除去による再検索
- * 3. OpenStreetMap Nominatim ジオコーディング API フォールバック
- * 4. データベース代表座標フォールバック (100%座標返却保証)
  */
 async function geocodeAddress(query) {
   if (!query || typeof query !== 'string') {
@@ -2081,7 +2287,6 @@ async function geocodeAddress(query) {
     return { lat: 35.9247, lon: 139.4842, title: '埼玉県川越市幸町' };
   }
 
-  // 1. 国土地理院 AddressSearch API (公式URL)
   try {
     const url = `https://msearch.gsi.go.jp/address-search/AddressSearch?q=${encodeURIComponent(trimmed)}`;
     const res = await fetch(url);
@@ -2100,7 +2305,6 @@ async function geocodeAddress(query) {
     console.warn('GSI Geocoding query failed, trying stripped query:', e);
   }
 
-  // 2. 枝番・番地等を除去して再試行 (例: "埼玉県川越市幸町1-2-3" -> "埼玉県川越市幸町")
   const stripped = trimmed.replace(/[0-9０-９一二三四五六七八九十]+[-丁目番号番地].*$/, '').trim();
   if (stripped && stripped !== trimmed) {
     try {
@@ -2122,7 +2326,6 @@ async function geocodeAddress(query) {
     }
   }
 
-  // 3. OpenStreetMap Nominatim フォールバック
   try {
     const osmUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(trimmed)}&limit=1`;
     const res = await fetch(osmUrl, { headers: { 'Accept-Language': 'ja' } });
@@ -2140,20 +2343,17 @@ async function geocodeAddress(query) {
     console.warn('Nominatim Geocoding failed:', e);
   }
 
-  // 4. 都道府県代表座標フォールバック (100%返却保証)
   for (const [pref, d] of Object.entries(REGIONAL_DATABASE.prefectures)) {
     if (trimmed.includes(pref)) {
       return { lat: d.lat, lon: d.lon, title: pref };
     }
   }
 
-  // 最終デフォルト: 埼玉県川越市
   return { lat: 35.9247, lon: 139.4842, title: '埼玉県川越市幸町' };
 }
 
 /**
  * 国土地理院 標高API (緯度・経度 → 標高m)
- * https://cyberjapandata2.gsi.go.jp/general/dem/scripts/getelevation.php
  */
 async function fetchElevation(lon, lat) {
   try {

@@ -3,19 +3,26 @@
  * 
  * 木造基礎用 有効基礎梁成・重心距離 dt 自動算出ツール (完全無償・実務審査対応)
  * - 木造住宅構造計算規準 (グレー本) / 建築基準法施行令第82条 対応
- * - 木造基礎専用: 主筋上下各1本・2段筋各1本 (または無し) の超短縮ワンクリック算定
+ * - 木造基礎専用: 梁成プリセット(640, 490, 300 / レベラー10mm見込み)
+ * - スターラップ D10 / D13 切替
+ * - 上端筋・下端筋それぞれのスターラップ筋見込み有無（折り返し無・ユニット筋対応）
+ * - 標準初期値: 1段筋=D13, 2段筋=なし(0本)
  * - アーキトレンド (ARCHITREND ZERO) 基礎梁断面・dt設定連携
  */
 
 (function() {
   'use strict';
 
-  // 鉄筋データ（木造基礎梁実務: D13 / D16 / D19）
+  // 鉄筋データ（木造基礎梁実務: D10 / D13 / D16 / D19）
   const REBAR_DATA = {
+    10: { name: 'D10', dia: 10, area: 0.71 },
     13: { name: 'D13', dia: 13, area: 1.27 },
     16: { name: 'D16', dia: 16, area: 1.99 },
     19: { name: 'D19', dia: 19, area: 2.87 }
   };
+
+  let includeStpTop = true; // 上端筋STP見込み
+  let includeStpBot = true; // 下端筋STP見込み
 
   document.addEventListener('DOMContentLoaded', () => {
     initDtCalc();
@@ -30,12 +37,17 @@
 
     const coverTopInput = document.getElementById('dtCoverTop');
     const coverBotInput = document.getElementById('dtCoverBot');
-    const stpDiaInput = document.getElementById('dtStpDia');
+    const stpDiaSelect = document.getElementById('dtStpDia');
+
+    const btnIncludeStpTopYes = document.getElementById('btnStpTopYes');
+    const btnIncludeStpTopNo = document.getElementById('btnStpTopNo');
+    const btnIncludeStpBotYes = document.getElementById('btnStpBotYes');
+    const btnIncludeStpBotNo = document.getElementById('btnStpBotNo');
 
     const btnCopyDtResult = document.getElementById('btnCopyDtResult');
     const btnResetDt = document.getElementById('btnResetDt');
 
-    // クイック梁成選択ボタン
+    // クイック梁成選択ボタン (640, 490, 300)
     const quickDButtons = document.querySelectorAll('.dt-quick-d-btn');
 
     if (!beamHeightInput) return;
@@ -44,7 +56,7 @@
     const inputs = [
       beamHeightInput, topBar1Dia, topBar2Dia,
       botBar1Dia, botBar2Dia,
-      coverTopInput, coverBotInput, stpDiaInput
+      coverTopInput, coverBotInput, stpDiaSelect
     ];
 
     inputs.forEach(el => {
@@ -54,6 +66,7 @@
       }
     });
 
+    // 梁成プリセットボタン
     if (quickDButtons) {
       quickDButtons.forEach(btn => {
         btn.addEventListener('click', (e) => {
@@ -69,6 +82,42 @@
       });
     }
 
+    // 上端筋STP見込みボタン
+    if (btnIncludeStpTopYes && btnIncludeStpTopNo) {
+      btnIncludeStpTopYes.addEventListener('click', () => {
+        includeStpTop = true;
+        btnIncludeStpTopYes.classList.add('active');
+        btnIncludeStpTopNo.classList.remove('active');
+        updateStpDesc();
+        calculate();
+      });
+      btnIncludeStpTopNo.addEventListener('click', () => {
+        includeStpTop = false;
+        btnIncludeStpTopNo.classList.add('active');
+        btnIncludeStpTopYes.classList.remove('active');
+        updateStpDesc();
+        calculate();
+      });
+    }
+
+    // 下端筋STP見込みボタン
+    if (btnIncludeStpBotYes && btnIncludeStpBotNo) {
+      btnIncludeStpBotYes.addEventListener('click', () => {
+        includeStpBot = true;
+        btnIncludeStpBotYes.classList.add('active');
+        btnIncludeStpBotNo.classList.remove('active');
+        updateStpDesc();
+        calculate();
+      });
+      btnIncludeStpBotNo.addEventListener('click', () => {
+        includeStpBot = false;
+        btnIncludeStpBotNo.classList.add('active');
+        btnIncludeStpBotYes.classList.remove('active');
+        updateStpDesc();
+        calculate();
+      });
+    }
+
     if (btnCopyDtResult) {
       btnCopyDtResult.addEventListener('click', copyResultText);
     }
@@ -79,20 +128,46 @@
         if (topBar1Dia) topBar1Dia.value = "13";
         if (topBar2Dia) topBar2Dia.value = "0"; // 2段筋なし
         if (botBar1Dia) botBar1Dia.value = "13";
-        if (botBar2Dia) botBar2Dia.value = "16"; // 2段筋D16
-        if (stpDiaInput) stpDiaInput.value = "10";
+        if (botBar2Dia) botBar2Dia.value = "0"; // 2段筋なし (標準)
+        if (stpDiaSelect) stpDiaSelect.value = "10";
         if (coverTopInput) coverTopInput.value = "40";
         if (coverBotInput) coverBotInput.value = "60";
+        
+        includeStpTop = true;
+        includeStpBot = true;
+        if (btnIncludeStpTopYes) btnIncludeStpTopYes.classList.add('active');
+        if (btnIncludeStpTopNo) btnIncludeStpTopNo.classList.remove('active');
+        if (btnIncludeStpBotYes) btnIncludeStpBotYes.classList.add('active');
+        if (btnIncludeStpBotNo) btnIncludeStpBotNo.classList.remove('active');
+
         quickDButtons.forEach(b => {
           if (b.getAttribute('data-d') === '640') b.classList.add('active');
           else b.classList.remove('active');
         });
+        updateStpDesc();
         calculate();
       });
     }
 
+    updateStpDesc();
     // 初回計算
     calculate();
+  }
+
+  function updateStpDesc() {
+    const stpDia = document.getElementById('dtStpDia')?.value || '10';
+    const descTop = document.getElementById('descStpTop');
+    if (descTop) {
+      descTop.textContent = includeStpTop 
+        ? `STP(D${stpDia})見込み有 (d1 = 40 + ${stpDia} + 主筋径/2)` 
+        : `STP見込み無 [折り返し無・ユニット筋] (d1 = 40 + 主筋径/2)`;
+    }
+    const descBot = document.getElementById('descStpBot');
+    if (descBot) {
+      descBot.textContent = includeStpBot 
+        ? `STP(D${stpDia})見込み有 (d1 = 60 + ${stpDia} + 主筋径/2)` 
+        : `STP見込み無 [折り返し無・ユニット筋] (d1 = 60 + 主筋径/2)`;
+    }
   }
 
   function calculate() {
@@ -107,10 +182,10 @@
     const b1D = parseFloat(document.getElementById('dtBotBar1Dia')?.value) || 13;
     const b2D = parseFloat(document.getElementById('dtBotBar2Dia')?.value) || 0; // 0なら2段筋なし
 
-    // 上主筋の計算 (木造基礎: 1段目1本、2段目1本または0本)
-    const topRes = calcLayer(coverTop, stpD, t1D, t2D, D);
-    // 下主筋の計算 (木造基礎: 1段目1本、2段目1本または0本)
-    const botRes = calcLayer(coverBot, stpD, b1D, b2D, D);
+    // 上主筋の計算 (includeStpTop: trueならSTP加算、falseならSTP加算なし)
+    const topRes = calcLayer(coverTop, includeStpTop ? stpD : 0, t1D, t2D, D);
+    // 下主筋の計算 (includeStpBot: trueならSTP加算、falseならSTP加算なし)
+    const botRes = calcLayer(coverBot, includeStpBot ? stpD : 0, b1D, b2D, D);
 
     // 画面への描画
     renderResults(topRes, botRes, D);
@@ -119,14 +194,14 @@
   /**
    * 木造基礎梁 1層/2層配筋 dt算定
    * @param {number} cover かぶり厚さ (上端40mm / 下端60mm)
-   * @param {number} stpDia あばら筋径 (D10: 10mm)
+   * @param {number} stpEffectiveDia あばら筋有効径 (見込む場合: 10または13 / 見込まない場合: 0)
    * @param {number} bar1Dia 1段筋径 (D13/D16/D19)
    * @param {number} bar2Dia 2段筋径 (0: なし, 13/16/19: 1本)
    * @param {number} D 基礎梁成 (mm)
    */
-  function calcLayer(cover, stpDia, bar1Dia, bar2Dia, D) {
-    // 1段筋中心位置 d1 = かぶり厚 + STP呼び径 + 主筋1径 / 2
-    const d1 = cover + stpDia + (bar1Dia / 2.0);
+  function calcLayer(cover, stpEffectiveDia, bar1Dia, bar2Dia, D) {
+    // 1段筋中心位置 d1 = かぶり厚 + STP有効径 + 主筋1径 / 2
+    const d1 = cover + stpEffectiveDia + (bar1Dia / 2.0);
 
     let d2 = null;
     let gap = null;
@@ -214,10 +289,11 @@
 
   function copyResultText() {
     const D = document.getElementById('dtBeamHeight')?.value || 640;
+    const stpDia = document.getElementById('dtStpDia')?.value || '10';
     const topBar1 = document.getElementById('dtTopBar1Dia')?.value || '13';
     const topBar2 = document.getElementById('dtTopBar2Dia')?.value || '0';
     const botBar1 = document.getElementById('dtBotBar1Dia')?.value || '13';
-    const botBar2 = document.getElementById('dtBotBar2Dia')?.value || '16';
+    const botBar2 = document.getElementById('dtBotBar2Dia')?.value || '0';
 
     const topDt = document.getElementById('resTopDtRounded')?.textContent || '';
     const topD = document.getElementById('resTopEffectiveD')?.textContent || '';
@@ -229,11 +305,15 @@
     const topBarText = topBar2 === '0' ? `D${topBar1}×1本 (1段配筋)` : `D${topBar1}×1本 ＋ D${topBar2}×1本 (2段配筋)`;
     const botBarText = botBar2 === '0' ? `D${botBar1}×1本 (1段配筋)` : `D${botBar1}×1本 ＋ D${botBar2}×1本 (2段配筋)`;
 
+    const topStpText = includeStpTop ? `STP(D${stpDia})見込みあり` : `STP見込みなし (折り返し無・ユニット筋)`;
+    const botStpText = includeStpBot ? `STP(D${stpDia})見込みあり` : `STP見込みなし (折り返し無・ユニット筋)`;
+
     const text = `【木造基礎梁 有効梁成・重心距離dt 算定根拠書】(mdo3.com 算定ツール)
 ■ 基礎梁断面・条件:
-  - 基礎梁高さ D = ${D} mm
-  - 上端主筋: ${topBarText} (かぶり 40mm, STP: D10)
-  - 下端主筋: ${botBarText} (かぶり 60mm[土に接する部分], STP: D10)
+  - 基礎梁高さ D = ${D} mm ※10mmをレベラーとして見込んでいます
+  - スターラップ呼び径: D${stpDia}
+  - 上端主筋: ${topBarText} (かぶり 40mm, ${topStpText})
+  - 下端主筋: ${botBarText} (かぶり 60mm[土に接する部分], ${botStpText})
 
 ■ 上主筋 算定結果:
   - 重心距離 dt: 計算値 = ${topExact} → 採用値 = ${topDt} (安全側10mm丸め)
@@ -245,7 +325,7 @@
 
 ■ ARCHITREND ZERO / 確認申請審査 対応:
   - 木造住宅構造計算規準(グレー本)およびRC規準に準拠。
-  - 2段筋クリアランス MAX(31.25mm, 呼び径×1.5) を考慮した厳密重心位置を安全側丸めした採用値です。`;
+  - レベラー天端10mm考慮、ユニット筋折り返し有無に応じた厳密重心位置を安全側丸めした採用値です。`;
 
     navigator.clipboard.writeText(text).then(() => {
       showToast('木造基礎 dt算定根拠テキストをコピーしました！確認申請質疑書やARCHITRENDにそのまま貼り付け可能です。');

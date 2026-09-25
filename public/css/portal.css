@@ -2395,6 +2395,38 @@ body {
   border-top: 1px dashed rgba(255, 255, 255, 0.08);
 }
 
+.dt-toggle-group {
+  display: flex;
+  gap: 6px;
+}
+
+.btn-toggle-option {
+  flex: 1;
+  padding: 6px 8px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-sub);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.btn-toggle-option:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-main);
+}
+
+.btn-toggle-option.active {
+  background: rgba(14, 165, 233, 0.2);
+  border-color: #0ea5e9;
+  color: #38bdf8;
+  box-shadow: 0 0 10px rgba(14, 165, 233, 0.2);
+}
+
 /* 右カラム: ワイド結果表示パネル */
 .dt-results-box-wide {
   display: flex;
