@@ -57,36 +57,65 @@
     }
   ];
 
+  // 各カテゴリの初期ツール・フォールバックデータ（ロード遅延時も即座にリッチ表示）
+  const DEFAULT_CATEGORY_TOOLS = {
+    foundation: [
+      { id: 'jintsuko', title: '人通口補強計算', summary: 'スラブ内割増筋およびせん断力の検定。PDF計算書からの応力抽出に対応。', icon: 'construction' },
+      { id: 'cantilever_foundation_beam', title: '片持ち基礎梁の検定 (柱あり)', summary: 'べた基礎ポーチ部など一部スラブ無しの片持ち基礎梁検定。上主筋・せん断耐力を算定。', icon: 'account_tree' },
+      { id: 'cantilever_beam_no_column', title: '片持ち基礎梁 (柱なし) ＆ 片土圧検定', summary: 'バルコニー部等支点なし片持ち基礎梁の下主筋検定、および片土圧検定。', icon: 'foundation' },
+      { id: 'youheki_L_calculator', title: 'L型擁壁 安定・断面計算', summary: '宅地造成・高低差のある敷地のL型RC擁壁計算。転倒・滑動・地耐力検定。', icon: 'fence' }
+    ],
+    timber: [
+      { id: 'post_joint_calc', title: '柱頭柱脚金物算定 (N値計算)', summary: '告示1460号第2号・性能表示基準対応のN値・引き抜き力自動算定。金物選定。', icon: 'carpenter' },
+      { id: 'timber_column_check', title: '柱座屈・長期短期許容応力度検定', summary: '通し柱・管柱の軸力・曲げ・座屈検討およびめり込み検定。', icon: 'view_column' },
+      { id: 'cross_beam_calc', title: '梁受金物・横架材端部せん断検定', summary: '大梁・小梁の接合部せん断耐力およびボルト・ドリフトピン耐力検定。', icon: 'grid_view' }
+    ],
+    detail: [
+      { id: 'horizontal_diaphragm_calc', title: '水平構面許容せん断耐力算定', summary: '合板・火打・床構面の倍率算定および存在応力に対する検定比チェック。', icon: 'view_quilt' },
+      { id: 'shear_wall_calc', title: '耐力壁壁量・倍率・偏心率算定', summary: '耐力壁配置の充足率および剛心・重心・偏心率（0.15以下）の自動判定。', icon: 'domain' },
+      { id: 'purlin_cantilever_calc', title: '登り梁・片持ち母屋断面算定', summary: '勾配屋根の曲げ・たわみ検定および軒先はね出し母屋の強度算定。', icon: 'roofing' }
+    ],
+    wrc: [
+      { id: 'wrc_wall_quantity', title: 'WRC造 壁量・壁率自動算定', summary: '壁式鉄筋コンクリート造基準（令第49条）の壁厚・壁率・耐力壁判定。', icon: 'apartment' },
+      { id: 'wrc_opening_reinforce', title: 'WRC造 開口部補強筋算定', summary: '壁開口周囲のスリット・斜め補強筋・縦横割増筋の自動断面算定。', icon: 'aspect_ratio' }
+    ],
+    cad: [
+      { id: 'az_skew_wall', title: 'AZ斜め壁 Web-CAD', summary: 'アーキトレンド等で算定困難な斜め耐力壁・異形グリッドの壁量・剛心・偏心率をWeb-CAD上でリアルタイム自動算定。', icon: 'architecture', url: 'https://az.mdo3.com' }
+    ]
+  };
+
   let categoryToolsMap = {};
   let currentIndices = { foundation: 0, timber: 0, detail: 0, wrc: 0, cad: 0 };
   let autoFlipInterval = null;
   let isHovered = false;
-
-  document.addEventListener('DOMContentLoaded', () => {
-    initShowcase();
-  });
+  let isInitialized = false;
 
   function initShowcase() {
     const container = document.getElementById('categoryShowcaseGrid');
     if (!container) return;
+    if (isInitialized) return;
 
-    if (typeof MDO3_TOOLS_CATALOG === 'undefined' || !Array.isArray(MDO3_TOOLS_CATALOG)) {
-      console.warn('MDO3_TOOLS_CATALOG is not ready for showcase');
-      return;
-    }
+    // 1. まずマスターデータから抽出を試みる
+    const hasCatalog = typeof MDO3_TOOLS_CATALOG !== 'undefined' && Array.isArray(MDO3_TOOLS_CATALOG);
 
-    // カテゴリごとにツールを分類
     SHOWCASE_CATEGORIES.forEach(cat => {
       if (cat.id === 'cad') {
         // AZツール単独特化
-        categoryToolsMap[cat.id] = MDO3_TOOLS_CATALOG.filter(t => t.id === 'az_skew_wall');
-        if (categoryToolsMap[cat.id].length === 0) {
-          categoryToolsMap[cat.id] = MDO3_TOOLS_CATALOG.filter(t => t.category === 'cad');
+        let list = hasCatalog ? MDO3_TOOLS_CATALOG.filter(t => t.id === 'az_skew_wall') : [];
+        if (list.length === 0) {
+          list = DEFAULT_CATEGORY_TOOLS.cad;
         }
+        categoryToolsMap[cat.id] = list;
       } else {
-        categoryToolsMap[cat.id] = MDO3_TOOLS_CATALOG.filter(t => t.category === cat.id);
+        let list = hasCatalog ? MDO3_TOOLS_CATALOG.filter(t => t.category === cat.id) : [];
+        if (list.length === 0 && DEFAULT_CATEGORY_TOOLS[cat.id]) {
+          list = DEFAULT_CATEGORY_TOOLS[cat.id];
+        }
+        categoryToolsMap[cat.id] = list;
       }
     });
+
+    isInitialized = true;
 
     // 5枠のHTMLを構築
     renderShowcaseGrid(container);
@@ -98,6 +127,16 @@
     container.addEventListener('mouseenter', () => { isHovered = true; });
     container.addEventListener('mouseleave', () => { isHovered = false; });
   }
+
+  // 複数のライフサイクルで発火（万一の遅延ロードにも対応）
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initShowcase);
+  } else {
+    initShowcase();
+  }
+  window.addEventListener('load', () => {
+    if (!isInitialized) initShowcase();
+  });
 
   function renderShowcaseGrid(container) {
     container.innerHTML = SHOWCASE_CATEGORIES.map(cat => {
