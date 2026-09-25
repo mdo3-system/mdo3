@@ -143,6 +143,7 @@
   let inputGdriveUrl, btnRegisterGdriveUrl, videoPreviewContainer;
   let btnDownloadMarkdown, btnDownloadJson, btnCopySnsDraft, snsDraftText;
   let vaultGrid, vaultEmptyState, vaultCountBadge;
+  let tabUpdates, viewUpdates, btnRefreshUpdates, updatesListContainer, updatesCountBadge;
 
   document.addEventListener('DOMContentLoaded', () => {
     initDomReferences();
