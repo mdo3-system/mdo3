@@ -2191,39 +2191,21 @@ body {
   border: 1px solid rgba(16, 185, 129, 0.3);
 }
 
-/* 地域定数 (メインワイド) ＆ dt算出ツール (付録・縦長) の横並びグリッド */
-.regional-dt-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 350px;
+/* 地域定数 (上段フルワイド) ＆ dt算出ツール (下段ワイド) の縦積みスタック */
+.regional-dt-stack {
+  display: flex;
+  flex-direction: column;
   gap: 24px;
-  align-items: start;
 }
 
-@media (max-width: 1100px) {
-  .regional-dt-grid {
-    grid-template-columns: 1fr;
-  }
-  .map-banner-card {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .map-banner-preview {
-    width: 100%;
-    max-width: 400px;
-    margin-top: 10px;
-  }
-}
-
-/* 地域定数結果 (上段ワイド) */
+/* 地域定数結果 (下段) */
 .regional-results-stacked {
-  margin-bottom: 20px;
+  margin-top: 10px;
 }
 
-/* 独立したワイド地図 (下段) */
+/* ワイド地図コンテナ (検索バー直下) */
 .regional-map-container-standalone {
   width: 100%;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  padding-top: 16px;
 }
 
 .map-hint-standalone {
@@ -2233,7 +2215,7 @@ body {
   border: 1px solid rgba(6, 182, 212, 0.2);
   border-radius: var(--radius-sm);
   padding: 8px 12px;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -2244,13 +2226,13 @@ body {
 }
 
 /* ========================================================
-   有効基礎梁成・dt算出ツール カード (#dtCalcCard / 付録・縦長)
+   木造基礎用 有効基礎梁成・dt算出ツール カード (#dtCalcCard / 横長ワイド)
    ======================================================== */
-.dt-calc-card {
+.dt-calc-card-wide {
   background: var(--bg-card);
   border: 1px solid var(--border-card-hover);
   border-radius: var(--radius-md);
-  padding: 20px;
+  padding: 24px;
   box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
@@ -2268,11 +2250,11 @@ body {
 .dt-calc-title-wrap {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 
 .dt-calc-title {
-  font-size: 1rem;
+  font-size: 1.15rem;
   font-weight: 800;
   color: var(--text-main);
   margin: 0;
@@ -2280,27 +2262,99 @@ body {
 
 .dt-calc-subtag {
   display: block;
-  font-size: 0.65rem;
+  font-size: 0.72rem;
   color: var(--accent-gold);
   font-weight: 700;
-  margin-top: 2px;
+  margin-top: 3px;
 }
 
 .dt-free-badge {
-  font-size: 0.68rem;
+  font-size: 0.72rem;
   font-weight: 800;
-  padding: 2px 7px;
+  padding: 3px 9px;
   border-radius: 12px;
   background: rgba(6, 182, 212, 0.15);
   color: var(--accent-cyan);
   border: 1px solid rgba(6, 182, 212, 0.35);
 }
 
-.dt-form-grid {
+/* 2カラムレイアウト (左入力 / 右結果) */
+.dt-layout-cols {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 10px;
-  margin-bottom: 14px;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+@media (max-width: 960px) {
+  .dt-layout-cols {
+    grid-template-columns: 1fr;
+  }
+}
+
+.dt-quick-d-group {
+  display: flex;
+  gap: 4px;
+}
+
+.dt-quick-d-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-card);
+  color: var(--text-sub);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.dt-quick-d-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--text-main);
+}
+
+.dt-quick-d-btn.active {
+  background: var(--accent-gold);
+  color: #000;
+  border-color: var(--accent-gold);
+  font-weight: 800;
+}
+
+.dt-rebar-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+
+@media (max-width: 600px) {
+  .dt-rebar-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.dt-rebar-card {
+  background: rgba(0, 0, 0, 0.32);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+}
+
+.dt-section-subhead {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--accent-cyan);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.dt-rebar-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .dt-field {
@@ -2317,12 +2371,12 @@ body {
 
 .dt-field input,
 .dt-field select {
-  background: rgba(0, 0, 0, 0.45);
+  background: rgba(0, 0, 0, 0.5);
   border: 1px solid var(--border-card);
   border-radius: var(--radius-sm);
-  padding: 6px 8px;
+  padding: 7px 10px;
   color: var(--text-main);
-  font-size: 0.82rem;
+  font-size: 0.84rem;
   font-family: inherit;
   transition: border-color 0.2s;
 }
@@ -2333,57 +2387,85 @@ body {
   border-color: var(--accent-cyan);
 }
 
-.dt-section-subhead {
-  font-size: 0.74rem;
-  font-weight: 800;
-  color: var(--accent-cyan);
-  margin-top: 6px;
-  display: flex;
-  align-items: center;
-  gap: 5px;
+.dt-spec-note {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  margin-top: 8px;
+  padding-top: 6px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.08);
 }
 
-/* dt計算結果パネル */
-.dt-results-box {
+/* 右カラム: ワイド結果表示パネル */
+.dt-results-box-wide {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.dt-res-card-item {
   background: rgba(0, 0, 0, 0.35);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: var(--radius-sm);
-  padding: 12px;
-  margin-bottom: 12px;
+  padding: 12px 16px;
 }
 
-.dt-result-row {
+.dt-res-item-head {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 5px 0;
-  border-bottom: 1px dashed rgba(255, 255, 255, 0.06);
-  font-size: 0.78rem;
+  margin-bottom: 8px;
 }
 
-.dt-result-row:last-child {
-  border-bottom: none;
+.dt-res-tag {
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 4px;
 }
 
-.dt-result-label {
+.dt-res-sub {
+  font-size: 0.72rem;
   color: var(--text-sub);
 }
 
-.dt-result-val {
-  font-weight: 800;
-  color: #f8fafc;
+.dt-res-item-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 8px;
 }
 
-.dt-result-val.highlight {
-  font-size: 1.05rem;
-  color: var(--accent-gold);
+.dt-res-main-stat {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 6px;
+  padding: 8px 12px;
+}
+
+.dt-stat-label {
+  font-size: 0.7rem;
+  color: var(--text-sub);
+  margin-bottom: 2px;
+}
+
+.dt-stat-value {
+  font-size: 1.45rem;
+  font-weight: 900;
+  font-family: var(--font-numeric, inherit);
+  line-height: 1.1;
+}
+
+.dt-stat-sub {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  margin-top: 2px;
 }
 
 .dt-alert-badge {
   font-size: 0.7rem;
-  padding: 4px 6px;
+  padding: 5px 8px;
   border-radius: 4px;
-  margin-top: 5px;
+  margin-top: 4px;
   display: flex;
   align-items: center;
   gap: 5px;
@@ -2402,10 +2484,9 @@ body {
   border: 1px solid rgba(16, 185, 129, 0.35);
 }
 
-.dt-actions {
+.dt-actions-wide {
   display: flex;
-  gap: 6px;
-  margin-top: auto;
+  gap: 8px;
 }
 
 .btn-dt-copy {
@@ -2413,14 +2494,14 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 5px;
-  padding: 8px 10px;
+  gap: 6px;
+  padding: 10px 14px;
   background: rgba(6, 182, 212, 0.15);
   border: 1px solid rgba(6, 182, 212, 0.4);
   border-radius: var(--radius-sm);
   color: var(--accent-cyan);
-  font-weight: 700;
-  font-size: 0.78rem;
+  font-weight: 800;
+  font-size: 0.84rem;
   cursor: pointer;
   transition: all 0.2s;
 }
@@ -2428,6 +2509,7 @@ body {
 .btn-dt-copy:hover {
   background: var(--accent-cyan);
   color: #000;
+  box-shadow: 0 0 16px rgba(6, 182, 212, 0.4);
 }
 
 /* ========================================================

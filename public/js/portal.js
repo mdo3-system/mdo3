@@ -583,9 +583,9 @@ document.addEventListener('DOMContentLoaded', () => {
   let leafletMap = null;
   let currentMarker = null;
 
-  // 初期座標: 長野県松本市中央 [36.238, 137.971]
-  const DEFAULT_LAT = 36.238;
-  const DEFAULT_LON = 137.971;
+  // 初期座標: 埼玉県川越市幸町 [35.9247, 139.4842] (基準風速 V0=32m/s 検証地点)
+  const DEFAULT_LAT = 35.9247;
+  const DEFAULT_LON = 139.4842;
 
   // 省エネ・断熱関連UIエレメント
   const resEnergyBadge = document.getElementById('resEnergyBadge');
@@ -610,13 +610,23 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // 4大構造定数
-    if (valZ) valZ.textContent = results.z.toFixed(results.z % 1 === 0 ? 1 : 2);
+    if (valZ) {
+      if (results.zs) {
+        valZ.innerHTML = `${results.z.toFixed(1)} <span style="font-size:0.85em; font-weight:700; color:#fbbf24; margin-left:2px;">(Zs=${results.zs})</span>`;
+      } else {
+        valZ.textContent = results.z.toFixed(results.z % 1 === 0 ? 1 : 2);
+      }
+    }
     if (valV0) valV0.textContent = results.v0;
     if (valS) valS.textContent = results.snowDepth;
     if (valFreeze) valFreeze.textContent = results.freezeDepth;
 
     if (descZ) {
-      descZ.textContent = results.z >= 1.0 ? '標準地域 (割増規定確認)' : `地域係数低減 (Z=${results.z})`;
+      if (results.zs) {
+        descZ.innerHTML = `<span style="color:#fbbf24; font-weight:600;">国告示 Z=1.0 / 静岡県条例 Zs=1.2</span>`;
+      } else {
+        descZ.textContent = results.z >= 1.0 ? '標準地域 (割増規定確認)' : `地域係数低減 (Z=${results.z})`;
+      }
     }
     if (descV0) {
       descV0.textContent = `${results.pref}市町村告示値 (H12建告1454号)`;
@@ -704,10 +714,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // マーカー移動
     if (leafletMap && currentMarker) {
       currentMarker.setLatLng([lat, lon]);
+      const zStr = calcResult.zs ? `Z=${calcResult.z} (Zs=${calcResult.zs})` : `Z=${calcResult.z}`;
       currentMarker.bindPopup(`
         <strong>${calcResult.pref} (${calcResult.energyRegion}地域)</strong><br>
         標高: ${elevation}m<br>
-        Z=${calcResult.z}, V0=${calcResult.v0}m/s<br>
+        ${zStr}, V0=${calcResult.v0}m/s<br>
         <span style="color:#10b981;">等級6 UA≦${calcResult.insulation.grade6}</span>
       `).openPopup();
     }
@@ -728,8 +739,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     currentMarker = L.marker([DEFAULT_LAT, DEFAULT_LON], { draggable: true }).addTo(leafletMap);
 
-    // 初期値計算
-    evaluateLocation(DEFAULT_LAT, DEFAULT_LON, '長野県松本市中央1丁目');
+    // 初期値計算 (埼玉県川越市幸町 V0=32m/s)
+    evaluateLocation(DEFAULT_LAT, DEFAULT_LON, '埼玉県川越市幸町');
 
     // 地図クリックで地点再判定
     leafletMap.on('click', (e) => {
