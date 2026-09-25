@@ -3,9 +3,13 @@ node_modules/
 
 # Environment variables & secrets
 .env
+.env.*
 *.key
 *.pem
 *.ppk
+secrets/
+*.local.*
+*.local.json
 
 # OS generated files
 Thumbs.db
