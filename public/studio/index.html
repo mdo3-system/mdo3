@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>mdo3 STUDIO | 4部門7職種 AI動画広告＆操作マニュアル制作スタジオ</title>
+  <meta name="description" content="mdo3 専門構造計算ツールの動画広告・操作解説動画をプロデュース。4部門7職種AIエージェントによる絵コンテ設計とVeo3専用英語プロンプト生成エンジン。">
+
+  <!-- Google Fonts & Material Symbols -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;800&family=Plus+Jakarta+Sans:wght@500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+
+  <!-- Studio Custom CSS -->
+  <link rel="stylesheet" href="css/studio.css?v=1.0.0">
+</head>
+<body>
+
+  <!-- ==========================================
+       スタジオ ヘッダー
+       ========================================== -->
+  <header class="studio-header">
+    <div class="studio-header-inner">
+      <a href="index.html" class="studio-brand">
+        <div class="brand-badge">S</div>
+        <div class="brand-title-wrap">
+          <h1>mdo3 <span>STUDIO</span> <span class="brand-tag">AI Video Lab</span></h1>
+        </div>
+      </a>
+
+      <!-- ナビゲーションタブ -->
+      <div class="nav-tabs">
+        <button type="button" class="nav-tab-btn active" id="tabStudio">
+          <span class="material-symbols-outlined">movie_edit</span> 動画広告・マニュアル制作
+        </button>
+        <button type="button" class="nav-tab-btn" id="tabVault">
+          <span class="material-symbols-outlined">video_library</span> 完成動画ギャラリー
+        </button>
+      </div>
+
+      <div class="header-right-actions">
+        <a href="https://mdo3.com/" class="btn-portal-back">
+          <span class="material-symbols-outlined">arrow_back</span> mdo3 ポータルへ戻る
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==========================================
+       メイン ワークスペース (3カラム)
+       ========================================== -->
+  <main class="studio-container">
+    <div class="studio-grid">
+
+      <!-- ─── 左カラム: 企画設定 & プロジェクト設定 ─── -->
+      <aside class="studio-panel" id="panelSettings">
+        <div class="panel-header">
+          <h2 class="panel-title">
+            <span class="material-symbols-outlined">tune</span> 企画設定 & ターゲット
+          </h2>
+          <span style="font-size:0.75rem; color:var(--text-muted);">STEP 1</span>
+        </div>
+
+        <!-- 1. 対象ツール選択 (全29ツール) -->
+        <div class="form-group">
+          <label class="form-label" for="studioToolSelect">
+            対象構造計算ツール (全29ツール連動)
+          </label>
+          <select id="studioToolSelect" class="select-tool">
+            <!-- JavaScript (studio_engine.js) で自動展開 -->
+          </select>
+        </div>
+
+        <!-- 2. 動画の目的選択 (広告 vs 操作説明) -->
+        <div class="form-group">
+          <label class="form-label">動画の制作目的 (ディレクター選任)</label>
+          <div class="purpose-toggle-grid">
+            <button type="button" class="purpose-btn active purpose-promo" id="purposePromoBtn">
+              <span class="material-symbols-outlined" style="color:var(--accent-gold);">campaign</span>
+              <strong>ツール紹介・広告</strong>
+              <small>課題解決・世界観訴求</small>
+            </button>
+            <button type="button" class="purpose-btn purpose-howto" id="purposeHowtoBtn">
+              <span class="material-symbols-outlined" style="color:var(--accent-cyan);">play_lesson</span>
+              <strong>操作説明・マニュアル</strong>
+              <small>入力の急所・実務手順</small>
+            </button>
+          </div>
+        </div>
+
+        <!-- 3. 目標動画尺 (秒数) -->
+        <div class="form-group">
+          <label class="form-label">目標動画尺 (秒数)</label>
+          <div class="duration-selector">
+            <button type="button" class="duration-pill" data-duration="15">15秒</button>
+            <button type="button" class="duration-pill active" data-duration="30">30秒</button>
+            <button type="button" class="duration-pill" data-duration="45">45秒</button>
+            <button type="button" class="duration-pill" data-duration="60">60秒</button>
+            <button type="button" class="duration-pill" data-duration="90">90秒</button>
+          </div>
+        </div>
+
+        <!-- 4. Veo 3 アカウント枠案内 -->
+        <div class="form-group">
+          <label class="form-label">Veo 3 生成枠との同期</label>
+          <div class="veo-quota-box">
+            <span class="material-symbols-outlined">bolt</span>
+            <div class="veo-quota-text">
+              <strong>5アカウント × 3本 ＝ 1日最大15本</strong>
+              クリップ番号 (Account #1〜5) を自動割り当て
+            </div>
+          </div>
+        </div>
+
+        <!-- 生成ボタン -->
+        <button type="button" class="btn-generate-project" id="btnGenerateProject">
+          <span class="material-symbols-outlined">auto_awesome</span> AI制作チームに指示・企画生成
+        </button>
+      </aside>
+
+      <!-- ─── 中央カラム: 4部門7職種 絵コンテ ＆ Veo3 プロンプト ─── -->
+      <section class="studio-panel" id="panelStoryboard" style="min-width: 0;">
+        <div class="panel-header">
+          <h2 class="panel-title">
+            <span class="material-symbols-outlined">movie</span> 4部門7職種 絵コンテ ＆ Veo 3 プロンプト
+          </h2>
+          <span style="font-size:0.75rem; color:var(--accent-cyan);">STEP 2</span>
+        </div>
+
+        <!-- 4部門7職種 アバターバッジバー -->
+        <div class="team-supervisors-bar" id="teamBadgesContainer">
+          <div class="team-badge active-director">
+            <span class="material-symbols-outlined" style="font-size:16px;">architecture</span> 建築P / クリエイティブD
+          </div>
+          <div class="team-badge active-director">
+            <span class="material-symbols-outlined" style="font-size:16px;">edit_note</span> 映像D / 構成作家
+          </div>
+          <div class="team-badge active-camera">
+            <span class="material-symbols-outlined" style="font-size:16px;">photo_camera</span> 建築シネマグラファー
+          </div>
+          <div class="team-badge active-camera">
+            <span class="material-symbols-outlined" style="font-size:16px;">flight</span> ドローンパイロット
+          </div>
+          <div class="team-badge active-post">
+            <span class="material-symbols-outlined" style="font-size:16px;">palette</span> カラリスト (LUT)
+          </div>
+          <div class="team-badge active-post">
+            <span class="material-symbols-outlined" style="font-size:16px;">animation</span> モーショングラフィックス
+          </div>
+          <div class="team-badge active-post">
+            <span class="material-symbols-outlined" style="font-size:16px;">graphic_eq</span> サウンド選曲
+          </div>
+          <div class="team-badge active-compliance">
+            <span class="material-symbols-outlined" style="font-size:16px;">verified_user</span> 建築法規監修
+          </div>
+        </div>
+
+        <!-- ディレクターズ・ステートメント (方針) -->
+        <div id="directorStatementBox">
+          <!-- JSで動的挿入 -->
+        </div>
+
+        <!-- 絵コンテカード タイムライン -->
+        <div class="storyboard-timeline" id="timelineContainer">
+          <!-- JSで動的挿入 -->
+        </div>
+      </section>
+
+      <!-- ─── 右カラム: ローカル連携 ＆ 完成動画アップロード ─── -->
+      <aside class="studio-panel" id="panelExport">
+        <div class="panel-header">
+          <h2 class="panel-title">
+            <span class="material-symbols-outlined">cloud_sync</span> ローカル編集 ＆ 公開
+          </h2>
+          <span style="font-size:0.75rem; color:var(--text-muted);">STEP 3</span>
+        </div>
+
+        <!-- エクスポートダウンロード -->
+        <div class="export-card">
+          <h4 style="font-size:0.86rem; font-weight:700; margin-bottom:8px; color:var(--text-main);">構成指示書のエクスポート</h4>
+          <p style="font-size:0.76rem; color:var(--text-sub); margin-bottom:14px; line-height:1.5;">
+            生成された絵コンテ・秒数配分・Veo 3 プロンプト一式を手元に保存します。
+          </p>
+          <button type="button" class="btn-export-download" id="btnDownloadMarkdown">
+            <span class="material-symbols-outlined" style="font-size:18px; color:var(--accent-cyan);">description</span>
+            絵コンテ指示書 (.md)
+          </button>
+          <button type="button" class="btn-export-download" id="btnDownloadJson">
+            <span class="material-symbols-outlined" style="font-size:18px; color:var(--accent-gold);">data_object</span>
+            プロジェクト設定 (.json)
+          </button>
+        </div>
+
+        <!-- ローカル編集フロー案内 -->
+        <div class="export-card" style="border-color: rgba(59, 130, 246, 0.3); background: rgba(59, 130, 246, 0.05);">
+          <h4 style="font-size:0.84rem; font-weight:700; margin-bottom:6px; color:#60a5fa;">ローカルPC 編集フロー</h4>
+          <ol style="font-size:0.76rem; color:var(--text-sub); padding-left:16px; line-height:1.6;">
+            <li>Veo 3 でプロンプトを投入しクリップを生成</li>
+            <li>Premiere / AfterEffects 等で1本に結合・BGM挿入</li>
+            <li>完成した mp4 ファイルを下記枠へアップロード</li>
+          </ol>
+        </div>
+
+        <!-- 完成動画 ドラッグ＆ドロップ アップローダー -->
+        <div class="upload-dropzone" id="uploadDropzone">
+          <span class="material-symbols-outlined dropzone-icon">cloud_upload</span>
+          <div class="dropzone-title">完成動画 (mp4) をアップロード</div>
+          <div class="dropzone-sub">ドラッグ＆ドロップ または クリックして選択</div>
+          <input type="file" id="videoFileInput" accept="video/mp4,video/quicktime,video/webm" style="display:none;">
+        </div>
+
+        <!-- プレビュー表示エリア -->
+        <div id="videoPreviewContainer">
+          <!-- JSで動的挿入 -->
+        </div>
+      </aside>
+
+    </div>
+  </main>
+
+  <!-- 全29ツールのカタログデータ -->
+  <script src="../js/tools_data.js?v=1.1.0"></script>
+  <!-- スタジオコアエンジン -->
+  <script src="js/studio_engine.js?v=1.0.0"></script>
+</body>
+</html>
