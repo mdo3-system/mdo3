@@ -150,6 +150,7 @@
     bindEvents();
     generateScenarioDraft(); // 初期素案生成
     fetchUploadedVideos();
+    fetchToolUpdates();
   });
 
   function initDomReferences() {
@@ -198,6 +199,12 @@
     vaultGrid = document.getElementById('vaultGrid');
     vaultEmptyState = document.getElementById('vaultEmptyState');
     vaultCountBadge = document.getElementById('vaultCountBadge');
+
+    tabUpdates = document.getElementById('tabUpdates');
+    viewUpdates = document.getElementById('viewUpdates');
+    btnRefreshUpdates = document.getElementById('btnRefreshUpdates');
+    updatesListContainer = document.getElementById('updatesListContainer');
+    updatesCountBadge = document.getElementById('updatesCountBadge');
   }
 
   // 1. 全29ツール セレクトボックス初期化
@@ -233,7 +240,9 @@
     // タブ切替
     if (tabStudio) tabStudio.addEventListener('click', () => switchTab('studio'));
     if (tabVault) tabVault.addEventListener('click', () => switchTab('vault'));
+    if (tabUpdates) tabUpdates.addEventListener('click', () => switchTab('updates'));
     if (btnBackToStudio) btnBackToStudio.addEventListener('click', () => switchTab('studio'));
+    if (btnRefreshUpdates) btnRefreshUpdates.addEventListener('click', fetchToolUpdates);
 
     // ツール変更
     if (toolSelect) {
@@ -325,17 +334,25 @@
 
   function switchTab(tab) {
     state.currentTab = tab;
+    // 全タブのアクティブ解除
+    if (tabStudio) tabStudio.classList.remove('active');
+    if (tabVault) tabVault.classList.remove('active');
+    if (tabUpdates) tabUpdates.classList.remove('active');
+    if (viewStudio) viewStudio.style.display = 'none';
+    if (viewVault) viewVault.style.display = 'none';
+    if (viewUpdates) viewUpdates.style.display = 'none';
+
     if (tab === 'studio') {
       if (tabStudio) tabStudio.classList.add('active');
-      if (tabVault) tabVault.classList.remove('active');
       if (viewStudio) viewStudio.style.display = 'block';
-      if (viewVault) viewVault.style.display = 'none';
-    } else {
+    } else if (tab === 'vault') {
       if (tabVault) tabVault.classList.add('active');
-      if (tabStudio) tabStudio.classList.remove('active');
-      if (viewStudio) viewStudio.style.display = 'none';
       if (viewVault) viewVault.style.display = 'block';
       fetchUploadedVideos();
+    } else if (tab === 'updates') {
+      if (tabUpdates) tabUpdates.classList.add('active');
+      if (viewUpdates) viewUpdates.style.display = 'block';
+      fetchToolUpdates();
     }
   }
 
@@ -961,6 +978,138 @@ https://${isMap ? 'map' : 'app'}.mdo3.com/
     navigator.clipboard.writeText(tag).then(() => {
       alert('動画の埋め込みHTMLタグをコピーしました！\nnote+ やWEBサイトにそのまま貼り付け可能です。');
     });
+  };
+
+  // 12. sub ツール更新検知 ＆ note+/X 配信ロジック
+  let toolUpdatesData = [];
+
+  function fetchToolUpdates() {
+    if (btnRefreshUpdates) {
+      btnRefreshUpdates.disabled = true;
+      btnRefreshUpdates.innerHTML = '<span class="material-symbols-outlined" style="animation: spin 1s linear infinite; font-size:16px;">sync</span> スキャン中...';
+    }
+
+    fetch('data/tool_updates.json?v=' + Date.now())
+      .then(res => res.json())
+      .then(data => {
+        if (btnRefreshUpdates) {
+          btnRefreshUpdates.disabled = false;
+          btnRefreshUpdates.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px;">sync</span> 更新を再スキャン';
+        }
+        if (Array.isArray(data)) {
+          toolUpdatesData = data;
+          renderToolUpdates(data);
+        }
+      })
+      .catch(err => {
+        console.warn('Fetch tool updates error:', err);
+        if (btnRefreshUpdates) {
+          btnRefreshUpdates.disabled = false;
+          btnRefreshUpdates.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px;">sync</span> 更新を再スキャン';
+        }
+      });
+  }
+
+  function renderToolUpdates(updates) {
+    if (updatesCountBadge) {
+      updatesCountBadge.textContent = `${updates.length} 件の更新検知`;
+    }
+
+    if (!updatesListContainer) return;
+
+    if (updates.length === 0) {
+      updatesListContainer.innerHTML = `
+        <div class="vault-empty">
+          <span class="material-symbols-outlined" style="font-size:48px; color:var(--text-muted); margin-bottom:12px;">campaign</span>
+          <h3 style="font-size:1.1rem; color:var(--text-main); margin-bottom:8px;">現在検知された更新情報はありません</h3>
+          <p style="font-size:0.85rem; color:var(--text-sub);">
+            sub (app.mdo3.com) 側でコミットまたは notify_mdo3.bat が実行されると、自動的に最新の改変履歴がここに集約されます。
+          </p>
+        </div>
+      `;
+      return;
+    }
+
+    updatesListContainer.innerHTML = updates.map((item, idx) => `
+      <div class="update-card" id="updateCard_${idx}">
+        <div class="update-card-header">
+          <div>
+            <div class="update-card-title">
+              <span class="material-symbols-outlined" style="color:var(--accent-cyan);">build_circle</span>
+              ${escapeHtml(item.tool_name)}
+            </div>
+            <div class="update-card-meta">
+              <span>📅 ${escapeHtml(item.date)}</span>
+              <span>•</span>
+              <span class="update-category-pill">${escapeHtml(item.category)}</span>
+              <span>•</span>
+              <code style="background:rgba(0,0,0,0.4); padding:1px 5px; border-radius:3px;">${escapeHtml(item.commit_hash)}</code>
+            </div>
+          </div>
+          <div>
+            <a href="${escapeHtml(item.tool_url)}" target="_blank" class="btn-portal-back" style="font-size:0.72rem; padding:4px 10px;">
+              ツールを直接開く <span class="material-symbols-outlined" style="font-size:12px;">open_in_new</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- 3大要素: 何をどう変えたか・何が変わったか・何に対応したのか -->
+        <div class="update-change-grid">
+          <div class="change-item">
+            <h5 style="color:var(--accent-gold);"><span class="material-symbols-outlined" style="font-size:16px;">edit</span> ① 何をどう変えたか（改変内容）</h5>
+            <p>${escapeHtml(item.what_changed)}</p>
+          </div>
+          <div class="change-item">
+            <h5 style="color:var(--accent-green);"><span class="material-symbols-outlined" style="font-size:16px;">trending_up</span> ② 何が変わったか？（実務メリット）</h5>
+            <p>${escapeHtml(item.user_benefit)}</p>
+          </div>
+          <div class="change-item">
+            <h5 style="color:var(--accent-cyan);"><span class="material-symbols-outlined" style="font-size:16px;">verified_user</span> ③ 何に対応したのか？（準拠法令）</h5>
+            <p>${escapeHtml(item.standards_matched)}</p>
+          </div>
+        </div>
+
+        <!-- アクションボタン群 (note+ / X) -->
+        <div class="update-actions-bar">
+          <button type="button" class="btn-update-action note-btn" onclick="window.copyNoteArticle(${idx})">
+            <span class="material-symbols-outlined" style="font-size:15px;">article</span> 📝 note+ 記事ドラフトをコピー
+          </button>
+          <button type="button" class="btn-update-action x-btn" onclick="window.copyXPost(${idx})">
+            <span class="material-symbols-outlined" style="font-size:15px;">content_copy</span> 🐦 X 速報ポストをコピー
+          </button>
+          <button type="button" class="btn-update-action x-btn" onclick="window.openXIntent(${idx})" style="background:rgba(56, 189, 248, 0.2);">
+            <span class="material-symbols-outlined" style="font-size:15px;">send</span> 🚀 Xで今すぐ投稿
+          </button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // note+ 記事ドラフトコピー
+  window.copyNoteArticle = function(idx) {
+    if (!toolUpdatesData[idx]) return;
+    const item = toolUpdatesData[idx];
+    navigator.clipboard.writeText(item.note_article).then(() => {
+      alert(`【${item.tool_name}】の note+ 用 記事ドラフト（完全Markdown）をコピーしました！\nnote+ のエディタにそのまま貼り付けて公開できます。`);
+    });
+  };
+
+  // X 速報ポスト文コピー
+  window.copyXPost = function(idx) {
+    if (!toolUpdatesData[idx]) return;
+    const item = toolUpdatesData[idx];
+    navigator.clipboard.writeText(item.x_post).then(() => {
+      alert(`【${item.tool_name}】の X（旧Twitter）用 140字速報ポスト文をコピーしました！`);
+    });
+  };
+
+  // X Web Intent 起動（別タブで投稿画面を自動起動）
+  window.openXIntent = function(idx) {
+    if (!toolUpdatesData[idx]) return;
+    const item = toolUpdatesData[idx];
+    const encoded = encodeURIComponent(item.x_post);
+    const intentUrl = `https://twitter.com/intent/tweet?text=${encoded}`;
+    window.open(intentUrl, '_blank');
   };
 
   function padZero(num) {

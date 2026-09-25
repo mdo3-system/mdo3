@@ -2,9 +2,10 @@
  * Version.js - mdo3.com 基幹ポータル & 統合SaaS バージョン管理
  */
 (function() {
-    window.APP_VERSION = 'v1.3.0';
+    window.APP_VERSION = 'v1.4.0';
     window.APP_BUILD_DATE = '2026-09-25';
     window.APP_RELEASE_NOTES = [
+        'v1.4.0 (2026-09-25): sub (app.mdo3.com) ツール更新検知 ＆ note+/X 配信パイプライン完成。sub Gitコミット解析による「何をどう変えたか・何が変わったか・何に対応したか」構造化抽出、note+ 記事原稿ドラフト(Markdown) ＆ X 速報ポスト(140字/Web Intent)自動生成、mdo3 STUDIO 内「📢 更新速報」タブ新設、sub post-commit hook連携、mdo3公式ブランドSNS運用設計書策定完了',
         'v1.3.0 (2026-09-25): mdo3 STUDIO プロ向け対話型動画制作パイプライン完成。シナリオ素案協議・加筆修正指示・ユーザー承認(OK)の2段階ワークフロー、特別演出要望枠(ドローン・夕暮れ等)、5アカウント一括指定＆一発コピペダッシュボード、Google Drive API連携(サーバー負荷完全ゼロ仕様)、ローカルPC Quadro K5200 GPU(NVENC)＋Python＋FFmpeg自動動画合成環境完全配備',
         'v1.2.1 (2026-09-25): mdo3 STUDIO 機能大幅拡張。スマート案内図(map.mdo3.com)・四分割法(app.mdo3.com)特化シネマティックVeo3プロンプト＆演出シナリオ辞書搭載、全カット一括プロンプトコピー機能、SNS配信用文案(X/note+)自動生成、完成動画ライブラリ(Vault)・埋め込みタグ・拡散連携実装完了',
         'v1.2.0 (2026-09-25): mdo3 STUDIO (動画広告＆操作マニュアル制作スタジオ) 新規公開。4部門7職種AIエージェントによるカット割り絵コンテ設計、15s/30s/45s/60s/90s別Veo3英語プロンプト一括生成(1日15クリップ枠対応)、ローカルPC連携＆完成動画アップローダー実装完了',
