@@ -23,31 +23,31 @@
       bgGradient: 'linear-gradient(135deg, rgba(6, 182, 212, 0.15) 0%, rgba(15, 23, 42, 0.95) 100%)'
     },
     {
-      id: 'timber_joint',
+      id: 'timber',
       name: '木造軸組・接合部系',
-      badge: '全5ツール',
+      badge: '全7ツール',
       icon: 'carpenter',
       color: '#f59e0b',
       bgGradient: 'linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(15, 23, 42, 0.95) 100%)'
     },
     {
-      id: 'wall_diaphragm',
+      id: 'detail',
       name: '水平構面・耐力壁系',
-      badge: '全5ツール',
+      badge: '全10ツール',
       icon: 'view_quilt',
       color: '#10b981',
       bgGradient: 'linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(15, 23, 42, 0.95) 100%)'
     },
     {
-      id: 'wrc_package',
+      id: 'wrc',
       name: 'WRC造パッケージ',
-      badge: '全5ツール',
+      badge: '全2ツール',
       icon: 'apartment',
       color: '#ec4899',
       bgGradient: 'linear-gradient(135deg, rgba(236, 72, 153, 0.15) 0%, rgba(15, 23, 42, 0.95) 100%)'
     },
     {
-      id: 'cad_az',
+      id: 'cad',
       name: 'CAD連携・斜め壁Web-CAD',
       badge: '1ツール特化',
       icon: 'architecture',
@@ -58,7 +58,7 @@
   ];
 
   let categoryToolsMap = {};
-  let currentIndices = { foundation: 0, timber_joint: 0, wall_diaphragm: 0, wrc_package: 0, cad_az: 0 };
+  let currentIndices = { foundation: 0, timber: 0, detail: 0, wrc: 0, cad: 0 };
   let autoFlipInterval = null;
   let isHovered = false;
 
@@ -77,7 +77,15 @@
 
     // カテゴリごとにツールを分類
     SHOWCASE_CATEGORIES.forEach(cat => {
-      categoryToolsMap[cat.id] = MDO3_TOOLS_CATALOG.filter(t => t.category === cat.id);
+      if (cat.id === 'cad') {
+        // AZツール単独特化
+        categoryToolsMap[cat.id] = MDO3_TOOLS_CATALOG.filter(t => t.id === 'az_skew_wall');
+        if (categoryToolsMap[cat.id].length === 0) {
+          categoryToolsMap[cat.id] = MDO3_TOOLS_CATALOG.filter(t => t.category === 'cad');
+        }
+      } else {
+        categoryToolsMap[cat.id] = MDO3_TOOLS_CATALOG.filter(t => t.category === cat.id);
+      }
     });
 
     // 5枠のHTMLを構築
@@ -105,7 +113,7 @@
               <span class="showcase-cat-title">${cat.name}</span>
             </div>
             <span class="showcase-cat-badge" style="background: ${cat.color}22; color: ${cat.color}; border: 1px solid ${cat.color}44;">
-              ${cat.isStatic ? '常時稼働' : cat.badge}
+              ${cat.isStatic ? '単独稼働' : `全${toolCount}ツール`}
             </span>
           </div>
 
@@ -218,7 +226,7 @@
 
     if (!tool) return;
 
-    if (catId === 'cad_az' || tool.id === 'az_skew_wall') {
+    if (catId === 'cad' || tool.id === 'az_skew_wall') {
       window.open('https://az.mdo3.com', '_blank');
       return;
     }
