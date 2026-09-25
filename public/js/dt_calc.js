@@ -10,14 +10,12 @@
 (function() {
   'use strict';
 
-  // 鉄筋データ（呼び名: 実質径 mm, 断面積 cm²）
+  // 鉄筋データ（木造基礎梁実務: D10〜D19に特化）
   const REBAR_DATA = {
     10: { name: 'D10', dia: 10, area: 0.71 },
     13: { name: 'D13', dia: 13, area: 1.27 },
     16: { name: 'D16', dia: 16, area: 1.99 },
-    19: { name: 'D19', dia: 19, area: 2.87 },
-    22: { name: 'D22', dia: 22, area: 3.87 },
-    25: { name: 'D25', dia: 25, area: 5.07 }
+    19: { name: 'D19', dia: 19, area: 2.87 }
   };
 
   document.addEventListener('DOMContentLoaded', () => {
@@ -91,15 +89,28 @@
     const coverBot = parseFloat(document.getElementById('dtCoverBot')?.value) || 60;
     const stpD = parseFloat(document.getElementById('dtStpDia')?.value) || 10;
 
+    const topBar2Dia = document.getElementById('dtTopBar2Dia');
+    const botBar2Dia = document.getElementById('dtBotBar2Dia');
+
     const t1D = parseFloat(document.getElementById('dtTopBar1Dia')?.value) || 13;
     const t1N = parseInt(document.getElementById('dtTopBar1Count')?.value, 10) || 0;
-    const t2D = parseFloat(document.getElementById('dtTopBar2Dia')?.value) || 13;
+    const t2D = parseFloat(topBar2Dia?.value) || 13;
     const t2N = parseInt(document.getElementById('dtTopBar2Count')?.value, 10) || 0;
 
     const b1D = parseFloat(document.getElementById('dtBotBar1Dia')?.value) || 13;
     const b1N = parseInt(document.getElementById('dtBotBar1Count')?.value, 10) || 0;
-    const b2D = parseFloat(document.getElementById('dtBotBar2Dia')?.value) || 16;
+    const b2D = parseFloat(botBar2Dia?.value) || 16;
     const b2N = parseInt(document.getElementById('dtBotBar2Count')?.value, 10) || 0;
+
+    // 2段筋が0本の時は径選択を非活性化
+    if (topBar2Dia) {
+      topBar2Dia.disabled = (t2N === 0);
+      topBar2Dia.style.opacity = (t2N === 0) ? '0.4' : '1.0';
+    }
+    if (botBar2Dia) {
+      botBar2Dia.disabled = (b2N === 0);
+      botBar2Dia.style.opacity = (b2N === 0) ? '0.4' : '1.0';
+    }
 
     // 上主筋の計算
     const topRes = calcLayer(coverTop, stpD, t1D, t1N, t2D, t2N, D);
@@ -125,6 +136,9 @@
       d2 = d1 + (bar1Dia / 2.0) + gap + (bar2Dia / 2.0);
       // 重心距離 dt = d1 + [N2 / (N1 + N2)] * (d2 - d1)
       dtExact = d1 + (n2 / (n1 + n2)) * (d2 - d1);
+    } else {
+      // 2段筋なし（1段筋のみ）: 重心距離は1段筋位置そのもの
+      dtExact = d1;
     }
 
     // 安全側切り上げ (10mm単位)

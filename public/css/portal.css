@@ -2054,7 +2054,7 @@ body {
   line-height: 1.6;
 }
 
-/* 案内図プレミアムカード */
+/* 案内図プレミアムカード (画像プレビュー付き) */
 .map-banner-card {
   background: linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, rgba(15, 23, 42, 0.9) 100%);
   border: 1px solid rgba(16, 185, 129, 0.35);
@@ -2072,6 +2072,8 @@ body {
   display: flex;
   align-items: center;
   gap: 20px;
+  flex: 1;
+  min-width: 0;
 }
 
 .map-banner-icon {
@@ -2101,19 +2103,34 @@ body {
 .map-banner-sub {
   font-size: 0.88rem;
   color: var(--text-sub);
-  margin: 0;
+  margin: 0 0 12px 0;
   line-height: 1.5;
+}
+
+.map-banner-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.map-spec-note {
+  font-size: 0.78rem;
+  color: var(--text-sub);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .btn-map-launch {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 12px 24px;
+  padding: 11px 22px;
   background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   color: #fff;
   font-weight: 800;
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   border-radius: var(--radius-sm);
   text-decoration: none;
   box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
@@ -2126,11 +2143,60 @@ body {
   box-shadow: 0 6px 20px rgba(16, 185, 129, 0.6);
 }
 
-/* 地域定数 ＆ dt算出ツールの横並びグリッド */
+/* 案内図プレビュー画像枠 */
+.map-banner-preview {
+  flex-shrink: 0;
+  width: 290px;
+}
+
+.map-preview-link {
+  display: block;
+  position: relative;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  transition: all 0.3s ease;
+  background: #000;
+}
+
+.map-preview-link:hover {
+  transform: translateY(-3px) scale(1.02);
+  border-color: var(--accent-green);
+  box-shadow: 0 12px 30px rgba(16, 185, 129, 0.35);
+}
+
+.map-preview-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+  aspect-ratio: 16 / 9;
+}
+
+.map-preview-badge {
+  position: absolute;
+  bottom: 6px;
+  right: 6px;
+  background: rgba(15, 23, 42, 0.88);
+  backdrop-filter: blur(4px);
+  color: #34d399;
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+/* 地域定数 (メインワイド) ＆ dt算出ツール (付録・縦長) の横並びグリッド */
 .regional-dt-grid {
   display: grid;
-  grid-template-columns: 1.6fr 1fr;
+  grid-template-columns: minmax(0, 1fr) 350px;
   gap: 24px;
+  align-items: start;
 }
 
 @media (max-width: 1100px) {
@@ -2139,18 +2205,52 @@ body {
   }
   .map-banner-card {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
+  }
+  .map-banner-preview {
+    width: 100%;
+    max-width: 400px;
+    margin-top: 10px;
   }
 }
 
+/* 地域定数結果 (上段ワイド) */
+.regional-results-stacked {
+  margin-bottom: 20px;
+}
+
+/* 独立したワイド地図 (下段) */
+.regional-map-container-standalone {
+  width: 100%;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 16px;
+}
+
+.map-hint-standalone {
+  font-size: 0.8rem;
+  color: var(--text-sub);
+  background: rgba(6, 182, 212, 0.08);
+  border: 1px solid rgba(6, 182, 212, 0.2);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.map-hint-standalone strong {
+  color: var(--accent-cyan);
+}
+
 /* ========================================================
-   有効基礎梁成・dt算出ツール カード (#dtCalcCard)
+   有効基礎梁成・dt算出ツール カード (#dtCalcCard / 付録・縦長)
    ======================================================== */
 .dt-calc-card {
   background: var(--bg-card);
   border: 1px solid var(--border-card-hover);
   border-radius: var(--radius-md);
-  padding: 24px;
+  padding: 20px;
   box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
@@ -2160,28 +2260,36 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 16px;
-  padding-bottom: 12px;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
   border-bottom: 1px solid var(--border-card);
 }
 
 .dt-calc-title-wrap {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
 .dt-calc-title {
-  font-size: 1.05rem;
+  font-size: 1rem;
   font-weight: 800;
   color: var(--text-main);
   margin: 0;
 }
 
+.dt-calc-subtag {
+  display: block;
+  font-size: 0.65rem;
+  color: var(--accent-gold);
+  font-weight: 700;
+  margin-top: 2px;
+}
+
 .dt-free-badge {
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: 800;
-  padding: 2px 8px;
+  padding: 2px 7px;
   border-radius: 12px;
   background: rgba(6, 182, 212, 0.15);
   color: var(--accent-cyan);
@@ -2190,31 +2298,31 @@ body {
 
 .dt-form-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-bottom: 16px;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  margin-bottom: 14px;
 }
 
 .dt-field {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
 }
 
 .dt-field label {
-  font-size: 0.74rem;
+  font-size: 0.72rem;
   font-weight: 700;
   color: var(--text-sub);
 }
 
 .dt-field input,
 .dt-field select {
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.45);
   border: 1px solid var(--border-card);
   border-radius: var(--radius-sm);
-  padding: 6px 10px;
+  padding: 6px 8px;
   color: var(--text-main);
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   font-family: inherit;
   transition: border-color 0.2s;
 }
@@ -2226,14 +2334,13 @@ body {
 }
 
 .dt-section-subhead {
-  grid-column: 1 / -1;
-  font-size: 0.76rem;
+  font-size: 0.74rem;
   font-weight: 800;
   color: var(--accent-cyan);
-  margin-top: 4px;
+  margin-top: 6px;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
 }
 
 /* dt計算結果パネル */
@@ -2241,17 +2348,17 @@ body {
   background: rgba(0, 0, 0, 0.35);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: var(--radius-sm);
-  padding: 14px;
-  margin-bottom: 14px;
+  padding: 12px;
+  margin-bottom: 12px;
 }
 
 .dt-result-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 6px 0;
+  padding: 5px 0;
   border-bottom: 1px dashed rgba(255, 255, 255, 0.06);
-  font-size: 0.82rem;
+  font-size: 0.78rem;
 }
 
 .dt-result-row:last-child {
@@ -2268,19 +2375,19 @@ body {
 }
 
 .dt-result-val.highlight {
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   color: var(--accent-gold);
 }
 
 .dt-alert-badge {
-  font-size: 0.72rem;
-  padding: 4px 8px;
+  font-size: 0.7rem;
+  padding: 4px 6px;
   border-radius: 4px;
-  margin-top: 6px;
+  margin-top: 5px;
   display: flex;
   align-items: center;
-  gap: 6px;
-  line-height: 1.4;
+  gap: 5px;
+  line-height: 1.35;
 }
 
 .dt-alert-badge.warn {
@@ -2297,7 +2404,7 @@ body {
 
 .dt-actions {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   margin-top: auto;
 }
 
@@ -2306,14 +2413,14 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  padding: 8px 14px;
+  gap: 5px;
+  padding: 8px 10px;
   background: rgba(6, 182, 212, 0.15);
   border: 1px solid rgba(6, 182, 212, 0.4);
   border-radius: var(--radius-sm);
   color: var(--accent-cyan);
   font-weight: 700;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   cursor: pointer;
   transition: all 0.2s;
 }
@@ -2327,41 +2434,41 @@ body {
    有償ツール 5大カテゴリ横一列・コロコロ切り替えショーケース (#categoryShowcase)
    ======================================================== */
 .category-showcase-section {
-  padding: 70px 0 60px;
-  background: #090d16;
-  border-bottom: 1px solid var(--border-card);
+  padding: 40px 0 35px;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.98) 0%, rgba(9, 13, 22, 0.98) 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .showcase-header {
   text-align: center;
-  margin-bottom: 36px;
+  margin-bottom: 24px;
 }
 
 .showcase-pill {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 5px 14px;
+  padding: 4px 12px;
   background: rgba(245, 158, 11, 0.12);
   border: 1px solid rgba(245, 158, 11, 0.3);
   border-radius: 20px;
   color: #fbbf24;
-  font-size: 0.8rem;
+  font-size: 0.76rem;
   font-weight: 800;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
 .showcase-title {
-  font-size: clamp(1.6rem, 2.4vw, 2.1rem);
+  font-size: clamp(1.4rem, 2.2vw, 1.85rem);
   font-weight: 800;
   color: var(--text-main);
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 .showcase-desc {
-  font-size: 0.95rem;
+  font-size: 0.88rem;
   color: var(--text-sub);
-  max-width: 720px;
+  max-width: 680px;
   margin: 0 auto;
 }
 

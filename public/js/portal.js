@@ -737,10 +737,12 @@ document.addEventListener('DOMContentLoaded', () => {
       evaluateLocation(lat, lng);
     });
 
-    // マーカー移動完了時
-    currentMarker.on('dragend', (e) => {
-      const { lat, lng } = e.target.getLatLng();
-      evaluateLocation(lat, lng);
+    // リサイズ・描画補正
+    setTimeout(() => {
+      if (leafletMap) leafletMap.invalidateSize();
+    }, 300);
+    window.addEventListener('resize', () => {
+      if (leafletMap) leafletMap.invalidateSize();
     });
   }
 

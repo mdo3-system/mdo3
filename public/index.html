@@ -18,7 +18,7 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/portal.css?v=1.5.2">
+  <link rel="stylesheet" href="css/portal.css?v=1.5.3">
 </head>
 <body>
 
@@ -53,6 +53,34 @@
       </div>
     </div>
   </header>
+
+  <!-- ==========================================
+       ヘッダー直下: 構造計算・設計実務 5大専門カテゴリ 横一列ショーケース (#categoryShowcase)
+       - 枠1: 基礎・擁壁・地盤系 (全8ツール) -> コロコロ切り替え
+       - 枠2: 木造軸組・接合部系 (全7ツール) -> コロコロ切り替え
+       - 枠3: 水平構面・耐力壁系 (全10ツール) -> コロコロ切り替え
+       - 枠4: WRC造パッケージ (全2ツール) -> コロコロ切り替え
+       - 枠5: CAD連携・斜め壁Web-CAD (AZツール 1ツール固定)
+       ========================================== -->
+  <section class="category-showcase-section" id="categoryShowcase">
+    <div class="container">
+      <div class="showcase-header">
+        <div class="showcase-pill">
+          <span class="material-symbols-outlined" style="font-size:16px;">auto_awesome</span>
+          <span>SPECIALIZED STRUCTURAL COMPUTATION (29 TOOLS)</span>
+        </div>
+        <h2 class="showcase-title">構造計算・設計実務 5大専門カテゴリ</h2>
+        <p class="showcase-desc">
+          必要なツールだけを月額980円から。全29の専門Webアプリがブラウザ上で瞬時に動作し、A4審査計算書を出力します。
+        </p>
+      </div>
+
+      <!-- 横一列 5枠グリッド (category_showcase.jsで動的レンダリング & コロコロ切り替え) -->
+      <div class="showcase-grid" id="categoryShowcaseGrid">
+        <!-- JSで動的描画 -->
+      </div>
+    </div>
+  </section>
 
   <!-- ==========================================
        ヒーローセクション
@@ -127,31 +155,45 @@
         </p>
       </div>
 
-      <!-- ① スマート案内図 作図ツール バナーカード -->
+      <!-- ① スマート案内図 作図ツール バナーカード (イメージ図付き) -->
       <div class="map-banner-card">
         <div class="map-banner-left">
           <div class="map-banner-icon">
             <span class="material-symbols-outlined">map</span>
           </div>
-          <div>
-            <h3 class="map-banner-title">
-              スマート案内図 作図システム
+          <div class="map-banner-texts">
+            <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:4px;">
+              <h3 class="map-banner-title" style="margin:0;">スマート案内図 作図システム</h3>
               <span class="nav-free-tag" style="font-size:0.75rem; padding:2px 8px;">完全無料 / 登録不要</span>
-            </h3>
+            </div>
             <p class="map-banner-sub">
-              地名・地番入力だけで、確認申請・完了検査に必要な「方位・縮尺・敷地境界線・案内図」を1分でPDF/高解像度画像出力。
+              地名・地番入力だけで、建築確認申請・完了検査に必要な「方位・縮尺バー・敷地赤枠境界線・主要駅・案内図」を1分でPDF/高解像度画像出力。
             </p>
+            <div class="map-banner-actions">
+              <a href="https://map.mdo3.com" target="_blank" class="btn-map-launch">
+                <span class="material-symbols-outlined">open_in_new</span> 案内図作成ツールを起動
+              </a>
+              <span class="map-spec-note">
+                <span class="material-symbols-outlined" style="font-size:15px; color:var(--accent-green);">check_circle</span> 確認申請図面添付対応 (S=1/2500)
+              </span>
+            </div>
           </div>
         </div>
-        <a href="https://map.mdo3.com" target="_blank" class="btn-map-launch">
-          <span class="material-symbols-outlined">open_in_new</span> 案内図作成ツールを起動
-        </a>
+
+        <div class="map-banner-preview">
+          <a href="https://map.mdo3.com" target="_blank" title="スマート案内図ツールを起動して作図する" class="map-preview-link">
+            <img src="assets/branding/smart_map_sample.jpg" alt="確認申請用 スマート案内図 サンプル (方位・縮尺・境界線・駅名)" class="map-preview-img">
+            <span class="map-preview-badge">
+              <span class="material-symbols-outlined" style="font-size:13px;">zoom_in</span> 申請用作図イメージ
+            </span>
+          </a>
+        </div>
       </div>
 
-      <!-- ② 地域定数検索 ＆ dt自動算出ツールの横並びグリッド -->
+      <!-- ② 地域定数検索 (メインワイド: 結果の下に独立したワイド地図) ＆ dt自動算出ツール (付録: 縦長カード) -->
       <div class="regional-dt-grid">
         
-        <!-- 左: 設計用 地域定数 自動検索 -->
+        <!-- 左: 設計用 地域定数 自動検索 (メインワイド) -->
         <div class="regional-card" id="regionalSearch" style="margin:0;">
           <div class="regional-head">
             <div>
@@ -200,147 +242,144 @@
             </button>
           </div>
 
-          <!-- 2カラム: 左側地図、右側結果カード -->
-          <div class="regional-layout">
-            <!-- インタラクティブ地図 -->
-            <div class="regional-map-container">
-              <div id="regionalMap" style="height: 380px; width: 100%; border-radius: var(--radius-md);"></div>
-              <div class="map-hint">
-                <span class="material-symbols-outlined" style="font-size: 14px;">touch_app</span> 地図クリックで住所・標高から構造地域定数および断熱基準を即時再計算。
+          <!-- 上段: 定数結果パネル（判定地点、4大定数、断熱等性能等級基準） -->
+          <div class="regional-results-stacked" id="regionalResultsPanel">
+            <div class="results-header">
+              <div>
+                <span class="results-sub">判定地点:</span>
+                <h4 id="resTargetAddress" class="results-address" style="font-size:1.05rem;">長野県松本市中央1丁目</h4>
+                <div class="results-meta">
+                  <span>標高: <strong id="resElevation" style="color: var(--accent-cyan);">592 m</strong></span>
+                  <span id="resSnowCategory" class="badge-tag">一般区域</span>
+                  <span id="resEnergyBadge" class="badge-tag" style="background: rgba(16,185,129,0.15); color: #34d399; border: 1px solid rgba(16,185,129,0.3);">4地域</span>
+                </div>
+              </div>
+              <button type="button" class="btn btn-ghost btn-sm" id="btnCopyConditions" title="計算条件テキストをコピー">
+                <span class="material-symbols-outlined" style="font-size:14px;">content_copy</span> コピー
+              </button>
+            </div>
+
+            <!-- 4大構造定数グリッド -->
+            <div class="constants-grid">
+              <div class="const-box">
+                <div class="const-label">
+                  <span class="const-name">係数 Z</span>
+                  <span class="const-law">告示1793号</span>
+                </div>
+                <div class="const-value-row">
+                  <span class="const-value" id="valZ" style="color: var(--accent-gold);">1.0</span>
+                </div>
+                <small class="const-desc" id="descZ">標準地域</small>
+              </div>
+
+              <div class="const-box">
+                <div class="const-label">
+                  <span class="const-name">風速 V0</span>
+                  <span class="const-law">告示1454号</span>
+                </div>
+                <div class="const-value-row">
+                  <span class="const-value" id="valV0" style="color: #60a5fa;">30</span>
+                  <span class="const-unit">m/s</span>
+                </div>
+                <small class="const-desc" id="descV0">松本市基準値</small>
+              </div>
+
+              <div class="const-box">
+                <div class="const-label">
+                  <span class="const-name">積雪量 S</span>
+                  <span class="const-law">告示594号</span>
+                </div>
+                <div class="const-value-row">
+                  <span class="const-value" id="valS" style="color: #34d399;">55</span>
+                  <span class="const-unit">cm</span>
+                </div>
+                <small class="const-desc" id="descS">特定行政庁基準</small>
+              </div>
+
+              <div class="const-box">
+                <div class="const-label">
+                  <span class="const-name">凍結深度</span>
+                  <span class="const-law">細則</span>
+                </div>
+                <div class="const-value-row">
+                  <span class="const-value" id="valFreeze" style="color: #f472b6; font-size: 1.6rem;">60</span>
+                  <span class="const-unit">cm</span>
+                </div>
+                <small class="const-desc" id="descFreeze">建築基準法施行細則</small>
               </div>
             </div>
 
-            <!-- 定数結果パネル -->
-            <div class="regional-results" id="regionalResultsPanel">
-              <div class="results-header">
-                <div>
-                  <span class="results-sub">判定地点:</span>
-                  <h4 id="resTargetAddress" class="results-address" style="font-size:1rem;">長野県松本市中央1丁目</h4>
-                  <div class="results-meta">
-                    <span>標高: <strong id="resElevation" style="color: var(--accent-cyan);">592 m</strong></span>
-                    <span id="resSnowCategory" class="badge-tag">一般区域</span>
-                    <span id="resEnergyBadge" class="badge-tag" style="background: rgba(16,185,129,0.15); color: #34d399; border: 1px solid rgba(16,185,129,0.3);">4地域</span>
-                  </div>
+            <!-- 全国省エネ地域区分 & 断熱等性能等級基準 (UA値) -->
+            <div class="insulation-panel" id="insulationPanel" style="margin-top:12px;">
+              <div class="insulation-panel-header">
+                <div class="ins-title-wrap">
+                  <span class="material-symbols-outlined" style="color: var(--accent-emerald); font-size: 16px;">home_health</span>
+                  <span class="ins-title" style="font-size:0.82rem;">断熱等性能等級基準 (基準UA値)</span>
                 </div>
-                <button type="button" class="btn btn-ghost btn-sm" id="btnCopyConditions" title="計算条件テキストをコピー">
-                  <span class="material-symbols-outlined" style="font-size:14px;">content_copy</span> コピー
-                </button>
+                <span class="ins-region-label" id="insRegionSummary" style="font-size:0.75rem;">4地域</span>
               </div>
 
-              <!-- 4大構造定数グリッド -->
-              <div class="constants-grid">
-                <!-- Z -->
-                <div class="const-box">
-                  <div class="const-label">
-                    <span class="const-name">係数 Z</span>
-                    <span class="const-law">告示1793号</span>
+              <div class="insulation-grid">
+                <div class="ins-box" id="insBox4">
+                  <div class="ins-grade-tag">等級4</div>
+                  <div class="ins-val-wrap">
+                    <span class="ins-ua-label">UA ≦</span>
+                    <span class="ins-ua-val" id="valUaGrade4">0.75</span>
                   </div>
-                  <div class="const-value-row">
-                    <span class="const-value" id="valZ" style="color: var(--accent-gold);">1.0</span>
-                  </div>
-                  <small class="const-desc" id="descZ">標準地域</small>
                 </div>
 
-                <!-- V0 -->
-                <div class="const-box">
-                  <div class="const-label">
-                    <span class="const-name">風速 V0</span>
-                    <span class="const-law">告示1454号</span>
+                <div class="ins-box" id="insBox5">
+                  <div class="ins-grade-tag grade-5">等級5</div>
+                  <div class="ins-val-wrap">
+                    <span class="ins-ua-label">UA ≦</span>
+                    <span class="ins-ua-val" id="valUaGrade5">0.60</span>
                   </div>
-                  <div class="const-value-row">
-                    <span class="const-value" id="valV0" style="color: #60a5fa;">30</span>
-                    <span class="const-unit">m/s</span>
-                  </div>
-                  <small class="const-desc" id="descV0">松本市基準値</small>
                 </div>
 
-                <!-- S -->
-                <div class="const-box">
-                  <div class="const-label">
-                    <span class="const-name">積雪量 S</span>
-                    <span class="const-law">告示594号</span>
+                <div class="ins-box highlight" id="insBox6">
+                  <div class="ins-grade-tag grade-6">等級6</div>
+                  <div class="ins-val-wrap">
+                    <span class="ins-ua-label">UA ≦</span>
+                    <span class="ins-ua-val" id="valUaGrade6">0.34</span>
                   </div>
-                  <div class="const-value-row">
-                    <span class="const-value" id="valS" style="color: #34d399;">55</span>
-                    <span class="const-unit">cm</span>
-                  </div>
-                  <small class="const-desc" id="descS">特定行政庁基準</small>
                 </div>
 
-                <!-- 凍結深度 -->
-                <div class="const-box">
-                  <div class="const-label">
-                    <span class="const-name">凍結深度</span>
-                    <span class="const-law">細則</span>
-                  </div>
-                  <div class="const-value-row">
-                    <span class="const-value" id="valFreeze" style="color: #f472b6; font-size: 1.6rem;">60</span>
-                    <span class="const-unit">cm</span>
-                  </div>
-                  <small class="const-desc" id="descFreeze">建築基準法施行細則</small>
-                </div>
-              </div>
-
-              <!-- 全国省エネ地域区分 & 断熱等性能等級基準 (UA値・ηAC値) パネル -->
-              <div class="insulation-panel" id="insulationPanel" style="margin-top:12px;">
-                <div class="insulation-panel-header">
-                  <div class="ins-title-wrap">
-                    <span class="material-symbols-outlined" style="color: var(--accent-emerald); font-size: 16px;">home_health</span>
-                    <span class="ins-title" style="font-size:0.82rem;">断熱等性能等級基準 (基準UA値)</span>
-                  </div>
-                  <span class="ins-region-label" id="insRegionSummary" style="font-size:0.75rem;">4地域</span>
-                </div>
-
-                <div class="insulation-grid">
-                  <div class="ins-box" id="insBox4">
-                    <div class="ins-grade-tag">等級4</div>
-                    <div class="ins-val-wrap">
-                      <span class="ins-ua-label">UA ≦</span>
-                      <span class="ins-ua-val" id="valUaGrade4">0.75</span>
-                    </div>
-                  </div>
-
-                  <div class="ins-box" id="insBox5">
-                    <div class="ins-grade-tag grade-5">等級5</div>
-                    <div class="ins-val-wrap">
-                      <span class="ins-ua-label">UA ≦</span>
-                      <span class="ins-ua-val" id="valUaGrade5">0.60</span>
-                    </div>
-                  </div>
-
-                  <div class="ins-box highlight" id="insBox6">
-                    <div class="ins-grade-tag grade-6">等級6</div>
-                    <div class="ins-val-wrap">
-                      <span class="ins-ua-label">UA ≦</span>
-                      <span class="ins-ua-val" id="valUaGrade6">0.34</span>
-                    </div>
-                  </div>
-
-                  <div class="ins-box" id="insBox7">
-                    <div class="ins-grade-tag grade-7">等級7</div>
-                    <div class="ins-val-wrap">
-                      <span class="ins-ua-label">UA ≦</span>
-                      <span class="ins-ua-val" id="valUaGrade7">0.23</span>
-                    </div>
+                <div class="ins-box" id="insBox7">
+                  <div class="ins-grade-tag grade-7">等級7</div>
+                  <div class="ins-val-wrap">
+                    <span class="ins-ua-label">UA ≦</span>
+                    <span class="ins-ua-val" id="valUaGrade7">0.23</span>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+
+          <!-- 下段: 独立したワイド地図（地域結果の下に全幅横長配置） -->
+          <div class="regional-map-container-standalone">
+            <div class="map-hint-standalone">
+              <span class="material-symbols-outlined" style="font-size: 15px; color:var(--accent-cyan);">touch_app</span>
+              <span><strong>地図クリックで地点変更:</strong> 地図上の任意地点をクリックすると、住所・標高・地域定数（Z・V0・S・凍結深度）および断熱UA値を瞬時に再計算します。</span>
+            </div>
+            <div id="regionalMap" style="height: 350px; width: 100%; border-radius: var(--radius-md);"></div>
+          </div>
         </div>
 
-        <!-- 右: 有効基礎梁成・dt 自動算出ツール (#dtCalcCard) -->
+        <!-- 右: 有効基礎梁成・dt 自動算出ツール (#dtCalcCard / 付録・縦長カード) -->
         <div class="dt-calc-card" id="dtCalcCard">
           <div class="dt-calc-header">
             <div class="dt-calc-title-wrap">
               <span class="material-symbols-outlined" style="color:var(--accent-cyan); font-size:22px;">straighten</span>
-              <h3 class="dt-calc-title">有効基礎梁成・dt 算出</h3>
+              <div>
+                <h3 class="dt-calc-title">有効基礎梁成・dt 算出</h3>
+                <span class="dt-calc-subtag">【付録】アーキトレンド入力調整・審査質疑対策</span>
+              </div>
             </div>
-            <span class="dt-free-badge">無償・審査対応</span>
+            <span class="dt-free-badge">無償</span>
           </div>
 
-          <p style="font-size:0.76rem; color:var(--text-sub); margin-bottom:12px; line-height:1.45;">
-            主筋2段配筋時の重心距離 $dt$ と有効梁成 $d$ を瞬時算定。アーキトレンド入力値の根拠や、グレー本70mm規定に厳しい審査機関の指摘を完全クリアします。
+          <p style="font-size:0.75rem; color:var(--text-sub); margin-bottom:12px; line-height:1.45;">
+            主筋2段配筋時の重心距離 $dt$ と有効梁成 $d$ を瞬時算定。2段筋がない場合は「0本」を選択することで1段配筋（$dt = d_1$）として算定できます。
           </p>
 
           <div class="dt-form-grid">
@@ -349,6 +388,7 @@
               <input type="number" id="dtBeamHeight" value="640" min="300" max="2000" step="10">
             </div>
 
+            <!-- 上主筋 -->
             <div class="dt-section-subhead">
               <span class="material-symbols-outlined" style="font-size:14px;">north</span> 上主筋 (上端筋)
             </div>
@@ -360,10 +400,12 @@
                   <option value="13" selected>D13</option>
                   <option value="16">D16</option>
                   <option value="19">D19</option>
-                  <option value="22">D22</option>
-                  <option value="25">D25</option>
                 </select>
-                <input type="number" id="dtTopBar1Count" value="2" min="1" max="10" style="width:52px;">
+                <select id="dtTopBar1Count" style="width:72px;">
+                  <option value="1">1本</option>
+                  <option value="2" selected>2本</option>
+                  <option value="3">3本</option>
+                </select>
               </div>
             </div>
             <div class="dt-field">
@@ -374,13 +416,17 @@
                   <option value="13" selected>D13</option>
                   <option value="16">D16</option>
                   <option value="19">D19</option>
-                  <option value="22">D22</option>
-                  <option value="25">D25</option>
                 </select>
-                <input type="number" id="dtTopBar2Count" value="2" min="0" max="10" style="width:52px;" title="0で2段筋なし">
+                <select id="dtTopBar2Count" style="width:84px;">
+                  <option value="0">0本 (無)</option>
+                  <option value="1">1本</option>
+                  <option value="2" selected>2本</option>
+                  <option value="3">3本</option>
+                </select>
               </div>
             </div>
 
+            <!-- 下主筋 -->
             <div class="dt-section-subhead">
               <span class="material-symbols-outlined" style="font-size:14px;">south</span> 下主筋 (下端筋)
             </div>
@@ -392,10 +438,12 @@
                   <option value="13" selected>D13</option>
                   <option value="16">D16</option>
                   <option value="19">D19</option>
-                  <option value="22">D22</option>
-                  <option value="25">D25</option>
                 </select>
-                <input type="number" id="dtBotBar1Count" value="1" min="1" max="10" style="width:52px;">
+                <select id="dtBotBar1Count" style="width:72px;">
+                  <option value="1" selected>1本</option>
+                  <option value="2">2本</option>
+                  <option value="3">3本</option>
+                </select>
               </div>
             </div>
             <div class="dt-field">
@@ -406,13 +454,17 @@
                   <option value="13">D13</option>
                   <option value="16" selected>D16</option>
                   <option value="19">D19</option>
-                  <option value="22">D22</option>
-                  <option value="25">D25</option>
                 </select>
-                <input type="number" id="dtBotBar2Count" value="1" min="0" max="10" style="width:52px;" title="0で2段筋なし">
+                <select id="dtBotBar2Count" style="width:84px;">
+                  <option value="0">0本 (無)</option>
+                  <option value="1" selected>1本</option>
+                  <option value="2">2本</option>
+                  <option value="3">3本</option>
+                </select>
               </div>
             </div>
 
+            <!-- 補足条件 -->
             <div class="dt-section-subhead">
               <span class="material-symbols-outlined" style="font-size:14px;">tune</span> 補足条件 (STP・かぶり厚)
             </div>
@@ -438,15 +490,15 @@
               【上主筋 算定結果】
             </div>
             <div class="dt-result-row">
-              <span class="dt-result-label">1段筋位置 d1 / 2段筋位置 d2:</span>
+              <span class="dt-result-label">1段筋 d1 / 2段筋 d2:</span>
               <span class="dt-result-val"><span id="resTopD1">56.5 mm</span> / <span id="resTopD2">100.8 mm</span></span>
             </div>
             <div class="dt-result-row">
-              <span class="dt-result-label">上端重心距離 dt (計算値 → 安全側丸め):</span>
+              <span class="dt-result-label">上端重心距離 dt:</span>
               <span class="dt-result-val highlight"><span id="resTopDtRounded">80 mm</span> <small style="font-size:0.72rem; color:var(--text-sub);">(厳密:<span id="resTopDtExact">78.6</span>)</small></span>
             </div>
             <div class="dt-result-row">
-              <span class="dt-result-label">上主筋 有効梁成 d (D - dt):</span>
+              <span class="dt-result-label">上主筋 有効梁成 d:</span>
               <span class="dt-result-val" style="color:#34d399; font-size:1rem;"><strong id="resTopEffectiveD">560 mm</strong></span>
             </div>
             <div id="grayCompTop" class="dt-alert-badge warn"></div>
@@ -455,15 +507,15 @@
               【下主筋 算定結果】
             </div>
             <div class="dt-result-row">
-              <span class="dt-result-label">1段筋位置 d1 / 2段筋位置 d2:</span>
+              <span class="dt-result-label">1段筋 d1 / 2段筋 d2:</span>
               <span class="dt-result-val"><span id="resBotD1">76.5 mm</span> / <span id="resBotD2">122.3 mm</span></span>
             </div>
             <div class="dt-result-row">
-              <span class="dt-result-label">下端重心距離 dt (計算値 → 安全側丸め):</span>
+              <span class="dt-result-label">下端重心距離 dt:</span>
               <span class="dt-result-val highlight"><span id="resBotDtRounded">100 mm</span> <small style="font-size:0.72rem; color:var(--text-sub);">(厳密:<span id="resBotDtExact">99.4</span>)</small></span>
             </div>
             <div class="dt-result-row">
-              <span class="dt-result-label">下主筋 有効梁成 d (D - dt):</span>
+              <span class="dt-result-label">下主筋 有効梁成 d:</span>
               <span class="dt-result-val" style="color:#34d399; font-size:1rem;"><strong id="resBotEffectiveD">540 mm</strong></span>
             </div>
             <div id="grayCompBot" class="dt-alert-badge warn"></div>
@@ -479,34 +531,6 @@
           </div>
         </div>
 
-      </div>
-    </div>
-  </section>
-
-  <!-- ==========================================
-       有償ツール 5大カテゴリ横一列・コロコロ切り替えショーケース (#categoryShowcase)
-       - 枠1: 基礎・擁壁・地盤系 (8ツール) -> コロコロ切り替え
-       - 枠2: 木造軸組・接合部系 (5ツール) -> コロコロ切り替え
-       - 枠3: 水平構面・耐力壁系 (5ツール) -> コロコロ切り替え
-       - 枠4: WRC造パッケージ (5ツール) -> コロコロ切り替え
-       - 枠5: CAD連携・斜め壁Web-CAD (AZツール 1ツール固定)
-       ========================================== -->
-  <section class="category-showcase-section" id="categoryShowcase">
-    <div class="container">
-      <div class="showcase-header">
-        <div class="showcase-pill">
-          <span class="material-symbols-outlined" style="font-size:16px;">auto_awesome</span>
-          <span>SPECIALIZED STRUCTURAL COMPUTATION</span>
-        </div>
-        <h2 class="showcase-title">構造計算・設計実務 5大専門カテゴリ</h2>
-        <p class="showcase-desc">
-          必要なツールだけを月額980円から。全29の専門Webアプリがブラウザ上で瞬時に動作し、A4審査計算書を出力します。
-        </p>
-      </div>
-
-      <!-- 横一列 5枠グリッド (category_showcase.jsで動的レンダリング & コロコロ切り替え) -->
-      <div class="showcase-grid" id="categoryShowcaseGrid">
-        <!-- JSで動的描画 -->
       </div>
     </div>
   </section>
@@ -1040,10 +1064,10 @@
   </footer>
 
   <!-- Scripts -->
-  <script src="js/tools_data.js?v=1.5.2"></script>
-  <script src="js/regional_calc.js?v=1.5.2"></script>
-  <script src="js/dt_calc.js?v=1.5.2"></script>
-  <script src="js/category_showcase.js?v=1.5.2"></script>
-  <script src="js/portal.js?v=1.5.2"></script>
+  <script src="js/tools_data.js?v=1.5.3"></script>
+  <script src="js/regional_calc.js?v=1.5.3"></script>
+  <script src="js/dt_calc.js?v=1.5.3"></script>
+  <script src="js/category_showcase.js?v=1.5.3"></script>
+  <script src="js/portal.js?v=1.5.3"></script>
 </body>
 </html>
