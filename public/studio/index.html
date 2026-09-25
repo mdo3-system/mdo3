@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
 
   <!-- Studio Custom CSS -->
-  <link rel="stylesheet" href="css/studio.css?v=1.2.1">
+  <link rel="stylesheet" href="css/studio.css?v=1.3.0">
 </head>
 <body>
 
@@ -60,7 +60,7 @@
       <aside class="studio-panel" id="panelSettings">
         <div class="panel-header">
           <h2 class="panel-title">
-            <span class="material-symbols-outlined">tune</span> 企画設定 & ターゲット
+            <span class="material-symbols-outlined">tune</span> 企画設定 & 特別演出
           </h2>
           <span style="font-size:0.75rem; color:var(--text-muted);">STEP 1</span>
         </div>
@@ -109,35 +109,44 @@
           </div>
         </div>
 
-        <!-- 4. Veo 3 アカウント枠案内 -->
+        <!-- 4. 特別な演出・こだわり要望入力枠 (新設) -->
         <div class="form-group">
-          <label class="form-label">Veo 3 生成枠との同期</label>
-          <div class="veo-quota-box">
-            <span class="material-symbols-outlined">bolt</span>
-            <div class="veo-quota-text">
-              <strong>5アカウント × 3本 ＝ 1日最大15本</strong>
-              クリップ番号 (Account #1〜5) を自動割り当て
-            </div>
+          <label class="form-label" for="specialRequestsInput" style="display:flex; justify-content:space-between;">
+            <span>特別な演出・こだわり要望</span>
+            <span style="font-size:0.7rem; color:var(--accent-gold);">ユーザー指定枠</span>
+          </label>
+          <textarea id="specialRequestsInput" class="special-request-textarea" rows="3" placeholder="例: ドローンによる夕暮れの屋根旋回カットを入れたい、2025年4号特例縮小の切迫感を強調、落ち着いた女性ナレーターの声、梁の金物接合部をマクロ撮影 等"></textarea>
+        </div>
+
+        <!-- 5. 5つのVeo 3アカウント管理枠 -->
+        <div class="form-group">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <label class="form-label" style="margin-bottom:0;">Veo 3 アカウント指定 (5枠)</label>
+            <span style="font-size:0.7rem; color:var(--text-muted);">1日最大15本</span>
+          </div>
+          <div class="account-slots-grid" id="accountSlotsContainer">
+            <input type="text" class="account-slot-input" id="accInput_1" value="Account #1 (メイン)" placeholder="アカウント1">
+            <input type="text" class="account-slot-input" id="accInput_2" value="Account #2 (サブA)" placeholder="アカウント2">
+            <input type="text" class="account-slot-input" id="accInput_3" value="Account #3 (サブB)" placeholder="アカウント3">
+            <input type="text" class="account-slot-input" id="accInput_4" value="Account #4 (サブC)" placeholder="アカウント4">
+            <input type="text" class="account-slot-input" id="accInput_5" value="Account #5 (サブD)" placeholder="アカウント5">
           </div>
         </div>
 
-        <!-- 生成ボタン -->
-        <button type="button" class="btn-generate-project" id="btnGenerateProject">
-          <span class="material-symbols-outlined">auto_awesome</span> AI制作チームに指示・企画生成
+        <!-- 素案生成ボタン -->
+        <button type="button" class="btn-generate-project" id="btnGenerateScenarioDraft">
+          <span class="material-symbols-outlined">psychology</span> ① シナリオ素案をエージェントに提出させる
         </button>
       </aside>
 
-      <!-- ─── 中央カラム: 4部門7職種 絵コンテ ＆ Veo3 プロンプト ─── -->
+      <!-- ─── 中央カラム: シナリオ素案レビュー ＆ カメラカット・Veo3詳細設計 ─── -->
       <section class="studio-panel" id="panelStoryboard" style="min-width: 0;">
         <div class="panel-header" style="flex-wrap:wrap; gap:8px;">
           <h2 class="panel-title">
-            <span class="material-symbols-outlined">movie</span> 4部門7職種 絵コンテ ＆ Veo 3 プロンプト
+            <span class="material-symbols-outlined">movie</span> 4部門7職種 シナリオ協議 ＆ カメラ設計
           </h2>
           <div style="display:flex; align-items:center; gap:8px;">
-            <button type="button" class="btn-copy-prompt" id="btnCopyAllPrompts" style="padding:5px 10px; font-size:0.75rem;">
-              <span class="material-symbols-outlined" style="font-size:14px;">copy_all</span> 全Veo3プロンプト一括コピー
-            </button>
-            <span style="font-size:0.75rem; color:var(--accent-cyan);">STEP 2</span>
+            <span class="status-workflow-badge" id="workflowStatusBadge">STAGE 1: シナリオ素案協議中</span>
           </div>
         </div>
 
@@ -169,31 +178,132 @@
           </div>
         </div>
 
-        <!-- ディレクターズ・ステートメント (方針) -->
-        <div id="directorStatementBox">
-          <!-- JSで動的挿入 -->
+        <!-- ==============================================
+             STAGE 1: シナリオ素案 協議・加筆修正・承認エリア
+             ============================================== -->
+        <div class="scenario-review-card" id="scenarioReviewSection">
+          <div class="scenario-review-header">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="material-symbols-outlined" style="color:var(--accent-gold);">description</span>
+              <h3 style="font-size:1.05rem; font-weight:800; color:#fff; margin:0;">エージェント提出：シナリオ素案</h3>
+            </div>
+            <span style="font-size:0.75rem; color:var(--accent-cyan);">ユーザー承認待ち</span>
+          </div>
+
+          <!-- 素案本文 (JSで動的挿入) -->
+          <div class="scenario-draft-body" id="scenarioDraftContent">
+            <!-- JSで動的挿入 -->
+          </div>
+
+          <!-- ユーザー加筆・修正指示エリア -->
+          <div class="scenario-feedback-box">
+            <label class="form-label" style="font-size:0.8rem; color:var(--text-main); margin-bottom:6px;">
+              <span class="material-symbols-outlined" style="font-size:15px; vertical-align:middle; color:var(--accent-cyan);">rate_review</span>
+              シナリオへの加筆・修正依頼（エージェントに再作成を指示）
+            </label>
+            <textarea id="scenarioFeedbackInput" class="feedback-textarea" rows="2" placeholder="例: 冒頭のペインをもっと強調してほしい、A4計算書の適合性を強くアピールしたい、演出のトーンを落ち着いたトーンに変えて 等"></textarea>
+            
+            <div class="scenario-actions-bar">
+              <button type="button" class="btn-revise-scenario" id="btnReviseScenario">
+                <span class="material-symbols-outlined">restart_alt</span> 加筆修正を指示（エージェント再作成）
+              </button>
+              <button type="button" class="btn-approve-scenario" id="btnApproveScenario">
+                <span class="material-symbols-outlined">check_circle</span> このシナリオでOK！（カメラカット・Veo3工程へ進む）
+              </button>
+            </div>
+          </div>
         </div>
 
-        <!-- 絵コンテカード タイムライン -->
-        <div class="storyboard-timeline" id="timelineContainer">
-          <!-- JSで動的挿入 -->
+        <!-- ==============================================
+             STAGE 2: カメラカット ＆ 5アカウント一発コピペ展開
+             ============================================== -->
+        <div id="cameraStoryboardSection" style="display:none;">
+          
+          <!-- 5アカウント一括配分ダッシュボード -->
+          <div class="account-distribution-panel" id="accountDistributionPanel">
+            <div class="distribution-header">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span class="material-symbols-outlined" style="color:var(--accent-cyan);">send_to_mobile</span>
+                <h4 style="margin:0; font-size:0.95rem; font-weight:800; color:#fff;">5アカウント一括配分 ＆ 各アカウント一発コピペ</h4>
+              </div>
+              <span style="font-size:0.75rem; color:var(--text-muted);">各担当者はボタン1つでVeo3へコピペ可能</span>
+            </div>
+            
+            <!-- 5アカウントごとのカードグリッド -->
+            <div class="account-cards-grid" id="accountCardsGrid">
+              <!-- JSで動的生成 -->
+            </div>
+          </div>
+
+          <!-- ディレクターズ・ステートメント (方針) -->
+          <div id="directorStatementBox">
+            <!-- JSで動的挿入 -->
+          </div>
+
+          <!-- 絵コンテカード タイムライン -->
+          <div class="storyboard-timeline" id="timelineContainer">
+            <!-- JSで動的挿入 -->
+          </div>
         </div>
+
+        <!-- カメラ工程未アンロック時のガイド -->
+        <div id="cameraLockedNotice" class="camera-locked-notice">
+          <span class="material-symbols-outlined" style="font-size:36px; color:var(--text-muted); margin-bottom:8px;">lock</span>
+          <p style="margin:0; font-size:0.86rem; color:var(--text-sub);">
+            まずは上記の<strong>「シナリオ素案」</strong>をご確認いただき、必要に応じて加筆修正を依頼してください。<br>
+            内容が確定し<strong>「このシナリオでOK！」</strong>を押すと、5アカウントへの自動配分と詳細なカメラカット・Veo 3英語プロンプトがアンロックされます。
+          </p>
+        </div>
+
       </section>
 
-      <!-- ─── 右カラム: ローカル連携 ＆ 完成動画アップロード ─── -->
+      <!-- ─── 右カラム: Google Drive連携 ＆ ローカルGPU編集 ─── -->
       <aside class="studio-panel" id="panelExport">
         <div class="panel-header">
           <h2 class="panel-title">
-            <span class="material-symbols-outlined">cloud_sync</span> ローカル編集 ＆ 公開
+            <span class="material-symbols-outlined">cloud_sync</span> Google Drive & GPU編集
           </h2>
-          <span style="font-size:0.75rem; color:var(--text-muted);">STEP 3</span>
+          <span style="font-size:0.75rem; color:var(--text-muted);">STEP 4</span>
+        </div>
+
+        <!-- Google Drive API連携カード (サーバー負荷完全ゼロ仕様) -->
+        <div class="export-card" style="border-color: rgba(34, 197, 94, 0.4); background: rgba(34, 197, 94, 0.05);">
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+            <span class="material-symbols-outlined" style="color:var(--accent-green);">add_to_drive</span>
+            <h4 style="font-size:0.86rem; font-weight:700; color:var(--accent-green); margin:0;">Google Drive API 連携</h4>
+          </div>
+          <p style="font-size:0.74rem; color:var(--text-sub); margin-bottom:10px; line-height:1.5;">
+            完成動画を管理者のGoogle Driveへ直接保管。本サーバーにはメタデータのみを登録するため、<strong>サーバーの容量・転送負荷は完全ゼロ</strong>です。
+          </p>
+          <div class="gdrive-input-group">
+            <input type="url" id="inputGdriveUrl" class="gdrive-url-input" placeholder="Google Drive 共有URL (またはプレビューURL)">
+            <button type="button" class="btn-gdrive-register" id="btnRegisterGdriveUrl">
+              <span class="material-symbols-outlined" style="font-size:15px;">link</span> 登録
+            </button>
+          </div>
+        </div>
+
+        <!-- ローカルPC GPU動画合成パイプライン (Quadro K5200 + FFmpeg) -->
+        <div class="export-card" style="border-color: rgba(59, 130, 246, 0.4); background: rgba(59, 130, 246, 0.05);">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <h4 style="font-size:0.84rem; font-weight:700; color:#60a5fa; margin:0;">ローカル GPU 自動合成環境</h4>
+            <span class="gpu-badge">Quadro K5200 (NVENC)</span>
+          </div>
+          <p style="font-size:0.74rem; color:var(--text-sub); margin-bottom:10px; line-height:1.5;">
+            このPCのGPUとPython、FFmpeg 9.0.2を活用し、Veo 3クリップを自動結合・Google Driveへアップロードします。
+          </p>
+          <div style="background:rgba(0,0,0,0.3); border-radius:6px; padding:8px; font-size:0.72rem; color:var(--text-sub); line-height:1.5; margin-bottom:10px;">
+            <strong>実行手順:</strong><br>
+            1. <code>tools/video_pipeline/inputs/</code> にVeo3動画を保存<br>
+            2. <code>run_pipeline.bat</code> をダブルクリック実行
+          </div>
         </div>
 
         <!-- エクスポートダウンロード -->
         <div class="export-card">
           <h4 style="font-size:0.86rem; font-weight:700; margin-bottom:8px; color:var(--text-main);">構成指示書のエクスポート</h4>
-          <p style="font-size:0.76rem; color:var(--text-sub); margin-bottom:14px; line-height:1.5;">
-            生成された絵コンテ・秒数配分・Veo 3 プロンプト一式を手元に保存します。
+          <p style="font-size:0.76rem; color:var(--text-sub); margin-bottom:12px; line-height:1.5;">
+            承認されたシナリオ・絵コンテ・5アカウント別Veo 3プロンプト一式をダウンロード。
           </p>
           <button type="button" class="btn-export-download" id="btnDownloadMarkdown">
             <span class="material-symbols-outlined" style="font-size:18px; color:var(--accent-cyan);">description</span>
@@ -216,24 +326,6 @@
           <div id="snsDraftText" style="font-size:0.75rem; color:var(--text-sub); background:rgba(0,0,0,0.3); border-radius:6px; padding:8px; line-height:1.5; white-space:pre-wrap; max-height:110px; overflow-y:auto;">
             <!-- JSで動的生成 -->
           </div>
-        </div>
-
-        <!-- ローカル編集フロー案内 -->
-        <div class="export-card" style="border-color: rgba(59, 130, 246, 0.3); background: rgba(59, 130, 246, 0.05);">
-          <h4 style="font-size:0.84rem; font-weight:700; margin-bottom:6px; color:#60a5fa;">ローカルPC 編集フロー</h4>
-          <ol style="font-size:0.76rem; color:var(--text-sub); padding-left:16px; line-height:1.6;">
-            <li>Veo 3 でプロンプトを投入しクリップを生成</li>
-            <li>Premiere / AfterEffects 等で1本に結合・BGM挿入</li>
-            <li>完成した mp4 ファイルを下記枠へアップロード</li>
-          </ol>
-        </div>
-
-        <!-- 完成動画 ドラッグ＆ドロップ アップローダー -->
-        <div class="upload-dropzone" id="uploadDropzone">
-          <span class="material-symbols-outlined dropzone-icon">cloud_upload</span>
-          <div class="dropzone-title">完成動画 (mp4) をアップロード</div>
-          <div class="dropzone-sub">ドラッグ＆ドロップ または クリックして選択</div>
-          <input type="file" id="videoFileInput" accept="video/mp4,video/quicktime,video/webm" style="display:none;">
         </div>
 
         <!-- プレビュー表示エリア -->
@@ -288,8 +380,8 @@
   </main>
 
   <!-- 全29ツールのカタログデータ -->
-  <script src="../js/tools_data.js?v=1.2.1"></script>
+  <script src="../js/tools_data.js?v=1.3.0"></script>
   <!-- スタジオコアエンジン -->
-  <script src="js/studio_engine.js?v=1.2.1"></script>
+  <script src="js/studio_engine.js?v=1.3.0"></script>
 </body>
 </html>

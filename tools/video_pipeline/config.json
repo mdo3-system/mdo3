@@ -1,0 +1,39 @@
+{
+  "project_name": "mdo3_studio_pipeline",
+  "version": "1.0.0",
+  "hardware": {
+    "gpu_name": "NVIDIA Quadro K5200",
+    "encoder": "h264_nvenc",
+    "fallback_encoder": "libx264",
+    "preset": "p5",
+    "rc": "vbr",
+    "bitrate": "12M",
+    "resolution": "1920x1080",
+    "fps": 30
+  },
+  "accounts": [
+    { "id": 1, "name": "Account #1", "tag": "Acc#1" },
+    { "id": 2, "name": "Account #2", "tag": "Acc#2" },
+    { "id": 3, "name": "Account #3", "tag": "Acc#3" },
+    { "id": 4, "name": "Account #4", "tag": "Acc#4" },
+    { "id": 5, "name": "Account #5", "tag": "Acc#5" }
+  ],
+  "gdrive": {
+    "enabled": true,
+    "upload_mode": "direct_api",
+    "folder_id": "",
+    "client_secrets_file": "client_secrets.json",
+    "token_file": "token.json",
+    "description": "管理者のGoogle Driveフォルダへアップロードし、XServerの負荷を完全ゼロ化"
+  },
+  "audio": {
+    "default_bgm": "assets/bgm_modern_ambient.mp3",
+    "bgm_volume": 0.18,
+    "fade_in_sec": 1.5,
+    "fade_out_sec": 2.0
+  },
+  "mdo3_api": {
+    "endpoint": "https://mdo3.com/studio/api/upload_video.php",
+    "sync_metadata": true
+  }
+}
