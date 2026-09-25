@@ -397,7 +397,9 @@ WRC造の「開口部補強・割増検討（jintsuko_bf）」は削除。新た
   - 公式アバターロゴ (1:1): `public/assets/branding/mdo3_official_avatar.jpg`
   - YouTubeチャンネルバナー (16:9 2560x1440 セーフエリア対応): `public/assets/branding/mdo3_youtube_banner.jpg`
   - XServer本番サーバー（`/public_html/assets/branding/`）へアップロード完了。
-- **アカウント設計仕様**:
-  - **Instagram**: プロアカウント（クリエイター）、ユーザー名 `@mdo3_official`、150字Bio、Reels（Veo 3広告・30秒デモ動画）配信設計。
-  - **YouTube**: Googleアカウント（`s2712350@gmail.com`）のブランドチャンネル、チャンネル名 `mdo3 ARCHITECTURAL TECH`、ハンドル `@mdo3_official`、横型4K解説マニュアル＆Shorts配信設計。
+- **アカウント設計仕様（開設完了）**:
+  - **Instagram**: プロアカウント（クリエイター）、決定ユーザー名 `@mdo3_studio`、公式アイコン適用完了、Reels（Veo 3広告・30秒デモ動画）配信基盤。
+  - **YouTube**: ブランドチャンネル `mdo3 ARCHITECTURAL TECH`、決定ハンドル `@mdo3_official`、公式アイコン＆チャンネルバナー（2560x1440）設定完了、横型4K解説マニュアル＆Shorts配信基盤。
+- **公式ポータル ＆ スタジオ連携**:
+  - ポータルフッター（`public/index.html`）およびスタジオ更新タブ（`public/studio/index.html`）に公式SNS 4大チャネル（X, note+, Instagram, YouTube）のリンクバーを配備。実機ブラウザ検証完了。
 
