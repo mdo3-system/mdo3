@@ -734,7 +734,10 @@ document.addEventListener('DOMContentLoaded', () => {
       // 逆ジオコーディング (国土地理院またはOSM)
       try {
         const revUrl = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=14&addressdetails=1`;
-        const res = await fetch(revUrl, { headers: { 'Accept-Language': 'ja' } });
+        const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+        const tid = controller ? setTimeout(() => controller.abort(), 1200) : null;
+        const res = await fetch(revUrl, { headers: { 'Accept-Language': 'ja' }, signal: controller ? controller.signal : undefined });
+        if (tid) clearTimeout(tid);
         if (res.ok) {
           const revData = await res.json();
           address = revData.display_name.replace(/, 日本$/, '') || `北緯${lat.toFixed(4)}, 東経${lon.toFixed(4)}`;
@@ -808,28 +811,32 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // 住所検索ボタン (国土地理院・OSM・代表座標フォールバックで100%地図連動移動)
+  // 住所検索ボタン (国土地理院・内蔵マスター即応で100%地図連動移動)
   if (btnRegSearch && regAddressInput) {
     btnRegSearch.addEventListener('click', async () => {
       const query = regAddressInput.value.trim();
       if (!query) return;
 
       btnRegSearch.innerHTML = '<span class="material-symbols-outlined" style="animation:spin 1s linear infinite;">sync</span> 検索中...';
-      const geo = await geocodeAddress(query);
-      btnRegSearch.innerHTML = '<span class="material-symbols-outlined">search</span> 検索・算定';
+      try {
+        const geo = await geocodeAddress(query);
+        const targetLat = geo ? geo.lat : DEFAULT_LAT;
+        const targetLon = geo ? geo.lon : DEFAULT_LON;
+        const targetAddress = (geo && geo.title) ? geo.title : query;
 
-      const targetLat = geo ? geo.lat : DEFAULT_LAT;
-      const targetLon = geo ? geo.lon : DEFAULT_LON;
-      const targetAddress = (geo && geo.title) ? geo.title : query;
-
-      if (leafletMap) {
-        leafletMap.invalidateSize();
-        leafletMap.flyTo([targetLat, targetLon], 14, { duration: 1.2 });
+        if (leafletMap) {
+          leafletMap.invalidateSize();
+          leafletMap.flyTo([targetLat, targetLon], 14, { duration: 1.2 });
+        }
+        if (currentMarker) {
+          currentMarker.setLatLng([targetLat, targetLon]);
+        }
+        await evaluateLocation(targetLat, targetLon, targetAddress);
+      } catch (err) {
+        console.error('Regional search failed:', err);
+      } finally {
+        btnRegSearch.innerHTML = '<span class="material-symbols-outlined">search</span> 検索・算定';
       }
-      if (currentMarker) {
-        currentMarker.setLatLng([targetLat, targetLon]);
-      }
-      evaluateLocation(targetLat, targetLon, targetAddress);
     });
 
     regAddressInput.addEventListener('keydown', (e) => {
