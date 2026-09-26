@@ -291,6 +291,15 @@ const ToolStorage = {
             exportPayload.params = formValues;
         }
 
+        // 6. めり込み補強ツール等の行データ (merikomi_rows) を完全格納
+        if (typeof window.collectMerikomiRows === 'function') {
+            const mRows = window.collectMerikomiRows();
+            if (mRows.length > 0) {
+                exportPayload.merikomi_rows = mRows;
+                exportPayload.rows = mRows;
+            }
+        }
+
         const jsonStr = JSON.stringify(exportPayload, null, 2);
         const blob = new Blob([jsonStr], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
@@ -407,6 +416,16 @@ const ToolStorage = {
             tableBody.innerHTML = tableHtml;
             const rowCount = tableBody.querySelectorAll('tr').length;
             restoredItems.push(`Z・I 算定履歴 (${rowCount}件)`);
+        }
+
+        // 4. めり込み補強ツール（merikomi_rows / rows）の完全復元
+        const mRows = payload.merikomi_rows || (payload.tool_id === 'merikomi' && payload.rows) || (Array.isArray(payload) && payload[0]?.pt ? payload : null);
+        if (Array.isArray(mRows) && document.getElementById('table_body') && typeof addRow === 'function') {
+            const tbody = document.getElementById('table_body');
+            tbody.innerHTML = '';
+            mRows.forEach(d => addRow(d));
+            if (typeof checkOverallStatus === 'function') checkOverallStatus();
+            restoredItems.push(`めり込み検討柱 (${mRows.length}箇所)`);
         }
 
         // 4. フォーム各要素（静的フォーム・入力値）への設定とイベント発火
