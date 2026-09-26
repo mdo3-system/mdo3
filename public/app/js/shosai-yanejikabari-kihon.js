@@ -248,3 +248,70 @@ function calc() {
         document.getElementById('highlight-judge').style.color = "#2f855a";
     }
 }
+
+// --- JSON入出力機能 ---
+function exportData() {
+    const data = {
+        tool_id: 'yanejikabari_kihon',
+        title: '面材直張り勾配屋根 詳細計算書 [規定仕様]',
+        timestamp: new Date().toISOString(),
+        params: {
+            panel_spec: document.getElementById('panel_spec')?.value || '12_1',
+            nail_type: document.getElementById('nail_type')?.value || 'N50',
+            support_type: document.getElementById('support_type')?.value || 'sugi',
+            roof_slope: document.getElementById('roof_slope')?.value || '4.0',
+            nail_pitch: document.getElementById('nail_pitch')?.value || '150',
+            layout_type: document.getElementById('layout_type')?.value || '川型'
+        }
+    };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `yanejikabari_kihon_${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+
+function importData(event) {
+    const file = event.target.files && event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const data = JSON.parse(e.target.result);
+            const p = data.params || data;
+
+            if (p.panel_spec && document.getElementById('panel_spec')) {
+                document.getElementById('panel_spec').value = p.panel_spec;
+                updateOptions();
+            }
+            if (p.nail_type && document.getElementById('nail_type')) {
+                document.getElementById('nail_type').value = p.nail_type;
+            }
+            if (p.support_type && document.getElementById('support_type')) {
+                document.getElementById('support_type').value = p.support_type;
+            }
+            if (p.roof_slope && document.getElementById('roof_slope')) {
+                document.getElementById('roof_slope').value = p.roof_slope;
+            }
+            if (p.nail_pitch && document.getElementById('nail_pitch')) {
+                document.getElementById('nail_pitch').value = p.nail_pitch;
+            }
+            if (p.layout_type && document.getElementById('layout_type')) {
+                document.getElementById('layout_type').value = p.layout_type;
+            }
+
+            calc();
+            alert('✓ 面材直張り勾配屋根データを復元しました。');
+        } catch (err) {
+            alert('ファイルの復元に失敗しました。形式をご確認ください。');
+        } finally {
+            if (event.target) event.target.value = '';
+        }
+    };
+    reader.readAsText(file);
+}

@@ -392,7 +392,12 @@ async function importData(event) {
             
             if (typeof onInputChanged === 'function') onInputChanged();
             else calc();
-        } catch (err) { alert('読込失敗'); }
+            alert('✓ 垂木工法勾配屋根データを復元しました。');
+        } catch (err) {
+            alert('ファイルの復元に失敗しました。形式をご確認ください。');
+        } finally {
+            if (event.target) event.target.value = '';
+        }
     };
     reader.readAsText(file);
 }
