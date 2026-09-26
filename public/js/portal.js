@@ -253,7 +253,7 @@ document.addEventListener('DOMContentLoaded', () => {
                   起動 (要キー設定) <span class="material-symbols-outlined" style="font-size:16px;">key</span>
                 </button>
               ` : `
-                <a href="${tool.url}" target="_blank" rel="noopener" class="btn btn-primary btn-sm">
+                <a href="/workspace.html?tool=${tool.id}" target="_blank" rel="noopener" class="btn btn-primary btn-sm" title="案件統合ワークスペースで開く (別タブ)">
                   ${isNailSet ? 'セット起動' : '開く'} <span class="material-symbols-outlined" style="font-size:16px;">launch</span>
                 </a>
               `}

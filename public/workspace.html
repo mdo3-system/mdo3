@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>mdo3 案件統合コンソール (Project Workspace) | 1物件・複数ツール統合プラットフォーム</title>
+  <meta name="description" content="木造・RC構造実務の1案件で複数ツール（Z係数・めり込み・人通口補強・基本屋根構面等）を1タブでシームレスに使い分ける統合ワークスペース。">
+  <link rel="canonical" href="https://mdo3.com/workspace.html">
+
+  <!-- Google Fonts & Material Symbols -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;800;900&family=Plus+Jakarta+Sans:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="css/portal.css?v=1.5.6">
+  <link rel="stylesheet" href="css/workspace.css?v=1.0.0">
+</head>
+<body class="workspace-body">
+
+  <!-- ==========================================
+       1. 案件統合コンソール ヘッダー
+       ========================================== -->
+  <header class="ws-header">
+    <div class="ws-header-top">
+      <!-- ブランドロゴ & タイトル -->
+      <div class="ws-brand-wrap">
+        <a href="/" class="ws-brand-logo">
+          <div class="ws-logo-icon">M</div>
+          <div class="ws-title-group">
+            <h1>mdo3 <span>WORKSPACE</span> <span class="ws-tag">案件統合コンソール</span></h1>
+          </div>
+        </a>
+      </div>
+
+      <!-- 案件メタデータ・クイック編集バー -->
+      <div class="ws-project-meta-bar">
+        <div class="ws-project-meta-item">
+          <label><span class="material-symbols-outlined" style="font-size:15px; vertical-align:-2px;">apartment</span> 案件名:</label>
+          <input type="text" id="inputProjName" class="ws-meta-input" value="川越市 S様邸 新築工事" style="width: 170px;">
+        </div>
+        <div class="ws-project-meta-item">
+          <label><span class="material-symbols-outlined" style="font-size:15px; vertical-align:-2px;">location_on</span> 建設地:</label>
+          <input type="text" id="inputProjAddress" class="ws-meta-input" value="埼玉県川越市幸町" style="width: 150px;">
+          <button type="button" class="btn btn-ghost btn-sm" id="btnSyncRegional" style="padding:3px 8px; font-size:0.75rem;" title="入力した住所からZ・V0・積雪深を全ツールに自動反映">
+            <span class="material-symbols-outlined" style="font-size:14px;">sync</span> 地域定数同期
+          </button>
+        </div>
+        <div class="ws-project-meta-item">
+          <label><span class="material-symbols-outlined" style="font-size:15px; vertical-align:-2px;">person</span> 設計者:</label>
+          <input type="text" id="inputProjDesigner" class="ws-meta-input" value="一級建築士事務所 mdo3" style="width: 140px;">
+        </div>
+        <div class="ws-project-meta-item">
+          <label><span class="material-symbols-outlined" style="font-size:15px; vertical-align:-2px;">calendar_today</span> 算定日:</label>
+          <input type="date" id="inputProjDate" class="ws-meta-input" style="width: 120px;">
+        </div>
+      </div>
+
+      <!-- ヘッダー右側アクション (プランシミュレーター / CAD別タブ / ポータル戻る) -->
+      <div class="ws-header-actions">
+        <!-- サブスク契約切り替えシミュレーター -->
+        <div class="ws-sim-badge" title="サブスク契約状態のシミュレーション">
+          <span class="material-symbols-outlined" style="font-size:15px;">verified_user</span>
+          <select id="simPlanSelect" class="ws-sim-select">
+            <option value="core_pack" selected>基本4ツール契約 (Z/めり込み/人通口/屋根)</option>
+            <option value="all">全ツール使い放題 (月額¥3,980)</option>
+            <option value="single_jintsuko">人通口単体契約 (月額¥980)</option>
+            <option value="free_trial">フリー体験</option>
+          </select>
+        </div>
+
+        <!-- CAD連携・斜め壁 (別タブで独立起動) -->
+        <a href="https://az.mdo3.com" target="_blank" rel="noopener" class="btn-ws-cad" title="ARCHITREND ZERO連動・斜め壁自動抽出Web-CAD (月額¥5,980 / 別タブで起動)">
+          <span class="material-symbols-outlined" style="font-size:16px;">architecture</span>
+          <span>📐 AZ斜め壁CAD (専用タブ)</span>
+          <span class="material-symbols-outlined" style="font-size:14px;">open_in_new</span>
+        </a>
+
+        <!-- トップポータルへ -->
+        <a href="/" class="btn-ws-portal">
+          <span class="material-symbols-outlined" style="font-size:15px;">arrow_back</span>
+          <span>ポータル</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- 2. 上部ツール切り替えタブバー (契約ツールは点灯 / 未契約は暗くグレーアウト+鍵マーク) -->
+    <nav class="ws-tools-navbar" id="wsToolsNavbar">
+      <!-- JavaScript (workspace.js) で自動生成 -->
+    </nav>
+  </header>
+
+  <!-- ==========================================
+       2. メイン ワークスペース
+       ========================================== -->
+  <main class="ws-main-container">
+    
+    <!-- 案件共通パラメータ連携サマリーカード -->
+    <div class="ws-project-summary-card">
+      <div class="ws-proj-info-left">
+        <span class="ws-proj-badge">案件集中ワークスペース</span>
+        <h2 class="ws-proj-title" id="sumProjName">川越市 S様邸 新築工事</h2>
+        <div class="ws-proj-constants-row">
+          <span class="ws-const-pill">地震係数: <strong id="sumValZ">1.0</strong></span>
+          <span class="ws-const-pill">風速: <strong id="sumValV0">32 m/s</strong></span>
+          <span class="ws-const-pill">積雪量: <strong id="sumValS">30 cm</strong></span>
+          <span class="ws-const-pill">凍結深度: <strong id="sumValFreeze">指定なし</strong></span>
+          <span class="ws-const-pill" style="color:var(--ws-emerald);">省エネ: <strong id="sumValEnergy" style="color:var(--ws-emerald);">6地域 (日射A4)</strong></span>
+        </div>
+      </div>
+      <div style="display:flex; gap:8px;">
+        <button type="button" class="btn-ws-ghost" id="btnPrintSheet">
+          <span class="material-symbols-outlined" style="font-size:16px;">print</span> A4計算書を印刷
+        </button>
+      </div>
+    </div>
+
+    <!-- ==========================================
+         TOOL PANEL 1: 横架材のZ低減係数 (zi)
+         ========================================== -->
+    <section class="ws-tool-panel active" id="panel_zi">
+      <div class="ws-calc-grid">
+        <!-- 左: 計算入力 -->
+        <div class="ws-panel-box">
+          <div class="ws-panel-header">
+            <div class="ws-panel-title-wrap">
+              <span class="material-symbols-outlined" style="color:var(--ws-cyan);">public</span>
+              <div>
+                <h3 class="ws-panel-title">横架材のZ低減係数 算定シート</h3>
+                <span class="ws-panel-subtitle">建設地地域係数 Z と応力低減の検証 (昭和55年建設省告示第1793号)</span>
+              </div>
+            </div>
+            <span class="badge-tag" style="background:rgba(6,182,212,0.15); color:var(--ws-cyan);">最頻出ツール</span>
+          </div>
+
+          <div class="ws-form-group">
+            <label class="ws-form-label">梁スパン L (m):</label>
+            <input type="number" id="ziSpan" class="ws-form-input ws-calc-input" value="3.64" step="0.01">
+          </div>
+          <div class="ws-form-group">
+            <label class="ws-form-label">等分布荷重 w (kN/m):</label>
+            <input type="number" id="ziLoad" class="ws-form-input ws-calc-input" value="4.20" step="0.1">
+          </div>
+
+          <div class="ws-judgment-banner ok" id="ziJudgment">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="material-symbols-outlined">check_circle</span>
+              <span>地域係数連動: 標準地域 (Z=1.0) / 低減なし</span>
+            </div>
+            <span style="font-size:0.75rem; padding:2px 8px; border-radius:12px; background:rgba(0,0,0,0.25);">適合</span>
+          </div>
+
+          <div style="background:rgba(0,0,0,0.3); border-radius:6px; padding:12px; font-size:0.82rem;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+              <span>標準曲げモーメント M0:</span>
+              <strong id="resZiM" style="color:var(--ws-text);">6.95 kN・m</strong>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-weight:800;">
+              <span>Z低減考慮曲げモーメント Mz:</span>
+              <strong id="resZiMz" style="color:var(--ws-gold);">6.95 kN・m</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- 右: A4計算書プレビュー -->
+        <div class="ws-panel-box">
+          <div class="ws-calc-sheet-preview">
+            <div class="ws-sheet-header">
+              <div>
+                <h4 class="ws-sheet-title">横架材 Z低減係数・構造計算書</h4>
+                <span style="font-size:0.72rem; color:#64748b;">建築基準法施行令 第82条 / 告示第1793号</span>
+              </div>
+              <div class="ws-sheet-meta">
+                <div>物件名: <strong class="calc-sheet-proj-name">川越市 S様邸</strong></div>
+                <div>建設地: <span class="calc-sheet-proj-addr">埼玉県川越市幸町</span></div>
+                <div>設計者: <span class="calc-sheet-proj-designer">mdo3</span> / <span class="calc-sheet-proj-date">2026-09-26</span></div>
+              </div>
+            </div>
+
+            <table class="ws-sheet-table">
+              <tr>
+                <th style="width:40%;">地震地域係数 Z</th>
+                <td id="sheetZiZ">1.0 (標準地域)</td>
+              </tr>
+              <tr>
+                <th>基準風速 V0</th>
+                <td id="sheetZiV0">32 m/s</td>
+              </tr>
+              <tr>
+                <th>垂直積雪量 S</th>
+                <td id="sheetZiS">30 cm</td>
+              </tr>
+              <tr>
+                <th>検討結果</th>
+                <td><strong>審査適合 (法令基準満足)</strong></td>
+              </tr>
+            </table>
+
+            <div class="ws-sheet-result-ok">
+              【判定】横架材の応力算定および地域係数 Z の適用において、構造計算規準に適合しています。
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         TOOL PANEL 2: めり込み補強計算 (merikomi)
+         ========================================== -->
+    <section class="ws-tool-panel" id="panel_merikomi">
+      <div class="ws-calc-grid">
+        <div class="ws-panel-box">
+          <div class="ws-panel-header">
+            <div class="ws-panel-title-wrap">
+              <span class="material-symbols-outlined" style="color:var(--ws-gold);">hardware</span>
+              <div>
+                <h3 class="ws-panel-title">柱脚・土台 めり込み補強計算シート</h3>
+                <span class="ws-panel-subtitle">木造軸組住宅の柱軸力による土台めり込み応力度検証</span>
+              </div>
+            </div>
+            <span class="badge-tag" style="background:rgba(245,158,11,0.15); color:var(--ws-gold);">最頻出ツール</span>
+          </div>
+
+          <div class="ws-form-group">
+            <label class="ws-form-label">柱寸法 (mm角):</label>
+            <select id="mkColSize" class="ws-form-select ws-calc-input">
+              <option value="105" selected>105角 (105×105mm)</option>
+              <option value="120">120角 (120×120mm)</option>
+            </select>
+          </div>
+          <div class="ws-form-group">
+            <label class="ws-form-label">柱軸力 N (kN):</label>
+            <input type="number" id="mkAxialLoad" class="ws-form-input ws-calc-input" value="18.5" step="0.5">
+          </div>
+          <div class="ws-form-group">
+            <label class="ws-form-label">土台樹種 (短期許容めり込み基準):</label>
+            <select id="mkTimberType" class="ws-form-select ws-calc-input">
+              <option value="3.0" selected>ヒノキ (基準 3.0 N/mm²)</option>
+              <option value="2.5">スギ (基準 2.5 N/mm²)</option>
+              <option value="3.5">ベイヒバ / クリ (基準 3.5 N/mm²)</option>
+            </select>
+          </div>
+
+          <div class="ws-judgment-banner ok" id="mkJudgment">
+            <!-- JSで動的更新 -->
+          </div>
+
+          <div class="ws-stress-meter">
+            <div class="ws-stress-bar" id="mkStressBar" style="width: 45%;"></div>
+          </div>
+
+          <div style="background:rgba(0,0,0,0.3); border-radius:6px; padding:12px; font-size:0.82rem; margin-top:14px;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+              <span>発生めり込み応力度 σ:</span>
+              <strong id="mkResSigma" style="color:var(--ws-text);">1.68 N/mm²</strong>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+              <span>許容めり込み応力度 qa:</span>
+              <strong id="mkResQa" style="color:var(--ws-cyan);">4.50 N/mm²</strong>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-weight:800;">
+              <span>検定比 (σ/qa):</span>
+              <strong id="mkResRatio" style="color:var(--ws-emerald);">0.373</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="ws-panel-box">
+          <div class="ws-calc-sheet-preview">
+            <div class="ws-sheet-header">
+              <div>
+                <h4 class="ws-sheet-title">土台めり込み補強計算書</h4>
+                <span style="font-size:0.72rem; color:#64748b;">木造住宅構造計算規準(グレー本) / 令第82条</span>
+              </div>
+              <div class="ws-sheet-meta">
+                <div>物件名: <strong class="calc-sheet-proj-name">川越市 S様邸</strong></div>
+                <div>建設地: <span class="calc-sheet-proj-addr">埼玉県川越市幸町</span></div>
+              </div>
+            </div>
+
+            <table class="ws-sheet-table">
+              <tr>
+                <th style="width:40%;">柱軸力 N</th>
+                <td>18.50 kN</td>
+              </tr>
+              <tr>
+                <th>土台めり込み有効面積</th>
+                <td>11,025 mm² (105角)</td>
+              </tr>
+              <tr>
+                <th>発生応力度 σ</th>
+                <td>1.68 N/mm²</td>
+              </tr>
+              <tr>
+                <th>許容めり込み応力度 qa</th>
+                <td>4.50 N/mm² (短期)</td>
+              </tr>
+              <tr>
+                <th>検定比</th>
+                <td><strong>0.373 ≦ 1.000 (安全)</strong></td>
+              </tr>
+            </table>
+
+            <div class="ws-sheet-result-ok">
+              【判定】めり込み応力度は短期許容値を満足しており、補強座金なしで適合します。
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         TOOL PANEL 3: 人通口補強計算 (jintsuko)
+         ========================================== -->
+    <section class="ws-tool-panel" id="panel_jintsuko">
+      <div class="ws-calc-grid">
+        <div class="ws-panel-box">
+          <div class="ws-panel-header">
+            <div class="ws-panel-title-wrap">
+              <span class="material-symbols-outlined" style="color:var(--ws-cyan);">construction</span>
+              <div>
+                <h3 class="ws-panel-title">基礎梁 人通口開口補強計算シート</h3>
+                <span class="ws-panel-subtitle">耐圧盤・立上がり部の欠損補強 ＆ スラブ内割増筋検定</span>
+              </div>
+            </div>
+            <span class="badge-tag" style="background:rgba(6,182,212,0.15); color:var(--ws-cyan);">最頻出ツール</span>
+          </div>
+
+          <div class="ws-form-group">
+            <label class="ws-form-label">基礎梁成 D (mm):</label>
+            <input type="number" id="jtBeamHeight" class="ws-form-input ws-calc-input" value="640" step="10">
+          </div>
+          <div class="ws-form-group">
+            <label class="ws-form-label">人通口開口幅 W (mm):</label>
+            <input type="number" id="jtOpenWidth" class="ws-form-input ws-calc-input" value="600" step="10">
+          </div>
+          <div class="ws-form-group">
+            <label class="ws-form-label">せん断力 Q (kN):</label>
+            <input type="number" id="jtShearQ" class="ws-form-input ws-calc-input" value="28.0" step="0.5">
+          </div>
+
+          <div class="ws-judgment-banner ok" id="jtJudgment">
+            <!-- JSで動的更新 -->
+          </div>
+
+          <div class="ws-stress-meter">
+            <div class="ws-stress-bar" id="jtStressBar" style="width: 55%;"></div>
+          </div>
+
+          <div style="background:rgba(0,0,0,0.3); border-radius:6px; padding:12px; font-size:0.82rem; margin-top:14px;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+              <span>補強後許容せん断耐力 Qa:</span>
+              <strong id="jtResQa" style="color:var(--ws-cyan);">51.2 kN</strong>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-weight:800;">
+              <span>せん断検定比 (Q/Qa):</span>
+              <strong id="jtResRatio" style="color:var(--ws-emerald);">0.547</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="ws-panel-box">
+          <div class="ws-calc-sheet-preview">
+            <div class="ws-sheet-header">
+              <div>
+                <h4 class="ws-sheet-title">基礎梁 人通口開口補強計算書</h4>
+                <span style="font-size:0.72rem; color:#64748b;">日本建築学会RC基礎構造設計規準準拠</span>
+              </div>
+              <div class="ws-sheet-meta">
+                <div>物件名: <strong class="calc-sheet-proj-name">川越市 S様邸</strong></div>
+                <div>建設地: <span class="calc-sheet-proj-addr">埼玉県川越市幸町</span></div>
+              </div>
+            </div>
+
+            <table class="ws-sheet-table">
+              <tr>
+                <th style="width:40%;">基礎梁成 D × 開口幅 W</th>
+                <td>640 mm × 600 mm</td>
+              </tr>
+              <tr>
+                <th>発生せん断力 Q</th>
+                <td>28.00 kN</td>
+              </tr>
+              <tr>
+                <th>許容せん断耐力 Qa</th>
+                <td>51.20 kN</td>
+              </tr>
+              <tr>
+                <th>開口周囲補強筋</th>
+                <td>D13 斜め補強筋 2-D13 配置</td>
+              </tr>
+              <tr>
+                <th>検定比</th>
+                <td><strong>0.547 ≦ 1.000 (安全適合)</strong></td>
+              </tr>
+            </table>
+
+            <div class="ws-sheet-result-ok">
+              【判定】開口による断面欠損補強は十分であり、基礎梁の構造耐力性能を満足します。
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         TOOL PANEL 4: 基本の屋根構面 (yanejika_kihon)
+         ========================================== -->
+    <section class="ws-tool-panel" id="panel_yanejika_kihon">
+      <div class="ws-calc-grid">
+        <div class="ws-panel-box">
+          <div class="ws-panel-header">
+            <div class="ws-panel-title-wrap">
+              <span class="material-symbols-outlined" style="color:var(--ws-emerald);">roofing</span>
+              <div>
+                <h3 class="ws-panel-title">基本の屋根構面 算定シート</h3>
+                <span class="ws-panel-subtitle">告示第1541号 第2の二・構造用合板直貼り屋根構面倍率算定</span>
+              </div>
+            </div>
+            <span class="badge-tag" style="background:rgba(16,185,129,0.15); color:var(--ws-emerald);">最頻出ツール</span>
+          </div>
+
+          <div class="ws-form-group">
+            <label class="ws-form-label">野地板仕様 (構造用合板):</label>
+            <select id="rfPlyType" class="ws-form-select ws-calc-input">
+              <option value="12mm" selected>構造用合板 t=12mm</option>
+              <option value="9mm">構造用合板 t=9mm</option>
+            </select>
+          </div>
+          <div class="ws-form-group">
+            <label class="ws-form-label">釘仕様 & 外周釘ピッチ:</label>
+            <select id="rfNailPitch" class="ws-form-select ws-calc-input">
+              <option value="100">CN50 @100mm (倍率1.5倍)</option>
+              <option value="150" selected>CN50 @150mm (倍率1.0倍・標準)</option>
+            </select>
+          </div>
+
+          <div class="ws-judgment-banner ok" id="rfJudgment">
+            <!-- JSで動的更新 -->
+          </div>
+
+          <div style="background:rgba(0,0,0,0.3); border-radius:6px; padding:12px; font-size:0.82rem;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+              <span>採用屋根構面倍率:</span>
+              <strong id="rfResMult" style="color:var(--ws-emerald);">1.00 倍</strong>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-weight:800;">
+              <span>基準せん断耐力:</span>
+              <strong id="rfResCap" style="color:var(--ws-cyan);">1.96 kN/m</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="ws-panel-box">
+          <div class="ws-calc-sheet-preview">
+            <div class="ws-sheet-header">
+              <div>
+                <h4 class="ws-sheet-title">基本の屋根構面・計算書</h4>
+                <span style="font-size:0.72rem; color:#64748b;">平成12年建設省告示第1541号 第2の二</span>
+              </div>
+              <div class="ws-sheet-meta">
+                <div>物件名: <strong class="calc-sheet-proj-name">川越市 S様邸</strong></div>
+              </div>
+            </div>
+
+            <table class="ws-sheet-table">
+              <tr>
+                <th style="width:40%;">野地板厚さ</th>
+                <td>構造用合板 12 mm</td>
+              </tr>
+              <tr>
+                <th>釘種 & ピッチ</th>
+                <td>CN50 外周@150mm / 中通り@150mm</td>
+              </tr>
+              <tr>
+                <th>算定屋根倍率</th>
+                <td><strong>1.00 倍 (告示標準適合)</strong></td>
+              </tr>
+            </table>
+
+            <div class="ws-sheet-result-ok">
+              【判定】告示第1541号の定型仕様を満たしており、水平構面として審査適合します。
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         TOOL PANEL 5: 柱の曲げ計算 (hasira_mage)
+         ========================================== -->
+    <section class="ws-tool-panel" id="panel_hasira_mage">
+      <div class="ws-calc-grid">
+        <div class="ws-panel-box">
+          <div class="ws-panel-header">
+            <div class="ws-panel-title-wrap">
+              <span class="material-symbols-outlined" style="color:var(--ws-blue);">view_column</span>
+              <div>
+                <h3 class="ws-panel-title">柱の曲げ計算シート</h3>
+                <span class="ws-panel-subtitle">風速 V0 連動・外壁柱曲げ応力度検定</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="ws-form-group">
+            <label class="ws-form-label">柱スパン H (m):</label>
+            <input type="number" id="hmColHeight" class="ws-form-input ws-calc-input" value="2.8" step="0.1">
+          </div>
+          <div class="ws-form-group">
+            <label class="ws-form-label">柱断面 (b × D mm):</label>
+            <div style="display:flex; gap:10px;">
+              <input type="number" id="hmColWidth" class="ws-form-input ws-calc-input" value="120" step="5">
+              <span style="align-self:center;">×</span>
+              <input type="number" id="hmColDepth" class="ws-form-input ws-calc-input" value="120" step="5">
+            </div>
+          </div>
+
+          <div class="ws-judgment-banner ok" id="hmJudgment">
+            <!-- JSで動的更新 -->
+          </div>
+
+          <div class="ws-stress-meter">
+            <div class="ws-stress-bar" id="hmStressBar" style="width: 38%;"></div>
+          </div>
+
+          <div style="background:rgba(0,0,0,0.3); border-radius:6px; padding:12px; font-size:0.82rem; margin-top:14px;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+              <span>速度圧 q (V0連動):</span>
+              <strong id="hmResQ" style="color:var(--ws-cyan);">614 N/m²</strong>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+              <span>最大曲げモーメント M:</span>
+              <strong id="hmResM" style="color:var(--ws-text);">0.66 kN・m</strong>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-weight:800;">
+              <span>曲げ検定比:</span>
+              <strong id="hmResRatio" style="color:var(--ws-emerald);">0.228</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="ws-panel-box">
+          <div class="ws-calc-sheet-preview">
+            <div class="ws-sheet-header">
+              <div>
+                <h4 class="ws-sheet-title">外壁柱 風力曲げ計算書</h4>
+                <span style="font-size:0.72rem; color:#64748b;">建築基準法施行令 第82条</span>
+              </div>
+            </div>
+            <table class="ws-sheet-table">
+              <tr>
+                <th style="width:40%;">基準風速 V0</th>
+                <td>32 m/s (川越市連動)</td>
+              </tr>
+              <tr>
+                <th>柱断面</th>
+                <td>120 × 120 mm (スギ)</td>
+              </tr>
+              <tr>
+                <th>検定比</th>
+                <td><strong>0.228 ≦ 1.000 (安全適合)</strong></td>
+              </tr>
+            </table>
+            <div class="ws-sheet-result-ok">
+              【判定】外壁柱の風力曲げ応力度は許容値を十分に満足しています。
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         TOOL PANEL 6: 片持ち基礎梁 (cantilever_foundation_beam)
+         ========================================== -->
+    <section class="ws-tool-panel" id="panel_cantilever_foundation_beam">
+      <div class="ws-calc-grid">
+        <div class="ws-panel-box">
+          <div class="ws-panel-header">
+            <div class="ws-panel-title-wrap">
+              <span class="material-symbols-outlined" style="color:var(--ws-rose);">account_tree</span>
+              <div>
+                <h3 class="ws-panel-title">片持ち基礎梁 検定シート (柱あり)</h3>
+                <span class="ws-panel-subtitle">ポーチ部等の一方スラブ欠損片持ち基礎梁の設計</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="ws-form-group">
+            <label class="ws-form-label">片持ち突出長 L (mm):</label>
+            <input type="number" id="cbLength" class="ws-form-input ws-calc-input" value="910" step="10">
+          </div>
+          <div class="ws-form-group">
+            <label class="ws-form-label">柱先端集中軸力 P (kN):</label>
+            <input type="number" id="cbPointLoad" class="ws-form-input ws-calc-input" value="24.5" step="0.5">
+          </div>
+          <div class="ws-form-group">
+            <label class="ws-form-label">基礎梁成 D (mm):</label>
+            <input type="number" id="cbHeight" class="ws-form-input ws-calc-input" value="640" step="10">
+          </div>
+
+          <div class="ws-judgment-banner ok" id="cbJudgment">
+            <!-- JSで動的更新 -->
+          </div>
+
+          <div style="background:rgba(0,0,0,0.3); border-radius:6px; padding:12px; font-size:0.82rem;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+              <span>固定端曲げモーメント M:</span>
+              <strong id="cbResM" style="color:var(--ws-text);">22.30 kN・m</strong>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+              <span>所要上端主筋断面積 at:</span>
+              <strong id="cbResAt" style="color:var(--ws-cyan);">151 mm²</strong>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-weight:800;">
+              <span>推奨配筋:</span>
+              <strong id="cbResBars" style="color:var(--ws-emerald);">D16 × 1本 (OK)</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="ws-panel-box">
+          <div class="ws-calc-sheet-preview">
+            <div class="ws-sheet-header">
+              <div>
+                <h4 class="ws-sheet-title">片持ち基礎梁 応力計算書</h4>
+                <span style="font-size:0.72rem; color:#64748b;">日本建築学会 RC規準</span>
+              </div>
+            </div>
+            <table class="ws-sheet-table">
+              <tr>
+                <th style="width:40%;">片持ち長 L</th>
+                <td>910 mm</td>
+              </tr>
+              <tr>
+                <th>先端軸力 P</th>
+                <td>24.50 kN</td>
+              </tr>
+              <tr>
+                <th>所要上端主筋</th>
+                <td>D16 × 1本 (at = 151 mm² ≦ 199 mm²)</td>
+              </tr>
+            </table>
+            <div class="ws-sheet-result-ok">
+              【判定】片持ち梁先端の柱荷重に対する主筋引張耐力およびせん断耐力は適合します。
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- その他のツールパネル (プレースホルダー & 順次実装) -->
+    <section class="ws-tool-panel" id="panel_yuka_kihon">
+      <div class="ws-panel-box" style="text-align:center; padding:40px;">
+        <span class="material-symbols-outlined" style="font-size:48px; color:var(--ws-cyan); margin-bottom:12px;">grid_view</span>
+        <h3>基本の床構面 (合板床剛性倍率)</h3>
+        <p style="color:var(--ws-text-sub);">告示第1541号に基づき床倍率を算定します。</p>
+      </div>
+    </section>
+    <section class="ws-tool-panel" id="panel_youheki_calculator">
+      <div class="ws-panel-box" style="text-align:center; padding:40px;">
+        <span class="material-symbols-outlined" style="font-size:48px; color:var(--ws-gold); margin-bottom:12px;">terrain</span>
+        <h3>擁壁の安定計算 (L型/逆L型/逆T型)</h3>
+        <p style="color:var(--ws-text-sub);">土圧・転倒・滑動・地盤支持力を一括検定します。</p>
+      </div>
+    </section>
+    <section class="ws-tool-panel" id="panel_wrc_sim">
+      <div class="ws-panel-box" style="text-align:center; padding:40px;">
+        <span class="material-symbols-outlined" style="font-size:48px; color:var(--ws-emerald); margin-bottom:12px;">apartment</span>
+        <h3>WRC造 壁量算定シミュレーター</h3>
+        <p style="color:var(--ws-text-sub);">壁式鉄筋コンクリート造の必要壁量と偏心率を算定します。</p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==========================================
+       3. 未契約ツール 契約案内モーダル
+       ========================================== -->
+  <div class="ws-modal-overlay" id="wsSubscriptionModal" style="display:none;">
+    <div class="ws-modal-dialog">
+      <div class="ws-modal-header">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span class="material-symbols-outlined" style="color:var(--ws-gold); font-size:24px;">lock</span>
+          <h3 style="margin:0; font-size:1.1rem; color:#fff;" id="modalLockedToolName">未契約ツール</h3>
+        </div>
+        <button type="button" class="btn-close-modal" onclick="closeSubscriptionModal()" style="background:none; border:none; color:#fff; cursor:pointer;">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div class="ws-modal-body">
+        <p style="font-size:0.85rem; color:var(--ws-text-sub); margin-bottom:14px;" id="modalLockedToolDesc">
+          このツールは現在のご契約プランに含まれていません。サブスクリプションを登録いただくことで即座にアンロックされます。
+        </p>
+
+        <div class="ws-plan-cards">
+          <!-- プラン1: 個別契約 -->
+          <div class="ws-plan-option-card" onclick="alert('Stripe決済ページへ遷移します (個別月額¥980)');">
+            <div>
+              <strong style="color:#fff; font-size:0.95rem;">① このツールだけ単体契約</strong>
+              <div style="font-size:0.75rem; color:var(--ws-text-sub);">必要な計算書だけをピンポイント利用</div>
+            </div>
+            <div style="text-align:right;">
+              <span style="font-size:1.1rem; font-weight:800; color:var(--ws-cyan);">¥980</span>
+              <small style="color:var(--ws-text-sub);">/月</small>
+            </div>
+          </div>
+
+          <!-- プラン2: 全ツール使い放題 -->
+          <div class="ws-plan-option-card" style="border-color:rgba(245,158,11,0.4); background:rgba(245,158,11,0.08);" onclick="alert('Stripe決済ページへ遷移します (全ツール使い放題 月額¥3,980)');">
+            <div>
+              <strong style="color:var(--ws-gold); font-size:0.95rem;">② 全29ツール使い放題プラン</strong>
+              <div style="font-size:0.75rem; color:var(--ws-text-sub);">案件ワークスペースの全ツールが即座にアンロック</div>
+            </div>
+            <div style="text-align:right;">
+              <span style="font-size:1.1rem; font-weight:800; color:var(--ws-gold);">¥3,980</span>
+              <small style="color:var(--ws-text-sub);">/月</small>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:16px; text-align:center;">
+          <button type="button" class="btn btn-ghost btn-sm" onclick="activateDemoPlan('all');" style="color:var(--ws-cyan); border-color:var(--ws-cyan);">
+            <span class="material-symbols-outlined" style="font-size:14px;">key</span> 体験モードで全ツールを試す
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/regional_calc.js?v=1.5.6"></script>
+  <script src="js/workspace.js?v=1.0.0"></script>
+</body>
+</html>

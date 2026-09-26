@@ -1,0 +1,682 @@
+/* ========================================================
+   mdo3.com 案件統合コンソール (Project Workspace)
+   1案件で複数ツールをシームレスに使い分ける統合ワークスペース
+   ======================================================== */
+
+:root {
+  --ws-bg: #090d16;
+  --ws-bg-card: rgba(18, 26, 43, 0.85);
+  --ws-bg-card-hover: rgba(26, 38, 64, 0.95);
+  --ws-border: rgba(255, 255, 255, 0.1);
+  --ws-border-focus: #0ea5e9;
+  
+  --ws-text: #f8fafc;
+  --ws-text-sub: #94a3b8;
+  --ws-text-muted: #64748b;
+  
+  --ws-cyan: #06b6d4;
+  --ws-gold: #f59e0b;
+  --ws-green: #10b981;
+  --ws-emerald: #34d399;
+  --ws-blue: #3b82f6;
+  --ws-rose: #f43f5e;
+  --ws-amber: #fbbf24;
+}
+
+body.workspace-body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Noto Sans JP', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: var(--ws-bg);
+  background-image: 
+    radial-gradient(circle at 15% 15%, rgba(14, 165, 233, 0.08) 0%, transparent 40%),
+    radial-gradient(circle at 85% 20%, rgba(245, 158, 11, 0.06) 0%, transparent 40%),
+    radial-gradient(circle at 50% 80%, rgba(16, 185, 129, 0.05) 0%, transparent 50%);
+  color: var(--ws-text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ==========================================
+   1. 案件統合コンソール ヘッダー
+   ========================================== */
+.ws-header {
+  background: rgba(10, 15, 28, 0.95);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--ws-border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  padding: 10px 20px;
+}
+
+.ws-header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.ws-brand-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ws-brand-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: var(--ws-text);
+}
+
+.ws-logo-icon {
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, #0ea5e9, #10b981);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 900;
+  font-size: 1.1rem;
+}
+
+.ws-title-group h1 {
+  font-size: 1.05rem;
+  font-weight: 800;
+  margin: 0;
+  letter-spacing: -0.02em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ws-tag {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 20px;
+  background: rgba(14, 165, 233, 0.15);
+  color: #38bdf8;
+  border: 1px solid rgba(14, 165, 233, 0.3);
+}
+
+/* 案件情報クイック編集バー */
+.ws-project-meta-bar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  flex-wrap: wrap;
+}
+
+.ws-project-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+}
+
+.ws-project-meta-item label {
+  color: var(--ws-text-muted);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.ws-meta-input {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  padding: 4px 8px;
+  color: var(--ws-text);
+  font-size: 0.82rem;
+  font-weight: 600;
+  font-family: inherit;
+}
+
+.ws-meta-input:focus {
+  outline: none;
+  border-color: var(--ws-cyan);
+}
+
+/* ヘッダー右側アクション */
+.ws-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ws-sim-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: rgba(245, 158, 11, 0.12);
+  color: var(--ws-gold);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.ws-sim-select {
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  color: #fbbf24;
+  border-radius: 4px;
+  padding: 3px 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.btn-ws-cad {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 6px;
+  background: rgba(91, 138, 254, 0.15);
+  border: 1px solid rgba(91, 138, 254, 0.35);
+  color: #93c5fd;
+  text-decoration: none;
+  font-size: 0.8rem;
+  font-weight: 700;
+  transition: all 0.2s;
+}
+
+.btn-ws-cad:hover {
+  background: rgba(91, 138, 254, 0.25);
+  border-color: #60a5fa;
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.btn-ws-portal {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.78rem;
+  color: var(--ws-text-sub);
+  text-decoration: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.2s;
+}
+
+.btn-ws-portal:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* ==========================================
+   2. 上部ツール切り替えタブバー
+   ========================================== */
+.ws-tools-navbar {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  padding-bottom: 2px;
+}
+
+.ws-tools-navbar::-webkit-scrollbar {
+  height: 4px;
+}
+
+.ws-tools-navbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+}
+
+/* ツール切り替えボタン */
+.ws-tool-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--ws-text-sub);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+  position: relative;
+}
+
+.ws-tool-tab-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--ws-text);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* アクティブ（現在選択中のツール） */
+.ws-tool-tab-btn.active {
+  background: rgba(14, 165, 233, 0.18);
+  border-color: #0ea5e9;
+  color: #38bdf8;
+  box-shadow: 0 0 12px rgba(14, 165, 233, 0.25);
+}
+
+/* 契約中（アクセス可能）バッジ */
+.ws-tool-tab-btn .tab-status-icon {
+  font-size: 15px;
+}
+
+/* 未契約（グレーアウト・暗く表示・鍵マーク） */
+.ws-tool-tab-btn.locked {
+  background: rgba(0, 0, 0, 0.45);
+  border-color: rgba(255, 255, 255, 0.05);
+  color: var(--ws-text-muted);
+  opacity: 0.55;
+}
+
+.ws-tool-tab-btn.locked:hover {
+  opacity: 0.85;
+  border-color: rgba(245, 158, 11, 0.3);
+  color: #fbbf24;
+}
+
+.ws-tool-tab-btn.locked .tab-lock-badge {
+  font-size: 13px;
+  color: #f59e0b;
+}
+
+.tab-badge-frequent {
+  font-size: 0.62rem;
+  padding: 1px 5px;
+  border-radius: 10px;
+  background: rgba(16, 185, 129, 0.2);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  margin-left: 2px;
+}
+
+/* ==========================================
+   3. メインコンテンツ領域
+   ========================================== */
+.ws-main-container {
+  flex: 1;
+  max-width: 1440px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* 案件共通パラメータ連携サマリーカード */
+.ws-project-summary-card {
+  background: var(--ws-bg-card);
+  border: 1px solid var(--ws-border);
+  border-radius: 10px;
+  padding: 14px 18px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.ws-proj-info-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.ws-proj-badge {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+.ws-proj-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--ws-text);
+  margin: 0;
+}
+
+.ws-proj-constants-row {
+  display: flex;
+  gap: 12px;
+  font-size: 0.8rem;
+  color: var(--ws-text-sub);
+}
+
+.ws-const-pill {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.ws-const-pill strong {
+  color: var(--ws-cyan);
+}
+
+/* ツール表示パネル (Tab Panels) */
+.ws-tool-panel {
+  display: none;
+  animation: fadeIn 0.2s ease;
+}
+
+.ws-tool-panel.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 計算カードレイアウト */
+.ws-calc-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 992px) {
+  .ws-calc-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.ws-panel-box {
+  background: var(--ws-bg-card);
+  border: 1px solid var(--ws-border);
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.ws-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 12px;
+}
+
+.ws-panel-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ws-panel-title {
+  font-size: 1rem;
+  font-weight: 800;
+  margin: 0;
+  color: var(--ws-text);
+}
+
+.ws-panel-subtitle {
+  font-size: 0.75rem;
+  color: var(--ws-text-sub);
+}
+
+/* フォームコントロール */
+.ws-form-group {
+  margin-bottom: 14px;
+}
+
+.ws-form-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--ws-text-sub);
+  margin-bottom: 5px;
+}
+
+.ws-form-input,
+.ws-form-select {
+  width: 100%;
+  box-sizing: border-box;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+  padding: 8px 12px;
+  color: var(--ws-text);
+  font-size: 0.9rem;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+.ws-form-input:focus,
+.ws-form-select:focus {
+  outline: none;
+  border-color: var(--ws-cyan);
+  box-shadow: 0 0 10px rgba(6, 182, 212, 0.25);
+}
+
+/* 判定結果バッジ */
+.ws-judgment-banner {
+  padding: 14px 18px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  font-weight: 800;
+}
+
+.ws-judgment-banner.ok {
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  color: #34d399;
+}
+
+.ws-judgment-banner.ng {
+  background: rgba(244, 63, 94, 0.15);
+  border: 1px solid rgba(244, 63, 94, 0.35);
+  color: #fb7185;
+}
+
+/* 応力比プログレスバー */
+.ws-stress-meter {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: 8px;
+}
+
+.ws-stress-bar {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease, background 0.3s ease;
+}
+
+/* 計算書プレビュー枠 */
+.ws-calc-sheet-preview {
+  background: #ffffff;
+  color: #0f172a;
+  border-radius: 6px;
+  padding: 24px;
+  font-family: 'Noto Sans JP', sans-serif;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.ws-sheet-header {
+  border-bottom: 2px solid #0f172a;
+  padding-bottom: 10px;
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.ws-sheet-title {
+  font-size: 1.2rem;
+  font-weight: 900;
+  margin: 0;
+  color: #0f172a;
+}
+
+.ws-sheet-meta {
+  font-size: 0.72rem;
+  color: #64748b;
+  text-align: right;
+}
+
+.ws-sheet-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 14px;
+  font-size: 0.8rem;
+}
+
+.ws-sheet-table th,
+.ws-sheet-table td {
+  border: 1px solid #cbd5e1;
+  padding: 6px 10px;
+  text-align: left;
+}
+
+.ws-sheet-table th {
+  background: #f1f5f9;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.ws-sheet-result-ok {
+  background: #ecfdf5;
+  color: #065f46;
+  font-weight: 800;
+  text-align: center;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #a7f3d0;
+  margin-top: 12px;
+}
+
+/* アクションボタン群 */
+.btn-ws-primary {
+  background: linear-gradient(135deg, #0ea5e9, #0284c7);
+  border: none;
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 0.82rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+
+.btn-ws-primary:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+.btn-ws-ghost {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--ws-text);
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 0.82rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+
+.btn-ws-ghost:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* ==========================================
+   4. 未契約ツール案内モーダル
+   ========================================== */
+.ws-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.ws-modal-dialog {
+  background: #111827;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  width: 100%;
+  max-width: 540px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+  animation: modalScale 0.2s ease;
+  overflow: hidden;
+}
+
+@keyframes modalScale {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.ws-modal-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ws-modal-body {
+  padding: 20px;
+}
+
+.ws-plan-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.ws-plan-option-card {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  padding: 12px 14px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.ws-plan-option-card:hover {
+  border-color: var(--ws-cyan);
+  background: rgba(14, 165, 233, 0.08);
+}
