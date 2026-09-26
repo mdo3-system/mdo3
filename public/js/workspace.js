@@ -3,16 +3,18 @@
  * 
  * mdo3.com 案件統合コンソール (Project Workspace) エンジン
  * - 元のツール構成・画面・計算書印刷を100%保持したままiframe統合
- * - 上部ヘッダーに大きく案件名・設計者名、地域定数 (Z, V0, S) を常時表示
- * - ツール切り替えタブバーで即座に下部iframeを切り替え
- * - 上部で入力された案件名・設計者名を各ツールに自動転記連動
+ * - 上部ヘッダー: 建設地 & 地域定数 (Z, V0, S, 凍結, 省エネ) を常時表示
+ * - 最頻出ツール (Z係数, めり込み, 人通口, 基本屋根) は常時ダイレクトボタン
+ * - その他全ツールは「カテゴリ別プルタブ (ドロップダウン形式)」でスマートに集約
+ * - 釘配列諸定数 & 任意配列詳細構面ツール (2in1) の完全動作対応
  */
 
 (function() {
   'use strict';
 
-  // 統合ツール定義 (元のツールHTMLパスを完全連携)
+  // 全ツール体系定義
   const WORKSPACE_TOOLS = [
+    // --- 最頻出ツール ---
     {
       id: "zi",
       name: "① Z低減係数",
@@ -63,21 +65,13 @@
       desc: "垂木＋構造用合板屋根の倍率算定 (告示1541号)",
       planGroup: ["core_pack", "all"]
     },
-    {
-      id: "hasira_mage",
-      name: "⑥ 柱の曲げ計算",
-      category: "wood",
-      frequent: true,
-      icon: "view_column",
-      url: "/app/tools/hasira-mage.html",
-      desc: "外壁柱・吹抜通し柱の風圧力曲げ応力検定 (V0自動連動)",
-      planGroup: ["all"]
-    },
+
+    // --- 基礎・擁壁系 ---
     {
       id: "cantilever_foundation_beam",
-      name: "⑦ 片持ち基礎梁 (柱あり)",
+      name: "片持ち基礎梁 (柱あり)",
       category: "foundation",
-      frequent: true,
+      frequent: false,
       icon: "account_tree",
       url: "/app/tools/cantilever_foundation_beam.html",
       desc: "べた基礎ポーチ部等の片持ち梁・長期短期上主筋検定",
@@ -85,7 +79,7 @@
     },
     {
       id: "cantilever_beam_no_column",
-      name: "⑧ 片持ち基礎梁 (柱なし/片土圧)",
+      name: "片持ち基礎梁 (柱なし/片土圧)",
       category: "foundation",
       frequent: false,
       icon: "foundation",
@@ -94,18 +88,8 @@
       planGroup: ["all"]
     },
     {
-      id: "yuka_kihon",
-      name: "⑨ 基本の床構面",
-      category: "horizontal",
-      frequent: false,
-      icon: "grid_view",
-      url: "/app/tools/shosai-yuka-kihon.html",
-      desc: "根太レス剛床・合板床構面の床倍率算定 (告示1541号)",
-      planGroup: ["all"]
-    },
-    {
       id: "foundation_beam_horizontal",
-      name: "⑩ 基礎梁水平力 (KBI)",
+      name: "基礎梁水平力追加計算書 (KBI)",
       category: "foundation",
       frequent: false,
       icon: "straighten",
@@ -115,7 +99,7 @@
     },
     {
       id: "youheki_calculator",
-      name: "⑪ 擁壁計算 (逆L/逆T)",
+      name: "逆L型・逆T型擁壁の計算",
       category: "foundation",
       frequent: false,
       icon: "terrain",
@@ -125,7 +109,7 @@
     },
     {
       id: "youheki_L_calculator",
-      name: "⑫ L型擁壁 (2m未満)",
+      name: "L型擁壁の計算 (2.0m未満)",
       category: "foundation",
       frequent: false,
       icon: "terrain",
@@ -134,33 +118,186 @@
       planGroup: ["all"]
     },
     {
-      id: "wrc_simulator",
-      name: "⑬ WRC造 壁量解析",
-      category: "wrc",
-      frequent: false,
-      icon: "apartment",
-      url: "/app/tools/wrc_simulator.html",
-      desc: "壁式RC造の必要壁量・壁厚・長期短期応力解析",
-      planGroup: ["all"]
-    },
-    {
       id: "dosha_saigai",
-      name: "⑭ 土砂災害特別警戒区域",
+      name: "土砂災害特別警戒区域の外壁等",
       category: "foundation",
       frequent: false,
       icon: "warning",
       url: "/app/tools/dosha_saigai.html",
       desc: "土砂災害警戒区域における木造外壁・RC基礎構造計算",
       planGroup: ["all"]
+    },
+    {
+      id: "balanced_rebar_ratio",
+      name: "スラブ釣り合い鉄筋比の計算",
+      category: "foundation",
+      frequent: false,
+      icon: "grid_on",
+      url: "/app/tools/balanced_rebar_ratio.html",
+      desc: "耐圧盤・スラブの釣り合い鉄筋比算定",
+      planGroup: ["all"]
+    },
+
+    // --- 木造軸組・接合部系 ---
+    {
+      id: "hasira_mage",
+      name: "柱の曲げ計算 (V0連動)",
+      category: "wood",
+      frequent: false,
+      icon: "view_column",
+      url: "/app/tools/hasira-mage.html",
+      desc: "外壁柱・吹抜通し柱の風圧力曲げ応力検定",
+      planGroup: ["all"]
+    },
+    {
+      id: "hariue",
+      name: "梁上耐力壁の剛性低減",
+      category: "wood",
+      frequent: false,
+      icon: "call_split",
+      url: "/app/tools/hariue.html",
+      desc: "梁上に配置された耐力壁の剛性低減係数算定",
+      planGroup: ["all"]
+    },
+    {
+      id: "hashigo",
+      name: "はしご垂木 計算",
+      category: "wood",
+      frequent: false,
+      icon: "reorder",
+      url: "/app/tools/hashigo.html",
+      desc: "けらばはしご垂木の曲げ・たわみ検定",
+      planGroup: ["all"]
+    },
+    {
+      id: "rigid_frame_R",
+      name: "片持ち庇の検討",
+      category: "wood",
+      frequent: false,
+      icon: "balcony",
+      url: "/app/tools/rigid_frame_R.html",
+      desc: "木造片持ち庇・バルコニーの曲げモーメント算定",
+      planGroup: ["all"]
+    },
+    {
+      id: "roof_calc",
+      name: "屋根葺き材等の検討",
+      category: "wood",
+      frequent: false,
+      icon: "roofing",
+      url: "/app/tools/roof_calc.html",
+      desc: "屋根ふき材の風圧力・固定釘の引抜耐力検討",
+      planGroup: ["all"]
+    },
+
+    // --- 水平構面・耐力壁 (任意配列・2in1連動セット) ---
+    {
+      id: "kugi",
+      name: "⑧ 釘配列諸定数 (共通コアエンジン)",
+      category: "horizontal",
+      frequent: false,
+      icon: "hub",
+      url: "/app/tools/kugihairetsushoteisu.html",
+      desc: "任意配列構面の前提となる外周・中通り釘ピッチ・釘耐力諸定数算定",
+      planGroup: ["all"]
+    },
+    {
+      id: "shosai_tarukiyane",
+      name: "垂木・屋根構面 (任意配列)",
+      category: "horizontal",
+      frequent: false,
+      icon: "sync_alt",
+      url: "/app/tools/shosai-tarukiyane.html",
+      desc: "⑧釘配列連動: 垂木留め釘の任意ピッチ・倍率算定",
+      planGroup: ["all"]
+    },
+    {
+      id: "shosai_yanejikabari",
+      name: "屋根直貼り構面 (任意配列)",
+      category: "horizontal",
+      frequent: false,
+      icon: "sync_alt",
+      url: "/app/tools/shosai-yanejikabari.html",
+      desc: "⑧釘配列連動: 野地板直貼りの任意ピッチ倍率算定",
+      planGroup: ["all"]
+    },
+    {
+      id: "shosai_yuka",
+      name: "床構面 (任意配列)",
+      category: "horizontal",
+      frequent: false,
+      icon: "sync_alt",
+      url: "/app/tools/shosai-yuka.html",
+      desc: "⑧釘配列連動: 床合板の任意ピッチ剛床倍率算定",
+      planGroup: ["all"]
+    },
+    {
+      id: "shosai_okabe",
+      name: "面材張り大壁 (任意配列)",
+      category: "horizontal",
+      frequent: false,
+      icon: "sync_alt",
+      url: "/app/tools/shosai-okabe.html",
+      desc: "⑧釘配列連動: 大壁耐力壁の許容せん断耐力・壁倍率算定",
+      planGroup: ["all"]
+    },
+    {
+      id: "shosai_shinkabe",
+      name: "面材張り真壁 (任意配列)",
+      category: "horizontal",
+      frequent: false,
+      icon: "sync_alt",
+      url: "/app/tools/shosai-shinkabe.html",
+      desc: "⑧釘配列連動: 真壁耐力壁の許容せん断耐力・壁倍率算定",
+      planGroup: ["all"]
+    },
+    {
+      id: "yuka_kihon",
+      name: "基本の床構面 (合板床・告示)",
+      category: "horizontal",
+      frequent: false,
+      icon: "grid_view",
+      url: "/app/tools/shosai-yuka-kihon.html",
+      desc: "根太レス剛床・合板床構面の床倍率算定 (告示1541号)",
+      planGroup: ["all"]
+    },
+    {
+      id: "neta",
+      name: "根太床構面の検討",
+      category: "horizontal",
+      frequent: false,
+      icon: "table_rows",
+      url: "/app/tools/neta.html",
+      desc: "根太あり床構面の許容せん断耐力検定",
+      planGroup: ["all"]
+    },
+
+    // --- RC・WRC造 ---
+    {
+      id: "wrc_simulator",
+      name: "WRC造 壁量解析シミュレーター",
+      category: "wrc",
+      frequent: false,
+      icon: "apartment",
+      url: "/app/tools/wrc_simulator.html",
+      desc: "壁式RC造の必要壁量・壁厚・偏心率解析",
+      planGroup: ["all"]
+    },
+    {
+      id: "wrc_axial_force",
+      name: "WRC造 柱・壁の長期軸力算定",
+      category: "wrc",
+      frequent: false,
+      icon: "density_medium",
+      url: "/app/tools/wrc_axial_force.html",
+      desc: "壁式RC造の各階壁軸力・長期応力算定",
+      planGroup: ["all"]
     }
   ];
 
   // 案件状態
   let currentProject = {
-    name: "川越市 S様邸 新築工事",
     address: "埼玉県川越市幸町",
-    designer: "一級建築士事務所 mdo3",
-    calcDate: new Date().toISOString().split('T')[0],
     z: 1.0,
     zs: null,
     v0: 32,
@@ -184,7 +321,7 @@
   function initWorkspace() {
     loadProjectFromStorage();
     setupUrlParams();
-    renderNavTabs();
+    renderNavBar();
     setupEventListeners();
     updateProjectHeaderUI();
     
@@ -201,7 +338,6 @@
     }
   }
 
-  // 案件データの保存・読み込み
   function loadProjectFromStorage() {
     const saved = localStorage.getItem('mdo3_workspace_project');
     if (saved) {
@@ -218,32 +354,106 @@
     localStorage.setItem('mdo3_workspace_project', JSON.stringify(currentProject));
   }
 
-  // 上部ツールタブバーのレンダリング
-  function renderNavTabs() {
+  // ★ 上部ナビゲーションバーのレンダリング (最頻出ボタン ＋ カテゴリ別プルタブ形式)
+  function renderNavBar() {
     const navbar = document.getElementById('wsToolsNavbar');
     if (!navbar) return;
 
-    navbar.innerHTML = WORKSPACE_TOOLS.map(tool => {
-      const isSubscribed = checkSubscription(tool.id);
-      const isActive = tool.id === activeToolId;
-      const classes = [
-        'ws-tool-tab-btn',
-        isActive ? 'active' : '',
-        isSubscribed ? 'subscribed' : 'locked'
-      ].filter(Boolean).join(' ');
+    // 1. 最頻出ツール (独立クイックボタン群)
+    const frequentTools = WORKSPACE_TOOLS.filter(t => t.frequent);
+    const frequentHtml = `
+      <div class="ws-frequent-group">
+        ${frequentTools.map(tool => {
+          const isSubscribed = checkSubscription(tool.id);
+          const isActive = tool.id === activeToolId;
+          const classes = [
+            'ws-tool-tab-btn',
+            isActive ? 'active' : '',
+            isSubscribed ? 'subscribed' : 'locked'
+          ].filter(Boolean).join(' ');
+
+          return `
+            <button type="button" class="${classes}" data-tool="${tool.id}" onclick="window.onSelectToolTab('${tool.id}')">
+              <span class="material-symbols-outlined tab-status-icon">${isSubscribed ? tool.icon : 'lock'}</span>
+              <span>${tool.name}</span>
+              ${!isSubscribed ? '<span class="material-symbols-outlined tab-lock-badge">lock</span>' : ''}
+            </button>
+          `;
+        }).join('')}
+      </div>
+    `;
+
+    // 2. カテゴリ別プルタブ (ドロップダウン)
+    const categories = [
+      { id: 'foundation', name: '基礎・擁壁系', icon: 'foundation' },
+      { id: 'wood', name: '木造軸組系', icon: 'view_column' },
+      { id: 'horizontal', name: '水平構面・2in1任意配列', icon: 'sync_alt' },
+      { id: 'wrc', name: 'RC・WRC造', icon: 'apartment' }
+    ];
+
+    const dropdownsHtml = categories.map(cat => {
+      const catTools = WORKSPACE_TOOLS.filter(t => !t.frequent && t.category === cat.id);
+      if (catTools.length === 0) return '';
+
+      const isCurrentCatActive = catTools.some(t => t.id === activeToolId);
+      const activeToolInCat = catTools.find(t => t.id === activeToolId);
+      const labelText = activeToolInCat ? `${cat.name}: ${activeToolInCat.name}` : `${cat.name} (${catTools.length})`;
 
       return `
-        <button type="button" class="${classes}" data-tool="${tool.id}" onclick="window.onSelectToolTab('${tool.id}')">
-          <span class="material-symbols-outlined tab-status-icon">
-            ${isSubscribed ? tool.icon : 'lock'}
-          </span>
-          <span>${tool.name}</span>
-          ${tool.frequent ? '<span class="tab-badge-frequent">最頻出</span>' : ''}
-          ${!isSubscribed ? '<span class="material-symbols-outlined tab-lock-badge">lock</span>' : ''}
-        </button>
+        <div class="ws-dropdown ${isCurrentCatActive ? 'has-active' : ''}" id="dropdown_${cat.id}">
+          <button type="button" class="ws-dropdown-btn ${isCurrentCatActive ? 'active' : ''}" onclick="window.toggleDropdown('${cat.id}')">
+            <span class="material-symbols-outlined" style="font-size:15px; color:var(--ws-cyan);">${cat.icon}</span>
+            <span>${labelText}</span>
+            <span class="material-symbols-outlined" style="font-size:14px;">arrow_drop_down</span>
+          </button>
+          <div class="ws-dropdown-menu">
+            ${catTools.map(tool => {
+              const isSubscribed = checkSubscription(tool.id);
+              const isActive = tool.id === activeToolId;
+              const classes = [
+                'ws-dropdown-item',
+                isActive ? 'active' : '',
+                isSubscribed ? 'subscribed' : 'locked'
+              ].filter(Boolean).join(' ');
+
+              return `
+                <button type="button" class="${classes}" onclick="window.onSelectToolTab('${tool.id}'); window.closeAllDropdowns();">
+                  <span style="display:flex; align-items:center; gap:6px;">
+                    <span class="material-symbols-outlined" style="font-size:14px;">${isSubscribed ? tool.icon : 'lock'}</span>
+                    <span>${tool.name}</span>
+                  </span>
+                  ${!isSubscribed ? '<span class="material-symbols-outlined" style="font-size:13px; color:#f59e0b;">lock</span>' : ''}
+                </button>
+              `;
+            }).join('')}
+          </div>
+        </div>
       `;
     }).join('');
+
+    navbar.innerHTML = frequentHtml + dropdownsHtml;
   }
+
+  // ドロップダウン開閉制御
+  window.toggleDropdown = function(catId) {
+    const target = document.getElementById(`dropdown_${catId}`);
+    const wasActive = target ? target.classList.contains('active') : false;
+    window.closeAllDropdowns();
+    if (target && !wasActive) {
+      target.classList.add('active');
+    }
+  };
+
+  window.closeAllDropdowns = function() {
+    document.querySelectorAll('.ws-dropdown').forEach(d => d.classList.remove('active'));
+  };
+
+  // ドロップダウン外クリックで閉じる
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.ws-dropdown')) {
+      window.closeAllDropdowns();
+    }
+  });
 
   // サブスク判定ロジック
   function checkSubscription(toolId) {
@@ -266,7 +476,7 @@
   // iframeによる元ツールの完全表示切り替え
   function switchTool(toolId) {
     activeToolId = toolId;
-    renderNavTabs();
+    renderNavBar();
 
     const tool = WORKSPACE_TOOLS.find(t => t.id === toolId);
     if (!tool) return;
@@ -281,16 +491,13 @@
 
     let iframe = loadedIframes[toolId];
     if (!iframe) {
-      // ローディングインジケーター表示
       showLoading(true);
 
-      // iframeを新設
       iframe = document.createElement('iframe');
       iframe.className = 'ws-tool-iframe active';
       iframe.id = `iframe_${toolId}`;
       iframe.src = tool.url;
 
-      // ロード完了時に案件データをiframe内に自動注入
       iframe.addEventListener('load', () => {
         showLoading(false);
         injectProjectDataIntoIframe(iframe);
@@ -304,29 +511,11 @@
     }
   }
 
-  // 案件名・設計者名・地域定数をiframe内部の入力欄に自動転記
+  // 建設地・地域定数をiframe内部の入力欄に自動転記
   function injectProjectDataIntoIframe(iframe) {
     try {
       const doc = iframe.contentDocument || iframe.contentWindow?.document;
       if (!doc) return;
-
-      // 物件名入力欄の探索と反映
-      const nameInputs = doc.querySelectorAll('input[name*="project"], input[id*="project"], input[placeholder*="物件名"], input[name*="bukken"], input[id*="bukken"]');
-      nameInputs.forEach(inp => {
-        if (!inp.value || inp.value === '川越市 S様邸 新築工事') {
-          inp.value = currentProject.name;
-          inp.dispatchEvent(new Event('change', { bubbles: true }));
-        }
-      });
-
-      // 設計者名入力欄の探索と反映
-      const designerInputs = doc.querySelectorAll('input[name*="designer"], input[id*="designer"], input[placeholder*="設計"], input[name*="author"], input[id*="author"]');
-      designerInputs.forEach(inp => {
-        if (!inp.value || inp.value === '一級建築士事務所 mdo3') {
-          inp.value = currentProject.designer;
-          inp.dispatchEvent(new Event('change', { bubbles: true }));
-        }
-      });
 
       // Z係数入力欄
       const zInputs = doc.querySelectorAll('input[name*="z_coeff"], input[id*="z_coeff"], input[name="Z"], input[id="valZ"]');
@@ -343,7 +532,6 @@
       });
 
     } catch (e) {
-      // 同一オリジンでない場合などはスキップ
       console.warn('Iframe injection note:', e);
     }
   }
@@ -379,7 +567,7 @@
     currentPlanMode = planMode;
     const select = document.getElementById('simPlanSelect');
     if (select) select.value = planMode;
-    renderNavTabs();
+    renderNavBar();
     closeSubscriptionModal();
     switchTool(activeToolId);
     showWsToast(`プラン表示を【${getPlanName(planMode)}】に切り替えました`);
@@ -396,12 +584,7 @@
 
   // 案件ヘッダーUIの更新
   function updateProjectHeaderUI() {
-    const inputName = document.getElementById('inputProjNameLarge');
-    const inputDesigner = document.getElementById('inputProjDesignerLarge');
     const inputAddr = document.getElementById('inputProjAddress');
-
-    if (inputName) inputName.value = currentProject.name;
-    if (inputDesigner) inputDesigner.value = currentProject.designer;
     if (inputAddr) inputAddr.value = currentProject.address;
 
     // 常時表示バッジバーの反映
@@ -417,7 +600,6 @@
     if (sumFreeze) sumFreeze.textContent = `${currentProject.freezeDepth}`;
     if (sumEnergy) sumEnergy.textContent = `${currentProject.energyRegion}地域 (${currentProject.solarRegion})`;
 
-    // 現在表示中のiframe内にも再注入
     const currentIframe = loadedIframes[activeToolId];
     if (currentIframe) {
       injectProjectDataIntoIframe(currentIframe);
@@ -425,25 +607,6 @@
   }
 
   function setupEventListeners() {
-    // 案件名（大きく）・設計者名（大きく）の変更イベント
-    const inputName = document.getElementById('inputProjNameLarge');
-    if (inputName) {
-      inputName.addEventListener('input', () => {
-        currentProject.name = inputName.value;
-        saveProjectToStorage();
-        updateProjectHeaderUI();
-      });
-    }
-
-    const inputDesigner = document.getElementById('inputProjDesignerLarge');
-    if (inputDesigner) {
-      inputDesigner.addEventListener('input', () => {
-        currentProject.designer = inputDesigner.value;
-        saveProjectToStorage();
-        updateProjectHeaderUI();
-      });
-    }
-
     // 建設地住所の変更 (地域定数の自動同期)
     const inputAddr = document.getElementById('inputProjAddress');
     const btnSyncRegional = document.getElementById('btnSyncRegional');
@@ -452,7 +615,7 @@
         const addr = inputAddr.value.trim();
         if (!addr) return;
         btnSyncRegional.disabled = true;
-        btnSyncRegional.innerHTML = `<span class="material-symbols-outlined" style="font-size:13px; animation:spin 1s infinite;">sync</span> 算定中...`;
+        btnSyncRegional.innerHTML = `<span class="material-symbols-outlined" style="font-size:12px; animation:spin 1s infinite;">sync</span>`;
         
         try {
           if (typeof calculateRegionalConstants === 'function') {
@@ -468,13 +631,13 @@
             
             saveProjectToStorage();
             updateProjectHeaderUI();
-            showWsToast(`建設地「${addr}」の地域定数 (Z=${res.z}, V0=${res.v0}m/s) を全ツールに同期しました！`);
+            showWsToast(`建設地「${addr}」の地域定数 (Z=${res.z}, V0=${res.v0}m/s) を同期しました！`);
           }
         } catch (err) {
           console.error(err);
         } finally {
           btnSyncRegional.disabled = false;
-          btnSyncRegional.innerHTML = `<span class="material-symbols-outlined" style="font-size:13px;">sync</span> 同期`;
+          btnSyncRegional.innerHTML = `<span class="material-symbols-outlined" style="font-size:12px;">sync</span> 同期`;
         }
       });
     }
@@ -499,10 +662,10 @@
         right: 24px;
         background: #0284c7;
         color: #fff;
-        padding: 12px 20px;
+        padding: 10px 18px;
         border-radius: 8px;
         font-weight: 700;
-        font-size: 0.85rem;
+        font-size: 0.82rem;
         box-shadow: 0 10px 25px rgba(0,0,0,0.5);
         z-index: 9999;
         display: flex;

@@ -15,19 +15,18 @@
 
   <!-- Custom CSS -->
   <link rel="stylesheet" href="css/portal.css?v=1.5.6">
-  <link rel="stylesheet" href="css/workspace.css?v=1.0.1">
+  <link rel="stylesheet" href="css/workspace.css?v=1.0.2">
 </head>
 <body class="workspace-body">
 
   <!-- ==========================================
        1. 案件統合コンソール 上部固定ヘッダー
-       - 案件名・設計者名 (大きく常時表示)
-       - 地震地域係数 Z, V0, S, 凍結深度 (常時表示)
-       - 使用ツール切り替えタブバー (契約ツール点灯 / 未契約グレーアウト)
+       - 建設地 ＆ 地域定数 (Z, V0, S, 凍結, 省エネ) 常時表示
+       - 最頻出ツールボタン ＋ カテゴリ別プルタブ
        ========================================== -->
   <header class="ws-header" id="wsHeader">
     
-    <!-- ヘッダー上段: 案件名(大)・設計者(大)・建設地・地域定数・プランアクション -->
+    <!-- ヘッダー上段: ロゴ・建設地・地域定数・プランシミュレーター・アクション -->
     <div class="ws-header-row-primary">
       
       <!-- ロゴ & 案件統合コンソールバッジ -->
@@ -40,33 +39,15 @@
         </a>
       </div>
 
-      <!-- ★ 案件名 & 設計者名（大きく表示・入力） -->
-      <div class="ws-project-inputs-large">
-        <div class="ws-input-large-box">
-          <label class="ws-input-large-label">
-            <span class="material-symbols-outlined" style="font-size:14px;">apartment</span> 物件名 / 案件名:
-          </label>
-          <input type="text" id="inputProjNameLarge" class="ws-input-large-text" value="川越市 S様邸 新築工事" placeholder="例: ○○様邸 新築工事" style="width: 290px;">
-        </div>
-
-        <div class="ws-input-large-box">
-          <label class="ws-input-large-label" style="color:#a78bfa;">
-            <span class="material-symbols-outlined" style="font-size:14px;">person</span> 設計担当者:
-          </label>
-          <input type="text" id="inputProjDesignerLarge" class="ws-input-large-text" value="一級建築士事務所 mdo3" placeholder="設計者・事務所名" style="width: 210px;">
-        </div>
-
-        <div class="ws-input-large-box">
-          <label class="ws-input-large-label" style="color:var(--ws-emerald);">
-            <span class="material-symbols-outlined" style="font-size:14px;">location_on</span> 建設地:
-          </label>
-          <div class="ws-addr-sync-box">
-            <input type="text" id="inputProjAddress" class="ws-input-addr" value="埼玉県川越市幸町" placeholder="建設地住所">
-            <button type="button" class="btn-sync-pill" id="btnSyncRegional" title="住所からZ・V0・積雪深を全ツールに同期">
-              <span class="material-symbols-outlined" style="font-size:13px;">sync</span> 同期
-            </button>
-          </div>
-        </div>
+      <!-- 建設地 & 地域定数同期 -->
+      <div class="ws-addr-sync-box">
+        <label>
+          <span class="material-symbols-outlined" style="font-size:14px;">location_on</span> 建設地:
+        </label>
+        <input type="text" id="inputProjAddress" class="ws-input-addr" value="埼玉県川越市幸町" placeholder="建設地住所">
+        <button type="button" class="btn-sync-pill" id="btnSyncRegional" title="住所からZ・V0・積雪深を同期">
+          <span class="material-symbols-outlined" style="font-size:12px;">sync</span> 同期
+        </button>
       </div>
 
       <!-- ★ 地域定数 常時表示バー (Z, V0, S, 凍結深度, 省エネ区分) -->
@@ -118,7 +99,7 @@
       </div>
     </div>
 
-    <!-- 2. ヘッダー下段: 使用ツール切り替えタブバー (契約ツールは点灯 / 未契約は暗くグレーアウト+鍵マーク) -->
+    <!-- 2. ヘッダー下段: 最頻出クイックボタン ＋ カテゴリ別プルタブ (ドロップダウン) -->
     <nav class="ws-tools-navbar" id="wsToolsNavbar">
       <!-- JavaScript (workspace.js) で自動生成 -->
     </nav>
@@ -126,7 +107,7 @@
 
   <!-- ==========================================
        2. メインビューポート: 元ツール完全埋め込み (iframe)
-       - 元のツールの構成・計算ロジック・印刷ボタンを100%保持
+       - 元のツールの構成・画面・計算ロジック・印刷ボタンを100%保持
        - 各ツールごとに個別出力可能
        ========================================== -->
   <main class="ws-tool-viewport" id="wsToolViewport">
@@ -194,6 +175,6 @@
 
   <!-- Scripts -->
   <script src="js/regional_calc.js?v=1.5.6"></script>
-  <script src="js/workspace.js?v=1.0.1"></script>
+  <script src="js/workspace.js?v=1.0.2"></script>
 </body>
 </html>

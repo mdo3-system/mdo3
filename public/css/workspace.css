@@ -39,7 +39,7 @@ html, body.workspace-body {
 }
 
 /* ==========================================
-   1. 案件統合コンソール 上部固定ヘッダー
+   1. 案件統合コンソール 上部固定ヘッダー (スリム & 高機能)
    ========================================== */
 .ws-header {
   background: var(--ws-header-bg);
@@ -48,18 +48,18 @@ html, body.workspace-body {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
   z-index: 1000;
   flex-shrink: 0;
-  padding: 8px 16px 6px 16px;
+  padding: 8px 18px;
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-/* ヘッダー上段: 案件情報・地域定数・アクション */
+/* ヘッダー上段: ブランドロゴ・建設地・地域定数・アクション */
 .ws-header-row-primary {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: 14px;
   flex-wrap: wrap;
 }
 
@@ -79,21 +79,21 @@ html, body.workspace-body {
 }
 
 .ws-logo-icon {
-  width: 32px;
-  height: 32px;
+  width: 30px;
+  height: 30px;
   background: linear-gradient(135deg, #0ea5e9, #10b981);
-  border-radius: 8px;
+  border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #fff;
   font-weight: 900;
-  font-size: 1.1rem;
+  font-size: 1rem;
   box-shadow: 0 0 10px rgba(14, 165, 233, 0.4);
 }
 
 .ws-title-group h1 {
-  font-size: 1rem;
+  font-size: 0.98rem;
   font-weight: 800;
   margin: 0;
   letter-spacing: -0.02em;
@@ -106,53 +106,11 @@ html, body.workspace-body {
 .ws-tag {
   font-size: 0.68rem;
   font-weight: 800;
-  padding: 2px 8px;
-  border-radius: 12px;
+  padding: 2px 7px;
+  border-radius: 10px;
   background: rgba(14, 165, 233, 0.18);
   color: #38bdf8;
   border: 1px solid rgba(14, 165, 233, 0.35);
-}
-
-/* ★ 案件名・設計者名（大きく表示・入力） */
-.ws-project-inputs-large {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.ws-input-large-box {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.ws-input-large-label {
-  font-size: 0.72rem;
-  font-weight: 800;
-  color: #38bdf8;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.ws-input-large-text {
-  background: rgba(0, 0, 0, 0.55);
-  border: 1.5px solid rgba(255, 255, 255, 0.2);
-  border-radius: 6px;
-  padding: 6px 12px;
-  color: #ffffff;
-  font-size: 1.05rem;
-  font-weight: 800;
-  font-family: inherit;
-  transition: all 0.2s ease;
-}
-
-.ws-input-large-text:focus {
-  outline: none;
-  border-color: #38bdf8;
-  background: rgba(0, 0, 0, 0.8);
-  box-shadow: 0 0 12px rgba(56, 189, 248, 0.4);
 }
 
 /* 建設地・地域定数同期 */
@@ -160,32 +118,42 @@ html, body.workspace-body {
   display: flex;
   align-items: center;
   gap: 6px;
-  background: rgba(0, 0, 0, 0.4);
-  padding: 4px 8px;
+  background: rgba(0, 0, 0, 0.45);
+  padding: 4px 10px;
   border-radius: 6px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.ws-addr-sync-box label {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--ws-emerald);
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  white-space: nowrap;
 }
 
 .ws-input-addr {
   background: transparent;
   border: none;
-  color: #e2e8f0;
+  color: #ffffff;
   font-size: 0.85rem;
   font-weight: 700;
   font-family: inherit;
-  width: 150px;
+  width: 160px;
 }
 
 .ws-input-addr:focus {
   outline: none;
-  color: #fff;
+  border-bottom: 1px solid var(--ws-cyan);
 }
 
 .btn-sync-pill {
   background: rgba(14, 165, 233, 0.2);
   border: 1px solid rgba(14, 165, 233, 0.4);
   color: #38bdf8;
-  padding: 4px 8px;
+  padding: 3px 8px;
   border-radius: 4px;
   font-size: 0.72rem;
   font-weight: 800;
@@ -205,9 +173,9 @@ html, body.workspace-body {
 .ws-constants-badge-bar {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   background: rgba(0, 0, 0, 0.5);
-  padding: 4px 10px;
+  padding: 4px 12px;
   border-radius: 6px;
   border: 1px solid rgba(255, 255, 255, 0.08);
   flex-wrap: wrap;
@@ -217,13 +185,13 @@ html, body.workspace-body {
   display: flex;
   align-items: baseline;
   gap: 4px;
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   white-space: nowrap;
 }
 
 .ws-const-tag .tag-lbl {
   color: var(--ws-text-muted);
-  font-size: 0.7rem;
+  font-size: 0.72rem;
   font-weight: 700;
 }
 
@@ -231,9 +199,9 @@ html, body.workspace-body {
   font-weight: 800;
 }
 
-.ws-const-tag.tag-z .tag-val { color: var(--ws-gold); }
-.ws-const-tag.tag-v0 .tag-val { color: #60a5fa; }
-.ws-const-tag.tag-s .tag-val { color: #34d399; }
+.ws-const-tag.tag-z .tag-val { color: var(--ws-gold); font-size: 0.88rem; }
+.ws-const-tag.tag-v0 .tag-val { color: #60a5fa; font-size: 0.88rem; }
+.ws-const-tag.tag-s .tag-val { color: #34d399; font-size: 0.88rem; }
 .ws-const-tag.tag-freeze .tag-val { color: #f472b6; }
 .ws-const-tag.tag-energy .tag-val { color: #38bdf8; }
 
@@ -298,32 +266,27 @@ html, body.workspace-body {
 }
 
 /* ==========================================
-   2. ヘッダー下段: 使用ツール切り替えタブバー
+   2. ヘッダー下段: 最頻出ボタン ＋ プルタブ (ドロップダウン形式)
    ========================================== */
 .ws-tools-navbar {
   display: flex;
   align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* 最頻出クイックボタングループ */
+.ws-frequent-group {
+  display: flex;
+  align-items: center;
   gap: 6px;
-  overflow-x: auto;
-  scrollbar-width: thin;
-  padding-bottom: 2px;
 }
 
-.ws-tools-navbar::-webkit-scrollbar {
-  height: 4px;
-}
-
-.ws-tools-navbar::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
-}
-
-/* ツール切り替えボタン */
 .ws-tool-tab-btn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
+  gap: 5px;
+  padding: 6px 11px;
   border-radius: 6px;
   font-size: 0.78rem;
   font-weight: 800;
@@ -342,25 +305,18 @@ html, body.workspace-body {
   border-color: rgba(255, 255, 255, 0.25);
 }
 
-/* アクティブ（現在選択中のツール） */
 .ws-tool-tab-btn.active {
   background: rgba(14, 165, 233, 0.22);
   border-color: #0ea5e9;
   color: #38bdf8;
-  box-shadow: 0 0 14px rgba(14, 165, 233, 0.35);
+  box-shadow: 0 0 12px rgba(14, 165, 233, 0.35);
 }
 
-/* 契約中（アクセス可能）バッジ */
-.ws-tool-tab-btn .tab-status-icon {
-  font-size: 15px;
-}
-
-/* 未契約（グレーアウト・暗く表示・鍵マーク） */
 .ws-tool-tab-btn.locked {
   background: rgba(0, 0, 0, 0.6);
   border-color: rgba(255, 255, 255, 0.04);
   color: var(--ws-text-muted);
-  opacity: 0.5;
+  opacity: 0.55;
 }
 
 .ws-tool-tab-btn.locked:hover {
@@ -369,19 +325,88 @@ html, body.workspace-body {
   color: #fbbf24;
 }
 
-.ws-tool-tab-btn.locked .tab-lock-badge {
-  font-size: 13px;
-  color: #f59e0b;
+/* プルタブ（ドロップダウン）メニュー */
+.ws-dropdown {
+  position: relative;
+  display: inline-block;
 }
 
-.tab-badge-frequent {
-  font-size: 0.62rem;
-  padding: 1px 5px;
-  border-radius: 8px;
-  background: rgba(16, 185, 129, 0.25);
-  color: #34d399;
-  border: 1px solid rgba(16, 185, 129, 0.4);
+.ws-dropdown-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.78rem;
   font-weight: 800;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--ws-text);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.ws-dropdown-btn:hover,
+.ws-dropdown.active .ws-dropdown-btn {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: var(--ws-cyan);
+}
+
+.ws-dropdown-menu {
+  display: none;
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  background: #0f172a;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7);
+  min-width: 250px;
+  z-index: 2000;
+  padding: 6px 0;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.ws-dropdown.active .ws-dropdown-menu {
+  display: block;
+}
+
+.ws-dropdown-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 14px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--ws-text-sub);
+  background: transparent;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.ws-dropdown-item:hover {
+  background: rgba(14, 165, 233, 0.15);
+  color: #fff;
+}
+
+.ws-dropdown-item.active {
+  background: rgba(14, 165, 233, 0.25);
+  color: #38bdf8;
+  font-weight: 800;
+}
+
+.ws-dropdown-item.locked {
+  color: var(--ws-text-muted);
+  opacity: 0.6;
+}
+
+.ws-dropdown-item.locked:hover {
+  color: #fbbf24;
+  opacity: 0.9;
 }
 
 /* ==========================================
@@ -392,7 +417,7 @@ html, body.workspace-body {
   width: 100%;
   height: 100%;
   position: relative;
-  background: #ffffff; /* 元のツールが白背景の場合でも違和感なく表示 */
+  background: #ffffff;
 }
 
 .ws-tool-iframe {
@@ -441,7 +466,7 @@ html, body.workspace-body {
   inset: 0;
   background: rgba(0, 0, 0, 0.75);
   backdrop-filter: blur(8px);
-  z-index: 2000;
+  z-index: 3000;
   display: flex;
   align-items: center;
   justify-content: center;
