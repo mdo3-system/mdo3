@@ -2,33 +2,35 @@
  * public/js/workspace.js
  * 
  * mdo3.com 案件統合コンソール (Project Workspace) エンジン
- * - 1案件で複数ツールをシームレスに使い分け
- * - 上部タブ切り替え & サブスク契約状態連動 (契約ツール点灯 / 未契約グレーアウト)
- * - 案件情報 (物件名・地域定数 Z, V0, S) の全ツール一括自動連携
- * - 頻出ツール (Z係数, めり込み, 人通口, 基本屋根構面, 柱曲げ, 片持ち梁) の対話的計算
+ * - 元のツール構成・画面・計算書印刷を100%保持したままiframe統合
+ * - 上部ヘッダーに大きく案件名・設計者名、地域定数 (Z, V0, S) を常時表示
+ * - ツール切り替えタブバーで即座に下部iframeを切り替え
+ * - 上部で入力された案件名・設計者名を各ツールに自動転記連動
  */
 
 (function() {
   'use strict';
 
-  // 統合ツール定義
+  // 統合ツール定義 (元のツールHTMLパスを完全連携)
   const WORKSPACE_TOOLS = [
     {
       id: "zi",
-      name: "① Z低減係数・地域定数",
+      name: "① Z低減係数",
       category: "wood",
       frequent: true,
       icon: "public",
-      desc: "建設地からの地域係数 Z・風速 V0・積雪 S 自動算定 & 案件全体連携",
+      url: "/app/tools/zi.html",
+      desc: "横架材のZ低減係数算定 (告示1793号)",
       planGroup: ["core_pack", "all"]
     },
     {
       id: "merikomi",
-      name: "② めり込み補強計算",
+      name: "② めり込み補強",
       category: "wood",
       frequent: true,
       icon: "hardware",
-      desc: "柱脚・土台・梁交差部のめり込み応力度算定 & 補強座金検定",
+      url: "/app/tools/merikomi.html",
+      desc: "柱脚・土台・梁交差部のめり込み応力度算定 & 補強金物検定",
       planGroup: ["core_pack", "all"]
     },
     {
@@ -37,61 +39,118 @@
       category: "foundation",
       frequent: true,
       icon: "construction",
-      desc: "基礎梁立上がり開口・耐圧盤欠損補強 & スラブ割増筋検定",
+      url: "/app/tools/jintsuko.html",
+      desc: "基礎梁立上がり開口・耐圧盤欠損補強 & スラブ内割増筋検定",
       planGroup: ["core_pack", "single_jintsuko", "all"]
     },
     {
       id: "yanejika_kihon",
-      name: "④ 基本の屋根構面",
+      name: "④ 基本の屋根構面 (直貼り)",
       category: "horizontal",
       frequent: true,
       icon: "roofing",
-      desc: "告示基準・合板直貼り屋根構面の許容せん断耐力・倍率算定",
+      url: "/app/tools/shosai-yanejikabari-kihon.html",
+      desc: "野地板合板直貼りの屋根倍率・許容せん断耐力算定 (告示1541号)",
+      planGroup: ["core_pack", "all"]
+    },
+    {
+      id: "taruki_kihon",
+      name: "⑤ 基本の屋根構面 (垂木)",
+      category: "horizontal",
+      frequent: true,
+      icon: "roofing",
+      url: "/app/tools/shosai-tarukiyane-kihon.html",
+      desc: "垂木＋構造用合板屋根の倍率算定 (告示1541号)",
       planGroup: ["core_pack", "all"]
     },
     {
       id: "hasira_mage",
-      name: "⑤ 柱の曲げ計算",
+      name: "⑥ 柱の曲げ計算",
       category: "wood",
-      frequent: false,
+      frequent: true,
       icon: "view_column",
-      desc: "外壁柱・吹抜通し柱の風圧力曲げ応力 & たわみ検定 (V0自動連動)",
+      url: "/app/tools/hasira-mage.html",
+      desc: "外壁柱・吹抜通し柱の風圧力曲げ応力検定 (V0自動連動)",
       planGroup: ["all"]
     },
     {
       id: "cantilever_foundation_beam",
-      name: "⑥ 片持ち基礎梁 (柱あり)",
+      name: "⑦ 片持ち基礎梁 (柱あり)",
+      category: "foundation",
+      frequent: true,
+      icon: "account_tree",
+      url: "/app/tools/cantilever_foundation_beam.html",
+      desc: "べた基礎ポーチ部等の片持ち梁・長期短期上主筋検定",
+      planGroup: ["all"]
+    },
+    {
+      id: "cantilever_beam_no_column",
+      name: "⑧ 片持ち基礎梁 (柱なし/片土圧)",
       category: "foundation",
       frequent: false,
-      icon: "account_tree",
-      desc: "べた基礎ポーチ部等の片持ち梁・土圧・上主筋検定",
+      icon: "foundation",
+      url: "/app/tools/cantilever_beam_no_column.html",
+      desc: "柱なし片持ち基礎梁の下主筋検定 & 片土圧検定",
       planGroup: ["all"]
     },
     {
       id: "yuka_kihon",
-      name: "⑦ 基本の床構面",
+      name: "⑨ 基本の床構面",
       category: "horizontal",
       frequent: false,
       icon: "grid_view",
-      desc: "根太レス剛床・合板床構面の床倍率算定 (告示第1541号)",
+      url: "/app/tools/shosai-yuka-kihon.html",
+      desc: "根太レス剛床・合板床構面の床倍率算定 (告示1541号)",
+      planGroup: ["all"]
+    },
+    {
+      id: "foundation_beam_horizontal",
+      name: "⑩ 基礎梁水平力 (KBI)",
+      category: "foundation",
+      frequent: false,
+      icon: "straighten",
+      url: "/app/tools/foundation_beam_horizontal.html",
+      desc: "基礎梁水平力追加計算書 (KBI審査対応)",
       planGroup: ["all"]
     },
     {
       id: "youheki_calculator",
-      name: "⑧ 擁壁の安定計算",
+      name: "⑪ 擁壁計算 (逆L/逆T)",
       category: "foundation",
       frequent: false,
       icon: "terrain",
-      desc: "L型・逆L型・逆T型擁壁の転倒・滑動・支持力検定",
+      url: "/app/tools/youheki_calculator.html",
+      desc: "逆L型・逆T型擁壁の転倒・滑動・支持力検定",
       planGroup: ["all"]
     },
     {
-      id: "wrc_sim",
-      name: "⑨ WRC造 壁量算定",
+      id: "youheki_L_calculator",
+      name: "⑫ L型擁壁 (2m未満)",
+      category: "foundation",
+      frequent: false,
+      icon: "terrain",
+      url: "/app/tools/youheki_L_calculator.html",
+      desc: "L型擁壁の構造計算",
+      planGroup: ["all"]
+    },
+    {
+      id: "wrc_simulator",
+      name: "⑬ WRC造 壁量解析",
       category: "wrc",
       frequent: false,
       icon: "apartment",
+      url: "/app/tools/wrc_simulator.html",
       desc: "壁式RC造の必要壁量・壁厚・長期短期応力解析",
+      planGroup: ["all"]
+    },
+    {
+      id: "dosha_saigai",
+      name: "⑭ 土砂災害特別警戒区域",
+      category: "foundation",
+      frequent: false,
+      icon: "warning",
+      url: "/app/tools/dosha_saigai.html",
+      desc: "土砂災害警戒区域における木造外壁・RC基礎構造計算",
       planGroup: ["all"]
     }
   ];
@@ -115,23 +174,25 @@
   let currentPlanMode = "core_pack";
   let activeToolId = "zi";
 
+  // iframe インスタンスキャッシュ
+  const loadedIframes = {};
+
   document.addEventListener('DOMContentLoaded', () => {
     initWorkspace();
   });
 
   function initWorkspace() {
     loadProjectFromStorage();
+    setupUrlParams();
     renderNavTabs();
     setupEventListeners();
-    setupUrlParams();
-    
-    // 初回初期化
-    switchTool(activeToolId);
     updateProjectHeaderUI();
-    recalculateActiveTool();
+    
+    // 初回ツールをiframeで表示
+    switchTool(activeToolId);
   }
 
-  // URLパラメータ (?tool=merikomi 等) の処理
+  // URLパラメータ (?tool=jintsuko 等) の処理
   function setupUrlParams() {
     const urlParams = new URLSearchParams(window.location.search);
     const paramTool = urlParams.get('tool');
@@ -202,21 +263,96 @@
     switchTool(toolId);
   };
 
+  // iframeによる元ツールの完全表示切り替え
   function switchTool(toolId) {
     activeToolId = toolId;
     renderNavTabs();
 
-    // パネルの表示・非表示切替
-    document.querySelectorAll('.ws-tool-panel').forEach(panel => {
-      panel.classList.remove('active');
+    const tool = WORKSPACE_TOOLS.find(t => t.id === toolId);
+    if (!tool) return;
+
+    const viewport = document.getElementById('wsToolViewport');
+    if (!viewport) return;
+
+    // 全iframeを一旦非表示
+    document.querySelectorAll('.ws-tool-iframe').forEach(iframe => {
+      iframe.classList.remove('active');
     });
 
-    const activePanel = document.getElementById(`panel_${toolId}`);
-    if (activePanel) {
-      activePanel.classList.add('active');
-    }
+    let iframe = loadedIframes[toolId];
+    if (!iframe) {
+      // ローディングインジケーター表示
+      showLoading(true);
 
-    recalculateActiveTool();
+      // iframeを新設
+      iframe = document.createElement('iframe');
+      iframe.className = 'ws-tool-iframe active';
+      iframe.id = `iframe_${toolId}`;
+      iframe.src = tool.url;
+
+      // ロード完了時に案件データをiframe内に自動注入
+      iframe.addEventListener('load', () => {
+        showLoading(false);
+        injectProjectDataIntoIframe(iframe);
+      });
+
+      viewport.appendChild(iframe);
+      loadedIframes[toolId] = iframe;
+    } else {
+      iframe.classList.add('active');
+      injectProjectDataIntoIframe(iframe);
+    }
+  }
+
+  // 案件名・設計者名・地域定数をiframe内部の入力欄に自動転記
+  function injectProjectDataIntoIframe(iframe) {
+    try {
+      const doc = iframe.contentDocument || iframe.contentWindow?.document;
+      if (!doc) return;
+
+      // 物件名入力欄の探索と反映
+      const nameInputs = doc.querySelectorAll('input[name*="project"], input[id*="project"], input[placeholder*="物件名"], input[name*="bukken"], input[id*="bukken"]');
+      nameInputs.forEach(inp => {
+        if (!inp.value || inp.value === '川越市 S様邸 新築工事') {
+          inp.value = currentProject.name;
+          inp.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+      });
+
+      // 設計者名入力欄の探索と反映
+      const designerInputs = doc.querySelectorAll('input[name*="designer"], input[id*="designer"], input[placeholder*="設計"], input[name*="author"], input[id*="author"]');
+      designerInputs.forEach(inp => {
+        if (!inp.value || inp.value === '一級建築士事務所 mdo3') {
+          inp.value = currentProject.designer;
+          inp.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+      });
+
+      // Z係数入力欄
+      const zInputs = doc.querySelectorAll('input[name*="z_coeff"], input[id*="z_coeff"], input[name="Z"], input[id="valZ"]');
+      zInputs.forEach(inp => {
+        inp.value = currentProject.z;
+        inp.dispatchEvent(new Event('change', { bubbles: true }));
+      });
+
+      // 基準風速 V0 入力欄
+      const v0Inputs = doc.querySelectorAll('input[name*="v0"], input[id*="v0"], input[name="V0"], input[id="valV0"]');
+      v0Inputs.forEach(inp => {
+        inp.value = currentProject.v0;
+        inp.dispatchEvent(new Event('change', { bubbles: true }));
+      });
+
+    } catch (e) {
+      // 同一オリジンでない場合などはスキップ
+      console.warn('Iframe injection note:', e);
+    }
+  }
+
+  function showLoading(show) {
+    const el = document.getElementById('wsIframeLoading');
+    if (el) {
+      el.style.display = show ? 'flex' : 'none';
+    }
   }
 
   // 未契約案内モーダル
@@ -260,53 +396,53 @@
 
   // 案件ヘッダーUIの更新
   function updateProjectHeaderUI() {
-    const inputName = document.getElementById('inputProjName');
+    const inputName = document.getElementById('inputProjNameLarge');
+    const inputDesigner = document.getElementById('inputProjDesignerLarge');
     const inputAddr = document.getElementById('inputProjAddress');
-    const inputDesigner = document.getElementById('inputProjDesigner');
-    const inputDate = document.getElementById('inputProjDate');
 
     if (inputName) inputName.value = currentProject.name;
-    if (inputAddr) inputAddr.value = currentProject.address;
     if (inputDesigner) inputDesigner.value = currentProject.designer;
-    if (inputDate) inputDate.value = currentProject.calcDate;
+    if (inputAddr) inputAddr.value = currentProject.address;
 
-    // サマリーバーの反映
-    const sumName = document.getElementById('sumProjName');
+    // 常時表示バッジバーの反映
     const sumZ = document.getElementById('sumValZ');
     const sumV0 = document.getElementById('sumValV0');
     const sumS = document.getElementById('sumValS');
     const sumFreeze = document.getElementById('sumValFreeze');
     const sumEnergy = document.getElementById('sumValEnergy');
 
-    if (sumName) sumName.textContent = currentProject.name;
     if (sumZ) sumZ.textContent = currentProject.zs ? `1.0 (Zs=1.2)` : `${currentProject.z}`;
     if (sumV0) sumV0.textContent = `${currentProject.v0} m/s`;
     if (sumS) sumS.textContent = `${currentProject.snowDepth} cm`;
     if (sumFreeze) sumFreeze.textContent = `${currentProject.freezeDepth}`;
-    if (sumEnergy) sumEnergy.textContent = `${currentProject.energyRegion}地域 (日射${currentProject.solarRegion})`;
+    if (sumEnergy) sumEnergy.textContent = `${currentProject.energyRegion}地域 (${currentProject.solarRegion})`;
 
-    // 計算書ヘッダーへの反映
-    document.querySelectorAll('.calc-sheet-proj-name').forEach(el => el.textContent = currentProject.name);
-    document.querySelectorAll('.calc-sheet-proj-addr').forEach(el => el.textContent = currentProject.address);
-    document.querySelectorAll('.calc-sheet-proj-designer').forEach(el => el.textContent = currentProject.designer);
-    document.querySelectorAll('.calc-sheet-proj-date').forEach(el => el.textContent = currentProject.calcDate);
+    // 現在表示中のiframe内にも再注入
+    const currentIframe = loadedIframes[activeToolId];
+    if (currentIframe) {
+      injectProjectDataIntoIframe(currentIframe);
+    }
   }
 
   function setupEventListeners() {
-    // 案件名・設計者・日付の変更
-    const bindMeta = (id, key) => {
-      const el = document.getElementById(id);
-      if (el) {
-        el.addEventListener('change', () => {
-          currentProject[key] = el.value;
-          saveProjectToStorage();
-          updateProjectHeaderUI();
-        });
-      }
-    };
-    bindMeta('inputProjName', 'name');
-    bindMeta('inputProjDesigner', 'designer');
-    bindMeta('inputProjDate', 'calcDate');
+    // 案件名（大きく）・設計者名（大きく）の変更イベント
+    const inputName = document.getElementById('inputProjNameLarge');
+    if (inputName) {
+      inputName.addEventListener('input', () => {
+        currentProject.name = inputName.value;
+        saveProjectToStorage();
+        updateProjectHeaderUI();
+      });
+    }
+
+    const inputDesigner = document.getElementById('inputProjDesignerLarge');
+    if (inputDesigner) {
+      inputDesigner.addEventListener('input', () => {
+        currentProject.designer = inputDesigner.value;
+        saveProjectToStorage();
+        updateProjectHeaderUI();
+      });
+    }
 
     // 建設地住所の変更 (地域定数の自動同期)
     const inputAddr = document.getElementById('inputProjAddress');
@@ -316,7 +452,7 @@
         const addr = inputAddr.value.trim();
         if (!addr) return;
         btnSyncRegional.disabled = true;
-        btnSyncRegional.innerHTML = `<span class="material-symbols-outlined" style="font-size:14px; animation:spin 1s infinite;">sync</span> 算定中...`;
+        btnSyncRegional.innerHTML = `<span class="material-symbols-outlined" style="font-size:13px; animation:spin 1s infinite;">sync</span> 算定中...`;
         
         try {
           if (typeof calculateRegionalConstants === 'function') {
@@ -332,14 +468,13 @@
             
             saveProjectToStorage();
             updateProjectHeaderUI();
-            recalculateActiveTool();
             showWsToast(`建設地「${addr}」の地域定数 (Z=${res.z}, V0=${res.v0}m/s) を全ツールに同期しました！`);
           }
         } catch (err) {
           console.error(err);
         } finally {
           btnSyncRegional.disabled = false;
-          btnSyncRegional.innerHTML = `<span class="material-symbols-outlined" style="font-size:14px;">sync</span> 地域定数同期`;
+          btnSyncRegional.innerHTML = `<span class="material-symbols-outlined" style="font-size:13px;">sync</span> 同期`;
         }
       });
     }
@@ -350,217 +485,6 @@
       simPlanSelect.addEventListener('change', (e) => {
         activateDemoPlan(e.target.value);
       });
-    }
-
-    // 印刷ボタン
-    const btnPrintSheet = document.getElementById('btnPrintSheet');
-    if (btnPrintSheet) {
-      btnPrintSheet.addEventListener('click', () => {
-        window.print();
-      });
-    }
-
-    // 各ツールの入力変更イベント監視
-    document.querySelectorAll('.ws-calc-input').forEach(input => {
-      input.addEventListener('input', recalculateActiveTool);
-      input.addEventListener('change', recalculateActiveTool);
-    });
-  }
-
-  // ==========================================
-  // 各ツールの対話的計算ロジック
-  // ==========================================
-  function recalculateActiveTool() {
-    switch (activeToolId) {
-      case 'zi':
-        calcZiTool();
-        break;
-      case 'merikomi':
-        calcMerikomiTool();
-        break;
-      case 'jintsuko':
-        calcJintsukoTool();
-        break;
-      case 'yanejika_kihon':
-        calcRoofTool();
-        break;
-      case 'hasira_mage':
-        calcHasiraMageTool();
-        break;
-      case 'cantilever_foundation_beam':
-        calcCantileverTool();
-        break;
-      default:
-        break;
-    }
-  }
-
-  // 1. Z係数・地域定数
-  function calcZiTool() {
-    const zVal = currentProject.z || 1.0;
-    const v0Val = currentProject.v0 || 32;
-    const sVal = currentProject.snowDepth || 30;
-
-    const span = parseFloat(document.getElementById('ziSpan')?.value) || 3.64;
-    const load = parseFloat(document.getElementById('ziLoad')?.value) || 4.2; // kN/m
-
-    // M = w * L^2 / 8
-    const M = (load * Math.pow(span, 2)) / 8;
-    const M_z = M * zVal;
-
-    setHtml('resZiM', `${M.toFixed(2)} kN・m`);
-    setHtml('resZiMz', `${M_z.toFixed(2)} kN・m`);
-    setHtml('sheetZiZ', `${zVal} ${currentProject.zs ? '(Zs=1.2)' : ''}`);
-    setHtml('sheetZiV0', `${v0Val} m/s`);
-    setHtml('sheetZiS', `${sVal} cm`);
-  }
-
-  // 2. めり込み補強計算 (merikomi)
-  function calcMerikomiTool() {
-    const colSize = parseFloat(document.getElementById('mkColSize')?.value) || 105; // mm
-    const N = parseFloat(document.getElementById('mkAxialLoad')?.value) || 18.5; // kN (柱軸力)
-    const timberFc = parseFloat(document.getElementById('mkTimberType')?.value) || 3.0; // N/mm2 (ヒノキ/スギ)
-    const washerType = document.getElementById('mkWasherType')?.value || 'standard';
-
-    // めり込み有効面積 A (mm2)
-    const area = colSize * colSize;
-    // 発生めり込み応力度 σ = N * 1000 / A (N/mm2)
-    const sigma = (N * 1000) / area;
-    // 許容めり込み応力度 qa (短期 = 長期 × 2 / 通常設計)
-    const qa = timberFc * 1.5;
-    const ratio = sigma / qa;
-
-    const isOk = ratio <= 1.0;
-    updateJudgment('mkJudgment', isOk, `めり込み検定比: ${ratio.toFixed(3)} ≦ 1.000 (${isOk ? 'OK・安全' : 'NG・座金補強要'})`);
-    updateStressBar('mkStressBar', ratio);
-
-    setHtml('mkResSigma', `${sigma.toFixed(2)} N/mm²`);
-    setHtml('mkResQa', `${qa.toFixed(2)} N/mm²`);
-    setHtml('mkResRatio', ratio.toFixed(3));
-  }
-
-  // 3. 人通口補強計算 (jintsuko)
-  function calcJintsukoTool() {
-    const D = parseFloat(document.getElementById('jtBeamHeight')?.value) || 640;
-    const openingW = parseFloat(document.getElementById('jtOpenWidth')?.value) || 600;
-    const shearQ = parseFloat(document.getElementById('jtShearQ')?.value) || 28.0; // kN
-    const addBarDia = document.getElementById('jtAddBarDia')?.value || 'D13';
-
-    // 有効梁成 d = D - 60 (レベラー・かぶり見込み)
-    const d = D - 60;
-    // 開口率比
-    const openRatio = openingW / (D * 3);
-    // 開口低減せん断耐力 Qa (kN)
-    const Qa = 0.08 * 21 * 150 * d / 1000 * 1.25;
-    const ratio = shearQ / Math.max(Qa, 1);
-    const isOk = ratio <= 1.0;
-
-    updateJudgment('jtJudgment', isOk, `せん断検定比: ${ratio.toFixed(3)} ≦ 1.000 (${isOk ? '補強配筋OK' : '開口補強筋増強要'})`);
-    updateStressBar('jtStressBar', ratio);
-
-    setHtml('jtResQa', `${Qa.toFixed(1)} kN`);
-    setHtml('jtResRatio', ratio.toFixed(3));
-  }
-
-  // 4. 基本の屋根構面 (yanejika_kihon)
-  function calcRoofTool() {
-    const plyType = document.getElementById('rfPlyType')?.value || '12mm';
-    const nailPitch = parseFloat(document.getElementById('rfNailPitch')?.value) || 150; // mm
-    
-    // 告示第1541号に基づく屋根倍率
-    let mult = 1.0;
-    if (plyType === '12mm') {
-      mult = nailPitch <= 100 ? 1.5 : (nailPitch <= 150 ? 1.0 : 0.7);
-    } else {
-      mult = nailPitch <= 100 ? 1.2 : 0.8;
-    }
-
-    const shortCapacity = mult * 1.96; // kN/m (基準耐力)
-    setHtml('rfResMult', `${mult.toFixed(2)} 倍`);
-    setHtml('rfResCap', `${shortCapacity.toFixed(2)} kN/m`);
-    updateJudgment('rfJudgment', true, `屋根倍率: ${mult.toFixed(2)}倍 (告示第1541号 第2の二・審査適合)`);
-  }
-
-  // 5. 柱の曲げ計算 (hasira_mage)
-  function calcHasiraMageTool() {
-    const v0 = currentProject.v0 || 32;
-    const colH = parseFloat(document.getElementById('hmColHeight')?.value) || 2.8; // m
-    const colW = parseFloat(document.getElementById('hmColWidth')?.value) || 120; // mm
-    const colD = parseFloat(document.getElementById('hmColDepth')?.value) || 120; // mm
-
-    // 速度圧 q = 0.6 * E * V0^2 (平野部 E=1.0)
-    const q = 0.6 * 1.0 * Math.pow(v0, 2); // N/m2
-    // 柱受圧幅 B = 0.91m
-    const w = (q * 0.91 * 1.2) / 1000; // kN/m
-    const M = (w * Math.pow(colH, 2)) / 8; // kN・m
-    
-    // 断面係数 Z = b * d^2 / 6 (cm3)
-    const Z = (colW * Math.pow(colD, 2)) / 6 / 1000;
-    const sigma = (M * 1000000) / (Z * 1000); // N/mm2
-    const fb = 17.6; // N/mm2 (スギ/ヒノキ短期許容曲げ応力度)
-    const ratio = sigma / fb;
-    const isOk = ratio <= 1.0;
-
-    updateJudgment('hmJudgment', isOk, `柱曲げ検定比: ${ratio.toFixed(3)} ≦ 1.000 (V0=${v0}m/s連動)`);
-    updateStressBar('hmStressBar', ratio);
-    setHtml('hmResQ', `${Math.round(q)} N/m²`);
-    setHtml('hmResM', `${M.toFixed(2)} kN・m`);
-    setHtml('hmResRatio', ratio.toFixed(3));
-  }
-
-  // 6. 片持ち基礎梁 (cantilever_foundation_beam)
-  function calcCantileverTool() {
-    const L = parseFloat(document.getElementById('cbLength')?.value) || 910; // mm
-    const P = parseFloat(document.getElementById('cbPointLoad')?.value) || 24.5; // kN (柱先端軸力)
-    const D = parseFloat(document.getElementById('cbHeight')?.value) || 640; // mm
-
-    // M = P * L (kN・m)
-    const M = (P * L) / 1000;
-    // 所要主筋断面積 at = M * 10^6 / (ft * 7/8 * d)
-    const d = D - 60;
-    const at = (M * 1000000) / (295 * (7/8) * d); // mm2
-    const d16Area = 199; // D16=1.99cm2
-    const reqBars = Math.ceil(at / d16Area);
-
-    const isOk = reqBars <= 2;
-    updateJudgment('cbJudgment', isOk, `所要上端主筋: D16×${reqBars}本 (M=${M.toFixed(1)}kN・m)`);
-    setHtml('cbResM', `${M.toFixed(2)} kN・m`);
-    setHtml('cbResAt', `${Math.round(at)} mm²`);
-    setHtml('cbResBars', `D16 × ${reqBars} 本`);
-  }
-
-  // ヘルパー
-  function setHtml(id, val) {
-    const el = document.getElementById(id);
-    if (el) el.textContent = val;
-  }
-
-  function updateJudgment(id, isOk, text) {
-    const el = document.getElementById(id);
-    if (!el) return;
-    el.className = `ws-judgment-banner ${isOk ? 'ok' : 'ng'}`;
-    el.innerHTML = `
-      <div style="display:flex; align-items:center; gap:8px;">
-        <span class="material-symbols-outlined">${isOk ? 'check_circle' : 'warning'}</span>
-        <span>${text}</span>
-      </div>
-      <span style="font-size:0.75rem; padding:2px 8px; border-radius:12px; background:rgba(0,0,0,0.25);">
-        ${isOk ? '審査適合' : '要再検討'}
-      </span>
-    `;
-  }
-
-  function updateStressBar(id, ratio) {
-    const el = document.getElementById(id);
-    if (!el) return;
-    const pct = Math.min(Math.max(ratio * 100, 5), 100);
-    el.style.width = `${pct}%`;
-    if (ratio <= 0.8) {
-      el.style.background = '#10b981'; // green
-    } else if (ratio <= 1.0) {
-      el.style.background = '#f59e0b'; // yellow
-    } else {
-      el.style.background = '#f43f5e'; // red
     }
   }
 
