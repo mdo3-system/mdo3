@@ -206,6 +206,16 @@ html, body.workspace-body {
 .ws-const-tag.tag-s .tag-val { color: #34d399; font-size: 0.88rem; }
 .ws-const-tag.tag-freeze .tag-val { color: #f472b6; }
 .ws-const-tag.tag-energy .tag-val { color: #38bdf8; }
+.ws-const-tag.tag-urban {
+  border-radius: 4px;
+  padding: 2px 7px;
+  transition: all 0.2s ease;
+}
+.ws-const-tag.tag-urban:hover {
+  background: rgba(245, 158, 11, 0.25) !important;
+  border-color: rgba(245, 158, 11, 0.6) !important;
+  transform: translateY(-1px);
+}
 
 /* 右側アクション */
 .ws-header-actions {

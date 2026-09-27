@@ -304,7 +304,16 @@
     snowDepth: 30,
     freezeDepth: "指定なし",
     energyRegion: 6,
-    solarRegion: "A4"
+    solarRegion: "A4",
+    // ★ ユーザー登録型 都市計画・法令指定情報
+    urbanPlanning: {
+      zone: "第一種住居地域",
+      fire: "準防火地域",
+      kenpei: "60%",
+      youseki: "200%",
+      heightControl: "第2種高度地区",
+      districtPlan: ""
+    }
   };
 
   // サブスクシミュレーション状態 ('all', 'core_pack', 'single_jintsuko', 'free_trial')
@@ -600,13 +609,120 @@
     if (sumFreeze) sumFreeze.textContent = `${currentProject.freezeDepth}`;
     if (sumEnergy) sumEnergy.textContent = `${currentProject.energyRegion}地域 (${currentProject.solarRegion})`;
 
+    // ★ 都市計画バッジの反映
+    const sumUrban = document.getElementById('sumValUrban');
+    if (sumUrban) {
+      if (currentProject.urbanPlanning) {
+        const u = currentProject.urbanPlanning;
+        const shortZone = u.zone ? u.zone.replace('専用地域', '').replace('地域', '') : '未登録';
+        const shortFire = u.fire ? u.fire.replace('地域', '').replace('区域', '') : '';
+        const kp = u.kenpei ? u.kenpei.replace('%', '') : '';
+        const yk = u.youseki ? u.youseki.replace('%', '') : '';
+        sumUrban.textContent = `${shortZone}・${shortFire} (${kp}/${yk})`;
+      } else {
+        sumUrban.textContent = '未登録 (クリック登録)';
+      }
+    }
+
     const currentIframe = loadedIframes[activeToolId];
     if (currentIframe) {
       injectProjectDataIntoIframe(currentIframe);
     }
   }
 
+  // ★ 都市計画モーダルの制御
+  function openUrbanModal() {
+    const modal = document.getElementById('wsUrbanModal');
+    if (!modal) return;
+
+    // 現在のプロジェクトデータをフォームにセット
+    const u = currentProject.urbanPlanning || {};
+    const selZone = document.getElementById('selUrbanZone');
+    const selFire = document.getElementById('selUrbanFire');
+    const selKenpei = document.getElementById('selUrbanKenpei');
+    const selYouseki = document.getElementById('selUrbanYouseki');
+    const inputHeight = document.getElementById('inputUrbanHeight');
+    const inputDistrict = document.getElementById('inputUrbanDistrict');
+
+    if (selZone && u.zone) selZone.value = u.zone;
+    if (selFire && u.fire) selFire.value = u.fire;
+    if (selKenpei && u.kenpei) selKenpei.value = u.kenpei;
+    if (selYouseki && u.youseki) selYouseki.value = u.youseki;
+    if (inputHeight && typeof u.heightControl !== 'undefined') inputHeight.value = u.heightControl;
+    if (inputDistrict && typeof u.districtPlan !== 'undefined') inputDistrict.value = u.districtPlan;
+
+    // 建設地住所に応じた公式WebGISリンクの自動更新
+    const btnUrbanOpenGis = document.getElementById('btnUrbanOpenGis');
+    const urbanGisGuideTitle = document.getElementById('urbanGisGuideTitle');
+    const urbanGisGuideSub = document.getElementById('urbanGisGuideSub');
+    const addr = currentProject.address || '';
+
+    let gisInfo = null;
+    if (typeof getCityPlanningInfo === 'function') {
+      gisInfo = getCityPlanningInfo(null, null, addr, null, null);
+    }
+
+    if (gisInfo && gisInfo.localGis && btnUrbanOpenGis) {
+      btnUrbanOpenGis.href = gisInfo.localGis.url;
+      if (urbanGisGuideTitle) {
+        urbanGisGuideTitle.textContent = `🏛️ ${gisInfo.localGis.name}`;
+      }
+      if (urbanGisGuideSub) {
+        urbanGisGuideSub.textContent = gisInfo.localGis.isOfficial 
+          ? '公式WebGISを開いて用途地域・防火・高度地区をピンポイント確認'
+          : '公開都市計画マップ検索を開いて指定状況を確認';
+      }
+    } else if (btnUrbanOpenGis) {
+      btnUrbanOpenGis.href = `https://www.google.com/search?q=${encodeURIComponent(addr + ' 都市計画情報 用途地域 WebGIS')}`;
+      if (urbanGisGuideTitle) urbanGisGuideTitle.textContent = '🏛️ 自治体公開都市計画マップ検索';
+    }
+
+    modal.style.display = 'flex';
+  }
+
+  function closeUrbanModal() {
+    const modal = document.getElementById('wsUrbanModal');
+    if (modal) modal.style.display = 'none';
+  }
+
+  function saveUrbanModal() {
+    const selZone = document.getElementById('selUrbanZone');
+    const selFire = document.getElementById('selUrbanFire');
+    const selKenpei = document.getElementById('selUrbanKenpei');
+    const selYouseki = document.getElementById('selUrbanYouseki');
+    const inputHeight = document.getElementById('inputUrbanHeight');
+    const inputDistrict = document.getElementById('inputUrbanDistrict');
+
+    currentProject.urbanPlanning = {
+      zone: selZone ? selZone.value : '第一種住居地域',
+      fire: selFire ? selFire.value : '準防火地域',
+      kenpei: selKenpei ? selKenpei.value : '60%',
+      youseki: selYouseki ? selYouseki.value : '200%',
+      heightControl: inputHeight ? inputHeight.value.trim() : '',
+      districtPlan: inputDistrict ? inputDistrict.value.trim() : ''
+    };
+
+    saveProjectToStorage();
+    updateProjectHeaderUI();
+    closeUrbanModal();
+
+    const shortZone = currentProject.urbanPlanning.zone.replace('専用地域', '').replace('地域', '');
+    const shortFire = currentProject.urbanPlanning.fire.replace('地域', '').replace('区域', '');
+    showWsToast(`都市計画情報（${shortZone}・${shortFire}）を登録・案件に反映しました！`);
+  }
+
   function setupEventListeners() {
+    // 都市計画モーダル開閉・保存
+    const btnOpenUrbanModal = document.getElementById('btnOpenUrbanModal');
+    const btnCloseUrbanModal = document.getElementById('btnCloseUrbanModal');
+    const btnCancelUrbanModal = document.getElementById('btnCancelUrbanModal');
+    const btnSaveUrbanModal = document.getElementById('btnSaveUrbanModal');
+
+    if (btnOpenUrbanModal) btnOpenUrbanModal.addEventListener('click', openUrbanModal);
+    if (btnCloseUrbanModal) btnCloseUrbanModal.addEventListener('click', closeUrbanModal);
+    if (btnCancelUrbanModal) btnCancelUrbanModal.addEventListener('click', closeUrbanModal);
+    if (btnSaveUrbanModal) btnSaveUrbanModal.addEventListener('click', saveUrbanModal);
+
     // 建設地住所の変更 (地域定数の自動同期)
     const inputAddr = document.getElementById('inputProjAddress');
     const btnSyncRegional = document.getElementById('btnSyncRegional');
@@ -631,7 +747,11 @@
             
             saveProjectToStorage();
             updateProjectHeaderUI();
-            showWsToast(`建設地「${addr}」の地域定数 (Z=${res.z}, V0=${res.v0}m/s) を同期しました！`);
+            
+            const gisNote = (res.cityPlanning && res.cityPlanning.localGis) 
+              ? `【都市計画: ${res.cityPlanning.localGis.name}】` 
+              : '';
+            showWsToast(`建設地「${addr}」の地域定数を同期しました！${gisNote}`);
           }
         } catch (err) {
           console.error(err);

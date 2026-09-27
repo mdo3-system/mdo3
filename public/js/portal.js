@@ -799,8 +799,7 @@ document.addEventListener('DOMContentLoaded', () => {
         reinfoDetailText.innerHTML = `
           現在地（<strong>${results.address}</strong>）の指定状況：<br>
           ・<strong>用途地域・防火指定・高度地区・地区計画:</strong> ${gisNote} にてピンポイント指定境界を確認可能。<br>
-          ・<strong>国交省 不動産情報ライブラリ:</strong> ${results.pref}（kCode: ${cp.kCode}）にフォーカス。Webマップ上で用途地域境界・都市計画区域・地価公示・成約価格を重ね合わせて閲覧可能。<br>
-          <span style="display:inline-block; margin-top:4px; color:#38bdf8; font-size:0.73rem;">※「ライブラリ Webマップを開く」ボタンを押すと、検索住所が自動コピーされます。右上の住所検索欄にそのまま貼り付けて直接移動できます。</span>
+          ・<strong>国交省 不動産情報ライブラリ:</strong> ${results.pref}（kCode: ${cp.kCode}）にフォーカス。Webマップ上で用途地域境界・都市計画区域・地価公示・成約価格を重ね合わせて閲覧可能。
         `;
       }
     }
@@ -1060,43 +1059,6 @@ document.addEventListener('DOMContentLoaded', () => {
           btnCopyConditions.innerHTML = originalHtml;
         }, 2200);
       });
-    });
-  }
-
-  // 画面通知トースト表示ヘルパー
-  function showPortalNotification(message, duration = 6000) {
-    let toast = document.getElementById('portalToastNotification');
-    if (!toast) {
-      toast = document.createElement('div');
-      toast.id = 'portalToastNotification';
-      toast.style.cssText = 'position:fixed; bottom:24px; right:24px; z-index:99999; background:rgba(15,23,42,0.95); border:1px solid rgba(56,189,248,0.4); border-radius:8px; padding:12px 18px; color:#f8fafc; font-size:0.82rem; line-height:1.45; box-shadow:0 10px 30px rgba(0,0,0,0.5); backdrop-filter:blur(8px); display:flex; align-items:center; gap:10px; max-width:440px; transition:opacity 0.3s ease, transform 0.3s ease; opacity:0; transform:translateY(10px); pointer-events:none;';
-      document.body.appendChild(toast);
-    }
-    toast.innerHTML = `<span class="material-symbols-outlined" style="color:#38bdf8; font-size:22px; flex-shrink:0;">content_paste_go</span><span>${message}</span>`;
-    toast.style.opacity = '1';
-    toast.style.transform = 'translateY(0)';
-    toast.style.pointerEvents = 'auto';
-
-    if (toast._timer) clearTimeout(toast._timer);
-    toast._timer = setTimeout(() => {
-      toast.style.opacity = '0';
-      toast.style.transform = 'translateY(10px)';
-      toast.style.pointerEvents = 'none';
-    }, duration);
-  }
-
-  // 不動産情報ライブラリ移動時の建設地住所自動コピー
-  const linkReinfolibMap = document.getElementById('linkReinfolibMap');
-  if (linkReinfolibMap) {
-    linkReinfolibMap.addEventListener('click', async () => {
-      const curAddr = (regAddressInput && regAddressInput.value.trim()) || 
-                      (currentConstants && currentConstants.address) || '';
-      if (curAddr && navigator.clipboard) {
-        try {
-          await navigator.clipboard.writeText(curAddr);
-          showPortalNotification(`📋 建設地「<strong>${curAddr}</strong>」をコピーしました！<br>開いたライブラリ右上の【住所・キーワード】検索窓に貼り付け（Ctrl+V）して直接移動してください。`, 8000);
-        } catch (e) {}
-      }
     });
   }
 
