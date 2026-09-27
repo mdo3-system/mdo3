@@ -792,26 +792,26 @@ document.addEventListener('DOMContentLoaded', () => {
   async function evaluateLocation(lat, lon, knownAddress = '') {
     let elevation = 0;
     try {
-      elevation = await fetchElevation(lon, lat);
+      elevation = (typeof GeoService !== 'undefined' && GeoService.fetchElevation)
+        ? await GeoService.fetchElevation(lon, lat)
+        : await fetchElevation(lon, lat);
     } catch (e) {
-      console.warn(e);
+      console.warn('Elevation fetch error:', e);
     }
 
     let address = knownAddress;
     if (!address) {
-      // 逆ジオコーディング (国土地理院またはOSM)
+      // 逆ジオコーディング (GeoService へ委譲)
       try {
-        const revUrl = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=14&addressdetails=1`;
-        const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
-        const tid = controller ? setTimeout(() => controller.abort(), 1200) : null;
-        const res = await fetch(revUrl, { headers: { 'Accept-Language': 'ja' }, signal: controller ? controller.signal : undefined });
-        if (tid) clearTimeout(tid);
-        if (res.ok) {
-          const revData = await res.json();
-          address = revData.display_name.replace(/, 日本$/, '') || `北緯${lat.toFixed(4)}, 東経${lon.toFixed(4)}`;
+        if (typeof GeoService !== 'undefined' && GeoService.reverseGeocode) {
+          address = await GeoService.reverseGeocode(lat, lon);
+        } else if (typeof reverseGeocode === 'function') {
+          address = await reverseGeocode(lat, lon);
+        } else {
+          address = `北緯${Number(lat).toFixed(4)}, 東経${Number(lon).toFixed(4)}`;
         }
       } catch (err) {
-        address = `北緯${lat.toFixed(4)}, 東経${lon.toFixed(4)}`;
+        address = `北緯${Number(lat).toFixed(4)}, 東経${Number(lon).toFixed(4)}`;
       }
     }
 
@@ -946,7 +946,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
       btnRegSearch.innerHTML = '<span class="material-symbols-outlined" style="animation:spin 1s linear infinite;">sync</span> 検索中...';
       try {
-        const geo = await geocodeAddress(query);
+        const geo = (typeof GeoService !== 'undefined' && GeoService.geocodeAddress)
+          ? await GeoService.geocodeAddress(query)
+          : await geocodeAddress(query);
         const targetLat = geo ? geo.lat : DEFAULT_LAT;
         const targetLon = geo ? geo.lon : DEFAULT_LON;
         const targetAddress = (geo && geo.title) ? geo.title : query;

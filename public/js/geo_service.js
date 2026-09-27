@@ -120,11 +120,31 @@ async function fetchElevation(lon, lat) {
   }
 }
 
+/**
+ * 緯度・経度から住所文字列を逆ジオコーディング
+ * OSM Nominatim (1.2秒タイムアウト設定、障害時は緯度経度文字列で安全復帰)
+ */
+async function reverseGeocode(lat, lon) {
+  const fallback = `北緯${Number(lat).toFixed(4)}, 東経${Number(lon).toFixed(4)}`;
+  try {
+    const revUrl = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=14&addressdetails=1`;
+    const res = await fetchWithTimeout(revUrl, { headers: { 'Accept-Language': 'ja' } }, 1200);
+    if (res.ok) {
+      const revData = await res.json();
+      return revData.display_name?.replace(/, 日本$/, '') || fallback;
+    }
+    return fallback;
+  } catch (err) {
+    return fallback;
+  }
+}
+
 // サービスオブジェクトとしての定義
 const GeoService = {
   fetchWithTimeout,
   geocodeAddress,
   fetchElevation,
+  reverseGeocode,
   isAvailable: () => _gsiServiceAvailable
 };
 
@@ -133,6 +153,7 @@ if (typeof window !== 'undefined') {
   window.GeoService = GeoService;
   window.geocodeAddress = geocodeAddress;
   window.fetchElevation = fetchElevation;
+  window.reverseGeocode = reverseGeocode;
 }
 
 // Node.js環境でのエクスポート
@@ -141,6 +162,8 @@ if (typeof module !== 'undefined' && module.exports) {
     GeoService,
     fetchWithTimeout,
     geocodeAddress,
-    fetchElevation
+    fetchElevation,
+    reverseGeocode
   };
 }
+

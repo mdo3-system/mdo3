@@ -583,5 +583,32 @@ WRC造の「開口部補強・割増検討（jintsuko_bf）」は削除。新た
      - `public/index.html`, `public/workspace.html` の script タグを更新（`v=1.6.3`）。
      - 自治体都市計画WebGIS・国交省不動産情報ライブラリ連携の正常稼働を確認。
 
+---
+
+## 21. リリース履歴: v1.6.4 (2026-09-27)
+
+### ① 単一責任の原則（SRP）に基づく基幹ポータル構造改革 Phase 4: UI描画層の通信排除と全4フェーズ完遂
+- **背景**:
+  - `portal.js` 内に逆ジオコーディング（OSM Nominatim直接fetch）のネットワーク通信コードが直接インライン実装されており、UI層の責務を超過していた。
+  - これを `GeoService` へ統合し、全6層（市区町村DB、都市計画マスター、地理外部通信、都市計画サービス、構造定数計算、UI制御）の単一責任分離を完全成立させる。
+- **実装内容**:
+  1. **`GeoService.reverseGeocode(lat, lon)` の新設と `portal.js` の通信排除**:
+     - `geo_service.js` に `reverseGeocode` メソッドを追加（1.2秒タイムアウト、安全復帰）。
+     - `portal.js` の `evaluateLocation` 内のインライン fetch コードを `GeoService.reverseGeocode` 呼び出しへ置き換え。
+     - 検索ボタン押下時の `geocodeAddress` も `GeoService.geocodeAddress` を優先呼び出し。
+  2. **基幹ポータル 単一責任の原則（SRP）6層アーキテクチャの完成**:
+     | 層 (Layer) | ファイル | 主な責務・役割 |
+     | :--- | :--- | :--- |
+     | ① 地域データ層 | `regional_cities_data.js` | 全47都道府県・1,892市区町村の構造・省エネ地域定数配列（1,892件） |
+     | ② 都市計画データ層 | `city_planning_data.js` | 東京23区・政令市・主要市WebGISマスター、国交省kCode |
+     | ③ 外部地理通信層 | `geo_service.js` | 国土地理院・OSM通信（ジオコード、標高、逆ジオコード、サーキットブレーカー） |
+     | ④ 都市計画サービス層 | `city_planning_service.js` | 自治体WebGIS・国交省不動産情報ライブラリ・重ねるハザードマップURL生成 |
+     | ⑤ 構造定数計算層 | `regional_calc.js` | 建築基準法・告示に基づく地域定数算定純粋エンジン（2,570行 ➔ 477行） |
+     | ⑥ UI・描画・イベント層 | `portal.js` | 画面バインディング、Leaflet地図レイヤー制御、条件コピー、ユーザー対話 |
+  3. **本番デプロイ・実機ブラウザ全機能検証**:
+     - `public/index.html`, `public/workspace.html` の script タグを更新（`v=1.6.4`）。
+     - 住所検索、地図クリック時の逆ジオコーディング、条件コピー、全ツールの動作検証を完了。
+
+
 
 
