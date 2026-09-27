@@ -541,3 +541,25 @@ WRC造の「開口部補強・割増検討（jintsuko_bf）」は削除。新た
   4. **HTML読み込み構成とキャッシュバスター更新**:
      - `public/index.html` および `public/workspace.html` の script タグに新データファイルを組み込み、`v=1.6.1` に更新。
 
+---
+
+## 19. リリース履歴: v1.6.2 (2026-09-27)
+
+### ① 単一責任の原則（SRP）に基づく基幹ポータル構造改革 Phase 2: 外部API通信層の完全分離
+- **背景**:
+  - `regional_calc.js` 内に国土地理院ジオコーダーAPI、標高タイルAPI、サーキットブレーカー、fetchWithTimeout等のネットワーク通信責務が混在していた。
+  - 通信障害耐性・保守性を高めるため、地理情報通信に特化した独立サービス `geo_service.js` へ分離。
+- **実装内容**:
+  1. **地理・標高外部通信サービス `public/js/geo_service.js` の新設**:
+     - `geocodeAddress(query)`: 国土地理院ジオコーダー＋サーキットブレーカー＋内蔵マスター瞬時フォールバック（0ms保証）。
+     - `fetchElevation(lon, lat)`: 国土地理院標高API（1.2秒タイムアウト・安全復帰）。
+     - `fetchWithTimeout`: AbortController制御ヘルパー。
+     - `GeoService` オブジェクトとしてカプセル化、ブラウザグローバル（`window.GeoService`, `window.geocodeAddress`, `window.fetchElevation`）および Node.js `module.exports` に完全対応。
+  2. **計算エンジン `regional_calc.js` の通信責務排除と完全後方互換委譲（627行 ➔ 550行）**:
+     - `regional_calc.js` 内の `geocodeAddress` / `fetchElevation` は `GeoService` への安全委譲プロキシへ置き換え。
+     - 既存の呼び出し元コードやテストスイートを一切壊さない100%後方互換設計。
+  3. **本番デプロイ・実機検証**:
+     - `public/index.html`, `public/workspace.html` の script タグを更新（`v=1.6.2`）。
+     - 川越市・世田谷区等のジオコーディング・標高取得・都市計画WebGIS連携の正常稼働を確認。
+
+
