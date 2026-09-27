@@ -2857,4 +2857,67 @@ body {
   color: #fff;
 }
 
+/* ========================================================
+   都市計画・法令指定・不動産情報ライブラリ 総合連携パネル
+   ======================================================== */
+.city-planning-panel {
+  transition: all 0.3s ease;
+}
+
+.planning-card {
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.planning-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(56, 189, 248, 0.45) !important;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+}
+
+/* Leaflet レイヤーコントロールのダークプレミアムスタイル */
+.leaflet-control-layers {
+  background: rgba(15, 23, 42, 0.92) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(56, 189, 248, 0.3) !important;
+  border-radius: var(--radius-sm) !important;
+  color: var(--text-main) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4) !important;
+  font-family: inherit !important;
+  font-size: 0.78rem !important;
+}
+
+.leaflet-control-layers-expanded {
+  padding: 10px 14px !important;
+}
+
+.leaflet-control-layers-base label,
+.leaflet-control-layers-overlays label {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  margin-bottom: 5px !important;
+  cursor: pointer !important;
+  font-weight: 600 !important;
+  color: var(--text-sub) !important;
+  transition: color 0.2s ease !important;
+}
+
+.leaflet-control-layers-base label:hover,
+.leaflet-control-layers-overlays label:hover {
+  color: var(--text-main) !important;
+}
+
+.leaflet-control-layers-separator {
+  border-top-color: rgba(255, 255, 255, 0.1) !important;
+  margin: 6px 0 !important;
+}
+
+.leaflet-control-layers-toggle {
+  background-color: rgba(15, 23, 42, 0.85) !important;
+  border-radius: 6px !important;
+  border: 1px solid rgba(56, 189, 248, 0.35) !important;
+}
+
+
 

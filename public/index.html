@@ -18,7 +18,7 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/portal.css?v=1.5.6">
+  <link rel="stylesheet" href="css/portal.css?v=1.6.0">
 </head>
 <body>
 
@@ -36,7 +36,7 @@
         <ul class="nav-links" id="mainNavLinks">
           <li><a href="/workspace.html" target="_blank" rel="noopener" style="color:var(--accent-cyan); font-weight:800;"><span class="material-symbols-outlined" style="font-size:15px;">tab</span> 案件コンソール <span class="nav-free-tag" style="background:rgba(6,182,212,0.15); color:var(--accent-cyan); border-color:rgba(6,182,212,0.3);">1タブ統合</span></a></li>
           <li><a href="https://map.mdo3.com" target="_blank"><span class="material-symbols-outlined" style="font-size:15px; color:var(--accent-green);">map</span> 案内図作図 <span class="nav-free-tag">無償</span></a></li>
-          <li><a href="#freeToolsZone"><span class="material-symbols-outlined" style="font-size:15px; color:var(--accent-gold);">public</span> 地域定数・dt <span class="nav-free-tag">無償</span></a></li>
+          <li><a href="#freeToolsZone"><span class="material-symbols-outlined" style="font-size:15px; color:var(--accent-gold);">public</span> 地域定数・都市計画 <span class="nav-free-tag">無償</span></a></li>
           <li><a href="#categoryShowcase">構造ツール (29)</a></li>
           <li><a href="https://az.mdo3.com" target="_blank" style="color: var(--accent-cyan);"><span class="material-symbols-outlined" style="font-size:15px;">architecture</span> AZ斜め壁</a></li>
           <li><a href="#pricingPlans">料金</a></li>
@@ -248,7 +248,7 @@
           <div class="regional-map-container-standalone" style="margin-top: 14px; margin-bottom: 20px;">
             <div class="map-hint-standalone">
               <span class="material-symbols-outlined" style="font-size: 15px; color:var(--accent-cyan);">touch_app</span>
-              <span><strong>地図クリックで地点変更:</strong> 地図上の任意地点をクリックすると、住所・標高・地域定数（Z・V0・S・凍結深度）および断熱UA値を瞬時に再計算します。</span>
+              <span><strong>地図クリックで地点変更:</strong> 任意地点をクリックすると住所・標高・地域定数（Z/V0/S/凍結深度/UA値）および<strong>各自治体都市計画WebGIS・不動産情報</strong>を瞬時に再判定します。右上のレイヤー操作で航空写真・洪水・土砂災害の重ね合わせ表示も可能です。</span>
             </div>
             <div id="regionalMap" style="height: 380px; width: 100%; border-radius: var(--radius-md);"></div>
           </div>
@@ -425,6 +425,118 @@
                   </div>
                   <div style="font-size:0.75rem; color:var(--accent-cyan); line-height:1.45; background:rgba(6,182,212,0.08); padding:6px 8px; border-radius:4px; border:1px solid rgba(6,182,212,0.2);">
                     <strong style="color:#67e8f9;">標高差設計参考:</strong> <span id="resElevationDesignNote">標高18m。ゲリラ豪雨・内水氾濫に備え、基礎立上り天端高（GL+400mm以上）および外壁水切りの確実な排水勾配を推奨。</span>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- ★ 5. 国土交通省「不動産情報ライブラリ」＆ 自治体公開都市計画WebGIS 総合連携パネル -->
+            <div class="city-planning-panel" id="cityPlanningPanel" style="margin-top:14px; background:linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.85) 100%); border:1px solid rgba(56, 189, 248, 0.25); border-radius:var(--radius-sm); padding:16px 18px; box-shadow:0 4px 20px rgba(0,0,0,0.25);">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:8px; flex-wrap:wrap; gap:8px;">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span class="material-symbols-outlined" style="font-size:20px; color:var(--accent-gold);">account_balance</span>
+                  <strong style="font-size:0.92rem; color:var(--text-main); letter-spacing:0.02em;">都市計画・法令指定 ＆ 不動産情報ライブラリ 総合連携</strong>
+                  <span class="badge-tag" id="cityPlanningBadge" style="background:rgba(234,179,8,0.15); color:#facc15; border:1px solid rgba(234,179,8,0.3); font-size:0.75rem;">用途地域・防火・地区計画</span>
+                </div>
+                <div style="display:flex; align-items:center; gap:6px;">
+                  <span style="font-size:0.72rem; color:var(--text-sub);">国交省オープンデータ ＆ 自治体公開WebGIS</span>
+                </div>
+              </div>
+
+              <!-- 3大外部連携カードグリッド -->
+              <div class="city-planning-grid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:12px;">
+                
+                <!-- 1. 自治体公開型 都市計画WebGIS (23区専用または自治体専用マップ) -->
+                <div class="planning-card" id="cardLocalGis" style="background:rgba(255,255,255,0.03); border:1px solid rgba(56, 189, 248, 0.2); border-radius:8px; padding:12px 14px; display:flex; flex-direction:column; justify-content:space-between;">
+                  <div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                      <span style="font-size:0.72rem; font-weight:700; color:var(--accent-cyan); text-transform:uppercase; letter-spacing:0.05em; display:flex; align-items:center; gap:4px;">
+                        <span class="material-symbols-outlined" style="font-size:14px;">location_city</span>
+                        <span id="labelLocalGisType">自治体 公開型都市計画WebGIS</span>
+                      </span>
+                      <span id="badgeWardOfficial" class="badge-tag" style="background:rgba(16,185,129,0.15); color:#34d399; border:1px solid rgba(16,185,129,0.3); font-size:0.7rem;">公式GIS</span>
+                    </div>
+                    <h5 id="nameLocalGis" style="margin:0 0 6px 0; font-size:0.95rem; color:var(--text-main); font-weight:700;">
+                      川越市 都市計画図閲覧システム
+                    </h5>
+                    <p id="descLocalGis" style="font-size:0.76rem; color:var(--text-sub); margin:0 0 10px 0; line-height:1.45;">
+                      用途地域、建蔽率・容積率、防火・準防火地域、高度地区、都市計画道路、地区計画等のピンポイント指定状況を閲覧可能。
+                    </p>
+                  </div>
+                  <div style="display:flex; flex-direction:column; gap:6px;">
+                    <a id="linkLocalGis" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-primary" style="display:inline-flex; align-items:center; justify-content:center; gap:6px; text-decoration:none; padding:8px 12px; font-weight:700;">
+                      <span class="material-symbols-outlined" style="font-size:16px;">map</span>
+                      <span id="btnTextLocalGis">自治体WebGISを開く</span>
+                      <span class="material-symbols-outlined" style="font-size:14px;">open_in_new</span>
+                    </a>
+                    <div id="tokyoWagmapRow" style="display:none;">
+                      <a id="linkTokyoWagmap" href="https://www2.wagmap.jp/tokyo_tokeizu/" target="_blank" rel="noopener noreferrer" style="font-size:0.74rem; color:var(--accent-cyan); display:flex; align-items:center; justify-content:center; gap:4px; text-decoration:none; padding:4px;">
+                        <span class="material-symbols-outlined" style="font-size:13px;">public</span> 東京都都市計画情報 (wagmap広域) も開く
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 2. 国土交通省「不動産情報ライブラリ」 (旧・土地総合情報システム) -->
+                <div class="planning-card" style="background:rgba(255,255,255,0.03); border:1px solid rgba(234, 179, 8, 0.25); border-radius:8px; padding:12px 14px; display:flex; flex-direction:column; justify-content:space-between;">
+                  <div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                      <span style="font-size:0.72rem; font-weight:700; color:var(--accent-gold); text-transform:uppercase; letter-spacing:0.05em; display:flex; align-items:center; gap:4px;">
+                        <span class="material-symbols-outlined" style="font-size:14px;">travel_explore</span> 国土交通省 公開基盤
+                      </span>
+                      <span class="badge-tag" style="background:rgba(234,179,8,0.15); color:#facc15; border:1px solid rgba(234,179,8,0.3); font-size:0.7rem;">国交省公式</span>
+                    </div>
+                    <h5 style="margin:0 0 6px 0; font-size:0.95rem; color:var(--text-main); font-weight:700;">
+                      不動産情報ライブラリ
+                    </h5>
+                    <p style="font-size:0.76rem; color:var(--text-sub); margin:0 0 10px 0; line-height:1.45;">
+                      旧土地総合情報システムを刷新。用途地域、地価公示・都道府県地価調査、成約価格、都市計画区域、防災情報を重ね合わせて閲覧。
+                    </p>
+                  </div>
+                  <div style="display:flex; flex-direction:column; gap:6px;">
+                    <a id="linkReinfolibMap" href="https://www.reinfolib.mlit.go.jp/map/" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-ghost" style="display:inline-flex; align-items:center; justify-content:center; gap:6px; text-decoration:none; padding:8px 12px; font-weight:700; border-color:rgba(234,179,8,0.4); color:var(--accent-gold);">
+                      <span class="material-symbols-outlined" style="font-size:16px;">layers</span>
+                      <span>ライブラリ Webマップを開く</span>
+                      <span class="material-symbols-outlined" style="font-size:14px;">open_in_new</span>
+                    </a>
+                    <div style="display:flex; gap:8px; justify-content:center; align-items:center;">
+                      <a id="linkReinfolibPrice" href="https://www.reinfolib.mlit.go.jp/landPrices/" target="_blank" rel="noopener noreferrer" style="font-size:0.73rem; color:var(--text-sub); display:flex; align-items:center; gap:3px; text-decoration:none;">
+                        <span class="material-symbols-outlined" style="font-size:13px;">payments</span> 地価公示
+                      </a>
+                      <span style="color:rgba(255,255,255,0.2);">|</span>
+                      <a id="linkChikamap" href="https://www.chikamap.jp/" target="_blank" rel="noopener noreferrer" style="font-size:0.73rem; color:var(--text-sub); display:flex; align-items:center; gap:3px; text-decoration:none;">
+                        <span class="material-symbols-outlined" style="font-size:13px;">analytics</span> 全国地価マップ
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 3. 国土地理院「重ねるハザードマップ」 ＆ 現地ピンポイント -->
+                <div class="planning-card" style="background:rgba(255,255,255,0.03); border:1px solid rgba(239, 68, 68, 0.25); border-radius:8px; padding:12px 14px; display:flex; flex-direction:column; justify-content:space-between;">
+                  <div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                      <span style="font-size:0.72rem; font-weight:700; color:#f87171; text-transform:uppercase; letter-spacing:0.05em; display:flex; align-items:center; gap:4px;">
+                        <span class="material-symbols-outlined" style="font-size:14px;">warning</span> 防災・ハザード
+                      </span>
+                      <span class="badge-tag" style="background:rgba(239,68,68,0.15); color:#f87171; border:1px solid rgba(239,68,68,0.3); font-size:0.7rem;">現地座標直行</span>
+                    </div>
+                    <h5 style="margin:0 0 6px 0; font-size:0.95rem; color:var(--text-main); font-weight:700;">
+                      国土地理院 重ねるハザードマップ
+                    </h5>
+                    <p style="font-size:0.76rem; color:var(--text-sub); margin:0 0 10px 0; line-height:1.45;">
+                      洪水浸水想定区域（最大規模）、土砂災害警戒区域（イエロー/レッド）、津波・高潮、道路冠水想定を現地ピンポイントで確認。
+                    </p>
+                  </div>
+                  <div style="display:flex; flex-direction:column; gap:6px;">
+                    <a id="linkHazardMap" href="https://disaportal.gsi.go.jp/maps/" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-ghost" style="display:inline-flex; align-items:center; justify-content:center; gap:6px; text-decoration:none; padding:8px 12px; font-weight:700; border-color:rgba(239,68,68,0.4); color:#f87171;">
+                      <span class="material-symbols-outlined" style="font-size:16px;">flood</span>
+                      <span>現地ハザードマップを開く</span>
+                      <span class="material-symbols-outlined" style="font-size:14px;">open_in_new</span>
+                    </a>
+                    <div style="font-size:0.72rem; color:var(--text-sub); text-align:center;">
+                      ※上部Leaflet地図の右上レイヤーから直接重ね合わせも可能
+                    </div>
                   </div>
                 </div>
 
@@ -1166,10 +1278,10 @@
   </footer>
 
   <!-- Scripts -->
-  <script src="js/tools_data.js?v=1.5.7"></script>
-  <script src="js/regional_calc.js?v=1.5.7"></script>
-  <script src="js/dt_calc.js?v=1.5.7"></script>
-  <script src="js/category_showcase.js?v=1.5.7"></script>
-  <script src="js/portal.js?v=1.5.7"></script>
+  <script src="js/tools_data.js?v=1.6.0"></script>
+  <script src="js/regional_calc.js?v=1.6.0"></script>
+  <script src="js/dt_calc.js?v=1.6.0"></script>
+  <script src="js/category_showcase.js?v=1.6.0"></script>
+  <script src="js/portal.js?v=1.6.0"></script>
 </body>
 </html>

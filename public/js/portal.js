@@ -718,6 +718,74 @@ document.addEventListener('DOMContentLoaded', () => {
       regionalSpecialNote.textContent = results.note || 
         "特定行政庁・確認審査機関により細則が異なる場合があります。申請前に所管自治体の建築指導課基準をご確認ください。";
     }
+
+    // 5. 都市計画・法令指定・不動産情報ライブラリ連携のUI更新
+    const cp = results.cityPlanning;
+    if (cp) {
+      const labelLocalGisType = document.getElementById('labelLocalGisType');
+      const badgeWardOfficial = document.getElementById('badgeWardOfficial');
+      const nameLocalGis = document.getElementById('nameLocalGis');
+      const descLocalGis = document.getElementById('descLocalGis');
+      const linkLocalGis = document.getElementById('linkLocalGis');
+      const btnTextLocalGis = document.getElementById('btnTextLocalGis');
+      const tokyoWagmapRow = document.getElementById('tokyoWagmapRow');
+      const linkTokyoWagmap = document.getElementById('linkTokyoWagmap');
+      const linkReinfolibMap = document.getElementById('linkReinfolibMap');
+      const linkReinfolibPrice = document.getElementById('linkReinfolibPrice');
+      const linkHazardMap = document.getElementById('linkHazardMap');
+      const linkChikamap = document.getElementById('linkChikamap');
+
+      if (cp.localGis) {
+        if (labelLocalGisType) {
+          labelLocalGisType.textContent = cp.isTokyoWard ? '東京23区 公開型都市計画WebGIS' : (cp.localGis.isOfficial ? '自治体 公開型都市計画WebGIS' : '都市計画情報マップ検索');
+        }
+        if (badgeWardOfficial) {
+          if (cp.localGis.isOfficial) {
+            badgeWardOfficial.textContent = cp.isTokyoWard ? `${cp.localGis.wardName}公式` : '公式GIS';
+            badgeWardOfficial.style.background = 'rgba(16, 185, 129, 0.15)';
+            badgeWardOfficial.style.color = '#34d399';
+            badgeWardOfficial.style.borderColor = 'rgba(16, 185, 129, 0.3)';
+          } else {
+            badgeWardOfficial.textContent = '専用検索';
+            badgeWardOfficial.style.background = 'rgba(56, 189, 248, 0.15)';
+            badgeWardOfficial.style.color = '#38bdf8';
+            badgeWardOfficial.style.borderColor = 'rgba(56, 189, 248, 0.3)';
+          }
+        }
+        if (nameLocalGis) nameLocalGis.textContent = cp.localGis.name;
+        if (descLocalGis) {
+          descLocalGis.textContent = cp.localGis.note 
+            ? `${cp.localGis.note}の指定状況をピンポイントで確認可能。`
+            : '用途地域、建蔽率・容積率、防火指定、高度地区等の指定状況を確認可能。';
+        }
+        if (linkLocalGis) linkLocalGis.href = cp.localGis.url;
+        if (btnTextLocalGis) {
+          btnTextLocalGis.textContent = cp.isTokyoWard 
+            ? `${cp.localGis.wardName} 都市計画GISを開く` 
+            : (cp.localGis.isOfficial ? `${cp.localGis.wardName || '自治体'} 都市計画GISを開く` : '自治体都市計画マップを検索');
+        }
+      }
+
+      // 東京都広域 wagmap 導線
+      if (tokyoWagmapRow && linkTokyoWagmap) {
+        if (cp.tokyoWagmap) {
+          tokyoWagmapRow.style.display = 'block';
+          linkTokyoWagmap.href = cp.tokyoWagmap.url;
+        } else {
+          tokyoWagmapRow.style.display = 'none';
+        }
+      }
+
+      // 国交省 不動産情報ライブラリ (都道府県 kCode 指定)
+      if (linkReinfolibMap && cp.reinfolibMapUrl) linkReinfolibMap.href = cp.reinfolibMapUrl;
+      if (linkReinfolibPrice && cp.reinfolibLandPriceUrl) linkReinfolibPrice.href = cp.reinfolibLandPriceUrl;
+
+      // 重ねるハザードマップ (現地座標直行)
+      if (linkHazardMap && cp.hazardMapUrl) linkHazardMap.href = cp.hazardMapUrl;
+
+      // 全国地価マップ
+      if (linkChikamap && cp.chikamapUrl) linkChikamap.href = cp.chikamapUrl;
+    }
   }
 
   // 緯度・経度から住所＆標高＆定数を一括再計算
@@ -747,36 +815,95 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    const calcResult = calculateRegionalConstants(address, elevation);
+    const calcResult = calculateRegionalConstants(address, elevation, lat, lon);
     updateConstantsUI(calcResult);
 
     // マーカー移動
     if (leafletMap && currentMarker) {
       currentMarker.setLatLng([lat, lon]);
       const zStr = calcResult.zs ? `Z=${calcResult.z} (Zs=${calcResult.zs})` : `Z=${calcResult.z}`;
+      const cpStr = calcResult.cityPlanning?.localGis 
+        ? `<div style="margin-top:4px; font-size:0.75rem;"><a href="${calcResult.cityPlanning.localGis.url}" target="_blank" style="color:#38bdf8; text-decoration:underline;">🏛️ ${calcResult.cityPlanning.localGis.name}</a></div>`
+        : '';
       currentMarker.bindPopup(`
         <strong>${calcResult.pref} (${calcResult.energyRegion}地域)</strong><br>
         標高: ${elevation}m<br>
         ${zStr}, V0=${calcResult.v0}m/s<br>
         <span style="color:#10b981;">等級6 UA≦${calcResult.insulation.grade6}</span>
+        ${cpStr}
       `).openPopup();
     }
   }
 
-  // Leaflet 地図初期化
+  // Leaflet 地図初期化 (レイヤー切替: 標準・淡色・航空写真 ＆ 洪水・土砂災害ハザード重ね合わせ)
   function initRegionalMap() {
     const mapEl = document.getElementById('regionalMap');
     if (!mapEl || typeof L === 'undefined') return;
 
-    leafletMap = L.map('regionalMap').setView([DEFAULT_LAT, DEFAULT_LON], 11);
-
-    // 地理院地図タイル (国土地理院 標準地図)
-    L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png', {
+    // 1. ベースマップ定義 (国土地理院 標準地図 / 淡色地図 / 航空写真)
+    const gsiStd = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png', {
       maxZoom: 18,
       attribution: '&copy; <a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank">国土地理院</a>'
-    }).addTo(leafletMap);
+    });
+
+    const gsiPale = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png', {
+      maxZoom: 18,
+      attribution: '&copy; <a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank">国土地理院(淡色)</a>'
+    });
+
+    const gsiPhoto = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/seamlessphoto/{z}/{x}/{y}.jpg', {
+      maxZoom: 18,
+      attribution: '&copy; <a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank">国土地理院(航空写真)</a>'
+    });
+
+    // 2. オーバーレイハザードタイル定義 (国交省・国土地理院 重ねるハザードマップ公式オープンデータ)
+    const floodLayer = L.tileLayer('https://disaportaldata.gsi.go.jp/raster/01_flood_l2_shinsuishin_data/{z}/{x}/{y}.png', {
+      maxNativeZoom: 17,
+      maxZoom: 18,
+      opacity: 0.65,
+      attribution: '&copy; <a href="https://disaportal.gsi.go.jp/" target="_blank">国交省(洪水浸水想定)</a>'
+    });
+
+    const doshaLayer = L.tileLayer('https://disaportaldata.gsi.go.jp/raster/05_dosekiryukeikaikuiki/{z}/{x}/{y}.png', {
+      maxNativeZoom: 17,
+      maxZoom: 18,
+      opacity: 0.7,
+      attribution: '&copy; <a href="https://disaportal.gsi.go.jp/" target="_blank">国交省(土砂災害警戒)</a>'
+    });
+
+    const steepSlopeLayer = L.tileLayer('https://disaportaldata.gsi.go.jp/raster/05_kyukeishakeikaikuiki/{z}/{x}/{y}.png', {
+      maxNativeZoom: 17,
+      maxZoom: 18,
+      opacity: 0.7,
+      attribution: '&copy; <a href="https://disaportal.gsi.go.jp/" target="_blank">国交省(急傾斜地崩壊)</a>'
+    });
+
+    leafletMap = L.map('regionalMap', {
+      center: [DEFAULT_LAT, DEFAULT_LON],
+      zoom: 11,
+      layers: [gsiStd]
+    });
+
+    // レイヤーコントロール (右上配置)
+    const baseLayers = {
+      "🗺️ 標準地図": gsiStd,
+      "📄 淡色地図 (用途確認向)": gsiPale,
+      "🛰️ 航空写真 (現況確認)": gsiPhoto
+    };
+
+    const overlayLayers = {
+      "🌊 洪水浸水想定 (最大規模)": floodLayer,
+      "⚠️ 土砂災害警戒区域": doshaLayer,
+      "⛰️ 急傾斜地崩壊危険箇所": steepSlopeLayer
+    };
+
+    L.control.layers(baseLayers, overlayLayers, { position: 'topright', collapsed: true }).addTo(leafletMap);
 
     currentMarker = L.marker([DEFAULT_LAT, DEFAULT_LON], { draggable: true }).addTo(leafletMap);
+    currentMarker.on('dragend', (e) => {
+      const { lat, lng } = e.target.getLatLng();
+      evaluateLocation(lat, lng);
+    });
 
     // 初期値計算 (埼玉県川越市幸町 V0=32m/s)
     evaluateLocation(DEFAULT_LAT, DEFAULT_LON, '埼玉県川越市幸町');
@@ -863,11 +990,28 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 計算条件コピー (構造定数 ＋ 省エネ断熱基準を一括出力)
+  // 計算条件コピー (構造定数 ＋ 省エネ断熱基準 ＋ 都市計画・不動産情報URLを一括出力)
   if (btnCopyConditions) {
     btnCopyConditions.addEventListener('click', () => {
       if (!currentConstants) return;
       const ins = currentConstants.insulation;
+      const cp = currentConstants.cityPlanning;
+
+      let cpSection = '';
+      if (cp) {
+        const gisName = cp.localGis ? cp.localGis.name : '自治体都市計画マップ';
+        const gisUrl = cp.localGis ? cp.localGis.url : '';
+        cpSection = `
+----------------------------------------
+【3. 都市計画・法令指定 ＆ 不動産情報連携】
+・自治体都市計画GIS: ${gisName}
+  URL: ${gisUrl}
+・国交省 不動産情報ライブラリ (用途地域/地価/防火/取引価格)
+  URL: ${cp.reinfolibMapUrl}
+・国土地理院 重ねるハザードマップ (現地座標直行)
+  URL: ${cp.hazardMapUrl}`;
+      }
+
       const text = `【構造地域定数 ＆ 省エネ・断熱基準 算定結果（mdo3.com）】
 ■ 建設地住所: ${currentConstants.address}
 ■ 標高: ${currentConstants.elevation} m (国土地理院API)
@@ -885,7 +1029,7 @@ document.addEventListener('DOMContentLoaded', () => {
 ・等級5 (ZEH水準 / 長期優良): UA ≦ ${ins.grade5} W/(㎡・K)
 ・等級6 (HEAT20 G2水準): UA ≦ ${ins.grade6} W/(㎡・K)
 ・等級7 (HEAT20 G3水準): UA ≦ ${ins.grade7} W/(㎡・K)
-・冷房期日射取得率 ηAC: ${ins.etaAC !== '—' ? `ηAC ≦ ${ins.etaAC}` : '基準値なし'}
+・冷房期日射取得率 ηAC: ${ins.etaAC !== '—' ? `ηAC ≦ ${ins.etaAC}` : '基準値なし'}${cpSection}
 ----------------------------------------
 ※ ${currentConstants.note || '特定行政庁・所管審査機関の最新基準をご確認ください。'}`;
 
