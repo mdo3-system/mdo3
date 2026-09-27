@@ -562,4 +562,26 @@ WRC造の「開口部補強・割増検討（jintsuko_bf）」は削除。新た
      - `public/index.html`, `public/workspace.html` の script タグを更新（`v=1.6.2`）。
      - 川越市・世田谷区等のジオコーディング・標高取得・都市計画WebGIS連携の正常稼働を確認。
 
+---
+
+## 20. リリース履歴: v1.6.3 (2026-09-27)
+
+### ① 単一責任の原則（SRP）に基づく基幹ポータル構造改革 Phase 3: 都市計画・WebGISメタデータ生成ロジックの完全分離
+- **背景**:
+  - `regional_calc.js` 内に都市計画WebGIS判定、東京23区・政令市・主要市マッチング、国交省kCode解決、Google都市計画検索URL生成等のメタデータロジックが残存していた。
+  - 計算エンジンを「純粋な建築基準法・告示に基づく構造定数算定（Z, V0, S, 凍結深度, 省エネ・日射区分）」に特化させるため、都市計画連携サービス `city_planning_service.js` へ分離。
+- **実装内容**:
+  1. **都市計画連携サービス `public/js/city_planning_service.js` の新設**:
+     - `getCityPlanningInfo(pref, cityName, address, lat, lon)` を完全独立実装。
+     - `city_planning_data.js` のマスターを安全解決（`_getPrefectureCodes`, `_getTokyoWardsGis`, `_getMajorCitiesGis`）。
+     - `CityPlanningService` オブジェクトとしてカプセル化、グローバル（`window.CityPlanningService`, `window.getCityPlanningInfo`）および Node.js `module.exports` に完全対応。
+  2. **計算エンジン `regional_calc.js` のスリム化（550行 ➔ 477行）**:
+     - `getCityPlanningInfo` は `CityPlanningService` への安全委譲プロキシへ移行。
+     - `calculateRegionalConstants` の戻り値 `cityPlanning` フィールドおよび外部呼出の100%後方互換性を保証。
+     - 当初2,570行あった `regional_calc.js` が、純粋計算エンジンとして477行まで軽量・洗練化。
+  3. **本番デプロイ・実機検証**:
+     - `public/index.html`, `public/workspace.html` の script タグを更新（`v=1.6.3`）。
+     - 自治体都市計画WebGIS・国交省不動産情報ライブラリ連携の正常稼働を確認。
+
+
 

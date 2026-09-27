@@ -410,97 +410,24 @@ const MAJOR_CITIES_GIS = (typeof window !== 'undefined' && window.MAJOR_CITIES_G
                          (typeof globalThis !== 'undefined' && globalThis.MAJOR_CITIES_GIS) ||
                          (() => { try { return require('./city_planning_data.js').MAJOR_CITIES_GIS; } catch(e){ return {}; } })();
 
+// ■ 都市計画・GIS連携サービス (city_planning_service.js より委譲・完全後方互換対応)
+const _getCityPlanningService = () => {
+  if (typeof CityPlanningService !== 'undefined') return CityPlanningService;
+  if (typeof window !== 'undefined' && window.CityPlanningService) return window.CityPlanningService;
+  if (typeof globalThis !== 'undefined' && globalThis.CityPlanningService) return globalThis.CityPlanningService;
+  try { return require('./city_planning_service.js').CityPlanningService; } catch (e) { return null; }
+};
+
+/**
+ * 建設地情報から都市計画・GISメタデータを取得
+ * (city_planning_service.js に委譲、完全後方互換対応)
+ */
 function getCityPlanningInfo(pref, cityName, address, lat, lon) {
-  const safePref = pref || "";
-  const safeCity = cityName || "";
-  const safeAddr = address || "";
-  const kCode = PREFECTURE_CODES[safePref] || "13"; // デフォルト東京都
-
-  // 1. 自治体公式都市計画WebGISの判定
-  let localGis = null;
-  let isTokyoWard = false;
-
-  // 23区判定
-  if (safePref === "東京都" || safeAddr.includes("東京都")) {
-    for (const [ward, info] of Object.entries(TOKYO_23_WARDS_GIS)) {
-      if ((safeCity && safeCity.includes(ward)) || safeAddr.includes(ward)) {
-        localGis = {
-          wardName: ward,
-          name: info.name,
-          url: info.url,
-          note: info.note,
-          isOfficial: true,
-          isWard: true
-        };
-        isTokyoWard = true;
-        break;
-      }
-    }
+  const svc = _getCityPlanningService();
+  if (svc && typeof svc.getCityPlanningInfo === 'function') {
+    return svc.getCityPlanningInfo(pref, cityName, address, lat, lon);
   }
-
-  // 主要都市判定
-  if (!localGis) {
-    for (const [cityKey, info] of Object.entries(MAJOR_CITIES_GIS)) {
-      if ((safeCity && safeCity.includes(cityKey)) || safeAddr.includes(cityKey)) {
-        localGis = {
-          wardName: cityKey,
-          name: info.name,
-          url: info.url,
-          note: "用途地域、防火・準防火、高度地区、地区計画等",
-          isOfficial: true,
-          isWard: false
-        };
-        break;
-      }
-    }
-  }
-
-  // 未登録自治体向けスマート検索フォールバック
-  if (!localGis) {
-    const searchTarget = `${safePref} ${safeCity || ''}`.trim() || '自治体';
-    const googleQuery = `${searchTarget} 都市計画情報 用途地域 WebGIS`;
-    localGis = {
-      wardName: safeCity || safePref || "所管自治体",
-      name: `${searchTarget} 都市計画情報マップ`,
-      url: `https://www.google.com/search?q=${encodeURIComponent(googleQuery)}`,
-      note: "自治体公開都市計画WebGIS・用途地域閲覧ページを検索",
-      isOfficial: false,
-      isSmartSearch: true
-    };
-  }
-
-  // 東京都広域 wagmap リンク
-  const tokyoWagmap = (safePref === "東京都" || safeAddr.includes("東京都")) ? {
-    name: "東京都 都市計画情報等提供サービス (wagmap)",
-    url: "https://www2.wagmap.jp/tokyo_tokeizu/"
-  } : null;
-
-  // 国土交通省 不動産情報ライブラリ (旧土地情報システム) リンク
-  // 都道府県 kCode を指定して地域検索初期状態で開く
-  const reinfolibMapUrl = `https://www.reinfolib.mlit.go.jp/map/?initialState=areaOpen&areaOption=address&kCode=${kCode}&sCode=0`;
-  const reinfolibLandPriceUrl = "https://www.reinfolib.mlit.go.jp/landPrices/";
-
-  // 国土地理院 重ねるハザードマップ (該当座標ピンポイント表示)
-  let hazardMapUrl = "https://disaportal.gsi.go.jp/maps/";
-  if (lat && lon && typeof lat === 'number' && typeof lon === 'number') {
-    hazardMapUrl = `https://disaportal.gsi.go.jp/maps/?ll=${lat.toFixed(6)},${lon.toFixed(6)}&z=16&base=pale&vs=c1j0l0u0t0h0z0`;
-  }
-
-  // 全国地価マップ (固定資産税・相続税路線価・地価公示)
-  const chikamapUrl = "https://www.chikamap.jp/";
-
-  return {
-    kCode: kCode,
-    pref: safePref,
-    cityName: safeCity,
-    isTokyoWard: isTokyoWard,
-    localGis: localGis,
-    tokyoWagmap: tokyoWagmap,
-    reinfolibMapUrl: reinfolibMapUrl,
-    reinfolibLandPriceUrl: reinfolibLandPriceUrl,
-    hazardMapUrl: hazardMapUrl,
-    chikamapUrl: chikamapUrl
-  };
+  return null;
 }
 
 // ■ 外部地理APIサービス (geo_service.js より委譲・完全後方互換対応)
