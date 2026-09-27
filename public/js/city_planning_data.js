@@ -55,7 +55,7 @@
     "川崎市": { name: "川崎市ガイドマップ (都市計画情報)", url: "https://kawasaki.geocloud.jp/webgis/" },
     "相模原市": { name: "相模原市わが街ガイド (都市計画情報)", url: "https://sagamihara.geocloud.jp/webgis/" },
     "さいたま市": { name: "さいたま市地図情報 (都市計画図)", url: "https://saitama.geocloud.jp/webgis/" },
-    "川越市": { name: "川越市都市計画図閲覧システム", url: "https://www.city.kawagoe.saitama.jp/shisei/toshikeikaku/toshikeikaku/toshikeikakuzu.html" },
+    "川越市": { name: "川越市「小江戸川越マップ」(都市計画情報)", url: "https://www2.wagmap.jp/kawagoetown/", note: "用途地域、防火・準防火、高度地区、地区計画等" },
     "千葉市": { name: "千葉市都市計画情報検索サービス", url: "https://www.city.chiba.jp/toshi/keikaku/tokei/toshikeikakujouhou.html" },
     "船橋市": { name: "ふなばし生き生きマップ (都市計画情報)", url: "https://funabashi.geocloud.jp/webgis/" },
     "名古屋市": { name: "名古屋市都市計画情報提供サービス", url: "https://www.toshikeikaku.city.nagoya.jp/" },

@@ -18,7 +18,7 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/portal.css?v=1.6.4">
+  <link rel="stylesheet" href="css/portal.css?v=1.6.5">
 </head>
 <body>
 
@@ -376,61 +376,6 @@
               </div>
             </div>
 
-            <!-- ★ 気象庁平年値・近年の気候傾向・標高差設計参考 パネル -->
-            <div class="climate-reference-panel" id="climateRefPanel" style="margin-top:14px; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.08); border-radius:var(--radius-sm); padding:14px 16px;">
-              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; border-bottom:1px solid rgba(255,255,255,0.06); padding-bottom:8px;">
-                <div style="display:flex; align-items:center; gap:6px;">
-                  <span class="material-symbols-outlined" style="font-size:18px; color:var(--accent-cyan);">cloud_sync</span>
-                  <strong style="font-size:0.85rem; color:var(--text-main);">気象庁平年値 ＆ 近年の気候傾向 ＆ 標高差設計参考</strong>
-                </div>
-                <span style="font-size:0.72rem; color:var(--text-sub);" id="resClimateHeaderMeta">H25経産省・国交省告示第1号 / 気象庁1991-2020年統計</span>
-              </div>
-
-              <!-- 3カラム・グリッド -->
-              <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap:12px;">
-                
-                <!-- 1. 気象庁平年値 -->
-                <div style="background:rgba(255,255,255,0.03); border-radius:6px; padding:10px 12px; border:1px solid rgba(255,255,255,0.05);">
-                  <div style="font-size:0.78rem; font-weight:800; color:var(--accent-emerald); margin-bottom:6px; display:flex; align-items:center; gap:4px;">
-                    <span class="material-symbols-outlined" style="font-size:15px;">thermostat</span> 気象庁平年値 (代表地点)
-                  </div>
-                  <ul id="listClimateNormals" style="list-style:none; padding:0; margin:0; font-size:0.76rem; color:var(--text-sub); display:flex; flex-direction:column; gap:4px;">
-                    <li>・年平均気温: <strong id="valTempYear" style="color:var(--text-main);">15.4℃</strong></li>
-                    <li>・最寒月気温: <strong id="valTempCold" style="color:var(--text-main);">3.8℃</strong> / 最暖月: <strong id="valTempWarm" style="color:var(--text-main);">27.5℃</strong></li>
-                    <li>・年間日照時間: <strong id="valAnnualSun" style="color:var(--text-main);">1,950時間</strong></li>
-                    <li>・年間降水量: <strong id="valAnnualRain" style="color:var(--text-main);">1,450mm</strong></li>
-                  </ul>
-                </div>
-
-                <!-- 2. 日射地域区分 ＆ パッシブ設計指針 -->
-                <div style="background:rgba(255,255,255,0.03); border-radius:6px; padding:10px 12px; border:1px solid rgba(255,255,255,0.05);">
-                  <div style="font-size:0.78rem; font-weight:800; color:var(--accent-gold); margin-bottom:6px; display:flex; align-items:center; gap:4px;">
-                    <span class="material-symbols-outlined" style="font-size:15px;">wb_sunny</span> 日射地域区分 (A1〜A5) 特性
-                  </div>
-                  <p id="resSolarProfileDesc" style="font-size:0.75rem; color:var(--text-sub); margin:0 0 6px 0; line-height:1.45;">
-                    暖房期日射量区分 A4。太平洋側特有の冬期晴天日数が多く、南面開口からの日射取得が暖房エネルギー削減に極めて有効。夏期の深い軒・庇による日射遮蔽とセット設計が必須。
-                  </p>
-                  <div style="font-size:0.72rem; color:var(--accent-cyan);" id="resSolarTips">
-                    ・暖房期: 南面ガラスの日射取得率(ηH)確保 / 冷房期: 庇・アウターシェード推奨
-                  </div>
-                </div>
-
-                <!-- 3. 近年の気候傾向 ＆ 標高差による設計参考 -->
-                <div style="background:rgba(255,255,255,0.03); border-radius:6px; padding:10px 12px; border:1px solid rgba(255,255,255,0.05);">
-                  <div style="font-size:0.78rem; font-weight:800; color:#38bdf8; margin-bottom:6px; display:flex; align-items:center; gap:4px;">
-                    <span class="material-symbols-outlined" style="font-size:15px;">trending_up</span> 近年の気候傾向 ＆ 標高差設計参考
-                  </div>
-                  <div style="font-size:0.75rem; color:var(--text-sub); line-height:1.45; margin-bottom:6px;">
-                    <strong style="color:var(--text-main);">気候傾向:</strong> <span id="resClimateTrends">夏期の猛暑日・熱帯夜の継続化と局地的豪雨（線状降水帯）リスク増加。</span>
-                  </div>
-                  <div style="font-size:0.75rem; color:var(--accent-cyan); line-height:1.45; background:rgba(6,182,212,0.08); padding:6px 8px; border-radius:4px; border:1px solid rgba(6,182,212,0.2);">
-                    <strong style="color:#67e8f9;">標高差設計参考:</strong> <span id="resElevationDesignNote">標高18m。ゲリラ豪雨・内水氾濫に備え、基礎立上り天端高（GL+400mm以上）および外壁水切りの確実な排水勾配を推奨。</span>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-
             <!-- ★ 5. 国土交通省「不動産情報ライブラリ」＆ 自治体公開都市計画WebGIS 総合連携パネル -->
             <div class="city-planning-panel" id="cityPlanningPanel" style="margin-top:14px; background:linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.85) 100%); border:1px solid rgba(56, 189, 248, 0.25); border-radius:var(--radius-sm); padding:16px 18px; box-shadow:0 4px 20px rgba(0,0,0,0.25);">
               <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:8px; flex-wrap:wrap; gap:8px;">
@@ -441,6 +386,22 @@
                 </div>
                 <div style="display:flex; align-items:center; gap:6px;">
                   <span style="font-size:0.72rem; color:var(--text-sub);">国交省オープンデータ ＆ 自治体公開WebGIS</span>
+                </div>
+              </div>
+
+              <!-- ★ 不動産情報ライブラリ 都市計画情報 テキスト表示エリア -->
+              <div id="reinfoTextSummary" style="background:rgba(255,255,255,0.04); border:1px solid rgba(234,179,8,0.25); border-radius:6px; padding:10px 14px; margin-bottom:14px;">
+                <div style="display:flex; align-items:flex-start; gap:8px;">
+                  <span class="material-symbols-outlined" style="color:var(--accent-gold); font-size:18px; margin-top:2px;">account_balance</span>
+                  <div style="flex:1;">
+                    <div style="font-weight:700; color:var(--text-main); font-size:0.83rem; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:6px;">
+                      <span id="reinfoSummaryTitle">【都市計画・用途地域・地区計画の指定状況】</span>
+                      <span style="font-size:0.72rem; color:var(--accent-emerald); font-weight:600;">国土交通省 不動産情報ライブラリ ＆ 自治体公式WebGIS</span>
+                    </div>
+                    <div id="reinfoDetailText" style="font-size:0.77rem; color:var(--text-sub); margin-top:4px; line-height:1.5;">
+                      検索地周辺の用途地域、防火・準防火地域、高度地区、日影規制、地区計画等の指定状況を、所管自治体の公式WebGISおよび国土交通省「不動産情報ライブラリ」から確認できます。
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -542,6 +503,62 @@
 
               </div>
             </div>
+
+            <!-- ★ 気象庁平年値・近年の気候傾向・標高差設計参考 パネル -->
+            <div class="climate-reference-panel" id="climateRefPanel" style="margin-top:14px; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.08); border-radius:var(--radius-sm); padding:14px 16px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; border-bottom:1px solid rgba(255,255,255,0.06); padding-bottom:8px;">
+                <div style="display:flex; align-items:center; gap:6px;">
+                  <span class="material-symbols-outlined" style="font-size:18px; color:var(--accent-cyan);">cloud_sync</span>
+                  <strong style="font-size:0.85rem; color:var(--text-main);">気象庁平年値 ＆ 近年の気候傾向 ＆ 標高差設計参考</strong>
+                </div>
+                <span style="font-size:0.72rem; color:var(--text-sub);" id="resClimateHeaderMeta">H25経産省・国交省告示第1号 / 気象庁1991-2020年統計</span>
+              </div>
+
+              <!-- 3カラム・グリッド -->
+              <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap:12px;">
+                
+                <!-- 1. 気象庁平年値 -->
+                <div style="background:rgba(255,255,255,0.03); border-radius:6px; padding:10px 12px; border:1px solid rgba(255,255,255,0.05);">
+                  <div style="font-size:0.78rem; font-weight:800; color:var(--accent-emerald); margin-bottom:6px; display:flex; align-items:center; gap:4px;">
+                    <span class="material-symbols-outlined" style="font-size:15px;">thermostat</span> 気象庁平年値 (代表地点)
+                  </div>
+                  <ul id="listClimateNormals" style="list-style:none; padding:0; margin:0; font-size:0.76rem; color:var(--text-sub); display:flex; flex-direction:column; gap:4px;">
+                    <li>・年平均気温: <strong id="valTempYear" style="color:var(--text-main);">15.4℃</strong></li>
+                    <li>・最寒月気温: <strong id="valTempCold" style="color:var(--text-main);">3.8℃</strong> / 最暖月: <strong id="valTempWarm" style="color:var(--text-main);">27.5℃</strong></li>
+                    <li>・年間日照時間: <strong id="valAnnualSun" style="color:var(--text-main);">1,950時間</strong></li>
+                    <li>・年間降水量: <strong id="valAnnualRain" style="color:var(--text-main);">1,450mm</strong></li>
+                  </ul>
+                </div>
+
+                <!-- 2. 日射地域区分 ＆ パッシブ設計指針 -->
+                <div style="background:rgba(255,255,255,0.03); border-radius:6px; padding:10px 12px; border:1px solid rgba(255,255,255,0.05);">
+                  <div style="font-size:0.78rem; font-weight:800; color:var(--accent-gold); margin-bottom:6px; display:flex; align-items:center; gap:4px;">
+                    <span class="material-symbols-outlined" style="font-size:15px;">wb_sunny</span> 日射地域区分 (A1〜A5) 特性
+                  </div>
+                  <p id="resSolarProfileDesc" style="font-size:0.75rem; color:var(--text-sub); margin:0 0 6px 0; line-height:1.45;">
+                    暖房期日射量区分 A4。太平洋側特有の冬期晴天日数が多く、南面開口からの日射取得が暖房エネルギー削減に極めて有効。夏期の深い軒・庇による日射遮蔽とセット設計が必須。
+                  </p>
+                  <div style="font-size:0.72rem; color:var(--accent-cyan);" id="resSolarTips">
+                    ・暖房期: 南面ガラスの日射取得率(ηH)確保 / 冷房期: 庇・アウターシェード推奨
+                  </div>
+                </div>
+
+                <!-- 3. 近年の気候傾向 ＆ 標高差による設計参考 -->
+                <div style="background:rgba(255,255,255,0.03); border-radius:6px; padding:10px 12px; border:1px solid rgba(255,255,255,0.05);">
+                  <div style="font-size:0.78rem; font-weight:800; color:#38bdf8; margin-bottom:6px; display:flex; align-items:center; gap:4px;">
+                    <span class="material-symbols-outlined" style="font-size:15px;">trending_up</span> 近年の気候傾向 ＆ 標高差設計参考
+                  </div>
+                  <div style="font-size:0.75rem; color:var(--text-sub); line-height:1.45; margin-bottom:6px;">
+                    <strong style="color:var(--text-main);">気候傾向:</strong> <span id="resClimateTrends">夏期の猛暑日・熱帯夜の継続化と局地的豪雨（線状降水帯）リスク増加。</span>
+                  </div>
+                  <div style="font-size:0.75rem; color:var(--accent-cyan); line-height:1.45; background:rgba(6,182,212,0.08); padding:6px 8px; border-radius:4px; border:1px solid rgba(6,182,212,0.2);">
+                    <strong style="color:#67e8f9;">標高差設計参考:</strong> <span id="resElevationDesignNote">標高18m。ゲリラ豪雨・内水氾濫に備え、基礎立上り天端高（GL+400mm以上）および外壁水切りの確実な排水勾配を推奨。</span>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
           </div>
         </div>
 
@@ -1278,14 +1295,14 @@
   </footer>
 
   <!-- Scripts -->
-  <script src="js/tools_data.js?v=1.6.4"></script>
-  <script src="js/regional_cities_data.js?v=1.6.4"></script>
-  <script src="js/city_planning_data.js?v=1.6.4"></script>
-  <script src="js/city_planning_service.js?v=1.6.4"></script>
-  <script src="js/geo_service.js?v=1.6.4"></script>
-  <script src="js/regional_calc.js?v=1.6.4"></script>
-  <script src="js/dt_calc.js?v=1.6.4"></script>
-  <script src="js/category_showcase.js?v=1.6.4"></script>
-  <script src="js/portal.js?v=1.6.4"></script>
+  <script src="js/tools_data.js?v=1.6.5"></script>
+  <script src="js/regional_cities_data.js?v=1.6.5"></script>
+  <script src="js/city_planning_data.js?v=1.6.5"></script>
+  <script src="js/city_planning_service.js?v=1.6.5"></script>
+  <script src="js/geo_service.js?v=1.6.5"></script>
+  <script src="js/regional_calc.js?v=1.6.5"></script>
+  <script src="js/dt_calc.js?v=1.6.5"></script>
+  <script src="js/category_showcase.js?v=1.6.5"></script>
+  <script src="js/portal.js?v=1.6.5"></script>
 </body>
 </html>
