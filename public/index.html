@@ -18,7 +18,7 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/portal.css?v=1.6.6">
+  <link rel="stylesheet" href="css/portal.css?v=1.6.7">
 </head>
 <body>
 
@@ -572,7 +572,13 @@
                 <span class="dt-calc-subtag">【付録】木造基礎梁主筋（上下各1本・2段筋各1本）の重心距離 dt と有効梁成 d を瞬時算定（審査機関質疑・アーキトレンド連携）</span>
               </div>
             </div>
-            <span class="dt-free-badge">実務者無償</span>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="dt-free-badge">実務者無償</span>
+              <a href="#avgGlCalcCard" style="font-size:0.72rem; color:var(--accent-gold); text-decoration:none; display:inline-flex; align-items:center; gap:3px; background:rgba(245,158,11,0.1); padding:4px 10px; border-radius:4px; border:1px solid rgba(245,158,11,0.3);">
+                <span class="material-symbols-outlined" style="font-size:13px;">architecture</span>
+                <span>隣の平均GL換算へ</span>
+              </a>
+            </div>
           </div>
 
           <p style="font-size:0.8rem; color:var(--text-sub); margin-bottom:16px; line-height:1.5;">
@@ -757,6 +763,147 @@
               </div>
 
             </div>
+          </div>
+        </div>
+
+        <!-- 下段2: 平均GL連動 構造設計用 基礎寸法・根入れ自動換算ツール (#avgGlCalcCard / 横長ワイドカード) -->
+        <div class="avg-gl-card" id="avgGlCalcCard" style="margin-top:24px;">
+          <div class="avg-gl-header">
+            <div class="avg-gl-title-wrap">
+              <span class="material-symbols-outlined" style="color:var(--accent-gold); font-size:26px;">architecture</span>
+              <div>
+                <h3 class="avg-gl-title">平均GL連動 構造設計用 基礎寸法・根入れ自動換算</h3>
+                <span class="avg-gl-subtag">【実務審査・構造ソフト連携】設計GLから平均GLへの高さ・根入れ自動シフト算定（ARCHITREND ZERO・許容応力度計算用）</span>
+              </div>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="avg-gl-free-badge">実務者完全無償</span>
+              <a href="#dtCalcCard" style="font-size:0.72rem; color:var(--accent-cyan); text-decoration:none; display:inline-flex; align-items:center; gap:3px; background:rgba(6,182,212,0.1); padding:4px 10px; border-radius:4px; border:1px solid rgba(6,182,212,0.25);">
+                <span class="material-symbols-outlined" style="font-size:13px;">straighten</span>
+                <span>隣の有効梁成dt算出へ</span>
+              </a>
+            </div>
+          </div>
+
+          <p style="font-size:0.8rem; color:var(--text-sub); margin-bottom:14px; line-height:1.5;">
+            構造計算上の基礎立ち上がり高さ・根入れ深さは「平均GL（平均地盤面）」基準で設定する必要があります。設計GL基準の各部材寸法と平均GLレベル差を入力するだけで、構造設計用寸法（立上りH・根入れDf・スラブ天端高）を自動換算・法規判定します。
+          </p>
+
+          <!-- 上部: 平均GLレベル差＆共通べた基礎天端高 コントロールバー -->
+          <div class="avg-gl-control-bar">
+            <div class="avg-gl-input-group">
+              <label style="font-size:0.82rem; font-weight:800; color:var(--text-main); display:flex; align-items:center; gap:4px;">
+                <span class="material-symbols-outlined" style="color:var(--accent-gold); font-size:18px;">height</span>
+                <span>平均GLレベル差 (設計GL基準):</span>
+              </label>
+              <div style="display:inline-flex; align-items:center; gap:4px;">
+                <input type="number" id="inputAvgGlDiff" value="-100" step="10" class="avg-gl-diff-input">
+                <span style="font-size:0.85rem; font-weight:700; color:var(--accent-gold);">mm</span>
+              </div>
+              <div class="avg-gl-quick-group">
+                <button type="button" class="avg-gl-quick-btn" data-val="0">±0 (平坦)</button>
+                <button type="button" class="avg-gl-quick-btn" data-val="-50">-50</button>
+                <button type="button" class="avg-gl-quick-btn active" data-val="-100">-100 (標準)</button>
+                <button type="button" class="avg-gl-quick-btn" data-val="-150">-150</button>
+                <button type="button" class="avg-gl-quick-btn" data-val="50">+50</button>
+                <button type="button" class="avg-gl-quick-btn" data-val="100">+100</button>
+              </div>
+            </div>
+
+            <!-- 共通べた基礎スラブ天端高 -->
+            <div style="display:flex; align-items:center; gap:8px;">
+              <label style="font-size:0.75rem; color:var(--text-sub); font-weight:700;">べた基礎天端高 (基本):</label>
+              <div style="display:inline-flex; align-items:center; gap:3px;">
+                <span style="font-size:0.75rem; color:var(--text-sub);">設計GL</span>
+                <input type="number" id="inputCommonSlabHeight" value="50" step="5" style="width:65px; padding:4px 6px; background:#0f172a; border:1px solid rgba(255,255,255,0.15); border-radius:4px; color:#fff; font-size:0.78rem; text-align:right;">
+                <span style="font-size:0.75rem; color:var(--text-sub);">mm</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 動的解説バッジ -->
+          <div id="avgGlDiffNote" style="font-size:0.76rem; padding:8px 12px; border-radius:6px; margin-bottom:16px; border:1px solid rgba(245,158,11,0.3); background:rgba(245,158,11,0.06); line-height:1.45;"></div>
+
+          <!-- 2カラムレイアウト: 左側 基本仕様設定 / 右側 構造設計設定用基礎高さ -->
+          <div class="avg-gl-cols">
+            
+            <!-- 左カラム: 基本仕様設定 (設計GL基準) -->
+            <div class="avg-gl-specs-box">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; flex-wrap:wrap; gap:6px;">
+                <div style="display:flex; align-items:center; gap:6px;">
+                  <span class="material-symbols-outlined" style="font-size:16px; color:var(--accent-cyan);">tune</span>
+                  <span style="font-size:0.82rem; font-weight:800; color:var(--text-main);">基本仕様設定 (設計GL基準・意匠図寸法)</span>
+                </div>
+                <span style="font-size:0.7rem; color:var(--text-sub);">※数値は自由に変更・保存可能</span>
+              </div>
+
+              <div class="avg-gl-table-wrap">
+                <table class="avg-gl-table">
+                  <thead>
+                    <tr>
+                      <th style="width:30px; text-align:center;">図</th>
+                      <th>部材記号</th>
+                      <th>用途・部位</th>
+                      <th>立上り高(H)</th>
+                      <th>根入れ(Df)</th>
+                      <th>立上り幅</th>
+                      <th>スラブ天端</th>
+                      <th style="text-align:right;">全成(D)</th>
+                      <th style="width:28px; text-align:center;">削</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tbodyAvgGlSpecs">
+                    <!-- JSにて動的生成 (FG1, FG2, FG3 + 追加部材) -->
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- 部材追加バー -->
+              <div class="avg-gl-add-bar">
+                <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                  <span style="font-size:0.74rem; color:var(--text-sub); font-weight:700;">＋ 部材追加:</span>
+                  <select id="selAddPresetType" style="padding:4px 8px; background:#0f172a; border:1px solid rgba(255,255,255,0.15); border-radius:4px; color:#fff; font-size:0.75rem;">
+                    <option value="garage">🚗 車庫・ガレージ部 (立上り150/根入れ250/天端-100)</option>
+                    <option value="deep">🧱 深基礎・高低差部 (立上り390/根入れ600/天端+50)</option>
+                    <option value="entrance">🚪 玄関土間下がり (立上り200/根入れ250/天端-50)</option>
+                    <option value="custom">➕ 任意部材 (自由設定)</option>
+                  </select>
+                  <button type="button" class="btn btn-primary btn-sm" id="btnAddSpecBtn" style="padding:4px 10px; font-size:0.75rem; background:var(--accent-gold); border-color:var(--accent-gold); color:#0f172a; font-weight:800;">
+                    追加
+                  </button>
+                </div>
+                <button type="button" class="btn btn-ghost btn-sm" id="btnResetAvgGl" style="font-size:0.72rem; color:var(--text-sub); padding:4px 8px;">
+                  <span class="material-symbols-outlined" style="font-size:13px;">restart_alt</span> 初期値(FG1/2/3)へリセット
+                </button>
+              </div>
+
+              <!-- リアルタイム断面SVG図解 -->
+              <div class="avg-gl-svg-box">
+                <div class="avg-gl-svg-head">
+                  <span class="avg-gl-svg-title" id="avgGlSvgLabel">【FG1（外周部）】断面レベル図（設計GL vs 平均GL）</span>
+                  <span style="font-size:0.68rem; color:var(--text-sub);">※ラジオ選択でプレビュー部材切替</span>
+                </div>
+                <div id="avgGlSvgContainer"></div>
+              </div>
+            </div>
+
+            <!-- 右カラム: 構造設計設定用 基礎高さ (平均GL基準) -->
+            <div class="avg-gl-output-box">
+              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
+                <div style="display:flex; align-items:center; gap:6px;">
+                  <span class="material-symbols-outlined" style="font-size:16px; color:#34d399;">domain</span>
+                  <span style="font-size:0.82rem; font-weight:800; color:var(--text-main);">構造設計設定用 基礎寸法 (平均GL基準・入力用)</span>
+                </div>
+                <button type="button" class="btn-dt-copy" id="btnCopyAvgGlResult" style="padding:4px 10px; font-size:0.74rem;">
+                  <span class="material-symbols-outlined" style="font-size:14px;">content_copy</span> 算定数値を一括コピー
+                </button>
+              </div>
+
+              <div id="avgGlResultsContainer" style="display:flex; flex-direction:column; gap:10px;">
+                <!-- JSにて動的生成 (FG1, FG2, FG3 + 追加部材の構造設定カード) -->
+              </div>
+            </div>
+
           </div>
         </div>
 
@@ -1295,14 +1442,15 @@
   </footer>
 
   <!-- Scripts -->
-  <script src="js/tools_data.js?v=1.6.6"></script>
-  <script src="js/regional_cities_data.js?v=1.6.6"></script>
-  <script src="js/city_planning_data.js?v=1.6.6"></script>
-  <script src="js/city_planning_service.js?v=1.6.6"></script>
-  <script src="js/geo_service.js?v=1.6.6"></script>
-  <script src="js/regional_calc.js?v=1.6.6"></script>
-  <script src="js/dt_calc.js?v=1.6.6"></script>
-  <script src="js/category_showcase.js?v=1.6.6"></script>
-  <script src="js/portal.js?v=1.6.6"></script>
+  <script src="js/tools_data.js?v=1.6.7"></script>
+  <script src="js/regional_cities_data.js?v=1.6.7"></script>
+  <script src="js/city_planning_data.js?v=1.6.7"></script>
+  <script src="js/city_planning_service.js?v=1.6.7"></script>
+  <script src="js/geo_service.js?v=1.6.7"></script>
+  <script src="js/regional_calc.js?v=1.6.7"></script>
+  <script src="js/dt_calc.js?v=1.6.7"></script>
+  <script src="js/avg_gl_calc.js?v=1.6.7"></script>
+  <script src="js/category_showcase.js?v=1.6.7"></script>
+  <script src="js/portal.js?v=1.6.7"></script>
 </body>
 </html>
