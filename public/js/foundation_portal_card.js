@@ -205,6 +205,59 @@ class FoundationPortalCard {
       });
     }
 
+    // スラブ配筋方式
+    const selSlabArr = document.getElementById('portalSlabArrangement');
+    if (selSlabArr) {
+      selSlabArr.addEventListener('change', (e) => {
+        this.beam.slabArrangement = e.target.value;
+        this.updateUI();
+        this.saveState();
+      });
+    }
+
+    // スラブ厚
+    const inpSlabT = document.getElementById('portalSlabT');
+    if (inpSlabT) {
+      inpSlabT.addEventListener('input', (e) => {
+        const val = parseInt(e.target.value, 10) || 180;
+        this.beam.slabT = val;
+        // スラブ厚180mm未満時はシングル配筋へ自動補正
+        if (val < 180 && this.beam.slabArrangement === 'double') {
+          this.beam.slabArrangement = 'single';
+          if (selSlabArr) selSlabArr.value = 'single';
+        }
+        this.updateUI();
+        this.saveState();
+      });
+    }
+
+    // スラブ短辺筋
+    const selSlabShort = document.getElementById('portalSlabShortBar');
+    if (selSlabShort) {
+      selSlabShort.addEventListener('change', (e) => {
+        this.slabCommon.shortBar = e.target.value;
+        this.updateUI();
+        this.saveState();
+      });
+    }
+
+    // スラブ長辺筋
+    const selSlabLong = document.getElementById('portalSlabLongBar');
+    if (selSlabLong) {
+      selSlabLong.addEventListener('change', (e) => {
+        this.slabCommon.longBar = e.target.value;
+        this.updateUI();
+        this.saveState();
+      });
+    }
+
+    // PROモード遷移リンククリック時に状態保存
+    document.querySelectorAll('.btn-open-cad-pro, .btn-pro-cta').forEach(link => {
+      link.addEventListener('click', () => {
+        this.saveState();
+      });
+    });
+
     // テキストコピー
     const btnCopy = document.getElementById('portalBtnCopyDt');
     if (btnCopy) {
@@ -217,6 +270,7 @@ class FoundationPortalCard {
       btnReset.addEventListener('click', () => {
         this.beam = JSON.parse(JSON.stringify(DEFAULT_BEAMS[0]));
         this.avgGlConfig = JSON.parse(JSON.stringify(DEFAULT_AVG_GL));
+        this.slabCommon = JSON.parse(JSON.stringify(DEFAULT_SLAB_COMMON));
         this.updateBotSpecOptions();
         this.updateUI();
         this.saveState();
@@ -281,6 +335,12 @@ class FoundationPortalCard {
     setVal('portalBotSpec', this.beam.botSpec || '1-D13');
     setVal('portalStirrup', this.beam.stirrupBar || 'D10@200');
 
+    // スラブ設定同期
+    setVal('portalSlabArrangement', this.beam.slabArrangement || 'single');
+    setVal('portalSlabT', this.beam.slabT || 180);
+    setVal('portalSlabShortBar', this.slabCommon.shortBar || 'D13@150');
+    setVal('portalSlabLongBar', this.slabCommon.longBar || 'D10@300');
+
     // 底盤幅UI表示切替
     const wrapToe = document.getElementById('portalWrapToeType');
     if (wrapToe) wrapToe.style.display = (this.beam.baseSpec === 'FG1') ? 'block' : 'none';
@@ -319,13 +379,14 @@ class FoundationPortalCard {
     setTxt('portalResTopAvgGl', `${heights.topAvgGl >= 0 ? '+' : ''}${heights.topAvgGl} mm`);
     setTxt('portalResBotAvgGl', `${heights.botAvgGl >= 0 ? '+' : ''}${heights.botAvgGl} mm`);
 
-    // SVGプレビューのレンダリング
+    // SVGプレビューのレンダリング (PROモードと統一された原点とスケールで全体を表示)
     const previewGroup = document.getElementById('portalSvgGroup');
     if (previewGroup) {
+      previewGroup.setAttribute('transform', 'translate(-100, -30) scale(1.02)');
       renderFoundationSvg(previewGroup, this.beam, this.avgGlConfig, this.slabCommon, {
         showTable: true,
-        originX: 250,
-        originY: 130
+        originX: 380,
+        originY: 140
       });
     }
   }

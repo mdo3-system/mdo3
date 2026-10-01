@@ -566,31 +566,59 @@
         <div class="dt-calc-card dt-calc-card-wide" id="dtCalcCard" style="margin-top:24px;">
           <div class="dt-calc-header" style="flex-wrap: wrap; gap: 12px;">
             <div class="dt-calc-title-wrap">
-              <span class="material-symbols-outlined" style="color:var(--accent-cyan); font-size:28px;">architecture</span>
+              <span class="material-symbols-outlined" style="color:var(--accent-cyan); font-size:32px;">architecture</span>
               <div>
-                <h3 class="dt-calc-title" style="font-size:1.25rem;">木造ベタ基礎 梁断面図作図＆重心距離dt・平均GL自動算定</h3>
+                <h3 class="dt-calc-title" style="font-size:1.3rem;">木造ベタ基礎 梁断面図作図＆重心距離dt・平均GL自動算定</h3>
                 <span class="dt-calc-subtag">【実務審査対応】梁断面詳細図リアルタイム作図・重心距離 dt / 有効梁成 d 算定・平均GL自動換算・全符号AutoCAD DXF一括出力</span>
               </div>
             </div>
             <div style="display:flex; align-items:center; gap:10px; flex-wrap: wrap;">
               <span class="dt-free-badge">実務者完全無償</span>
               <a href="/foundation-cad.html" target="_blank" class="btn-open-cad-pro" title="別タブで全符号管理・高機能CAD製図・DXF一括出力画面を開く">
-                <span class="material-symbols-outlined" style="font-size:18px;">open_in_new</span>
-                <span>全画面CADプロモード（全符号DXF一括）</span>
+                <span class="material-symbols-outlined" style="font-size:19px;">open_in_new</span>
+                <span>全画面CAD PROモード（全符号DXF一括出力）</span>
               </a>
             </div>
           </div>
 
-          <p style="font-size:0.82rem; color:var(--text-sub); margin-bottom:18px; line-height:1.55;">
-            木造住宅のベタ基礎梁実務（外周FG1・内部FG2・主筋1段/2段/並列配筋）に特化。躯体寸法と配筋を選ぶだけで、<strong>重心距離 $dt$・有効梁成 $d$・平均GL対比レベルを即時算定</strong>し、天端同寸時の引出線干渉も解消したリアルタイム断面図および<strong>AutoCAD互換DXF形式の詳細図作図</strong>までワンストップでサポートします。
-          </p>
+          <!-- 何ができるのか：実務訴求バナー (4大メリット) -->
+          <div class="portal-feature-banner">
+            <div class="portal-feature-item">
+              <span class="material-symbols-outlined portal-feature-icon" style="color:#38bdf8;">verified</span>
+              <div>
+                <div class="portal-feature-title">2025年改正建築基準法対応</div>
+                <div class="portal-feature-desc">提出が義務付けられた「基礎梁断面詳細図」を即座に自動製図。</div>
+              </div>
+            </div>
+            <div class="portal-feature-item">
+              <span class="material-symbols-outlined portal-feature-icon" style="color:#fbbf24;">height</span>
+              <div>
+                <div class="portal-feature-title">平均GL連動・取り合い把握</div>
+                <div class="portal-feature-desc">敷地高低差時の立上り天端・根入れ・スラブ天端の取り合いレベルを自動換算。</div>
+              </div>
+            </div>
+            <div class="portal-feature-item">
+              <span class="material-symbols-outlined portal-feature-icon" style="color:#34d399;">calculate</span>
+              <div>
+                <div class="portal-feature-title">構造計算直結 dt・d算定</div>
+                <div class="portal-feature-desc">許容応力度計算ですぐに使える上主筋・下主筋の重心距離dt・有効成dを算出。</div>
+              </div>
+            </div>
+            <div class="portal-feature-item">
+              <span class="material-symbols-outlined portal-feature-icon" style="color:#f472b6;">file_download</span>
+              <div>
+                <div class="portal-feature-title">FG1自由作図 ➔ PROで一括DXF</div>
+                <div class="portal-feature-desc">FG1を自由作図後、PROへ引継ぎFG2以降も作成＆CAD用DXFを一括出力可能！</div>
+              </div>
+            </div>
+          </div>
 
           <div class="portal-dt-layout">
             
-            <!-- 左カラム: 条件入力パネル -->
+            <!-- 左カラム: 条件設定パネル (PROモードと同等の充実した設定項目) -->
             <div class="dt-input-col" style="display:flex; flex-direction:column; gap:12px;">
               
-              <!-- 仕様ベース & 底盤幅 -->
+              <!-- 1. 仕様ベース & 底盤幅 -->
               <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; background:rgba(0,0,0,0.25); padding:10px 12px; border-radius:var(--radius-sm); border:1px solid rgba(255,255,255,0.06);">
                 <div>
                   <label style="font-size:0.75rem; font-weight:700; color:var(--text-sub); display:block; margin-bottom:3px;">基礎梁仕様:</label>
@@ -608,7 +636,7 @@
                 </div>
               </div>
 
-              <!-- 躯体寸法 -->
+              <!-- 2. 躯体寸法 -->
               <div style="background:rgba(0,0,0,0.25); padding:10px 12px; border-radius:var(--radius-sm); border:1px solid rgba(255,255,255,0.06);">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
                   <label style="font-size:0.78rem; font-weight:800; color:var(--text-main);">基礎梁成 D (mm):</label>
@@ -626,7 +654,7 @@
                   </div>
                   <div>
                     <label style="font-size:0.72rem; color:var(--text-sub); display:block; margin-bottom:2px;">根入れ深さ ※H (mm):</label>
-                    <input type="number" id="portalBeamEmbed" value="500" min="50" max="1500" step="10" style="width:100%; padding:4px 8px; font-size:0.85rem; font-weight:700; color:#34d399; background:var(--bg-card); border:1px solid var(--border-color); border-radius:4px;">
+                    <input type="number" id="portalBeamEmbed" value="250" min="50" max="1500" step="10" style="width:100%; padding:4px 8px; font-size:0.85rem; font-weight:700; color:#34d399; background:var(--bg-card); border:1px solid var(--border-color); border-radius:4px;">
                   </div>
                 </div>
 
@@ -641,7 +669,7 @@
                 </div>
               </div>
 
-              <!-- 平均GLレベル差 -->
+              <!-- 3. 平均GLレベル差 -->
               <div style="background:rgba(245,158,11,0.06); padding:10px 12px; border-radius:var(--radius-sm); border:1px solid rgba(245,158,11,0.25);">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
                   <label style="font-size:0.78rem; font-weight:800; color:var(--accent-gold); display:flex; align-items:center; gap:4px;">
@@ -649,20 +677,20 @@
                     <span>平均GLレベル差 (設計GL基準):</span>
                   </label>
                   <div style="display:inline-flex; align-items:center; gap:3px;">
-                    <input type="number" id="portalAvgGlDiff" value="-100" step="10" style="width:70px; padding:3px 6px; font-size:0.85rem; font-weight:700; text-align:right; background:#0f172a; border:1px solid rgba(255,255,255,0.2); border-radius:4px; color:var(--accent-gold);">
+                    <input type="number" id="portalAvgGlDiff" value="0" step="10" style="width:70px; padding:3px 6px; font-size:0.85rem; font-weight:700; text-align:right; background:#0f172a; border:1px solid rgba(255,255,255,0.2); border-radius:4px; color:var(--accent-gold);">
                     <span style="font-size:0.75rem; color:var(--text-sub);">mm</span>
                   </div>
                 </div>
                 <div class="avg-gl-quick-group" style="display:flex; gap:4px; flex-wrap:wrap;">
-                  <button type="button" class="portal-avg-gl-quick-btn" data-diff="0">±0 (平坦)</button>
+                  <button type="button" class="portal-avg-gl-quick-btn active" data-diff="0">±0 (平坦)</button>
                   <button type="button" class="portal-avg-gl-quick-btn" data-diff="-50">-50</button>
-                  <button type="button" class="portal-avg-gl-quick-btn active" data-diff="-100">-100</button>
+                  <button type="button" class="portal-avg-gl-quick-btn" data-diff="-100">-100</button>
                   <button type="button" class="portal-avg-gl-quick-btn" data-diff="-150">-150</button>
                   <button type="button" class="portal-avg-gl-quick-btn" data-diff="50">+50</button>
                 </div>
               </div>
 
-              <!-- 配筋仕様 (上主筋・下主筋・スターラップ) -->
+              <!-- 4. 配筋仕様 (上主筋・下主筋・スターラップ) -->
               <div class="dt-rebar-grid">
                 
                 <!-- 上主筋 -->
@@ -720,15 +748,57 @@
                 </select>
               </div>
 
+              <!-- 5. 耐圧盤スラブ配筋設定 (シングル/ダブル配筋・スラブ厚・配筋径) -->
+              <div style="background:rgba(0,0,0,0.25); padding:10px 12px; border-radius:var(--radius-sm); border:1px solid rgba(255,255,255,0.06);">
+                <div style="font-size:0.78rem; font-weight:800; color:var(--accent-gold); margin-bottom:8px; display:flex; align-items:center; gap:5px;">
+                  <span class="material-symbols-outlined" style="font-size:16px;">layers</span>
+                  <span>耐圧盤スラブ配筋設定:</span>
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                  <div>
+                    <label style="font-size:0.72rem; color:var(--text-sub); display:block; margin-bottom:2px;">配筋方式:</label>
+                    <select id="portalSlabArrangement" style="width:100%; padding:5px 8px; font-weight:700; font-size:0.8rem; background:var(--bg-card); color:var(--accent-gold); border:1px solid var(--border-color); border-radius:4px;">
+                      <option value="single" selected>シングル配筋</option>
+                      <option value="double">ダブル配筋 (複配筋)</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label style="font-size:0.72rem; color:var(--text-sub); display:block; margin-bottom:2px;">スラブ厚 (mm):</label>
+                    <select id="portalSlabT" style="width:100%; padding:5px 8px; font-weight:700; font-size:0.8rem; background:var(--bg-card); color:var(--accent-cyan); border:1px solid var(--border-color); border-radius:4px;">
+                      <option value="150" selected>150 mm</option>
+                      <option value="180">180 mm</option>
+                      <option value="200">200 mm</option>
+                    </select>
+                  </div>
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:8px;">
+                  <div>
+                    <label style="font-size:0.7rem; color:var(--text-sub); display:block; margin-bottom:2px;">短辺 (外側●):</label>
+                    <select id="portalSlabShortBar" style="width:100%; padding:4px 6px; font-size:0.75rem; font-family:monospace; background:var(--bg-card); color:var(--text-main); border:1px solid var(--border-color); border-radius:4px;">
+                      <option value="D13@150" selected>D13@150</option>
+                      <option value="D13@200">D13@200</option>
+                      <option value="D16@150">D16@150</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label style="font-size:0.7rem; color:var(--text-sub); display:block; margin-bottom:2px;">長辺 (内側横筋):</label>
+                    <select id="portalSlabLongBar" style="width:100%; padding:4px 6px; font-size:0.75rem; font-family:monospace; background:var(--bg-card); color:var(--text-main); border:1px solid var(--border-color); border-radius:4px;">
+                      <option value="D10@300" selected>D10@300</option>
+                      <option value="D13@300">D13@300</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
             </div>
 
-            <!-- 右カラム: リアルタイムSVG断面プレビュー ＆ 算定結果サマリー -->
+            <!-- 右カラム: リアルタイムSVG断面プレビュー ＆ 算定結果サマリー (PROモード同様に図全体を表示) -->
             <div class="portal-dt-preview-container">
               
-              <!-- リアルタイムSVG断面詳細図キャンバス -->
-              <div class="portal-svg-preview-wrap" title="マウスホイール/パン操作は全画面CADプロモードで可能です">
-                <svg id="portalCadSvg" viewBox="150 0 1000 680" xmlns="http://www.w3.org/2000/svg">
-                  <g id="portalSvgGroup"></g>
+              <!-- リアルタイムSVG断面詳細図キャンバス (viewBoxをPROモード同等の広角に設定し全体を表示) -->
+              <div class="portal-svg-preview-wrap" title="全符号管理やDXF図面一括出力は右下のPROモードから行えます">
+                <svg id="portalCadSvg" viewBox="0 0 1600 950" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+                  <g id="portalSvgGroup" transform="translate(-100, -30) scale(1.02)"></g>
                 </svg>
               </div>
 
@@ -744,11 +814,11 @@
                   <div>
                     <div class="portal-stat-num-row">
                       <span style="font-size:0.72rem; color:var(--text-sub);">重心距離 dt:</span>
-                      <span class="portal-stat-main-val" id="portalResTopDt" style="color:var(--accent-cyan);">56.5 mm</span>
+                      <span class="portal-stat-main-val" id="portalResTopDt" style="color:var(--accent-cyan);">55.9 mm</span>
                     </div>
                     <div class="portal-stat-num-row">
                       <span style="font-size:0.72rem; color:var(--text-sub);">有効梁成 d:</span>
-                      <span class="portal-stat-main-val" id="portalResTopDeff" style="color:#34d399;">583.5 mm</span>
+                      <span class="portal-stat-main-val" id="portalResTopDeff" style="color:#34d399;">584.1 mm</span>
                     </div>
                   </div>
                 </div>
@@ -762,11 +832,11 @@
                   <div>
                     <div class="portal-stat-num-row">
                       <span style="font-size:0.72rem; color:var(--text-sub);">重心距離 dt:</span>
-                      <span class="portal-stat-main-val" id="portalResBotDt" style="color:#f472b6;">76.5 mm</span>
+                      <span class="portal-stat-main-val" id="portalResBotDt" style="color:#f472b6;">75.9 mm</span>
                     </div>
                     <div class="portal-stat-num-row">
                       <span style="font-size:0.72rem; color:var(--text-sub);">有効梁成 d:</span>
-                      <span class="portal-stat-main-val" id="portalResBotDeff" style="color:#34d399;">563.5 mm</span>
+                      <span class="portal-stat-main-val" id="portalResBotDeff" style="color:#34d399;">564.1 mm</span>
                     </div>
                   </div>
                 </div>
@@ -775,24 +845,24 @@
                 <div class="portal-stat-card" style="border-top:3px solid var(--accent-gold);">
                   <div class="portal-stat-head">
                     <span class="portal-stat-title" style="color:var(--accent-gold);">▽ 平均GL基準高さ</span>
-                    <span style="font-size:0.68rem; color:var(--accent-gold);" id="portalResAvgGlDiff">-100 mm</span>
+                    <span style="font-size:0.68rem; color:var(--accent-gold);" id="portalResAvgGlDiff">±0 mm</span>
                   </div>
                   <div>
                     <div class="portal-stat-num-row">
                       <span style="font-size:0.72rem; color:var(--text-sub);">天端 (平均GL):</span>
-                      <span class="portal-stat-main-val" id="portalResTopAvgGl" style="color:var(--accent-gold); font-size:1.05rem;">+500 mm</span>
+                      <span class="portal-stat-main-val" id="portalResTopAvgGl" style="color:var(--accent-gold); font-size:1.05rem;">+400 mm</span>
                     </div>
                     <div class="portal-stat-num-row">
                       <span style="font-size:0.72rem; color:var(--text-sub);">底面 (平均GL):</span>
-                      <span class="portal-stat-main-val" id="portalResBotAvgGl" style="color:var(--accent-gold); font-size:1.05rem;">-400 mm</span>
+                      <span class="portal-stat-main-val" id="portalResBotAvgGl" style="color:var(--accent-gold); font-size:1.05rem;">-250 mm</span>
                     </div>
                   </div>
                 </div>
 
               </div>
 
-              <!-- アクションボタン群 -->
-              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-top:4px;">
+              <!-- アクションボタン群 (PROモードへの明確な引継ぎ誘導) -->
+              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-top:6px;">
                 <div style="display:flex; gap:8px;">
                   <button type="button" class="btn-dt-copy" id="portalBtnCopyDt">
                     <span class="material-symbols-outlined" style="font-size:16px;">content_copy</span> dt・平均GL 算定根拠をコピー
@@ -801,9 +871,9 @@
                     <span class="material-symbols-outlined" style="font-size:14px;">restart_alt</span> リセット
                   </button>
                 </div>
-                <a href="/foundation-cad.html" target="_blank" style="font-size:0.76rem; color:var(--accent-cyan); text-decoration:none; display:inline-flex; align-items:center; gap:4px; font-weight:700;">
-                  <span>全符号(FG1〜n)の管理・図面DXF出力はプロモードへ</span>
-                  <span class="material-symbols-outlined" style="font-size:14px;">arrow_forward</span>
+                <a href="/foundation-cad.html" target="_blank" class="btn-pro-cta" title="FG1の設定を保持したままPROモードへ移動し、FG2以降の作図と全符号一括DXF出力を行います">
+                  <span class="material-symbols-outlined" style="font-size:18px;">rocket_launch</span>
+                  <span>この設定を引継いでPROモードを開く（全符号DXF一括出力）</span>
                 </a>
               </div>
 
