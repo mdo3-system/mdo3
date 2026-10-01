@@ -2,9 +2,10 @@
  * Version.js - mdo3.com 基幹ポータル & 統合SaaS バージョン管理
  */
 (function() {
-    window.APP_VERSION = 'v2.0.0';
+    window.APP_VERSION = 'v2.0.1';
     window.APP_BUILD_DATE = '2026-10-01';
     window.APP_RELEASE_NOTES = [
+        'v2.0.1 (2026-10-01): 基礎梁CADツールのサブコピーから特定CAD名(ARCHITREND)を削除し「実務審査対応」に汎用化。案件コンソール・計算ツールの保存・復元・印刷インターフェースを「build_circle データ管理・帳票出力」に一本化（ツール内の二重ボタン・枠を撤去）。過去の旧人通口データ・めり込みデータおよび新フォーマットJSONの双方向完全復元ハンドラ（window.restoreToolData）を実装し、過去データの読込・画面展開・A4印刷連携の100%完全動作を保証',
         'v2.0.0 (2026-10-01): 木造ベタ基礎 梁断面図作図＆dt・平均GL自動算定ツールへの全面刷新。従来の旧dtCalcCardおよび旧avgGlCalcCardを統合し、トップページにすっきり収まる「軽量プレビュー＆クイックdt算出カード」を設置。単一責任の原則（SRP）に基づき、定数・幾何計算・状態管理・SVG描画・DXF出力をモジュール分割（foundation_constants.js, foundation_calc.js, foundation_state.js, foundation_svg.js, foundation_dxf.js, foundation_ui.js, foundation_portal_card.js）。別タブで起動する本格フルスクリーンCAD専用ページ（foundation-cad.html）を新設（天端同寸時引出線干渉完全解消、全符号FG1〜FGn管理、AutoCAD互換Shift_JIS一括DXF出力、JSON保存/読込、localStorage双方向自動同期）',
         'v1.6.7 (2026-09-28): トップページ完全無償ツールZONEに「平均GL連動 構造設計用 基礎寸法・根入れ自動換算ツール」を新規開発・配備（有効基礎梁成・dt自動算出ツールの隣に設置）。基本仕様（FG1: 根入れ250/立上り390/全成640、FG2: 根入れ100/立上り390/全成490、FG3: 根入れ250/立上り50/全成300、幅150、べた基礎天端高+50mm）の自由設定＆部材追加（車庫・深基礎等）、平均GLレベル差入力による構造立上りH・根入れDf・スラブ天端高の自動換算、令38条（300mm以上）・告示1347号（120mm以上/凍結深度連動）適合判定、設計GL vs 平均GLリアルタイムSVG断面図解、ARCHITREND ZERO・許容応力度計算用テキスト一括コピー機能搭載',
         'v1.6.6 (2026-09-27): 案件統合コンソール（Workspace）への都市計画・法令指定（用途地域、防火指定、建蔽率、容積率、高度地区、地区計画等）登録・常時バッジ表示バー（Z係数・V0等と並列常時配置）＆編集モーダル新規実装。所管自治体都市計画WebGIS（川越市なら小江戸川越マップ等）ダイレクト遷移案内ボタン内蔵、localStorageによる案件別完全永続化。ポータル側の不動産情報ライブラリ自動コピー案内文言・処理の整理',

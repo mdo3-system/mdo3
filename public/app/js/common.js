@@ -393,20 +393,30 @@ const ToolStorage = {
             restoredItems.push('ヘッダー情報');
         }
 
-        // 2. 人通口ツール（openings / cards）の完全復元
-        const rawOpenings = payload.openings || payload.cards || payload.data?.openings || (Array.isArray(payload) ? payload : null);
-        if (Array.isArray(rawOpenings) && (typeof window.openings !== 'undefined' || document.getElementById('cards'))) {
-            window.openings = rawOpenings.map(raw => {
-                const base = (typeof newOpening === 'function') ? newOpening() : {};
-                const o = { ...base, ...raw };
-                if (!o.id && typeof crypto !== 'undefined' && crypto.randomUUID) o.id = crypto.randomUUID();
-                return o;
-            });
-            if (typeof window.recalculateAll === 'function') window.recalculateAll();
-            if (typeof mountCards === 'function') mountCards();
-            if (typeof window.updateGlobalControls === 'function') window.updateGlobalControls();
-            if (typeof window.updatePrintPreview === 'function') window.updatePrintPreview();
-            restoredItems.push(`人通口開口データ (${window.openings.length}箇所)`);
+        // 2. ツール固有の復元ハンドラ（window.restoreToolData）があれば最優先実行
+        if (typeof window.restoreToolData === 'function') {
+            const ok = window.restoreToolData(payload);
+            if (ok) {
+                restoredItems.push('計算ツール固有データ（開口・算定設定）');
+            }
+        } else {
+            // 人通口ツール（openings / cards）等の汎用復元フォールバック
+            const rawOpenings = payload.openings || payload.cards || payload.data?.openings || (Array.isArray(payload) ? payload : null);
+            if (Array.isArray(rawOpenings) && (typeof window.openings !== 'undefined' || document.getElementById('cards'))) {
+                const mapped = rawOpenings.map(raw => {
+                    const base = (typeof window.newOpening === 'function') ? window.newOpening() : (typeof newOpening === 'function' ? newOpening() : {});
+                    const o = { ...base, ...raw };
+                    if (!o.id && typeof crypto !== 'undefined' && crypto.randomUUID) o.id = crypto.randomUUID();
+                    return o;
+                });
+                window.openings = mapped;
+                if (typeof window.recalculateAll === 'function') window.recalculateAll();
+                if (typeof window.mountCards === 'function') window.mountCards();
+                else if (typeof mountCards === 'function') mountCards();
+                if (typeof window.updateGlobalControls === 'function') window.updateGlobalControls();
+                if (typeof window.updatePrintPreview === 'function') window.updatePrintPreview();
+                restoredItems.push(`人通口開口データ (${mapped.length}箇所)`);
+            }
         }
 
         // 3. Z係数ツール（tableHtml）の完全復元
@@ -484,6 +494,10 @@ const ToolStorage = {
     },
 
     print: function() {
+        if (typeof window.executeToolPrint === 'function') {
+            window.executeToolPrint();
+            return;
+        }
         GlobalInfo.updatePrintHeader();
         window.print();
     }

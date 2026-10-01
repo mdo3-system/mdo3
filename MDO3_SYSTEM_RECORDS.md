@@ -719,3 +719,33 @@ WRC造の「開口部補強・割増検討（jintsuko_bf）」は削除。新た
      - **`foundation_ui.js`**: フルスクリーンCADページのUIコントローラー（タブ切替、フォーム制御、パン・ズーム操作）。
      - **`foundation_portal_card.js`**: トップページ向け軽量プレビュー＆クイック連動スクリプト。
 
+---
+
+## 26. リリース履歴: v2.0.1 (2026-10-01)
+
+### ① 基礎梁CADツールのサブコピーから特定CAD名(ARCHITREND)の削除
+- **背景 & 対応**:
+  - 本ツールで出力するDXFファイルは汎用AutoCAD互換（Shift_JIS/R12規格）であり、ARCHITREND ZEROに限らずJW-CAD、AutoCAD、Vectorworks、DRA-CAD等あらゆるCADで利用可能であるため、サブコピーから「ARCHITREND連携」を削除し「【実務審査対応】」へと表現を最適化。
+
+### ② 案件コンソール・計算ツールの保存・復元・印刷インターフェースの「build_circle」統一 ＆ 過去データ完全復元対応
+- **背景 & 課題**:
+  - 人通口補強ツール（`jintsuko.html`）やめり込み補強ツール（`merikomi.html`）の画面内に、もともとのツール個別で実装されていた「保存データ(JSON)読込」枠および保存ボタンが存在していた。
+  - 一方で `common.js`（`ToolStorage`）が全画面最上部に自動配置する「build_circle データ管理・帳票出力（保存/復元/A4印刷）」バーと二重化していた。
+  - さらに、過去の旧ツールで作成されたJSONファイルを `build_circle` の「📂 データ復元 (JSON)」から読み込んだ際、データは読み込まれるものの画面（DOMカード）へ正しく展開・出力されない不具合が発生していた。
+- **原因の特定**:
+  - `jintsuko.js` の `mountCards` 関数がスクリプトローカルスコープで定義されていたため、`common.js` から参照できず（`typeof mountCards === 'undefined'`）、DOMカードの再マウントがスキップされていた。
+  - `jintsuko.js` 内部の変数 `openings`（ローカル配列）と `window.openings` の参照が分離していた。
+- **アーキテクチャ & 実装内容**:
+  1. **操作インターフェースの「build_circle データ管理・帳票出力」への一本化**:
+     - `jintsuko.html` 内の二重になっていた緑色の「📁 保存データ (JSON) 読込」枠（`.json-area`）およびツールバー内の「💾 JSON保存」ボタンを削除・整理。
+     - `merikomi.html` 内の二重になっていた「📁 保存ファイルを読み込む (JSON)」枠および「💾 状態を保存」ボタンを削除・整理。
+     - 全ての計算ツールにおいて、最上部の「`build_circle` データ管理・帳票出力」バーから保存・復元・A4印刷を行う統一操作体系を確立。
+  2. **双方向完全復元ハンドラ（`window.restoreToolData`）の実装**:
+     - 各ツール側（`jintsuko.js`, `merikomi.js`）に `window.restoreToolData(payload)` を配備。
+     - 過去の旧ツール形式（`project` / `openings`、`rows`）、新フォーマット（`header` / `data` / `openings`）、直接配列形式のすべてを自動判別して正規化。
+     - ヘッダー情報セット ➔ 開口・柱データ同期 ➔ `recalculateAll()` 全件再計算 ➔ `mountCards()` 画面カード展開 ➔ `updateGlobalControls()` エラー/印刷ボタン判定 ➔ `updatePrintPreview()` A4印刷プレビュー自動生成を一気通貫で実行。
+     - `common.js` の `ToolStorage.restoreData` は `window.restoreToolData` を最優先で呼び出すよう連携を強化。
+  3. **A4印刷ハンドラ連携（`ToolStorage.print`）**:
+     - `common.js` の `ToolStorage.print()` が、各ツールの帳票印刷ロジック（`window.executeToolPrint`）を呼び出し、人通口計算書の確認ダイアログ付き印刷プレビューとも完全連動。
+
+

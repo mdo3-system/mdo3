@@ -318,6 +318,9 @@ function updateCardComputed(card, o) {
 }
 
 function mountCards() { const wrap = document.getElementById("cards"); if(!wrap) return; wrap.innerHTML = ""; openings.forEach((o, i) => wrap.appendChild(renderCard(o, i))); }
+window.mountCards = mountCards;
+window.newOpening = newOpening;
+window.openings = openings;
 
 window.recalculateAll = function() {
     openings.forEach(o => computeOne(o));
@@ -362,6 +365,67 @@ window.syncDomToOpenings = function() {
         const chk = card.querySelector(`[data-field="enable_shear"]`);
         if (chk) o.enable_shear = chk.checked;
     });
+    window.openings = openings;
+};
+
+// 共通データ復元ハンドラ (過去のJSON・新ToolStorage JSON双方を100%完全復元)
+window.restoreToolData = function(data) {
+    if (!data) return false;
+
+    let loadedOpenings = [];
+
+    if (Array.isArray(data)) {
+        loadedOpenings = data;
+    } else if (typeof data === 'object') {
+        const proj = data.project || data.header || data;
+        setInputValueIfExists(["g_project", "p_project"], proj.project || proj.g_project);
+        setInputValueIfExists(["g_date", "p_date"], proj.date || proj.g_date);
+        setInputValueIfExists(["g_engineer", "p_engineer"], proj.engineer || proj.g_engineer);
+        setInputValueIfExists("p_fc", proj.fc || proj.p_fc);
+        setInputValueIfExists("p_note", proj.note || proj.p_note);
+
+        if (Array.isArray(data.openings)) {
+            loadedOpenings = data.openings;
+        } else if (Array.isArray(data.cards)) {
+            loadedOpenings = data.cards;
+        } else if (data.data && Array.isArray(data.data.openings)) {
+            loadedOpenings = data.data.openings;
+        }
+    }
+
+    // 各開口データの正規化とデフォルト値補完
+    openings = loadedOpenings.map(raw => {
+        const o = { ...newOpening(), ...raw };
+        if (!o.id) o.id = crypto.randomUUID();
+        return o;
+    });
+    window.openings = openings;
+
+    // 全件再計算・カードDOM再生成・印刷プレビュー同期
+    window.recalculateAll();
+    mountCards();
+    window.updateGlobalControls();
+    window.updatePrintPreview();
+
+    return true;
+};
+
+// 帳票印刷連携
+window.executeToolPrint = function() {
+    window.syncDomToOpenings();
+    window.recalculateAll();
+    window.updatePrintPreview();
+    const btn = document.getElementById("btnPrint");
+    if (btn && !btn.disabled) {
+        btn.click();
+    } else {
+        const dlg = document.getElementById("dlg");
+        if (dlg) {
+            dlg.showModal();
+        } else {
+            window.print();
+        }
+    }
 };
 
 window.exportData = function() {
@@ -411,49 +475,18 @@ window.importData = function(event) {
             const data = JSON.parse(e.target.result);
             if (!data) throw new Error("空のファイルです。");
 
-            let loadedOpenings = [];
-
-            if (Array.isArray(data)) {
-                loadedOpenings = data;
-            } else if (typeof data === 'object') {
-                const proj = data.project || data;
-                setInputValueIfExists(["g_project", "p_project"], proj.project || proj.g_project);
-                setInputValueIfExists(["g_date", "p_date"], proj.date || proj.g_date);
-                setInputValueIfExists(["g_engineer", "p_engineer"], proj.engineer || proj.g_engineer);
-                setInputValueIfExists("p_fc", proj.fc || proj.p_fc);
-                setInputValueIfExists("p_note", proj.note || proj.p_note);
-
-                if (Array.isArray(data.openings)) {
-                    loadedOpenings = data.openings;
-                } else if (Array.isArray(data.cards)) {
-                    loadedOpenings = data.cards;
-                } else if (data.data && Array.isArray(data.data.openings)) {
-                    loadedOpenings = data.data.openings;
-                }
+            if (window.restoreToolData(data)) {
+                alert(`✓ 人通口計算データを正常に復元しました。（開口箇所: ${openings.length} 件）`);
+            } else {
+                throw new Error("有効な開口データが見つかりませんでした。");
             }
-
-            // 各開口データの正規化とデフォルト値補完
-            openings = loadedOpenings.map(raw => {
-                const o = { ...newOpening(), ...raw };
-                if (!o.id) o.id = crypto.randomUUID();
-                return o;
-            });
-
-            // 全件再計算・カードDOM再生成・印刷プレビュー同期
-            window.recalculateAll();
-            mountCards();
-            window.updateGlobalControls();
-            window.updatePrintPreview();
-
-            alert(`✓ 人通口計算データを正常に復元しました。（開口箇所: ${openings.length} 件）`);
         } catch (err) {
             console.error("JSON import error:", err);
-            alert('ファイルの復元に失敗しました。ファイル形式が正しいJSONかご確認ください。\n' + err.message);
-        } finally {
-            if (event.target) event.target.value = ''; // 同一ファイルの再選択を許可
+            alert("読み込みに失敗しました: " + err.message);
         }
     };
     reader.readAsText(file);
+    event.target.value = '';
 };
 
 function fmt(v) { return (v === null || v === undefined || String(v).trim() === "") ? "—" : String(v); }

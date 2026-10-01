@@ -203,6 +203,29 @@ function exportData() {
     URL.revokeObjectURL(url);
 }
 
+window.addRow = addRow;
+window.checkOverallStatus = checkOverallStatus;
+
+window.restoreToolData = function(data) {
+    if (!data) return false;
+    let rows = [];
+    if (Array.isArray(data)) {
+        rows = data;
+    } else if (data && typeof data === 'object') {
+        rows = data.merikomi_rows || data.rows || data.data?.merikomi_rows || data.data?.rows || (Array.isArray(data.data) ? data.data : []);
+    }
+    if (!Array.isArray(rows) || rows.length === 0) return false;
+
+    const targetTbody = document.getElementById('table_body') || document.querySelector('tbody');
+    if (targetTbody) {
+        targetTbody.innerHTML = '';
+        rows.forEach(d => addRow(d));
+        checkOverallStatus();
+        return true;
+    }
+    return false;
+};
+
 function importData(e) {
     const file = e.target.files && e.target.files[0];
     if (!file) return;
@@ -211,26 +234,13 @@ function importData(e) {
     reader.onload = function(ev) {
         try {
             const parsed = JSON.parse(ev.target.result);
-            let rows = [];
-
-            if (Array.isArray(parsed)) {
-                rows = parsed;
-            } else if (parsed && typeof parsed === 'object') {
-                rows = parsed.merikomi_rows || parsed.rows || parsed.data?.merikomi_rows || parsed.data?.rows || (Array.isArray(parsed.data) ? parsed.data : []);
-            }
-
-            if (!Array.isArray(rows) || rows.length === 0) {
+            if (window.restoreToolData(parsed)) {
+                const targetTbody = document.getElementById('table_body') || document.querySelector('tbody');
+                const count = targetTbody ? targetTbody.querySelectorAll('tr').length : 0;
+                alert(`✓ めり込み補強データを正常に復元しました。（検討柱: ${count} 箇所）`);
+            } else {
                 throw new Error("有効なめり込みデータ（柱の検討行）が見つかりませんでした。");
             }
-
-            const targetTbody = document.getElementById('table_body') || document.querySelector('tbody');
-            if (targetTbody) {
-                targetTbody.innerHTML = '';
-                rows.forEach(d => addRow(d));
-                checkOverallStatus();
-            }
-
-            alert(`✓ めり込み補強データを正常に復元しました。（検討柱: ${rows.length} 箇所）`);
         } catch (err) {
             console.error("Merikomi load error:", err);
             alert('ファイルの読み込みに失敗しました。\n' + err.message);
