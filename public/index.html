@@ -562,350 +562,256 @@
           </div>
         </div>
 
-        <!-- 下段: 木造基礎用 有効基礎梁成・dt 自動算出ツール (#dtCalcCard / 横長ワイドカード) -->
+        <!-- 下段: 木造ベタ基礎 梁断面図作図＆dt・平均GL自動算定 (#dtCalcCard / 横長ワイドカード) -->
         <div class="dt-calc-card dt-calc-card-wide" id="dtCalcCard" style="margin-top:24px;">
-          <div class="dt-calc-header">
+          <div class="dt-calc-header" style="flex-wrap: wrap; gap: 12px;">
             <div class="dt-calc-title-wrap">
-              <span class="material-symbols-outlined" style="color:var(--accent-cyan); font-size:24px;">straighten</span>
+              <span class="material-symbols-outlined" style="color:var(--accent-cyan); font-size:28px;">architecture</span>
               <div>
-                <h3 class="dt-calc-title">木造基礎用 有効基礎梁成・dt 自動算出</h3>
-                <span class="dt-calc-subtag">【付録】木造基礎梁主筋（上下各1本・2段筋各1本）の重心距離 dt と有効梁成 d を瞬時算定（審査機関質疑・アーキトレンド連携）</span>
+                <h3 class="dt-calc-title" style="font-size:1.25rem;">木造ベタ基礎 梁断面図作図＆重心距離dt・平均GL自動算定</h3>
+                <span class="dt-calc-subtag">【実務審査・ARCHITREND連携】梁断面詳細図リアルタイム作図・重心距離 dt / 有効梁成 d 算定・平均GL自動換算・全符号AutoCAD DXF一括出力</span>
               </div>
             </div>
-            <div style="display:flex; align-items:center; gap:8px;">
-              <span class="dt-free-badge">実務者無償</span>
-              <a href="#avgGlCalcCard" style="font-size:0.72rem; color:var(--accent-gold); text-decoration:none; display:inline-flex; align-items:center; gap:3px; background:rgba(245,158,11,0.1); padding:4px 10px; border-radius:4px; border:1px solid rgba(245,158,11,0.3);">
-                <span class="material-symbols-outlined" style="font-size:13px;">architecture</span>
-                <span>隣の平均GL換算へ</span>
+            <div style="display:flex; align-items:center; gap:10px; flex-wrap: wrap;">
+              <span class="dt-free-badge">実務者完全無償</span>
+              <a href="/foundation-cad.html" target="_blank" class="btn-open-cad-pro" title="別タブで全符号管理・高機能CAD製図・DXF一括出力画面を開く">
+                <span class="material-symbols-outlined" style="font-size:18px;">open_in_new</span>
+                <span>全画面CADプロモード（全符号DXF一括）</span>
               </a>
             </div>
           </div>
 
-          <p style="font-size:0.8rem; color:var(--text-sub); margin-bottom:16px; line-height:1.5;">
-            木造住宅の基礎梁実務（主筋上下各1本・2段筋各1本）に特化。鉄筋径を選ぶだけで重心距離 $dt$ と有効梁成 $d$ を瞬時に自動算定します。本数入力は不要です。
+          <p style="font-size:0.82rem; color:var(--text-sub); margin-bottom:18px; line-height:1.55;">
+            木造住宅のベタ基礎梁実務（外周FG1・内部FG2・主筋1段/2段/並列配筋）に特化。躯体寸法と配筋を選ぶだけで、<strong>重心距離 $dt$・有効梁成 $d$・平均GL対比レベルを即時算定</strong>し、天端同寸時の引出線干渉も解消したリアルタイム断面図および<strong>AutoCAD互換DXF形式の詳細図作図</strong>までワンストップでサポートします。
           </p>
 
-          <div class="dt-layout-cols">
-            <!-- 左カラム: 配筋条件入力 -->
-            <div class="dt-input-col">
+          <div class="portal-dt-layout">
+            
+            <!-- 左カラム: 条件入力パネル -->
+            <div class="dt-input-col" style="display:flex; flex-direction:column; gap:12px;">
               
-              <!-- 基礎梁成 D -->
-              <div class="dt-field" style="margin-bottom: 12px;">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; flex-wrap:wrap; gap:6px;">
-                  <label style="font-weight:800; color:var(--text-main); font-size:0.82rem;">基礎梁成 D (梁高さ mm):</label>
+              <!-- 仕様ベース & 底盤幅 -->
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; background:rgba(0,0,0,0.25); padding:10px 12px; border-radius:var(--radius-sm); border:1px solid rgba(255,255,255,0.06);">
+                <div>
+                  <label style="font-size:0.75rem; font-weight:700; color:var(--text-sub); display:block; margin-bottom:3px;">基礎梁仕様:</label>
+                  <select id="portalBeamSpec" style="width:100%; padding:5px 8px; font-weight:700; font-size:0.8rem; background:var(--bg-card); color:var(--accent-gold); border:1px solid var(--border-color); border-radius:4px;">
+                    <option value="FG1" selected>FG1仕様 (外周/ハンチ)</option>
+                    <option value="FG2">FG2仕様 (内部T型梁)</option>
+                  </select>
+                </div>
+                <div id="portalWrapToeType">
+                  <label style="font-size:0.75rem; font-weight:700; color:var(--text-sub); display:block; margin-bottom:3px;">底盤幅形式:</label>
+                  <select id="portalToeType" style="width:100%; padding:5px 8px; font-weight:700; font-size:0.8rem; background:var(--bg-card); color:var(--accent-cyan); border:1px solid var(--border-color); border-radius:4px;">
+                    <option value="matchStem" selected>立上り幅と同寸</option>
+                    <option value="fixed250">250mm固定 (並列筋)</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- 躯体寸法 -->
+              <div style="background:rgba(0,0,0,0.25); padding:10px 12px; border-radius:var(--radius-sm); border:1px solid rgba(255,255,255,0.06);">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                  <label style="font-size:0.78rem; font-weight:800; color:var(--text-main);">基礎梁成 D (mm):</label>
                   <div class="dt-quick-d-group">
-                    <button type="button" class="dt-quick-d-btn active" data-d="640">640</button>
-                    <button type="button" class="dt-quick-d-btn" data-d="490">490</button>
-                    <button type="button" class="dt-quick-d-btn" data-d="300">300</button>
+                    <button type="button" class="portal-dt-quick-d-btn active" data-d="640">640</button>
+                    <button type="button" class="portal-dt-quick-d-btn" data-d="490">490</button>
+                    <button type="button" class="portal-dt-quick-d-btn" data-d="300">300</button>
                   </div>
                 </div>
-                <input type="number" id="dtBeamHeight" value="640" min="300" max="2000" step="10" style="font-size:1.1rem; font-weight:700; color:var(--accent-gold); padding:8px 12px;">
-                <div style="font-size:0.75rem; color:var(--accent-cyan); margin-top:4px; display:flex; align-items:center; gap:4px;">
-                  <span class="material-symbols-outlined" style="font-size:14px;">info</span>
-                  <span>※10mmをレベラーとして見込んでいます（実質有効天端高）</span>
+                
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:8px;">
+                  <div>
+                    <label style="font-size:0.72rem; color:var(--text-sub); display:block; margin-bottom:2px;">GL上天端高 (mm):</label>
+                    <input type="number" id="portalAboveGl" value="400" min="0" max="1500" step="10" style="width:100%; padding:4px 8px; font-size:0.85rem; font-weight:700; color:var(--accent-cyan); background:var(--bg-card); border:1px solid var(--border-color); border-radius:4px;">
+                  </div>
+                  <div>
+                    <label style="font-size:0.72rem; color:var(--text-sub); display:block; margin-bottom:2px;">根入れ深さ ※H (mm):</label>
+                    <input type="number" id="portalBeamEmbed" value="500" min="50" max="1500" step="10" style="width:100%; padding:4px 8px; font-size:0.85rem; font-weight:700; color:#34d399; background:var(--bg-card); border:1px solid var(--border-color); border-radius:4px;">
+                  </div>
                 </div>
-              </div>
 
-              <!-- スターラップ (あばら筋呼び径 D10 / D13) -->
-              <div class="dt-field" style="margin-bottom: 12px;">
-                <label style="font-weight:700; color:var(--text-main); font-size:0.82rem; margin-bottom:4px; display:block;">
-                  スターラップ呼び径 (あばら筋):
-                </label>
-                <div style="display:flex; gap:10px; align-items:center;">
-                  <select id="dtStpDia" style="padding:6px 12px; font-weight:700; font-size:0.9rem; border-radius:var(--radius-sm); background:var(--bg-card); color:var(--text-main); border:1px solid var(--border-color); width:160px;">
-                    <option value="10" selected>D10 (標準)</option>
-                    <option value="13">D13</option>
+                <div style="margin-top:8px; display:flex; justify-content:space-between; align-items:center;">
+                  <label style="font-size:0.72rem; color:var(--text-sub);">立上り幅:</label>
+                  <select id="portalStemW" style="padding:4px 8px; font-size:0.8rem; font-weight:700; background:var(--bg-card); color:var(--text-main); border:1px solid var(--border-color); border-radius:4px; width:130px;">
+                    <option value="120">120 mm</option>
+                    <option value="150" selected>150 mm (標準)</option>
+                    <option value="180">180 mm</option>
+                    <option value="200">200 mm</option>
                   </select>
-                  <span style="font-size:0.75rem; color:var(--text-sub);">※主筋の外周に配置されるあばら筋径</span>
                 </div>
               </div>
 
-              <!-- 配筋選択グリッド (上主筋 & 下主筋) -->
+              <!-- 平均GLレベル差 -->
+              <div style="background:rgba(245,158,11,0.06); padding:10px 12px; border-radius:var(--radius-sm); border:1px solid rgba(245,158,11,0.25);">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                  <label style="font-size:0.78rem; font-weight:800; color:var(--accent-gold); display:flex; align-items:center; gap:4px;">
+                    <span class="material-symbols-outlined" style="font-size:16px;">height</span>
+                    <span>平均GLレベル差 (設計GL基準):</span>
+                  </label>
+                  <div style="display:inline-flex; align-items:center; gap:3px;">
+                    <input type="number" id="portalAvgGlDiff" value="-100" step="10" style="width:70px; padding:3px 6px; font-size:0.85rem; font-weight:700; text-align:right; background:#0f172a; border:1px solid rgba(255,255,255,0.2); border-radius:4px; color:var(--accent-gold);">
+                    <span style="font-size:0.75rem; color:var(--text-sub);">mm</span>
+                  </div>
+                </div>
+                <div class="avg-gl-quick-group" style="display:flex; gap:4px; flex-wrap:wrap;">
+                  <button type="button" class="portal-avg-gl-quick-btn" data-diff="0">±0 (平坦)</button>
+                  <button type="button" class="portal-avg-gl-quick-btn" data-diff="-50">-50</button>
+                  <button type="button" class="portal-avg-gl-quick-btn active" data-diff="-100">-100</button>
+                  <button type="button" class="portal-avg-gl-quick-btn" data-diff="-150">-150</button>
+                  <button type="button" class="portal-avg-gl-quick-btn" data-diff="50">+50</button>
+                </div>
+              </div>
+
+              <!-- 配筋仕様 (上主筋・下主筋・スターラップ) -->
               <div class="dt-rebar-grid">
                 
-                <!-- 上主筋ブロック -->
+                <!-- 上主筋 -->
                 <div class="dt-rebar-card">
                   <div class="dt-section-subhead">
-                    <span class="material-symbols-outlined" style="font-size:15px;">north</span> 上主筋 (上端筋・1本)
+                    <span class="material-symbols-outlined" style="font-size:15px;">north</span> 上主筋
                   </div>
-                  <div class="dt-rebar-fields">
-                    <div class="dt-field">
-                      <label>1段筋 (主筋径):</label>
-                      <select id="dtTopBar1Dia">
-                        <option value="13" selected>D13 (標準・1本)</option>
-                        <option value="16">D16 (1本)</option>
-                        <option value="19">D19 (1本)</option>
-                      </select>
-                    </div>
-                    <div class="dt-field">
-                      <label>2段筋 (配筋有無・径):</label>
-                      <select id="dtTopBar2Dia">
-                        <option value="0" selected>なし (標準・1段配筋)</option>
-                        <option value="13">D13 (1本追加)</option>
-                        <option value="16">D16 (1本追加)</option>
-                        <option value="19">D19 (1本追加)</option>
-                      </select>
-                    </div>
+                  <div class="dt-field">
+                    <select id="portalTopSpec" style="width:100%; padding:5px 8px; font-weight:700; font-size:0.8rem; background:var(--bg-card); color:var(--text-main); border:1px solid var(--border-color); border-radius:4px;">
+                      <option value="1-D13" selected>1-D13 (1本)</option>
+                      <option value="2-D13">2-D13 (縦2段)</option>
+                      <option value="1-D16">1-D16 (1本)</option>
+                      <option value="2-D16">2-D16 (縦2段)</option>
+                      <option value="D13+D16">D13 + 2段D16</option>
+                    </select>
                   </div>
-
-                  <!-- 上端スターラップ見込み有無トグル -->
-                  <div class="dt-field" style="margin-top: 8px;">
-                    <label style="font-size:0.75rem; color:var(--text-sub); display:block; margin-bottom:4px;">上端スターラップ筋の見込み:</label>
-                    <div class="dt-toggle-group" style="display:flex; gap:6px;">
-                      <button type="button" class="btn-toggle-option active" id="btnStpTopYes">見込む (標準)</button>
-                      <button type="button" class="btn-toggle-option" id="btnStpTopNo">見込まない (折返無・ユニット筋)</button>
-                    </div>
+                  <div style="margin-top:6px;">
+                    <button type="button" id="portalBtnStpTop" class="portal-dt-quick-d-btn active" style="width:100%; font-size:0.7rem; padding:4px;">
+                      上端STP見込み加算 (40mm+STP)
+                    </button>
                   </div>
-                  <div class="dt-spec-note" id="descStpTop">上端かぶり 40mm / STP(D10)見込み有</div>
                 </div>
 
-                <!-- 下主筋ブロック -->
+                <!-- 下主筋 -->
                 <div class="dt-rebar-card">
                   <div class="dt-section-subhead" style="color:#f472b6;">
-                    <span class="material-symbols-outlined" style="font-size:15px;">south</span> 下主筋 (下端筋・1本)
+                    <span class="material-symbols-outlined" style="font-size:15px;">south</span> 下主筋
                   </div>
-                  <div class="dt-rebar-fields">
-                    <div class="dt-field">
-                      <label>1段筋 (主筋径):</label>
-                      <select id="dtBotBar1Dia">
-                        <option value="13" selected>D13 (標準・1本)</option>
-                        <option value="16">D16 (1本)</option>
-                        <option value="19">D19 (1本)</option>
-                      </select>
-                    </div>
-                    <div class="dt-field">
-                      <label>2段筋 (配筋有無・径):</label>
-                      <select id="dtBotBar2Dia">
-                        <option value="0" selected>なし (標準・1段配筋)</option>
-                        <option value="13">D13 (1本追加)</option>
-                        <option value="16">D16 (1本追加)</option>
-                        <option value="19">D19 (1本追加)</option>
-                      </select>
-                    </div>
+                  <div class="dt-field">
+                    <select id="portalBotSpec" style="width:100%; padding:5px 8px; font-weight:700; font-size:0.8rem; background:var(--bg-card); color:var(--text-main); border:1px solid var(--border-color); border-radius:4px;">
+                      <option value="1-D13" selected>1-D13 (1段・1本)</option>
+                      <option value="1-D16">1-D16 (1段・1本)</option>
+                      <option value="D13+2段D13">2段筋 D13 + 2段D13</option>
+                      <option value="D13+2段D16">2段筋 D13 + 2段D16</option>
+                      <option value="D16+2段D13">2段筋 D16 + 2段D13</option>
+                      <option value="D16+2段D16">2段筋 D16 + 2段D16</option>
+                    </select>
                   </div>
-
-                  <!-- 下端スターラップ見込み有無トグル -->
-                  <div class="dt-field" style="margin-top: 8px;">
-                    <label style="font-size:0.75rem; color:var(--text-sub); display:block; margin-bottom:4px;">下端スターラップ筋の見込み:</label>
-                    <div class="dt-toggle-group" style="display:flex; gap:6px;">
-                      <button type="button" class="btn-toggle-option active" id="btnStpBotYes">見込む (標準)</button>
-                      <button type="button" class="btn-toggle-option" id="btnStpBotNo">見込まない (折返無・ユニット筋)</button>
-                    </div>
+                  <div style="margin-top:6px;">
+                    <button type="button" id="portalBtnStpBot" class="portal-dt-quick-d-btn active" style="width:100%; font-size:0.7rem; padding:4px;">
+                      下端STP見込み加算 (60mm+STP)
+                    </button>
                   </div>
-                  <div class="dt-spec-note" id="descStpBot">下端かぶり 60mm (土に接する部分) / STP(D10)見込み有</div>
                 </div>
 
               </div>
 
-              <!-- 補足仕様固定パラメータ (かぶり厚さ) -->
-              <input type="hidden" id="dtCoverTop" value="40">
-              <input type="hidden" id="dtCoverBot" value="60">
+              <!-- スターラップ呼び径 -->
+              <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(0,0,0,0.25); padding:8px 12px; border-radius:var(--radius-sm); border:1px solid rgba(255,255,255,0.06);">
+                <label style="font-size:0.75rem; color:var(--text-sub); font-weight:700;">縦筋 (スターラップ):</label>
+                <select id="portalStirrup" style="padding:4px 8px; font-size:0.78rem; font-weight:700; background:var(--bg-card); color:var(--text-main); border:1px solid var(--border-color); border-radius:4px; width:130px;">
+                  <option value="D10@200" selected>D10@200 (標準)</option>
+                  <option value="D10@150">D10@150</option>
+                  <option value="D13@200">D13@200</option>
+                </select>
+              </div>
 
             </div>
 
-            <!-- 右カラム: 算定結果表示 ＆ コピー -->
-            <div class="dt-output-col">
+            <!-- 右カラム: リアルタイムSVG断面プレビュー ＆ 算定結果サマリー -->
+            <div class="portal-dt-preview-container">
               
-              <div class="dt-results-box-wide">
+              <!-- リアルタイムSVG断面詳細図キャンバス -->
+              <div class="portal-svg-preview-wrap" title="マウスホイール/パン操作は全画面CADプロモードで可能です">
+                <svg id="portalCadSvg" viewBox="150 0 1000 680" xmlns="http://www.w3.org/2000/svg">
+                  <g id="portalSvgGroup"></g>
+                </svg>
+              </div>
+
+              <!-- 算定結果サマリーグリッド -->
+              <div class="portal-stat-grid">
                 
-                <!-- 上主筋 算定結果 -->
-                <div class="dt-res-card-item">
-                  <div class="dt-res-item-head">
-                    <span class="dt-res-tag" style="background:rgba(6,182,212,0.15); color:var(--accent-cyan); border:1px solid rgba(6,182,212,0.3);">上主筋 (上端)</span>
-                    <span class="dt-res-sub">1段:<span id="resTopD1">56.5 mm</span> / 2段:<span id="resTopD2">なし</span></span>
+                <!-- 上主筋結果 -->
+                <div class="portal-stat-card" style="border-top:3px solid var(--accent-cyan);">
+                  <div class="portal-stat-head">
+                    <span class="portal-stat-title" style="color:var(--accent-cyan);">↑ 上主筋</span>
+                    <span style="font-size:0.68rem; color:var(--text-sub);">D - dt</span>
                   </div>
-                  <div class="dt-res-item-body">
-                    <div class="dt-res-main-stat">
-                      <div class="dt-stat-label">重心距離 dt (採用値)</div>
-                      <div class="dt-stat-value" id="resTopDtRounded" style="color:var(--accent-cyan);">60 mm</div>
-                      <div class="dt-stat-sub">計算値: <span id="resTopDtExact">56.5</span> mm</div>
+                  <div>
+                    <div class="portal-stat-num-row">
+                      <span style="font-size:0.72rem; color:var(--text-sub);">重心距離 dt:</span>
+                      <span class="portal-stat-main-val" id="portalResTopDt" style="color:var(--accent-cyan);">56.5 mm</span>
                     </div>
-                    <div class="dt-res-main-stat">
-                      <div class="dt-stat-label">有効梁成 d</div>
-                      <div class="dt-stat-value" id="resTopEffectiveD" style="color:#34d399;">580 mm</div>
-                      <div class="dt-stat-sub">D - dt</div>
+                    <div class="portal-stat-num-row">
+                      <span style="font-size:0.72rem; color:var(--text-sub);">有効梁成 d:</span>
+                      <span class="portal-stat-main-val" id="portalResTopDeff" style="color:#34d399;">583.5 mm</span>
                     </div>
                   </div>
-                  <div id="grayCompTop" class="dt-alert-badge ok"></div>
                 </div>
 
-                <!-- 下主筋 算定結果 -->
-                <div class="dt-res-card-item">
-                  <div class="dt-res-item-head">
-                    <span class="dt-res-tag" style="background:rgba(244,114,182,0.15); color:#f472b6; border:1px solid rgba(244,114,182,0.3);">下主筋 (下端)</span>
-                    <span class="dt-res-sub">1段:<span id="resBotD1">76.5 mm</span> / 2段:<span id="resBotD2">122.3 mm</span></span>
+                <!-- 下主筋結果 -->
+                <div class="portal-stat-card" style="border-top:3px solid #f472b6;">
+                  <div class="portal-stat-head">
+                    <span class="portal-stat-title" style="color:#f472b6;">↓ 下主筋</span>
+                    <span style="font-size:0.68rem; color:var(--text-sub);">D - dt</span>
                   </div>
-                  <div class="dt-res-item-body">
-                    <div class="dt-res-main-stat">
-                      <div class="dt-stat-label">重心距離 dt (採用値)</div>
-                      <div class="dt-stat-value" id="resBotDtRounded" style="color:#f472b6;">110 mm</div>
-                      <div class="dt-stat-sub">計算値: <span id="resBotDtExact">104.5</span> mm</div>
+                  <div>
+                    <div class="portal-stat-num-row">
+                      <span style="font-size:0.72rem; color:var(--text-sub);">重心距離 dt:</span>
+                      <span class="portal-stat-main-val" id="portalResBotDt" style="color:#f472b6;">76.5 mm</span>
                     </div>
-                    <div class="dt-res-main-stat">
-                      <div class="dt-stat-label">有効梁成 d</div>
-                      <div class="dt-stat-value" id="resBotEffectiveD" style="color:#34d399;">530 mm</div>
-                      <div class="dt-stat-sub">D - dt</div>
+                    <div class="portal-stat-num-row">
+                      <span style="font-size:0.72rem; color:var(--text-sub);">有効梁成 d:</span>
+                      <span class="portal-stat-main-val" id="portalResBotDeff" style="color:#34d399;">563.5 mm</span>
                     </div>
                   </div>
-                  <div id="grayCompBot" class="dt-alert-badge warn"></div>
+                </div>
+
+                <!-- 平均GL対比結果 -->
+                <div class="portal-stat-card" style="border-top:3px solid var(--accent-gold);">
+                  <div class="portal-stat-head">
+                    <span class="portal-stat-title" style="color:var(--accent-gold);">▽ 平均GL基準高さ</span>
+                    <span style="font-size:0.68rem; color:var(--accent-gold);" id="portalResAvgGlDiff">-100 mm</span>
+                  </div>
+                  <div>
+                    <div class="portal-stat-num-row">
+                      <span style="font-size:0.72rem; color:var(--text-sub);">天端 (平均GL):</span>
+                      <span class="portal-stat-main-val" id="portalResTopAvgGl" style="color:var(--accent-gold); font-size:1.05rem;">+500 mm</span>
+                    </div>
+                    <div class="portal-stat-num-row">
+                      <span style="font-size:0.72rem; color:var(--text-sub);">底面 (平均GL):</span>
+                      <span class="portal-stat-main-val" id="portalResBotAvgGl" style="color:var(--accent-gold); font-size:1.05rem;">-400 mm</span>
+                    </div>
+                  </div>
                 </div>
 
               </div>
 
               <!-- アクションボタン群 -->
-              <div class="dt-actions-wide">
-                <button type="button" class="btn-dt-copy" id="btnCopyDtResult">
-                  <span class="material-symbols-outlined" style="font-size:16px;">content_copy</span> dt 算定根拠テキストをコピー
-                </button>
-                <button type="button" class="btn btn-ghost btn-sm" id="btnResetDt" title="標準値にリセット">
-                  <span class="material-symbols-outlined" style="font-size:14px;">restart_alt</span> リセット
-                </button>
-              </div>
-
-            </div>
-          </div>
-        </div>
-
-        <!-- 下段2: 平均GL連動 構造設計用 基礎寸法・根入れ自動換算ツール (#avgGlCalcCard / 横長ワイドカード) -->
-        <div class="avg-gl-card" id="avgGlCalcCard" style="margin-top:24px;">
-          <div class="avg-gl-header">
-            <div class="avg-gl-title-wrap">
-              <span class="material-symbols-outlined" style="color:var(--accent-gold); font-size:26px;">architecture</span>
-              <div>
-                <h3 class="avg-gl-title">平均GL連動 構造設計用 基礎寸法・根入れ自動換算</h3>
-                <span class="avg-gl-subtag">【実務審査・構造ソフト連携】設計GLから平均GLへの高さ・根入れ自動シフト算定（ARCHITREND ZERO・許容応力度計算用）</span>
-              </div>
-            </div>
-            <div style="display:flex; align-items:center; gap:8px;">
-              <span class="avg-gl-free-badge">実務者完全無償</span>
-              <a href="#dtCalcCard" style="font-size:0.72rem; color:var(--accent-cyan); text-decoration:none; display:inline-flex; align-items:center; gap:3px; background:rgba(6,182,212,0.1); padding:4px 10px; border-radius:4px; border:1px solid rgba(6,182,212,0.25);">
-                <span class="material-symbols-outlined" style="font-size:13px;">straighten</span>
-                <span>隣の有効梁成dt算出へ</span>
-              </a>
-            </div>
-          </div>
-
-          <p style="font-size:0.8rem; color:var(--text-sub); margin-bottom:14px; line-height:1.5;">
-            構造計算上の基礎立ち上がり高さ・根入れ深さは「平均GL（平均地盤面）」基準で設定する必要があります。設計GL基準の各部材寸法と平均GLレベル差を入力するだけで、構造設計用寸法（立上りH・根入れDf・スラブ天端高）を自動換算・法規判定します。
-          </p>
-
-          <!-- 上部: 平均GLレベル差＆共通べた基礎天端高 コントロールバー -->
-          <div class="avg-gl-control-bar">
-            <div class="avg-gl-input-group">
-              <label style="font-size:0.82rem; font-weight:800; color:var(--text-main); display:flex; align-items:center; gap:4px;">
-                <span class="material-symbols-outlined" style="color:var(--accent-gold); font-size:18px;">height</span>
-                <span>平均GLレベル差 (設計GL基準):</span>
-              </label>
-              <div style="display:inline-flex; align-items:center; gap:4px;">
-                <input type="number" id="inputAvgGlDiff" value="-100" step="10" class="avg-gl-diff-input">
-                <span style="font-size:0.85rem; font-weight:700; color:var(--accent-gold);">mm</span>
-              </div>
-              <div class="avg-gl-quick-group">
-                <button type="button" class="avg-gl-quick-btn" data-val="0">±0 (平坦)</button>
-                <button type="button" class="avg-gl-quick-btn" data-val="-50">-50</button>
-                <button type="button" class="avg-gl-quick-btn active" data-val="-100">-100 (標準)</button>
-                <button type="button" class="avg-gl-quick-btn" data-val="-150">-150</button>
-                <button type="button" class="avg-gl-quick-btn" data-val="50">+50</button>
-                <button type="button" class="avg-gl-quick-btn" data-val="100">+100</button>
-              </div>
-            </div>
-
-            <!-- 共通べた基礎スラブ天端高 -->
-            <div style="display:flex; align-items:center; gap:8px;">
-              <label style="font-size:0.75rem; color:var(--text-sub); font-weight:700;">べた基礎天端高 (基本):</label>
-              <div style="display:inline-flex; align-items:center; gap:3px;">
-                <span style="font-size:0.75rem; color:var(--text-sub);">設計GL</span>
-                <input type="number" id="inputCommonSlabHeight" value="50" step="5" style="width:65px; padding:4px 6px; background:#0f172a; border:1px solid rgba(255,255,255,0.15); border-radius:4px; color:#fff; font-size:0.78rem; text-align:right;">
-                <span style="font-size:0.75rem; color:var(--text-sub);">mm</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- 動的解説バッジ -->
-          <div id="avgGlDiffNote" style="font-size:0.76rem; padding:8px 12px; border-radius:6px; margin-bottom:16px; border:1px solid rgba(245,158,11,0.3); background:rgba(245,158,11,0.06); line-height:1.45;"></div>
-
-          <!-- 2カラムレイアウト: 左側 基本仕様設定 / 右側 構造設計設定用基礎高さ -->
-          <div class="avg-gl-cols">
-            
-            <!-- 左カラム: 基本仕様設定 (設計GL基準) -->
-            <div class="avg-gl-specs-box">
-              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; flex-wrap:wrap; gap:6px;">
-                <div style="display:flex; align-items:center; gap:6px;">
-                  <span class="material-symbols-outlined" style="font-size:16px; color:var(--accent-cyan);">tune</span>
-                  <span style="font-size:0.82rem; font-weight:800; color:var(--text-main);">基本仕様設定 (設計GL基準・意匠図寸法)</span>
-                </div>
-                <span style="font-size:0.7rem; color:var(--text-sub);">※数値は自由に変更・保存可能</span>
-              </div>
-
-              <div class="avg-gl-table-wrap">
-                <table class="avg-gl-table">
-                  <thead>
-                    <tr>
-                      <th style="width:30px; text-align:center;">図</th>
-                      <th>部材記号</th>
-                      <th>用途・部位</th>
-                      <th>立上り高(H)</th>
-                      <th>根入れ(Df)</th>
-                      <th>立上り幅</th>
-                      <th>スラブ天端</th>
-                      <th style="text-align:right;">全成(D)</th>
-                      <th style="width:28px; text-align:center;">削</th>
-                    </tr>
-                  </thead>
-                  <tbody id="tbodyAvgGlSpecs">
-                    <!-- JSにて動的生成 (FG1, FG2, FG3 + 追加部材) -->
-                  </tbody>
-                </table>
-              </div>
-
-              <!-- 部材追加バー -->
-              <div class="avg-gl-add-bar">
-                <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-                  <span style="font-size:0.74rem; color:var(--text-sub); font-weight:700;">＋ 部材追加:</span>
-                  <select id="selAddPresetType" style="padding:4px 8px; background:#0f172a; border:1px solid rgba(255,255,255,0.15); border-radius:4px; color:#fff; font-size:0.75rem;">
-                    <option value="garage">🚗 車庫・ガレージ部 (立上り150/根入れ250/天端-100)</option>
-                    <option value="deep">🧱 深基礎・高低差部 (立上り390/根入れ600/天端+50)</option>
-                    <option value="entrance">🚪 玄関土間下がり (立上り200/根入れ250/天端-50)</option>
-                    <option value="custom">➕ 任意部材 (自由設定)</option>
-                  </select>
-                  <button type="button" class="btn btn-primary btn-sm" id="btnAddSpecBtn" style="padding:4px 10px; font-size:0.75rem; background:var(--accent-gold); border-color:var(--accent-gold); color:#0f172a; font-weight:800;">
-                    追加
+              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-top:4px;">
+                <div style="display:flex; gap:8px;">
+                  <button type="button" class="btn-dt-copy" id="portalBtnCopyDt">
+                    <span class="material-symbols-outlined" style="font-size:16px;">content_copy</span> dt・平均GL 算定根拠をコピー
+                  </button>
+                  <button type="button" class="btn btn-ghost btn-sm" id="portalBtnReset" title="標準値にリセット">
+                    <span class="material-symbols-outlined" style="font-size:14px;">restart_alt</span> リセット
                   </button>
                 </div>
-                <button type="button" class="btn btn-ghost btn-sm" id="btnResetAvgGl" style="font-size:0.72rem; color:var(--text-sub); padding:4px 8px;">
-                  <span class="material-symbols-outlined" style="font-size:13px;">restart_alt</span> 初期値(FG1/2/3)へリセット
-                </button>
+                <a href="/foundation-cad.html" target="_blank" style="font-size:0.76rem; color:var(--accent-cyan); text-decoration:none; display:inline-flex; align-items:center; gap:4px; font-weight:700;">
+                  <span>全符号(FG1〜n)の管理・図面DXF出力はプロモードへ</span>
+                  <span class="material-symbols-outlined" style="font-size:14px;">arrow_forward</span>
+                </a>
               </div>
 
-              <!-- リアルタイム断面SVG図解 -->
-              <div class="avg-gl-svg-box">
-                <div class="avg-gl-svg-head">
-                  <span class="avg-gl-svg-title" id="avgGlSvgLabel">【FG1（外周部）】断面レベル図（設計GL vs 平均GL）</span>
-                  <span style="font-size:0.68rem; color:var(--text-sub);">※ラジオ選択でプレビュー部材切替</span>
-                </div>
-                <div id="avgGlSvgContainer"></div>
-              </div>
-            </div>
-
-            <!-- 右カラム: 構造設計設定用 基礎高さ (平均GL基準) -->
-            <div class="avg-gl-output-box">
-              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
-                <div style="display:flex; align-items:center; gap:6px;">
-                  <span class="material-symbols-outlined" style="font-size:16px; color:#34d399;">domain</span>
-                  <span style="font-size:0.82rem; font-weight:800; color:var(--text-main);">構造設計設定用 基礎寸法 (平均GL基準・入力用)</span>
-                </div>
-                <button type="button" class="btn-dt-copy" id="btnCopyAvgGlResult" style="padding:4px 10px; font-size:0.74rem;">
-                  <span class="material-symbols-outlined" style="font-size:14px;">content_copy</span> 算定数値を一括コピー
-                </button>
-              </div>
-
-              <div id="avgGlResultsContainer" style="display:flex; flex-direction:column; gap:10px;">
-                <!-- JSにて動的生成 (FG1, FG2, FG3 + 追加部材の構造設定カード) -->
-              </div>
             </div>
 
           </div>
         </div>
+
 
       </div>
     </div>
@@ -1448,8 +1354,7 @@
   <script src="js/city_planning_service.js?v=1.6.7"></script>
   <script src="js/geo_service.js?v=1.6.7"></script>
   <script src="js/regional_calc.js?v=1.6.7"></script>
-  <script src="js/dt_calc.js?v=1.6.7"></script>
-  <script src="js/avg_gl_calc.js?v=1.6.7"></script>
+  <script type="module" src="js/foundation_portal_card.js?v=2.0.0"></script>
   <script src="js/category_showcase.js?v=1.6.7"></script>
   <script src="js/portal.js?v=1.6.7"></script>
 </body>

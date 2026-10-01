@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>木造ベタ基礎 梁断面図作図＆dt・平均GL自動算定CAD (PRO) | mdo3.com</title>
+  <meta name="description" content="木造ベタ基礎の梁断面詳細図リアルタイム作図・全符号管理・重心距離dt/有効梁成d自動算定・平均GL換算・AutoCAD互換DXF一括出力ツール。">
+  <!-- TailwindCSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- 日本語文字コード変換ライブラリ（Shift_JISエンコード用） -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/encoding-japanese/2.0.0/encoding.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Noto+Sans+JP:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'JetBrains Mono', 'Noto Sans JP', monospace, sans-serif; user-select: none; }
+    .cad-bg { background-color: #080c14; }
+    .cad-grid {
+      background-image: linear-gradient(to right, rgba(255,255,255,0.04) 1px, transparent 1px),
+                        linear-gradient(to bottom, rgba(255,255,255,0.04) 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+    input[type=range] { accent-color: #2563eb; }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
+  </style>
+</head>
+<body class="bg-slate-900 text-slate-100 h-screen flex flex-col overflow-hidden">
+
+  <!-- ヘッダー -->
+  <header class="bg-slate-800 px-4 py-2 border-b border-slate-700 flex justify-between items-center shrink-0">
+    <div class="flex items-center space-x-3">
+      <a href="/" class="text-xs text-slate-400 hover:text-white flex items-center gap-1 transition-colors mr-1" title="mdo3ポータルトップへ戻る">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+        <span>ポータル</span>
+      </a>
+      <div class="bg-blue-600 text-white px-2 py-0.5 rounded font-bold text-xs tracking-wider flex items-center gap-1 shadow">
+        FOUNDATION CAD PRO
+      </div>
+      <h1 class="text-sm font-bold tracking-tight flex items-center gap-2">
+        木造ベタ基礎 梁断面図作図＆dt・平均GL自動算定
+        <span class="text-xs font-normal text-emerald-400 bg-emerald-950 px-2 py-0.5 rounded border border-emerald-600/60">天端同寸時引出線干渉完全解消・全符号DXF一括出力</span>
+      </h1>
+    </div>
+
+    <!-- 符号タブ切り替えバー -->
+    <div class="flex items-center gap-1 overflow-x-auto max-w-lg px-2 py-0.5 bg-slate-900 rounded-lg border border-slate-700" id="beamTabsContainer"></div>
+
+    <!-- アクションボタン群 -->
+    <div class="flex items-center space-x-2">
+      <button id="btnSaveProjectJSON" class="px-2.5 py-1 text-xs bg-indigo-600 hover:bg-indigo-500 font-bold text-white rounded flex items-center gap-1 shadow transition-all" title="現在の全符号設定をJSONファイルに保存">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
+        設定保存
+      </button>
+
+      <label class="px-2.5 py-1 text-xs bg-slate-700 hover:bg-slate-600 font-bold text-slate-200 rounded flex items-center gap-1 cursor-pointer border border-slate-600 transition-all" title="保存したJSONファイルを読み込んで復元">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+        設定復元
+        <input type="file" id="fileImportJson" accept=".json" class="hidden">
+      </label>
+
+      <button id="btnResetView" class="px-2 py-1 text-xs bg-slate-700 hover:bg-slate-600 rounded text-slate-300">
+        100%
+      </button>
+
+      <button id="btnExportAllDXF" class="px-3 py-1 text-xs bg-emerald-600 hover:bg-emerald-500 font-bold text-white rounded shadow flex items-center gap-1.5 transition-all" title="全符号をShift_JIS対応AutoCAD DXF形式で一括出力">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+        全符号DXF一括
+      </button>
+
+      <button id="btnExportSVG" class="px-2.5 py-1 text-xs bg-slate-700 hover:bg-slate-600 text-white rounded border border-slate-600">
+        SVG
+      </button>
+    </div>
+  </header>
+
+  <div class="flex-1 flex overflow-hidden">
+    
+    <!-- 左側：設定パネル -->
+    <aside class="w-88 bg-slate-800/90 p-3.5 border-r border-slate-700 text-xs space-y-3.5 shrink-0 overflow-y-auto max-h-full pb-28">
+      
+      <!-- 現在選択中の符号表示 -->
+      <div class="bg-blue-950/70 p-2.5 rounded border border-blue-600/60 flex items-center justify-between">
+        <div>
+          <span class="text-[10px] text-blue-300 block font-sans">編集中符号</span>
+          <span class="text-base font-bold text-white" id="lblCurrentSign">FG1</span>
+        </div>
+        <div class="flex gap-1.5">
+          <button id="btnCloneBeam" class="px-2 py-1 bg-slate-700 hover:bg-slate-600 text-[10px] rounded text-slate-200">複製</button>
+          <button id="btnDeleteBeam" class="px-2 py-1 bg-rose-900/60 hover:bg-rose-800 text-[10px] rounded text-rose-200 hidden">削除</button>
+        </div>
+      </div>
+
+      <!-- 1. 仕様ベース選択 -->
+      <div class="bg-slate-700/40 p-2.5 rounded border border-slate-600 space-y-2">
+        <div class="font-bold text-blue-300 border-b border-slate-600 pb-1">1. 基礎梁仕様ベース</div>
+        <div>
+          <label class="block text-slate-400 mb-0.5">準拠仕様</label>
+          <select id="beamBaseSpec" class="w-full bg-slate-800 border border-slate-600 rounded px-1.5 py-1 font-bold text-xs text-amber-300">
+            <option value="FG1">FG1仕様 (外周/ポーチ・ハンチ形式)</option>
+            <option value="FG2">FG2仕様 (内部・両側スラブ連続T型形式)</option>
+          </select>
+        </div>
+        <div class="grid grid-cols-2 gap-2 pt-1">
+          <div>
+            <label class="block text-slate-400 mb-0.5">立上り配筋方式</label>
+            <select id="stemArrangement" class="w-full bg-slate-800 border border-slate-600 rounded px-1.5 py-1 font-bold text-xs">
+              <option value="single">シングル配筋</option>
+              <option value="double" id="optDoubleStem">ダブル配筋 (フープ)</option>
+            </select>
+            <div id="txtDoubleStemDisabled" class="text-[9px] text-rose-400 mt-0.5 hidden">※立上り幅180以上で可</div>
+          </div>
+          <div id="wrapBaseToeWidth">
+            <label class="block text-slate-400 mb-0.5">底盤幅形式</label>
+            <select id="baseToeWidthType" class="w-full bg-slate-800 border border-slate-600 rounded px-1.5 py-1 font-bold text-xs text-cyan-300">
+              <option value="fixed250">250mm固定 (並列3本まで/2段筋NG)</option>
+              <option value="matchStem">立上り幅と同寸 (並列NG/縦2段まで)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. 平均GL設定 -->
+      <div class="bg-amber-950/40 p-2.5 rounded border border-amber-600/60 space-y-2">
+        <div class="font-bold text-amber-300 border-b border-amber-600/60 pb-1 flex justify-between items-center">
+          <span>2. 平均GL設定 (構造ソフト連動)</span>
+          <label class="flex items-center gap-1 cursor-pointer">
+            <input type="checkbox" id="chkShowAvgGl" class="accent-amber-500 rounded">
+            <span class="text-[11px] font-normal text-amber-200">表示ON</span>
+          </label>
+        </div>
+        <div>
+          <div class="flex justify-between mb-0.5">
+            <label class="text-slate-400">平均GL位置 (設計GL基準 ±mm)</label>
+            <span class="font-bold text-amber-400" id="txtAvgGlDiff">-100 mm</span>
+          </div>
+          <input type="range" id="avgGlDiff" min="-600" max="600" step="10" value="-100" class="w-full">
+        </div>
+      </div>
+
+      <!-- 3. 躯体寸法 -->
+      <div class="bg-slate-700/40 p-2.5 rounded border border-slate-600 space-y-2">
+        <div class="font-bold text-blue-300 border-b border-slate-600 pb-1 flex justify-between">
+          <span>3. 基準高さ・躯体寸法（mm）</span>
+          <span class="text-emerald-400 font-bold">梁成D: <span id="lblConcD">890</span>mm</span>
+        </div>
+
+        <div>
+          <div class="flex justify-between mb-0.5">
+            <label class="text-slate-400">GL上天端高 (レベラー込)</label>
+            <span class="font-bold text-blue-400" id="txtAboveGl">400 mm</span>
+          </div>
+          <input type="range" id="aboveGl" min="0" max="1500" step="10" value="400" class="w-full">
+        </div>
+
+        <div>
+          <div class="flex justify-between mb-0.5">
+            <label class="text-slate-400">根入れ深さ ※H (設計GL下)</label>
+            <span class="font-bold text-emerald-400" id="txtEmbed">500 mm</span>
+          </div>
+          <input type="range" id="embedH" min="50" max="1500" step="10" value="500" class="w-full">
+        </div>
+
+        <div>
+          <div class="flex justify-between mb-0.5">
+            <label class="text-slate-400">スラブ天端高 (設計GL基準)</label>
+            <span class="font-bold text-blue-400" id="txtGlToSlab">+50 mm</span>
+          </div>
+          <input type="range" id="glToSlab" min="0" max="150" step="5" value="50" class="w-full">
+        </div>
+
+        <div class="grid grid-cols-2 gap-2 pt-1 border-t border-slate-600/60">
+          <div>
+            <label class="block text-slate-400 mb-0.5">立上り幅</label>
+            <select id="stemW" class="w-full bg-slate-800 border border-slate-600 rounded px-1.5 py-0.5 font-mono text-xs">
+              <option value="120">120 mm</option>
+              <option value="130">130 mm</option>
+              <option value="140">140 mm</option>
+              <option value="150" selected>150 mm</option>
+              <option value="160">160 mm</option>
+              <option value="170">170 mm</option>
+              <option value="180">180 mm</option>
+              <option value="200">200 mm</option>
+            </select>
+          </div>
+          <div>
+            <div class="flex justify-between mb-0.5">
+              <label class="text-slate-400">スラブ厚 (10mm刻み)</label>
+              <span class="font-bold text-blue-400" id="txtSlabT">180 mm</span>
+            </div>
+            <input type="range" id="slabT" min="120" max="300" step="10" value="180" class="w-full">
+          </div>
+        </div>
+
+        <div>
+          <div class="flex justify-between mb-0.5">
+            <label class="text-slate-400">天端レベラー厚</label>
+            <span class="font-bold text-cyan-400" id="txtLeveler">10 mm</span>
+          </div>
+          <input type="range" id="levelerT" min="0" max="30" step="5" value="10" class="w-full">
+        </div>
+      </div>
+
+      <!-- 4. 配筋仕様 ＆ スターラップ加算設定 -->
+      <div class="bg-slate-700/40 p-2.5 rounded border border-slate-600 space-y-2">
+        <div class="font-bold text-blue-300 border-b border-slate-600 pb-1">4. 配筋仕様・重心距離dt設定</div>
+        
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-slate-400 mb-0.5">上主筋</label>
+            <select id="topSpec" class="w-full bg-slate-800 border border-slate-600 rounded px-1 py-0.5 text-xs font-bold">
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-slate-400 mb-0.5">下主筋</label>
+            <select id="botSpec" class="w-full bg-slate-800 border border-slate-600 rounded px-1 py-0.5 text-xs font-bold">
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-slate-400 text-[10px] mb-0.5">縦筋（スターラップ/フープ）</label>
+          <select id="stirrupBar" class="w-full bg-slate-800 border border-slate-600 rounded px-1 py-0.5 font-mono text-[11px]">
+            <option value="D10@200" selected>D10@200</option>
+            <option value="D10@150">D10@150</option>
+            <option value="D13@200">D13@200</option>
+          </select>
+        </div>
+
+        <div class="pt-1 border-t border-slate-600/60 grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-slate-400 text-[10px] mb-0.5">上端STP見込み</label>
+            <select id="incTopStirrup" class="w-full bg-slate-800 border border-slate-600 rounded px-1 py-0.5 text-[11px]">
+              <option value="true" selected>加算する (標準)</option>
+              <option value="false">加算しない (ユニット)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-slate-400 text-[10px] mb-0.5">下端STP見込み</label>
+            <select id="incBotStirrup" class="w-full bg-slate-800 border border-slate-600 rounded px-1 py-0.5 text-[11px]">
+              <option value="true" selected>加算する (標準)</option>
+              <option value="false">加算しない (ユニット)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. スラブ配筋 -->
+      <div class="bg-slate-700/40 p-2.5 rounded border border-slate-600 space-y-2">
+        <div class="font-bold text-amber-300 border-b border-slate-600 pb-1 flex justify-between items-center">
+          <span>5. 耐圧盤スラブ配筋（独自設定）</span>
+        </div>
+
+        <div>
+          <label class="block text-slate-400 mb-0.5">スラブ配筋方式</label>
+          <select id="slabArrangement" class="w-full bg-slate-800 border border-slate-600 rounded px-1.5 py-1 font-bold text-xs text-amber-200">
+            <option value="single">シングル配筋</option>
+            <option value="double" id="optDoubleSlab" selected>ダブル配筋 (複配筋)</option>
+          </select>
+          <div id="txtDoubleSlabDisabled" class="text-[9px] text-rose-400 mt-0.5 hidden">※スラブ厚180mm以上でダブル配筋可</div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-1.5 pt-1">
+          <div>
+            <label class="block text-slate-400 text-[10px] mb-0.5">短辺 (外側●)</label>
+            <select id="slabShortBar" class="w-full bg-slate-800 border border-slate-600 rounded px-1 py-0.5 font-mono text-[11px]">
+              <option value="D13@150" selected>D13@150</option>
+              <option value="D13@200">D13@200</option>
+              <option value="D16@150">D16@150</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-slate-400 text-[10px] mb-0.5">長辺 (内側横筋)</label>
+            <select id="slabLongBar" class="w-full bg-slate-800 border border-slate-600 rounded px-1 py-0.5 font-mono text-[11px]">
+              <option value="D10@300" selected>D10@300</option>
+              <option value="D13@300">D13@300</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-2">
+        <button id="btnAddNewBeam" class="w-full py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold rounded-lg shadow-md border border-blue-400/40 flex items-center justify-center gap-1.5 transition-all">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+          基礎梁符号を追加（FG+*）
+        </button>
+      </div>
+
+    </aside>
+
+    <!-- 右側：CADプレビュー画面 -->
+    <main class="flex-1 cad-grid flex items-center justify-center p-0 relative overflow-hidden cursor-grab active:cursor-grabbing" id="viewerMain">
+      <svg id="cadSvg" class="w-full h-full" viewBox="0 0 1600 1000" xmlns="http://www.w3.org/2000/svg">
+        <g id="viewportGroup"></g>
+      </svg>
+    </main>
+
+  </div>
+
+  <!-- ES Modules によるクリーンな初期化 -->
+  <script type="module">
+    import { FoundationCadUI } from './js/foundation_cad/foundation_ui.js';
+    window.addEventListener('DOMContentLoaded', () => {
+      const ui = new FoundationCadUI();
+      ui.init();
+    });
+  </script>
+</body>
+</html>
