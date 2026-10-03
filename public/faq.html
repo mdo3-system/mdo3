@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>よくある質問・技術Q&A・不具合対応実績 | mdo3 構造計算クラウド</title>
+  <meta name="description" content="mdo3.com 全29の構造計算・実務ツールのよくある質問、計算根拠・準拠法令、審査対応の注意点、およびユーザー様からの不具合報告・改善要望に対する公式回答一覧。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+  <link rel="stylesheet" href="css/portal.css?v=2.2.0">
+  <style>
+    .faq-page-container {
+      max-width: 1040px;
+      margin: 40px auto 100px;
+      padding: 0 20px;
+    }
+    .faq-hero {
+      text-align: center;
+      margin-bottom: 36px;
+    }
+    .faq-hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: #38bdf8;
+      font-size: 0.82rem;
+      font-weight: 800;
+      padding: 4px 14px;
+      border-radius: 20px;
+      margin-bottom: 12px;
+    }
+    .faq-hero h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 12px;
+      letter-spacing: -0.02em;
+    }
+    .faq-hero p {
+      color: var(--text-sub);
+      font-size: 0.95rem;
+      max-width: 760px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    /* 検索バー＆フィルター */
+    .faq-control-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 20px 24px;
+      margin-bottom: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+    .faq-search-box {
+      position: relative;
+      width: 100%;
+    }
+    .faq-search-box .material-symbols-outlined {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 20px;
+    }
+    .faq-search-input {
+      width: 100%;
+      padding: 12px 14px 12px 44px;
+      background: #0f172a;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 8px;
+      color: #fff;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .faq-search-input:focus {
+      border-color: var(--accent-cyan);
+    }
+    
+    .faq-cat-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .faq-tab-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-sub);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .faq-tab-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+    .faq-tab-btn.active {
+      background: var(--accent-cyan);
+      color: #031124;
+      border-color: var(--accent-cyan);
+      font-weight: 800;
+    }
+
+    /* お知らせバナー */
+    .faq-notice-box {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.08), rgba(217, 119, 6, 0.04));
+      border-left: 4px solid var(--accent-gold);
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin-bottom: 28px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .faq-notice-box .material-symbols-outlined {
+      color: var(--accent-gold);
+      font-size: 22px;
+      margin-top: 2px;
+    }
+    .faq-notice-text {
+      font-size: 0.88rem;
+      line-height: 1.6;
+      color: var(--text-sub);
+    }
+    .faq-notice-text a {
+      color: var(--accent-cyan);
+      text-decoration: underline;
+    }
+
+    /* Q&A リスト */
+    .faq-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .faq-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .faq-item:hover {
+      border-color: rgba(56, 189, 248, 0.35);
+    }
+    .faq-item.open {
+      border-color: rgba(56, 189, 248, 0.5);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+    }
+    
+    .faq-question {
+      padding: 18px 22px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      user-select: none;
+      background: rgba(255, 255, 255, 0.015);
+    }
+    .faq-q-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+    }
+    .faq-q-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      background: rgba(56, 189, 248, 0.15);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      border-radius: 6px;
+      font-weight: 900;
+      font-size: 0.95rem;
+      flex-shrink: 0;
+    }
+    .faq-q-badge.bugfix {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fbbf24;
+      border-color: rgba(245, 158, 11, 0.35);
+    }
+    .faq-q-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #f8fafc;
+      margin: 0;
+      line-height: 1.5;
+    }
+    .faq-q-tag {
+      font-size: 0.72rem;
+      padding: 2px 8px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-muted);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      white-space: nowrap;
+    }
+    .faq-toggle-icon {
+      color: var(--text-muted);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      flex-shrink: 0;
+    }
+    .faq-item.open .faq-toggle-icon {
+      transform: rotate(180deg);
+      color: var(--accent-cyan);
+    }
+
+    .faq-answer {
+      display: none;
+      padding: 0 22px 22px 62px;
+      color: #cbd5e1;
+      font-size: 0.92rem;
+      line-height: 1.75;
+      border-top: 1px solid rgba(255, 255, 255, 0.04);
+      background: rgba(15, 23, 42, 0.4);
+    }
+    .faq-item.open .faq-answer {
+      display: block;
+      padding-top: 16px;
+    }
+    .faq-answer p {
+      margin: 0 0 10px 0;
+    }
+    .faq-answer p:last-child {
+      margin-bottom: 0;
+    }
+    
+    .faq-standard-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(40, 199, 111, 0.1);
+      border: 1px solid rgba(40, 199, 111, 0.25);
+      color: #4ade80;
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-top: 8px;
+    }
+    .faq-action-row {
+      margin-top: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .faq-tool-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.08);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      padding: 4px 10px;
+      border-radius: 4px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .faq-tool-link:hover {
+      background: rgba(56, 189, 248, 0.2);
+      border-color: #38bdf8;
+    }
+
+    /* 空状態 */
+    .faq-empty {
+      display: none;
+      text-align: center;
+      padding: 60px 20px;
+      background: var(--bg-card);
+      border-radius: var(--radius-md);
+      color: var(--text-muted);
+    }
+    .faq-empty.active {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ナビゲーションバー -->
+  <header class="site-header">
+    <div class="container header-container">
+      <div class="header-logo-area">
+        <a href="/" class="header-logo">
+          <span class="logo-text">mdo3<span class="logo-dot">.</span>com</span>
+          <span class="logo-badge">クラウド</span>
+        </a>
+      </div>
+      <nav class="header-nav">
+        <a href="/#toolsCatalog" class="nav-link">全ツール一覧</a>
+        <a href="/workspace.html" class="nav-link">案件コンソール</a>
+        <a href="/faq.html" class="nav-link" style="color:var(--accent-cyan); font-weight:700;">よくある質問・Q&A</a>
+        <a href="/contact.html" class="nav-link">不具合・要望報告</a>
+      </nav>
+      <div class="header-cta-area">
+        <a href="https://app.mdo3.com/login" class="btn btn-primary btn-sm">ログイン / 会員登録</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="faq-page-container">
+    
+    <!-- ヘッダー -->
+    <div class="faq-hero">
+      <div class="faq-hero-tag">
+        <span class="material-symbols-outlined" style="font-size: 16px;">help_center</span>
+        <span>KNOWLEDGE & SUPPORT</span>
+      </div>
+      <h1>よくあるご質問・技術Q&A・不具合対応実績</h1>
+      <p>
+        全29ツールの計算根拠、準拠法令、確認審査機関への提出方法から、ユーザー様よりいただいた不具合報告・機能改善要望への公式対応回答を網羅しています。
+      </p>
+    </div>
+
+    <!-- お知らせバナー -->
+    <div class="faq-notice-box">
+      <span class="material-symbols-outlined">verified</span>
+      <div class="faq-notice-text">
+        <strong>不具合修正・改変履歴の公開方針：</strong><br>
+        mdo3では、実務者の皆様から届いた不具合報告や計算ロジック改善要望に対し、迅速なプログラム検証と改修を行い、本ページおよび公式SNS（Threads / X / note+）にて透明性高く公開しています。新機能や計算結果へのご質問・不具合のお気づきは <a href="/contact.html">不具合報告・改善要望フォーム</a> より随時受け付けております。
+      </div>
+    </div>
+
+    <!-- コントロールパネル (検索・タブ) -->
+    <div class="faq-control-panel">
+      <div class="faq-search-box">
+        <span class="material-symbols-outlined">search</span>
+        <input type="text" id="faqSearchInput" class="faq-search-input" placeholder="キーワードで絞り込み（例: 基礎梁, 令38条, Z低減, 不具合, 印刷, DXF...）">
+      </div>
+      <div class="faq-cat-tabs" id="faqCatTabs">
+        <button class="faq-tab-btn active" data-category="all">すべて表示</button>
+        <button class="faq-tab-btn" data-category="foundation">基礎・擁壁・地盤系 (9)</button>
+        <button class="faq-tab-btn" data-category="timber">木造軸組・接合部系 (7)</button>
+        <button class="faq-tab-btn" data-category="detail">水平構面・耐力壁系 (10)</button>
+        <button class="faq-tab-btn" data-category="wrc">WRC造系 (2)</button>
+        <button class="faq-tab-btn" data-category="cad">CAD連携・無償ツール (2)</button>
+        <button class="faq-tab-btn" data-category="bugfix">不具合対応・改変実績</button>
+        <button class="faq-tab-btn" data-category="system">利用・印刷・規約</button>
+      </div>
+      <div style="display: flex; justify-content: flex-end; gap: 12px; font-size: 0.8rem;">
+        <button id="btnExpandAll" style="background:none; border:none; color:var(--accent-cyan); cursor:pointer; font-weight:700;">すべて開く</button>
+        <span style="color:var(--text-muted);">|</span>
+        <button id="btnCollapseAll" style="background:none; border:none; color:var(--text-sub); cursor:pointer;">すべて閉じる</button>
+      </div>
+    </div>
+
+    <!-- Q&A リスト本体 -->
+    <div class="faq-list" id="faqList">
+
+      <!-- ========================================================
+           カテゴリ: 基礎・擁壁・地盤系
+           ======================================================== -->
+      <div class="faq-item" data-category="foundation">
+        <div class="faq-question">
+          <div class="faq-q-left">
+            <span class="faq-q-badge">Q</span>
+            <span class="faq-q-title">【基礎断面図CAD】2025年法改正の「平均GL」と「設計GL」の高低差はどのように基礎梁成や根入れ深さに反映されますか？</span>
+            <span class="faq-q-tag">木造ベタ基礎 梁断面図作図</span>
+          </div>
+          <span class="material-symbols-outlined faq-toggle-icon">expand_more</span>
+        </div>
+        <div class="faq-answer">
+          <p>
+            本ツールでは、敷地造成等による平均GLと設計GLのレベル差（ΔGL）を入力することで、建築基準法施行令第38条（基礎立上がり高さ300mm/400mm以上）および平成12年建設省告示第1347号（根入れ深さ120mm/240mm以上、および自治体別凍結深度）を平均GL基準で自動判定します。
+            また、許容応力度計算に必要な「構造用 基礎梁成（Hstruct）」や「スラブ天端高」の換算数値をリアルタイムにSVG断面図に描画し、PROモードから全符号一括DXFを出力できます。
+          </p>
+          <div class="faq-standard-badge">
+            <span class="material-symbols-outlined" style="font-size:14px;">gavel</span> 準拠: 令38条、告示第1347号、グレー本
+          </div>
+          <div class="faq-action-row">
+            <a href="/foundation-cad.html" class="faq-tool-link">
+              <span class="material-symbols-outlined" style="font-size:14px;">open_in_new</span> 基礎断面図作図ツールを起動
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item" data-category="foundation">
+        <div class="faq-question">
+          <div class="faq-q-left">
+            <span class="faq-q-badge">Q</span>
+            <span class="faq-q-title">【人通口補強計算】人通口による基礎立上がりおよび耐圧盤スラブの欠損補強はどの規準に基づいて算定されますか？</span>
+            <span class="faq-q-tag">人通口補強計算</span>
+          </div>
+          <span class="material-symbols-outlined faq-toggle-icon">expand_more</span>
+        </div>
+        <div class="faq-answer">
+          <p>
+            住宅金融支援機構「木造住宅工事仕様書」および日本建築学会「鉄筋コンクリート構造計算規準」の開口補強指針に準拠しています。
+            開口幅・高さに応じた立上がり部の上主筋・下主筋の割増し、およびスラブ耐圧盤のせん断補強筋・斜め補強筋の所要断面積を自動算出し、A4の審査提出用計算書を出力します。
+          </p>
+          <div class="faq-standard-badge">
+            <span class="material-symbols-outlined" style="font-size:14px;">gavel</span> 準拠: 令82条、住宅金融支援機構仕様書
+          </div>
+          <div class="faq-action-row">
+            <a href="https://app.mdo3.com/tools/jintsuko.html" target="_blank" class="faq-tool-link">
+              <span class="material-symbols-outlined" style="font-size:14px;">open_in_new</span> 人通口補強計算を起動
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item" data-category="foundation">
+        <div class="faq-question">
+          <div class="faq-q-left">
+            <span class="faq-q-badge">Q</span>
+            <span class="faq-q-title">【片持ち基礎梁(柱あり)】玄関ポーチなど一部スラブ無しの片持ち基礎梁で、ARCHITREND等の転載軸力をどう入力すればよいですか？</span>
+            <span class="faq-q-tag">片持ち基礎梁(柱あり)</span>
+          </div>
+          <span class="material-symbols-outlined faq-toggle-icon">expand_more</span>
+        </div>
+        <div class="faq-answer">
+          <p>
+            片持ち端部に柱が乗る場合、ARCHITREND ZERO等の許容応力度計算書から「柱の長期軸力（NL）」および「地震時／風時短期軸力（NS）」を転記するだけで、片持ち基礎梁の上主筋引張応力度およびスターラップ（あばら筋）のせん断耐力を自動検定します。
+          </p>
+          <div class="faq-standard-badge">
+            <span class="material-symbols-outlined" style="font-size:14px;">gavel</span> 準拠: 令82条、AIJ RC基礎構造設計規準
+          </div>
+          <div class="faq-action-row">
+            <a href="https://app.mdo3.com/tools/cantilever_foundation_beam.html" target="_blank" class="faq-tool-link">
+              <span class="material-symbols-outlined" style="font-size:14px;">open_in_new</span> 片持ち基礎梁(柱あり)を起動
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item" data-category="foundation">
+        <div class="faq-question">
+          <div class="faq-q-left">
+            <span class="faq-q-badge">Q</span>
+            <span class="faq-q-title">【片持ち基礎梁(柱なし)＆片土圧】スラブ接地圧による立上がり部の片土圧曲げモーメントの検定に対応していますか？</span>
+            <span class="faq-q-tag">片持ち基礎梁(柱なし) ＆ 片土圧</span>
+          </div>
+          <span class="material-symbols-outlined faq-toggle-icon">expand_more</span>
+        </div>
+        <div class="faq-answer">
+          <p>
+            はい、対応しています。バルコニーはね出し部等の下主筋検定に加え、基礎内外の高低差によって生じる土圧（片土圧）およびスラブ反力による立上がり部の曲げ・せん断検定を、黄色本（建築物の構造関係技術基準解説書）の手法に則って計算します。
+          </p>
+          <div class="faq-standard-badge">
+            <span class="material-symbols-outlined" style="font-size:14px;">gavel</span> 準拠: 黄色本（片土圧検討）、令82条
+          </div>
+          <div class="faq-action-row">
+            <a href="https://app.mdo3.com/tools/cantilever_beam_no_column.html" target="_blank" class="faq-tool-link">
+              <span class="material-symbols-outlined" style="font-size:14px;">open_in_new</span> 片土圧・柱なし基礎梁を起動
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item" data-category="foundation">
+        <div class="faq-question">
+          <div class="faq-q-left">
+            <span class="faq-q-badge">Q</span>
+            <span class="faq-q-title">【L型擁壁の計算】高さ2.0m未満の宅地擁壁で、前趾土重W3やN値地耐力の自動算出はできますか？</span>
+            <span class="faq-q-tag">Ｌ型擁壁の計算 (2.0m未満)</span>
+          </div>
+          <span class="material-symbols-outlined faq-toggle-icon">expand_more</span>
+        </div>
+        <div class="faq-answer">
+          <p>
+            はい。前趾上の埋戻し土重（W3）を考慮した転倒・滑動・支持力の安定計算、およびスウェーデン式サウンディング（SWS）やボーリングN値からの許容地耐力照査に対応しています。宅地造成等規制法および国交省宅地擁壁設計マニュアルに完全準拠しています。
+          </p>
+          <div class="faq-standard-badge">
+            <span class="material-symbols-outlined" style="font-size:14px;">gavel</span> 準拠: 宅造法施行令、令142条
+          </div>
+          <div class="faq-action-row">
+            <a href="https://app.mdo3.com/tools/youheki_L_calculator.html" target="_blank" class="faq-tool-link">
+              <span class="material-symbols-outlined" style="font-size:14px;">open_in_new</span> L型擁壁計算を起動
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item" data-category="foundation">
+        <div class="faq-question">
+          <div class="faq-q-left">
+            <span class="faq-q-badge">Q</span>
+            <span class="faq-q-title">【逆L・逆T型擁壁】常時および地震時の転倒・滑動・地盤反力と、縦壁の配筋検定は可能ですか？</span>
+            <span class="faq-q-tag">逆Ｌ型・逆Ｔ型擁壁の計算</span>
+          </div>
+          <span class="material-symbols-outlined faq-toggle-icon">expand_more</span>
+        </div>
+        <div class="faq-answer">
+          <p>
+            可能です。日本道路協会「擁壁工指針」に準拠し、クーロン土圧・試行法による土圧合力から、常時・地震時の3大安定性検討、および縦壁基部・底版（つま先・かかと）の曲げ応力・せん断力と鉄筋ピッチ検定を一括算出します。
+          </p>
+          <div class="faq-standard-badge">
+            <span class="material-symbols-outlined" style="font-size:14px;">gavel</span> 準拠: 擁壁工指針、令142条
+          </div>
+          <div class="faq-action-row">
+            <a href="https://app.mdo3.com/tools/youheki_calculator.html" target="_blank" class="faq-tool-link">
+              <span class="material-symbols-outlined" style="font-size:14px;">open_in_new</span> 逆L/逆T擁壁計算を起動
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item" data-category="foundation">
+        <div class="faq-question">
+          <div class="faq-q-left">
+            <span class="faq-q-badge">Q</span>
+            <span class="faq-q-title">【土砂災害レッドゾーン】特別警戒区域内の外壁・控壁・基礎の構造計算（告示第332号・383号）に対応していますか？</span>
+            <span class="faq-q-tag">土砂災害特別警戒区域の外壁等</span>
+          </div>
+          <span class="material-symbols-outlined faq-toggle-icon">expand_more</span>
+        </div>
+        <div class="faq-answer">
+          <p>
+            はい。土砂災害防止法第24条および国交省告示第332号・第383号に規定された想定土石流・崩壊土砂圧の算定、RC外壁の壁厚・複配筋検討、バットレス（控壁）の配置間隔照査、基礎の滑動・転倒検討を網羅した確認審査提出用の一体型計算書を出力します。
+          </p>
+          <div class="faq-standard-badge">
+            <span class="material-symbols-outlined" style="font-size:14px;">gavel</span> 準拠: 告示第332号・383号、令80条の3
+          </div>
+          <div class="faq-action-row">
+            <a href="https://app.mdo3.com/tools/dosha_saigai.html" target="_blank" class="faq-tool-link">
+              <span class="material-symbols-outlined" style="font-size:14px;">open_in_new</span> 土砂災害外壁計算を起動
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item" data-category="foundation">
+        <div class="faq-question">
+          <div class="faq-q-left">
+            <span class="faq-q-badge">Q</span>
+            <span class="faq-q-title">【釣り合い鉄筋比】スラブ内割増筋の過鉄筋破壊を防ぐための判定式は何ですか？</span>
+            <span class="faq-q-tag">スラブ内補強 釣り合い鉄筋比</span>
+          </div>
+          <span class="material-symbols-outlined faq-toggle-icon">expand_more</span>
+        </div>
+        <div class="faq-answer">
+          <p>
+            日本建築学会RC規準に基づき、引張鉄筋比 pt が釣り合い鉄筋比 ptb の75%以下（pt ≦ 0.75 ptb）であることを判定します。これにより、脆性破壊（コンクリートの急激な圧縮破壊）を防ぎ、健全な延性破壊を保証する適合判定書類を作成できます。
+          </p>
+          <div class="faq-standard-badge">
+            <span class="material-symbols-outlined" style="font-size:14px;">gavel</span> 準拠: AIJ RC規準、令77条
+          </div>
+          <div class="faq-action-row">
+            <a href="https://app.mdo3.com/tools/balanced_rebar_ratio.html" target="_blank" class="faq-tool-link">
+              <span class="material-symbols-outlined" style="font-size:14px;">open_in_new</span> 釣り合い鉄筋比計算を起動
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item" data-category="foundation">
+        <div class="faq-question">
+          <div class="faq-q-left">
+            <span class="faq-q-badge">Q</span>
+            <span class="faq-q-title">【KBI用 基礎梁水平力】確認検査機関（KBI等）から求められる基礎梁の水平力追加検討書は出力できますか？</span>
+            <span class="faq-q-tag">基礎梁 水平力追加計算書 (KBI用)</span>
+          </div>
+          <span class="material-symbols-outlined faq-toggle-icon">expand_more</span>
+        </div>
+        <div class="faq-answer">
+          <p>
+            はい。弾性支点（Winkler床モデル）による基礎梁の水平時FEM応力算定を行い、短期許容曲げモーメント（SMa = LMa × 1.5）との断面検定を行うA4 1枚の追加計算書を瞬時に出力できます。
+          </p>
+          <div class="faq-standard-badge">
+            <span class="material-symbols-outlined" style="font-size:14px;">gavel</span> 準拠: KBI取扱基準、令82条
+          </div>
+          <div class="faq-action-row">
+            <a href="https://app.mdo3.com/tools/foundation_beam_horizontal.html" target="_blank" class="faq-tool-link">
+              <span class="material-symbols-outlined" style="font-size:14px;">open_in_new</span> KBI用基礎梁水平力計算を起動
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========================================================
+           カテゴリ: 木造軸組・接合部系
+           ======================================================== -->
+      <div class="faq-item" data-category="timber">
+        <div class="faq-question">
+          <div class="faq-q-left">
+            <span class="faq-q-badge">Q</span>
+            <span class="faq-q-title">【横架材のZ低減係数】プレカットの蟻掛けやカマ継ぎによる断面欠損の低減係数はどう算出されますか？</span>
+            <span class="faq-q-tag">横架材のZ低減係数</span>
+          </div>
+          <span class="material-symbols-outlined faq-toggle-icon">expand_more</span>
+        </div>
+        <div class="faq-answer">
+          <p>
+            グレー本（許容応力度設計）の仕口欠損算定法に準拠し、継手・仕口（蟻掛け・カマ継ぎ・大入れ・渡り顎）の加工深さ・幅から、断面係数低減係数 αZ および断面二次モーメント低減係数 αI を自動算出します。横架材の曲げ・たわみ検定にそのまま代入可能です。
+          </p>
+          <div class="faq-standard-badge">
+            <span class="material-symbols-outlined" style="font-size:14px;">gavel</span> 準拠: グレー本（仕口低減）、告示第1347号
+          </div>
+          <div class="faq-action-row">
+            <a href="https://app.mdo3.com/tools/zi.html" target="_blank" class="faq-tool-link">
+              <span class="material-symbols-outlined" style="font-size:14px;">open_in_new</span> Z低減係数計算を起動
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item" data-category="timber">
+        <div class="faq-question">
+          <div class="faq-q-left">
+            <span class="faq-q-badge">Q</span>
+            <span class="faq-q-title">【めり込み補強計算】タナカ土台プレートII等の補強金物を使用した場合の許容めり込み耐力判定に対応していますか？</span>
+            <span class="faq-q-tag">めり込み補強計算</span>
+          </div>
+          <span class="material-symbols-outlined faq-toggle-icon">expand_more</span>
+        </div>
+        <div class="faq-answer">
+          <p>
+            対応しています。ヒノキ・スギ・オウシュウアカマツ等の樹種別めり込み基準強度に対し、柱直下の土台・梁交差部の支圧面積検定と、タナカ土台プレートIIなどの規格金物による耐力割増し判定を行います。
+          </p>
+          <div class="faq-standard-badge">
+            <span class="material-symbols-outlined" style="font-size:14px;">gavel</span> 準拠: 告示第1452号、グレー本
+          </div>
+          <div class="faq-action-row">
+            <a href="https://app.mdo3.com/tools/merikomi.html" target="_blank" class="faq-tool-link">
+              <span class="material-symbols-outlined" style="font-size:14px;">open_in_new</span> めり込み補強計算を起動
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item" data-category="timber">
+        <div class="faq-question">
+          <div class="faq-q-left">
+            <span class="faq-q-badge">Q</span>
+            <span class="faq-q-title">【屋根葺き材の検討】告示第1458号に基づく強風地域の正圧・負圧ピーク風圧係数は自動判定されますか？</span>
+            <span class="faq-q-tag">屋根葺き材等の検討</span>
+          </div>
+          <span class="material-symbols-outlined faq-toggle-icon">expand_more</span>
+        </div>
+        <div class="faq-answer">
+          <p>
+            はい。全国自治体の基準風速 V0、地表面粗度区分（I〜IV）、屋根形状（切妻・寄棟・片流れ・陸屋根）および勾配を選択するだけで、軒先部・けらば部・一般部のピーク風圧係数および野地板・留付け釘の耐風圧性能を自動検定します。
+          </p>
+          <div class="faq-standard-badge">
+            <span class="material-symbols-outlined" style="font-size:14px;">gavel</span> 準拠: 平成12年告示第1458号、令82条の4
+          </div>
+          <div class="faq-action-row">
+            <a href="https://app.mdo3.com/tools/roof_calc.html" target="_blank" class="faq-tool-link">
+              <span class="material-symbols-outlined" style="font-size:14px;">open_in_new</span> 屋根葺き材検討を起動
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item" data-category="timber">
+        <div class="faq-question">
+          <div class="faq-q-left">
+            <span class="faq-q-badge">Q</span>
+            <span class="faq-q-title">【柱の曲げ計算】風圧力と長期/短期軸力が同時に作用する柱の複合応力比検定（σc/fc + σb/fb ≦ 1.0）とM図の確認はできますか？</span>
+            <span class="faq-q-tag">柱の曲げ計算</span>
+          </div>
+          <span class="material-symbols-outlined faq-toggle-icon">expand_more</span>
+        </div>
+        <div class="faq-answer">
+          <p>
+            可能です。告示1458号の風圧荷重による柱曲げモーメントMの分布図（M図）をリアルタイム描画し、座屈係数 fk を考慮した長期・短期の圧縮・曲げ複合応力比が1.0以下であるかを明快に検定します。
+          </p>
+          <div class="faq-standard-badge">
+            <span class="material-symbols-outlined" style="font-size:14px;">gavel</span> 準拠: 令82条、グレー本
+          </div>
+          <div class="faq-action-row">
+            <a href="https://app.mdo3.com/tools/hasira-mage.html" target="_blank" class="faq-tool-link">
+              <span class="material-symbols-outlined" style="font-size:14px;">open_in_new</span> 柱の曲げ計算を起動
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item" data-category="timber">
+        <div class="faq-question">
+          <div class="faq-q-left">
+            <span class="faq-q-badge">Q</span>
+            <span class="faq-q-title">【はしご垂木 計算】ケラバのはね出しが大きい屋根で、積雪時・負圧風圧力に対する曲げ・たわみ検定はできますか？</span>
+            <span class="faq-q-tag">はしご垂木 計算</span>
+          </div>
+          <span class="material-symbols-outlined faq-toggle-icon">expand_more</span>
+        </div>
+        <div class="faq-answer">
+          <p>
+            可能です。はしご垂木のはね出し長さ、垂木ピッチ、材種寸法を入力することで、積雪荷重および吹き上げ風圧に対する曲げ応力度、せん断応力度、およびたわみ（1/300以下判定）を瞬時に検定します。
+          </p>
+          <div class="faq-standard-badge">
+            <span class="material-symbols-outlined" style="font-size:14px;">gavel</span> 準拠: AIJ 木質構造規準、告示第1458号
+          </div>
+          <div class="faq-action-row">
+            <a href="https://app.mdo3.com/tools/hashigo.html" target="_blank" class="faq-tool-link">
+              <span class="material-symbols-outlined" style="font-size:14px;">open_in_new</span> はしご垂木計算を起動
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item" data-category="timber">
+        <div class="faq-question">
+          <div class="faq-q-left">
+            <span class="faq-q-badge">Q</span>
+            <span class="faq-q-title">【片持ち庇の検討】引きボルト接合部における木口せん断破壊や座金めり込みの検討に対応していますか？</span>
+            <span class="faq-q-tag">片持ち庇の検討</span>
+          </div>
+          <span class="material-symbols-outlined faq-toggle-icon">expand_more</span>
+        </div>
+        <div class="faq-answer">
+          <p>
+            対応しています。柱から片持ち状に持ち出す木製庇梁に対し、引きボルトの許容引張耐力、座金下の木材許容めり込み応力度、および木口端部からのせん断抜け出し破壊（すべりせん断）を総合的に照査します。
+          </p>
+          <div class="faq-standard-badge">
+            <span class="material-symbols-outlined" style="font-size:14px;">gavel</span> 準拠: グレー本、令82条
+          </div>
+          <div class="faq-action-row">
+            <a href="https://app.mdo3.com/tools/rigid_frame_R.html" target="_blank" class="faq-tool-link">
+              <span class="material-symbols-outlined" style="font-size:14px;">open_in_new</span> 片持ち庇検討を起動
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item" data-category="timber">
+        <div class="faq-question">
+          <div class="faq-q-left">
+            <span class="faq-q-badge">Q</span>
+            <span class="faq-q-title">【梁上耐力壁の剛性低減】耐力壁の下に梁がある場合の剛性低減係数（γ）はどのように算定されますか？</span>
+            <span class="faq-q-tag">梁上耐力壁の剛性低減</span>
+          </div>
+          <span class="material-symbols-outlined faq-toggle-icon">expand_more</span>
+        </div>
+        <div class="faq-answer">
+          <p>
+            グレー本「梁上耐力壁の取扱い」に基づき、支持梁のスパン・断面二次モーメントによるたわみ変形を考慮した水平剛性低減係数 γ を算定します。これにより、許容応力度計算における有効耐力壁倍率の適切な低減補正が行えます。
+          </p>
+          <div class="faq-standard-badge">
+            <span class="material-symbols-outlined" style="font-size:14px;">gavel</span> 準拠: グレー本（梁上耐力壁）、AIJ規準
+          </div>
+          <div class="faq-action-row">
+            <a href="https://app.mdo3.com/tools/hariue.html" target="_blank" class="faq-tool-link">
+              <span class="material-symbols-outlined" style="font-size:14px;">open_in_new</span> 梁上耐力壁計算を起動
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========================================================
+           カテゴリ: 水平構面・耐力壁系
+           ======================================================== -->
+      <div class="faq-item" data-category="detail">
+        <div class="faq-question">
+          <div class="faq-q-left">
+            <span class="faq-q-badge">Q</span>
+            <span class="faq-q-title">【基本仕様 vs 任意配列】水平構面ツールの「基本仕様」と「任意配列セット」はどう使い分けるのですか？</span>
+            <span class="faq-q-tag">水平構面ツール群</span>
+          </div>
+          <span class="material-symbols-outlined faq-toggle-icon">expand_more</span>
+        </div>
+        <div class="faq-answer">
+          <p>
+            - **基本仕様（定型・告示基準）**: 平成19年国交省告示第1541号に準拠した標準ピッチ・合板厚仕様の早見・判定ツールです。定型仕様であれば1クリックで判定可能です。<br>
+            - **任意配列セット（高倍率・詳細）**: 変則的な釘ピッチや高倍率（3.0倍以上）の許容応力度設計を行うツールです。前提となる「釘配列諸定数計算」と連動し、精密な許容せん断耐力・剛性を導出します。
+          </p>
+          <div class="faq-standard-badge">
+            <span class="material-symbols-outlined" style="font-size:14px;">gavel</span> 準拠: 告示第1541号、グレー本
+          </div>
+          <div class="faq-action-row">
+            <a href="https://app.mdo3.com/tools/kugihairetsushoteisu.html" target="_blank" class="faq-tool-link">
+              <span class="material-symbols-outlined" style="font-size:14px;">open_in_new</span> 釘配列諸定数計算を起動
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item" data-category="detail">
+        <div class="faq-question">
+          <div class="faq-q-left">
+            <span class="faq-q-badge">Q</span>
+            <span class="faq-q-title">【面材張り大壁・真壁】構造用合板以外の面材（パーティクルボード、石膏ボード等）の許容せん断耐力・剛性算定に対応していますか？</span>
+            <span class="faq-q-tag">面材張り大壁 / 真壁</span>
+          </div>
+          <span class="material-symbols-outlined faq-toggle-icon">expand_more</span>
+        </div>
+        <div class="faq-answer">
+          <p>
+            はい。構造用合板、OSB、パーティクルボード、石膏ボード、ダイライト等の各種構造用面材およびJIS釘（CN50/CN65/N50/N65/N75等）の組み合わせに対応し、大壁仕様および伝統的真壁仕様の許容せん断耐力・壁剛性Kを自動算定します。
+          </p>
+          <div class="faq-standard-badge">
+            <span class="material-symbols-outlined" style="font-size:14px;">gavel</span> 準拠: 告示第1460号・第1100号、グレー本
+          </div>
+          <div class="faq-action-row">
+            <a href="https://app.mdo3.com/tools/shosai-okabe.html" target="_blank" class="faq-tool-link">
+              <span class="material-symbols-outlined" style="font-size:14px;">open_in_new</span> 面材張り大壁計算を起動
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item" data-category="detail">
+        <div class="faq-question">
+          <div class="faq-q-left">
+            <span class="faq-q-badge">Q</span>
+            <span class="faq-q-title">【根太工法 水平構面】落とし込み根太・転ばし根太の水平せん断倍率と接合釘耐力は算定できますか？</span>
+            <span class="faq-q-tag">根太工法 水平構面</span>
+          </div>
+          <span class="material-symbols-outlined faq-toggle-icon">expand_more</span>
+        </div>
+        <div class="faq-answer">
+          <p>
+            算定可能です。告示第1541号に基づき、落とし込み根太および転ばし根太仕様における水平構面倍率、根太と梁・桁の接合釘・金物の許容せん断耐力照査を行います。
+          </p>
+          <div class="faq-standard-badge">
+            <span class="material-symbols-outlined" style="font-size:14px;">gavel</span> 準拠: 告示第1541号、住宅金融支援機構
+          </div>
+          <div class="faq-action-row">
+            <a href="https://app.mdo3.com/tools/neta.html" target="_blank" class="faq-tool-link">
+              <span class="material-symbols-outlined" style="font-size:14px;">open_in_new</span> 根太工法計算を起動
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========================================================
+           カテゴリ: WRC造系
+           ======================================================== -->
+      <div class="faq-item" data-category="wrc">
+        <div class="faq-question">
+          <div class="faq-q-left">
+            <span class="faq-q-badge">Q</span>
+            <span class="faq-q-title">【WRC一括検定シミュレータ】HOUSE-WLの出力データとの互換性や壁量・断面の判定基準はどうなっていますか？</span>
+            <span class="faq-q-tag">WRC一括検定シミュレータ</span>
+          </div>
+          <span class="material-symbols-outlined faq-toggle-icon">expand_more</span>
+        </div>
+        <div class="faq-answer">
+          <p>
+            日本建築学会「壁式鉄筋コンクリート造設計規準（AIJ-WRC）」に準拠し、HOUSE-WLの計算出力データと完全連携します。耐力壁の壁量・壁厚・梁断面のOK/NGを一括色分け表示し、断面サイズ変更時のリアルタイム再算定が可能です。
+          </p>
+          <div class="faq-standard-badge">
+            <span class="material-symbols-outlined" style="font-size:14px;">gavel</span> 準拠: AIJ-WRC規準、黄色本
+          </div>
+          <div class="faq-action-row">
+            <a href="https://app.mdo3.com/tools/wrc_simulator.html" target="_blank" class="faq-tool-link">
+              <span class="material-symbols-outlined" style="font-size:14px;">open_in_new</span> WRC一括検定を起動
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item" data-category="wrc">
+        <div class="faq-question">
+          <div class="faq-q-left">
+            <span class="faq-q-badge">Q</span>
+            <span class="faq-q-title">【長期軸力分割ツール】WRC造で各階床面積・屋根面積から各耐力壁・柱への鉛直荷重按分集計はできますか？</span>
+            <span class="faq-q-tag">長期軸力分割ツール</span>
+          </div>
+          <span class="material-symbols-outlined faq-toggle-icon">expand_more</span>
+        </div>
+        <div class="faq-answer">
+          <p>
+            はい。各階の床スラブ荷重・屋根荷重を負担面積に応じて各耐力壁・独立柱へ自動按分分割し、固定荷重・積載荷重の集計一覧表を瞬時に作成します。
+          </p>
+          <div class="faq-standard-badge">
+            <span class="material-symbols-outlined" style="font-size:14px;">gavel</span> 準拠: 令82条、AIJ-WRC規準
+          </div>
+          <div class="faq-action-row">
+            <a href="https://app.mdo3.com/tools/wrc_axial_force.html" target="_blank" class="faq-tool-link">
+              <span class="material-symbols-outlined" style="font-size:14px;">open_in_new</span> 長期軸力分割ツールを起動
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========================================================
+           カテゴリ: CAD連携・無償ツール
+           ======================================================== -->
+      <div class="faq-item" data-category="cad">
+        <div class="faq-question">
+          <div class="faq-q-left">
+            <span class="faq-q-badge">Q</span>
+            <span class="faq-q-title">【AZ斜め壁Web-CAD】ARCHITREND ZEROのDXF図面から変形多角形スラブの荷重自動分配はどのように行われますか？</span>
+            <span class="faq-q-tag">AZ斜め壁 構造計算補助Web-CAD</span>
+          </div>
+          <span class="material-symbols-outlined faq-toggle-icon">expand_more</span>
+        </div>
+        <div class="faq-answer">
+          <p>
+            DXF図面から壁・スラブ形状をダイレクト認識し、Straight-Skeleton（直骨格幾何アルゴリズム）によって多角形変形スラブの45度荷重分割境界線を瞬時に幾何解析します。各境界梁・耐力壁にかかる等分布・台形荷重を自動算定し、許容応力度計算用のExcel/CSV形式で出力します。
+          </p>
+          <div class="faq-standard-badge">
+            <span class="material-symbols-outlined" style="font-size:14px;">gavel</span> 準拠: グレー本（非直交架構）、令82条の3
+          </div>
+          <div class="faq-action-row">
+            <a href="https://az.mdo3.com/" target="_blank" class="faq-tool-link">
+              <span class="material-symbols-outlined" style="font-size:14px;">open_in_new</span> AZ斜め壁Web-CADを起動
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item" data-category="cad">
+        <div class="faq-question">
+          <div class="faq-q-left">
+            <span class="faq-q-badge">Q</span>
+            <span class="faq-q-title">【スマート案内図作成】確認申請書第1面に添付する敷地案内図は縮尺や方位の指定に対応していますか？</span>
+            <span class="faq-q-tag">スマート案内図作成エディタ</span>
+          </div>
+          <span class="material-symbols-outlined faq-toggle-icon">expand_more</span>
+        </div>
+        <div class="faq-answer">
+          <p>
+            建築基準法施行規則第1条の3に完全適合しています。S=1/2500等の縮尺バー、方位記号、朱書き敷地境界枠、最寄り駅・主要道路名を直感的に配置でき、A4サイズ高解像度PNGおよび印刷PDFを完全無償・会員登録不要で即時出力できます。
+          </p>
+          <div class="faq-standard-badge">
+            <span class="material-symbols-outlined" style="font-size:14px;">gavel</span> 準拠: 施行規則第1条の3 (敷地見取図)
+          </div>
+          <div class="faq-action-row">
+            <a href="https://map.mdo3.com/" target="_blank" class="faq-tool-link">
+              <span class="material-symbols-outlined" style="font-size:14px;">open_in_new</span> スマート案内図作成を起動
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========================================================
+           カテゴリ: 不具合対応・改変実績 (Bugfix Responses)
+           ======================================================== -->
+      <div class="faq-item" data-category="bugfix">
+        <div class="faq-question">
+          <div class="faq-q-left">
+            <span class="faq-q-badge bugfix">改修</span>
+            <span class="faq-q-title">【対応済】基礎梁水平力計算で長期曲げモーメント(LMa)から短期許容曲げモーメント(SMa)の自動算定に対応してほしい</span>
+            <span class="faq-q-tag">基礎梁 水平力追加計算書</span>
+          </div>
+          <span class="material-symbols-outlined faq-toggle-icon">expand_more</span>
+        </div>
+        <div class="faq-answer">
+          <p>
+            <strong>【ユーザー様からのご要望】</strong> 「ARCHITREND等の計算書から転記する際、長期曲げLMaからSMa（= LMa × 1.5）を手計算で電卓を叩いて入力するのが手間でミスが発生しやすいので自動化してほしい。」<br>
+            <strong>【公式対応（v1.3.2にて改修完了）】</strong> 基礎梁水平加力計算スロットにおいて、LMa入力時に SMa = LMa × 1.5 の自動スロット計算ロジックを実装いたしました。手動係数掛けや転記の手間がゼロとなり、即時に短期安全判定が得られるよう改善されました。
+          </p>
+          <div class="faq-standard-badge">
+            <span class="material-symbols-outlined" style="font-size:14px;">check_circle</span> 2026-09-18 v1.3.2 改修完了・本番反映済
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item" data-category="bugfix">
+        <div class="faq-question">
+          <div class="faq-q-left">
+            <span class="faq-q-badge bugfix">改修</span>
+            <span class="faq-q-title">【対応済】過去の案件JSONデータを読み込んだ際、最新のUI項目で値が正しく復元されない場合がある</span>
+            <span class="faq-q-tag">全ツール共通 データ復元</span>
+          </div>
+          <span class="material-symbols-outlined faq-toggle-icon">expand_more</span>
+        </div>
+        <div class="faq-answer">
+          <p>
+            <strong>【ユーザー様からのご報告】</strong> 「旧バージョンで保存した人通口補強やめり込みのJSONファイルを復元した際、一部の追加項目がデフォルト値に戻ってしまう。」<br>
+            <strong>【公式対応（v2.0.1にて改修完了）】</strong> 全ツール共通の双方向互換復元ハンドラ（<code>window.restoreToolData</code>）を実装し、旧データフォーマットと新フォーマットのスキーマ差分を自動吸収して100%完全復元・A4印刷連携できるよう改修いたしました。
+          </p>
+          <div class="faq-standard-badge">
+            <span class="material-symbols-outlined" style="font-size:14px;">check_circle</span> 2026-10-01 v2.0.1 改修完了・本番反映済
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item" data-category="bugfix">
+        <div class="faq-question">
+          <div class="faq-q-left">
+            <span class="faq-q-badge bugfix">改修</span>
+            <span class="faq-q-title">【対応済】基礎梁断面図ツールで耐圧盤スラブがダブル配筋固定になっており、シングル配筋の物件で作図できない</span>
+            <span class="faq-q-tag">木造ベタ基礎 梁断面図作図</span>
+          </div>
+          <span class="material-symbols-outlined faq-toggle-icon">expand_more</span>
+        </div>
+        <div class="faq-answer">
+          <p>
+            <strong>【ユーザー様からのご要望】</strong> 「木造住宅ではスラブ厚150mm・シングル配筋が主流のため、ダブル配筋だけでなくシングル配筋への切り替えと配筋径の選択肢を追加してほしい。」<br>
+            <strong>【公式対応（v2.0.2にて改修完了）】</strong> 耐圧盤スラブ配筋設定（シングル配筋／ダブル配筋の切替ラジオボタン、スラブ厚150/180/200mm選択、短辺筋・長辺筋径D10/D13選択）を新設し、SVG断面図およびDXF出力へ即時反映されるよう改修いたしました。
+          </p>
+          <div class="faq-standard-badge">
+            <span class="material-symbols-outlined" style="font-size:14px;">check_circle</span> 2026-10-01 v2.0.2 改修完了・本番反映済
+          </div>
+        </div>
+      </div>
+
+      <!-- ========================================================
+           カテゴリ: 利用・印刷・規約 (System & Usage)
+           ======================================================== -->
+      <div class="faq-item" data-category="system">
+        <div class="faq-question">
+          <div class="faq-q-left">
+            <span class="faq-q-badge">Q</span>
+            <span class="faq-q-title">【計算結果の印刷・保存】出力したA4計算書はそのまま確認審査機関（指定確認検査機関・適判）に提出できますか？</span>
+            <span class="faq-q-tag">計算書出力・印刷</span>
+          </div>
+          <span class="material-symbols-outlined faq-toggle-icon">expand_more</span>
+        </div>
+        <div class="faq-answer">
+          <p>
+            はい。mdo3の全ツールは「審査官が一目で計算過程と判定根拠を追えるA4縦 1枚フォーマット」に設計されています。ブラウザの印刷機能（Ctrl+P / Command+P）から「PDFに保存」を選択することで、ヘッダー・フッター・改ページが最適化された提出用書類を即座に作成できます。
+          </p>
+          <div class="faq-standard-badge">
+            <span class="material-symbols-outlined" style="font-size:14px;">print</span> A4縦 1枚提出フォーマット標準化
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item" data-category="system">
+        <div class="faq-question">
+          <div class="faq-q-left">
+            <span class="faq-q-badge">Q</span>
+            <span class="faq-q-title">【サポート範囲】確認検査機関からの質疑応答や、特定物件の計算内容の審査対応代行は依頼できますか？</span>
+            <span class="faq-q-tag">利用規約・サポート範囲</span>
+          </div>
+          <span class="material-symbols-outlined faq-toggle-icon">expand_more</span>
+        </div>
+        <div class="faq-answer">
+          <p>
+            いいえ。当サービスは設計業務を効率化するための計算補助ツールを提供するものであり、建築士法に基づく設計受託や特定案件の審査質疑対応代行は一切行っておりません。設計内容の最終確認および審査機関への責任は設計者ご自身に帰属します。（詳しくは <a href="/terms.html">利用規約</a> をご確認ください）
+          </p>
+          <div class="faq-standard-badge">
+            <span class="material-symbols-outlined" style="font-size:14px;">gavel</span> 利用規約第7条（審査質疑非対応の原則）
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item" data-category="system">
+        <div class="faq-question">
+          <div class="faq-q-left">
+            <span class="faq-q-badge">Q</span>
+            <span class="faq-q-title">【料金・解約】有料プランの解約やプラン変更はいつでもできますか？縛り期間はありますか？</span>
+            <span class="faq-q-tag">料金・決済 (Stripe)</span>
+          </div>
+          <span class="material-symbols-outlined faq-toggle-icon">expand_more</span>
+        </div>
+        <div class="faq-answer">
+          <p>
+            月額プランには最低利用期間や違約金などの縛りは一切ございません。マイページのStripe決済ポータルよりいつでもご自身でワンクリック解約・プラン変更が可能です。解約後も次回更新日まではツールをご利用いただけます。
+          </p>
+          <div class="faq-standard-badge">
+            <span class="material-symbols-outlined" style="font-size:14px;">credit_card</span> Stripe安全決済・即時解約対応
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item" data-category="system">
+        <div class="faq-question">
+          <div class="faq-q-left">
+            <span class="faq-q-badge" style="background:linear-gradient(135deg,#ef4444,#dc2626);">Q</span>
+            <span class="faq-q-title">【重要・アカウント】複数人で同じアカウントを同時に使うことはできますか？（同時アクセス・データ保存の注意点）</span>
+            <span class="faq-q-tag" style="border-color:rgba(239,68,68,0.4); color:#f87171;">アカウント仕様・データ保護</span>
+          </div>
+          <span class="material-symbols-outlined faq-toggle-icon">expand_more</span>
+        </div>
+        <div class="faq-answer">
+          <p>
+            <strong>いいえ、1契約（1アカウント）につき同時にアクセスできる端末は「1台（1ユーザー）のみ」に厳格に制限されています。</strong>
+          </p>
+          <p style="margin-top:8px;">
+            別のPCやブラウザから後からログインした場合、<strong>それまで作業していた端末のセッションは即座に自動ログアウト（無効化）</strong>されます。<br>
+            <strong style="color:#f87171;">⚠️ 重要：その際、旧端末上で保存（JSON保存等）していなかった編集中の入力データ・計算途中データは破棄・消去されます。</strong>
+          </p>
+          <p style="margin-top:8px;">
+            社内での端末移動時や、複数名での設計実務を行う際は、作業中断前に必ず「build_circle データ管理」より<strong>JSON保存</strong>を行っていただくか、ご利用人数分の個別アカウント契約をお願い申し上げます。
+          </p>
+          <div class="faq-standard-badge" style="border-color:rgba(239,68,68,0.3); background:rgba(239,68,68,0.1); color:#fca5a5;">
+            <span class="material-symbols-outlined" style="font-size:14px;">security</span> 単一端末アクティブ制御（Single Session）稼働中
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 検索ヒットなし表示 -->
+    <div class="faq-empty" id="faqEmpty">
+      <span class="material-symbols-outlined" style="font-size:48px; color:var(--text-muted); margin-bottom:12px;">search_off</span>
+      <h3 style="font-size:1.1rem; color:#fff; margin-bottom:8px;">該当する質問が見つかりませんでした</h3>
+      <p style="font-size:0.9rem; margin-bottom:16px;">検索キーワードを変更するか、不具合報告・改善要望フォームより直接お問い合わせください。</p>
+      <a href="/contact.html" class="btn btn-secondary btn-sm">不具合報告・お問い合わせへ</a>
+    </div>
+
+    <!-- 解決しない場合の導線 -->
+    <div style="margin-top: 50px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 32px 36px; text-align: center;">
+      <h3 style="font-size: 1.25rem; font-weight: 800; color: #fff; margin-bottom: 8px;">お探しの質問が見つかりませんでしたか？</h3>
+      <p style="color: var(--text-sub); font-size: 0.9rem; max-width: 600px; margin: 0 auto 20px; line-height: 1.6;">
+        プログラムの不具合、計算式の挙動確認、実務ツールの追加要望など、現役実務者の開発チームが直接確認し迅速に対応いたします。
+      </p>
+      <div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;">
+        <a href="/contact.html" class="btn btn-primary">
+          <span class="material-symbols-outlined">feedback</span> 不具合報告・改善要望を送る
+        </a>
+        <a href="/#toolsCatalog" class="btn btn-ghost">
+          <span class="material-symbols-outlined">grid_view</span> ツール一覧に戻る
+        </a>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- フッター -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <h4>mdo3.com</h4>
+          <p style="margin-bottom: 12px; font-size: 0.85rem; line-height: 1.6;">
+            木造住宅・RC造の構造計算・設計実務をスマートに解決するクラウドプラットフォーム。
+          </p>
+          <div class="footer-sns-badges" style="display: flex; gap: 8px; margin: 16px 0; flex-wrap: wrap;">
+            <a href="https://x.com/mdo3_official" target="_blank" rel="noopener" class="footer-sns-badge" title="公式X (ツール改変速報)" style="display:inline-flex; align-items:center; gap:6px; padding:6px 12px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); border-radius:20px; font-size:0.78rem; color:#f8fafc; text-decoration:none;">
+              <span style="font-weight:900; font-size:0.85rem;">𝕏</span> <span>@mdo3_official</span>
+            </a>
+            <a href="https://www.threads.net/@mdo3_official" target="_blank" rel="noopener" class="footer-sns-badge" title="公式Threads (開発背景・実務話)" style="display:inline-flex; align-items:center; gap:6px; padding:6px 12px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); border-radius:20px; font-size:0.78rem; color:#f8fafc; text-decoration:none;">
+              <span style="font-weight:900; font-size:0.85rem;">＠</span> <span>Threads</span>
+            </a>
+            <a href="https://note.com/mdo3" target="_blank" rel="noopener" class="footer-sns-badge" title="公式note+ (技術解説・Q&A)" style="display:inline-flex; align-items:center; gap:6px; padding:6px 12px; background:rgba(40,199,111,0.1); border:1px solid rgba(40,199,111,0.25); border-radius:20px; font-size:0.78rem; color:#4ade80; text-decoration:none;">
+              <span style="font-weight:700;">note+</span>
+            </a>
+            <a href="https://www.instagram.com/mdo3_studio/" target="_blank" rel="noopener" class="footer-sns-badge" title="公式Instagram" style="display:inline-flex; align-items:center; gap:6px; padding:6px 12px; background:rgba(225,48,108,0.1); border:1px solid rgba(225,48,108,0.25); border-radius:20px; font-size:0.78rem; color:#f472b6; text-decoration:none;">
+              <span>📸</span> <span>@mdo3_studio</span>
+            </a>
+            <a href="https://www.youtube.com/@mdo3_official" target="_blank" rel="noopener" class="footer-sns-badge" title="公式YouTube" style="display:inline-flex; align-items:center; gap:6px; padding:6px 12px; background:rgba(255,0,0,0.1); border:1px solid rgba(255,0,0,0.25); border-radius:20px; font-size:0.78rem; color:#ef4444; text-decoration:none;">
+              <span>▶</span> <span>YouTube</span>
+            </a>
+          </div>
+          <small>&copy; 2026 mdo3 / T-SMILE Co., Ltd. All rights reserved.</small>
+        </div>
+
+        <div class="footer-col">
+          <h5>サービス群</h5>
+          <ul>
+            <li><a href="/workspace.html" target="_blank" style="color:var(--accent-cyan); font-weight:700;">案件コンソール (Workspace)</a></li>
+            <li><a href="https://map.mdo3.com" target="_blank">スマート案内図作成 (完全無償)</a></li>
+            <li><a href="https://az.mdo3.com" target="_blank">AZ斜め壁CAD (アーキトレンド連携)</a></li>
+            <li><a href="/foundation-cad.html" target="_blank">木造ベタ基礎 梁断面図作図CAD</a></li>
+            <li><a href="/studio/" target="_blank" style="color:var(--accent-gold);">広報スタジオ (Studio)</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h5>ご利用・サポート</h5>
+          <ul>
+            <li><a href="/#toolsCatalog">ツール一覧 & 判断基準</a></li>
+            <li><a href="/faq.html" style="color:var(--accent-cyan); font-weight:700;">よくある質問・技術Q&A</a></li>
+            <li><a href="/#pricingPlans">料金プラン案内</a></li>
+            <li><a href="/contact.html">不具合報告・改善要望フォーム</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h5>規約・法的表記</h5>
+          <ul>
+            <li><a href="/terms.html">利用規約（免責・サポート範囲）</a></li>
+            <li><a href="/privacy.html">プライバシーポリシー</a></li>
+            <li><a href="/tokusho.html">特定商取引法に基づく表記</a></li>
+            <li><a href="https://t-smile.co.jp" target="_blank">運営会社概要</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <small>mdo3.com 基幹ポータルシステム | Single Sign-On 共通認証基盤稼働中</small>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const searchInput = document.getElementById('faqSearchInput');
+      const tabBtns = document.querySelectorAll('.faq-tab-btn');
+      const faqItems = document.querySelectorAll('.faq-item');
+      const faqEmpty = document.getElementById('faqEmpty');
+      const btnExpandAll = document.getElementById('btnExpandAll');
+      const btnCollapseAll = document.getElementById('btnCollapseAll');
+
+      let currentCategory = 'all';
+
+      // アコーディオン開閉
+      faqItems.forEach(item => {
+        const q = item.querySelector('.faq-question');
+        q.addEventListener('click', () => {
+          item.classList.toggle('open');
+        });
+      });
+
+      // 絞り込み関数
+      function filterFaq() {
+        const query = searchInput.value.trim().toLowerCase();
+        let visibleCount = 0;
+
+        faqItems.forEach(item => {
+          const cat = item.getAttribute('data-category');
+          const text = item.innerText.toLowerCase();
+
+          const catMatch = (currentCategory === 'all') || (cat === currentCategory);
+          const queryMatch = !query || text.includes(query);
+
+          if (catMatch && queryMatch) {
+            item.style.display = 'block';
+            visibleCount++;
+          } else {
+            item.style.display = 'none';
+          }
+        });
+
+        if (visibleCount === 0) {
+          faqEmpty.classList.add('active');
+        } else {
+          faqEmpty.classList.remove('active');
+        }
+      }
+
+      // タブ切り替え
+      tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          tabBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentCategory = btn.getAttribute('data-category');
+          filterFaq();
+        });
+      });
+
+      // 検索入力
+      searchInput.addEventListener('input', filterFaq);
+
+      // 一括開閉
+      btnExpandAll.addEventListener('click', () => {
+        faqItems.forEach(item => {
+          if (item.style.display !== 'none') {
+            item.classList.add('open');
+          }
+        });
+      });
+
+      btnCollapseAll.addEventListener('click', () => {
+        faqItems.forEach(item => {
+          item.classList.remove('open');
+        });
+      });
+    });
+  </script>
+</body>
+</html>

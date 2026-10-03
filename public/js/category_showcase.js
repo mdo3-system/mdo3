@@ -17,7 +17,7 @@
     {
       id: 'foundation',
       name: '基礎・擁壁・地盤系',
-      badge: '全8ツール',
+      badge: '全9ツール',
       icon: 'foundation',
       color: '#06b6d4',
       bgGradient: 'linear-gradient(135deg, rgba(6, 182, 212, 0.15) 0%, rgba(15, 23, 42, 0.95) 100%)'
@@ -60,6 +60,7 @@
   // 各カテゴリの初期ツール・フォールバックデータ（ロード遅延時も即座にリッチ表示）
   const DEFAULT_CATEGORY_TOOLS = {
     foundation: [
+      { id: 'foundation_cad', title: '木造ベタ基礎 梁断面図作図＆dt・平均GL算定', summary: '2025年法改正対応。リアルタイムSVG断面図作図、令38条・告示1347号判定、主筋2段筋dt算定、PROモードDXF一括出力。', icon: 'draw', url: '/foundation-cad.html' },
       { id: 'jintsuko', title: '人通口補強計算', summary: 'スラブ内割増筋およびせん断力の検定。PDF計算書からの応力抽出に対応。', icon: 'construction' },
       { id: 'cantilever_foundation_beam', title: '片持ち基礎梁の検定 (柱あり)', summary: 'べた基礎ポーチ部など一部スラブ無しの片持ち基礎梁検定。上主筋・せん断耐力を算定。', icon: 'account_tree' },
       { id: 'cantilever_beam_no_column', title: '片持ち基礎梁 (柱なし) ＆ 片土圧検定', summary: 'バルコニー部等支点なし片持ち基礎梁の下主筋検定、および片土圧検定。', icon: 'foundation' },
@@ -189,10 +190,10 @@
 
   function renderCardContent(tool, cat, idx, total) {
     const isSpecialPlan = tool.pricing?.specialPlan || tool.id === 'az_skew_wall' || cat.id === 'cad';
-    const isFree = tool.isFree === true || tool.id === 'annai_map';
-    let priceLabel = '月額¥980〜';
+    const isFree = tool.isFree === true || tool.id === 'map_editor' || tool.id === 'annai_map' || tool.id === 'foundation_cad' || tool.id === 'roof_calc' || tool.id === 'hasira_mage' || tool.id === 'hariue';
+    let priceLabel = '月額¥490〜';
     if (isSpecialPlan) {
-      priceLabel = '月額¥5,980 (年額¥39,800)';
+      priceLabel = '月額¥19,800 (年額¥98,000 / サポート付)';
     } else if (isFree) {
       priceLabel = '🎁 完全無償';
     }

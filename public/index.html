@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>mdo3 構造計算補助ツール群ポータル | 木造・RC構造実務クラウド</title>
-  <meta name="description" content="木造・RC構造計算実務を強力にサポートする専門クラウドツール群mdo3。基礎梁・片土圧・擁壁・柱曲げ・水平構面・WRC造、およびARCHITREND連動AZ斜め壁CADなど全29ツールを提供。何ができて何ができないかの判断基準マニュアル・実務解説動画・スマート案内図作成を完全無償公開。単体ツール月額980円から、AZ斜め壁CADは月額¥5,980。">
+  <meta name="description" content="木造・RC構造計算実務を強力にサポートする専門クラウドツール群mdo3。日常設計の決定版【基本⑥ツールパック】（Z/めり込み/人通口/屋根直/屋根垂/合板床）を中心に、基礎梁・片土圧・擁壁・水平構面・WRC造、およびARCHITREND連動AZ斜め壁CADまで全29ツールを提供。「スマート案内図」「地域定数自動検索」「木造基礎断面図CAD」「屋根葺き材」「柱曲げ」「梁上耐力壁」の6大実務エンジンを完全無償公開。個別ツール月額490円から。">
   <link rel="canonical" href="https://mdo3.com/">
 
   <!-- Google Fonts & Material Symbols -->
@@ -18,7 +18,7 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/portal.css?v=1.6.7">
+  <link rel="stylesheet" href="css/portal.css?v=2.2.3">
 </head>
 <body>
 
@@ -32,56 +32,26 @@
         <div class="brand-name">mdo3<span>.com</span></div>
       </a>
 
-      <nav>
+      <nav class="nav-container">
         <ul class="nav-links" id="mainNavLinks">
-          <li><a href="/workspace.html" target="_blank" rel="noopener" style="color:var(--accent-cyan); font-weight:800;"><span class="material-symbols-outlined" style="font-size:15px;">tab</span> 案件コンソール <span class="nav-free-tag" style="background:rgba(6,182,212,0.15); color:var(--accent-cyan); border-color:rgba(6,182,212,0.3);">1タブ統合</span></a></li>
-          <li><a href="https://map.mdo3.com" target="_blank"><span class="material-symbols-outlined" style="font-size:15px; color:var(--accent-green);">map</span> 案内図作図 <span class="nav-free-tag">無償</span></a></li>
-          <li><a href="#freeToolsZone"><span class="material-symbols-outlined" style="font-size:15px; color:var(--accent-gold);">public</span> 地域定数・都市計画 <span class="nav-free-tag">無償</span></a></li>
-          <li><a href="#categoryShowcase">構造ツール (29)</a></li>
+          <li><a href="#freeToolsZone"><span class="material-symbols-outlined" style="font-size:15px; color:var(--accent-gold);">public</span> 6大無償ツール <span class="nav-free-tag">¥0</span></a></li>
+          <li><a href="#toolsCatalog"><span class="material-symbols-outlined" style="font-size:15px;">grid_view</span> 構造ツール (29)</a></li>
           <li><a href="https://az.mdo3.com" target="_blank" style="color: var(--accent-cyan);"><span class="material-symbols-outlined" style="font-size:15px;">architecture</span> AZ斜め壁</a></li>
+          <li><a href="/faq.html" style="color:var(--accent-cyan); font-weight:700;"><span class="material-symbols-outlined" style="font-size:15px;">help</span> Q&A / 不具合対応</a></li>
           <li><a href="#pricingPlans">料金</a></li>
-          <li><a href="/studio/" target="_blank" style="color:var(--accent-gold);"><span class="material-symbols-outlined" style="font-size:15px;">movie</span> スタジオ</a></li>
         </ul>
       </nav>
 
       <div class="header-actions" id="authNavContainer">
-        <a href="/workspace.html" target="_blank" rel="noopener" class="btn btn-primary" id="headerWorkspaceBtn" style="background:linear-gradient(135deg, #0ea5e9, #0284c7); border:none;">
-          <span class="material-symbols-outlined" style="font-size:16px;">tab</span> 案件コンソールを開く
+        <a href="/workspace.html" target="_blank" rel="noopener" class="btn btn-primary" id="headerWorkspaceBtn" style="background:linear-gradient(135deg, #0ea5e9, #0284c7); border:none; white-space:nowrap;">
+          <span class="material-symbols-outlined" style="font-size:16px;">tab</span> 案件コンソール
         </a>
-        <a href="https://app.mdo3.com/login" class="btn btn-ghost" id="headerLoginBtn">
+        <a href="https://app.mdo3.com/login" class="btn btn-ghost" id="headerLoginBtn" style="white-space:nowrap;">
           <span class="material-symbols-outlined">login</span> ログイン
         </a>
       </div>
     </div>
   </header>
-
-  <!-- ==========================================
-       ヘッダー直下: 構造計算・設計実務 5大専門カテゴリ 横一列ショーケース (#categoryShowcase)
-       - 枠1: 基礎・擁壁・地盤系 (全8ツール) -> コロコロ切り替え
-       - 枠2: 木造軸組・接合部系 (全7ツール) -> コロコロ切り替え
-       - 枠3: 水平構面・耐力壁系 (全10ツール) -> コロコロ切り替え
-       - 枠4: WRC造パッケージ (全2ツール) -> コロコロ切り替え
-       - 枠5: CAD連携・斜め壁Web-CAD (AZツール 1ツール固定)
-       ========================================== -->
-  <section class="category-showcase-section" id="categoryShowcase">
-    <div class="container">
-      <div class="showcase-header">
-        <div class="showcase-pill">
-          <span class="material-symbols-outlined" style="font-size:16px;">auto_awesome</span>
-          <span>SPECIALIZED STRUCTURAL COMPUTATION (29 TOOLS)</span>
-        </div>
-        <h2 class="showcase-title">構造計算・設計実務 5大専門カテゴリ</h2>
-        <p class="showcase-desc">
-          単体ツール月額980円から、ARCHITREND連動AZ斜め壁は月額¥5,980。全29の専門Webアプリがブラウザ上で瞬時に動作し、A4審査計算書を出力します。
-        </p>
-      </div>
-
-      <!-- 横一列 5枠グリッド (category_showcase.jsで動的レンダリング & コロコロ切り替え) -->
-      <div class="showcase-grid" id="categoryShowcaseGrid">
-        <!-- JSで動的描画 -->
-      </div>
-    </div>
-  </section>
 
   <!-- ==========================================
        ヒーローセクション
@@ -98,9 +68,9 @@
       </h1>
 
       <p class="hero-desc" id="heroSubHeadline">
-        基礎梁水平力、片土圧、擁壁、柱曲げ、水平構面、WRC造、AZ斜め壁CADまで網羅。<br>
-        「何ができて何ができないか」の明確な判断基準と操作動画、案内図作図ツールを完全無償公開。<br>
-        単体ツールは月額980円から、CAD連携斜め壁は月額¥5,980（年額¥39,800）でご活用いただけます。
+        日常設計の決定版 <strong>【基本⑥ツールパック】</strong>（Z低減 / めり込み / 人通口 / 屋根直貼り / 屋根垂木 / 合板床剛床）を中心に、基礎梁水平力、片土圧、擁壁、水平構面、WRC造、AZ斜め壁CADまで全29ツールを網羅。<br>
+        「スマート案内図」「地域定数自動検索」「木造基礎断面図CAD」「屋根葺き材」「柱の曲げ」「梁上耐力壁」の<strong>6大実務エンジンを完全無償公開中</strong>。<br>
+        個別ツールは月額490円から、基本⑥パック月額980円（年額10,000円）、全ツール使い放題月額¥1,980（年額¥19,800）、CAD連携斜め壁（サポートQ&A付）は月額¥19,800（年額¥98,000）でご活用いただけます。
       </p>
 
       <div class="hero-cta" id="heroCtaGroup">
@@ -135,6 +105,42 @@
   </section>
 
   <!-- ==========================================
+       開発者ステートメント＆ご利用にあたっての免責・サポート規程
+       ========================================== -->
+  <section class="practitioner-statement-section" style="padding: 32px 0; background: linear-gradient(180deg, rgba(15, 23, 42, 0.95), rgba(10, 15, 29, 0.98)); border-top: 1px solid rgba(255,255,255,0.06); border-bottom: 1px solid rgba(255,255,255,0.06);">
+    <div class="container">
+      <div style="background: rgba(30, 41, 59, 0.5); border: 1px solid rgba(56, 189, 248, 0.2); border-radius: 16px; padding: 24px 28px; backdrop-filter: blur(12px); display: flex; flex-direction: column; gap: 16px;">
+        
+        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+          <span style="display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(135deg, rgba(56,189,248,0.2), rgba(14,165,233,0.1)); border: 1px solid rgba(56,189,248,0.4); color: #38bdf8; font-size: 0.8rem; font-weight: 800; padding: 4px 12px; border-radius: 20px;">
+            <span class="material-symbols-outlined" style="font-size: 15px;">engineering</span>
+            実務者自作・現役稼働システム
+          </span>
+          <h3 style="font-size: 1.15rem; font-weight: 800; color: #f8fafc; margin: 0;">
+            机上の理論ではなく、現役の構造設計実務者が日々の申請を突破するために自ら開発し、現在も全案件で運用・改良し続けているツール群です。
+          </h3>
+        </div>
+
+        <p style="font-size: 0.9rem; line-height: 1.7; color: #cbd5e1; margin: 0;">
+          mdo3に収録されている全29の計算エンジンは、代表自身が数多くの木造住宅・RC造の構造計算・確認申請・適判審査の現場で「手計算の煩雑さ」「入力の無駄」「審査質疑の手戻り」を徹底排除するために作り上げました。現在進行形のすべての実務案件で実際に使用・検証し、法令改正や実務慣行に合わせて日々アップデートを重ねています。
+        </p>
+
+        <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(245, 158, 11, 0.25); border-radius: 10px; padding: 14px 18px; font-size: 0.83rem; line-height: 1.65; color: #94a3b8;">
+          <div style="display:flex; align-items:center; gap:6px; color:#f59e0b; font-weight:700; margin-bottom:4px;">
+            <span class="material-symbols-outlined" style="font-size:16px;">gavel</span> ご利用に関する重要なお知らせ（免責事項・サポート範囲）
+          </div>
+          <ul style="margin:0; padding-left:18px; list-style-type:disc;">
+            <li><strong>無償ツール群のご利用について：</strong> 案内図作図・地域定数検索・基礎梁有効成算出等の無償ツールは、使用者の全責任においてご利用ください。当サイトでは計算結果やご利用に伴う一切の損害について責任を負いません。</li>
+            <li><strong>有償ツール群の保守・不具合対応：</strong> 有償ツールにおけるプログラムの不具合報告や改善要望は、<a href="/contact.html" style="color:#38bdf8; text-decoration:underline;">管理者専用通知フォーム</a>より随時受け付け、迅速な修正対応を行います。</li>
+            <li><strong>審査質疑への対応について：</strong> 各特定案件における確認検査機関・適判機関等からの質疑応答や審査対応の代行は一切行いません。設計内容の最終判断・責任は設計者ご自身に帰属します。（詳細は<a href="/terms.html" style="color:#38bdf8; text-decoration:underline;">利用規約</a>をご確認ください）</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
        設計用地域定数 自動検索ウィジェット (Z, S, V0, 凍結深度)
        ========================================== -->
   <!-- ==========================================
@@ -148,11 +154,11 @@
       <div class="free-zone-header">
         <div class="free-zone-pill">
           <span class="material-symbols-outlined" style="font-size:16px;">redeem</span>
-          <span>PRACTICAL FREE TOOLS</span>
+          <span>PRACTICAL FREE TOOLS (¥0)</span>
         </div>
         <h2 class="free-zone-title">実務者向け 完全無償ツール群</h2>
         <p class="free-zone-desc">
-          会員登録・ログイン不要。確認申請・許容応力度計算の実務を瞬時に加速する3大無償クラウドエンジンを一般公開中。
+          会員登録・ログイン不要。確認申請・許容応力度計算の実務を瞬時に加速する「スマート案内図」「地域定数自動検索」「木造基礎梁断面図CAD」「屋根葺き材検討」「柱の曲げ計算」「梁上耐力壁低減」の6大無償エンジンを完全一般公開中。
         </p>
       </div>
 
@@ -882,6 +888,86 @@
           </div>
         </div>
 
+        <!-- ★ 実務者向け 追加無償ツール群 (屋根葺き材・柱曲げ・梁上耐力壁) -->
+        <div class="more-free-tools-grid" style="margin-top:28px; display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:16px;">
+          
+          <!-- 無償ツール: 屋根葺き材等の検討 -->
+          <div style="background:var(--bg-card); border:1px solid rgba(16,185,129,0.3); border-radius:var(--radius-md); padding:18px 20px; display:flex; flex-direction:column; justify-content:space-between; gap:12px;">
+            <div>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                <span class="nav-free-tag" style="background:rgba(16,185,129,0.15); color:var(--accent-green); border-color:rgba(16,185,129,0.35); font-size:0.72rem;">完全無料 / 登録不要</span>
+                <span class="material-symbols-outlined" style="color:var(--accent-green); font-size:20px;">roofing</span>
+              </div>
+              <h4 style="font-size:1.05rem; font-weight:800; color:#fff; margin:0 0 6px 0;">屋根葺き材等の検討</h4>
+              <p style="font-size:0.82rem; color:var(--text-sub); margin:0; line-height:1.5;">
+                基準風速V0・粗度区分・勾配に応じた風圧力および野地板・留付け釘の耐風圧判定（告示第1458号準拠）。
+              </p>
+            </div>
+            <a href="/workspace.html?tool=roof_calc" target="_blank" class="btn btn-ghost btn-sm" style="border-color:rgba(16,185,129,0.4); color:var(--accent-green); width:100%; text-align:center;">
+              <span class="material-symbols-outlined" style="font-size:15px;">tab</span> 案件コンソールで開く (無料)
+            </a>
+          </div>
+
+          <!-- 無償ツール: 柱の曲げ計算 -->
+          <div style="background:var(--bg-card); border:1px solid rgba(16,185,129,0.3); border-radius:var(--radius-md); padding:18px 20px; display:flex; flex-direction:column; justify-content:space-between; gap:12px;">
+            <div>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                <span class="nav-free-tag" style="background:rgba(16,185,129,0.15); color:var(--accent-green); border-color:rgba(16,185,129,0.35); font-size:0.72rem;">完全無料 / 登録不要</span>
+                <span class="material-symbols-outlined" style="color:var(--accent-green); font-size:20px;">vertical_align_center</span>
+              </div>
+              <h4 style="font-size:1.05rem; font-weight:800; color:#fff; margin:0 0 6px 0;">柱の曲げ計算 (V0連動)</h4>
+              <p style="font-size:0.82rem; color:var(--text-sub); margin:0; line-height:1.5;">
+                風圧力および長期・短期軸力に対する柱の曲げ・座屈複合応力比検定 ＆ 曲げモーメント図（M図）自動描画。
+              </p>
+            </div>
+            <a href="/workspace.html?tool=hasira_mage" target="_blank" class="btn btn-ghost btn-sm" style="border-color:rgba(16,185,129,0.4); color:var(--accent-green); width:100%; text-align:center;">
+              <span class="material-symbols-outlined" style="font-size:15px;">tab</span> 案件コンソールで開く (無料)
+            </a>
+          </div>
+
+          <!-- 無償ツール: 梁上耐力壁の剛性低減 -->
+          <div style="background:var(--bg-card); border:1px solid rgba(16,185,129,0.3); border-radius:var(--radius-md); padding:18px 20px; display:flex; flex-direction:column; justify-content:space-between; gap:12px;">
+            <div>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                <span class="nav-free-tag" style="background:rgba(16,185,129,0.15); color:var(--accent-green); border-color:rgba(16,185,129,0.35); font-size:0.72rem;">完全無料 / 登録不要</span>
+                <span class="material-symbols-outlined" style="color:var(--accent-green); font-size:20px;">architecture</span>
+              </div>
+              <h4 style="font-size:1.05rem; font-weight:800; color:#fff; margin:0 0 6px 0;">梁上耐力壁の剛性低減</h4>
+              <p style="font-size:0.82rem; color:var(--text-sub); margin:0; line-height:1.5;">
+                梁上に載る耐力壁の支持梁たわみ変形を考慮した水平剛性低減係数γ算定 ＆ 横架材の断面照査（グレー本準拠）。
+              </p>
+            </div>
+            <a href="/workspace.html?tool=hariue" target="_blank" class="btn btn-ghost btn-sm" style="border-color:rgba(16,185,129,0.4); color:var(--accent-green); width:100%; text-align:center;">
+              <span class="material-symbols-outlined" style="font-size:15px;">tab</span> 案件コンソールで開く (無料)
+            </a>
+          </div>
+
+        </div>
+
+        <!-- ★ 無償ツールから有償ツール（案件コンソール）へのシームレス連携バナー -->
+        <div class="free-to-paid-bridge-card" style="margin-top:28px; background:linear-gradient(135deg, rgba(15,23,42,0.95), rgba(30,41,59,0.95)); border:2px solid rgba(6,182,212,0.4); border-radius:var(--radius-lg); padding:24px 28px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px; box-shadow: 0 12px 30px rgba(0,0,0,0.5);">
+          <div style="flex:1; min-width:300px;">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+              <span class="nav-free-tag" style="background:rgba(6,182,212,0.15); color:var(--accent-cyan); border-color:rgba(6,182,212,0.3); font-size:0.75rem;">入口: 無償ツール ➜ 出口: 有償構造計算</span>
+              <span style="font-size:0.75rem; color:var(--accent-gold); font-weight:700;">★ 基本⑥ツールパック（月額¥980 / 年額¥10,000）対応</span>
+            </div>
+            <h3 style="font-size:1.25rem; font-weight:800; color:#fff; margin:0 0 6px 0;">
+              この敷地条件・基礎寸法を保持したまま、<br>
+              <span style="color:var(--accent-cyan);">「案件統合コンソール」</span>で構造計算を開始する
+            </h3>
+            <p style="font-size:0.84rem; color:var(--text-sub); margin:0; line-height:1.5;">
+              Z係数・めり込み・人通口補強・屋根/床水平構面を1タブで連続算定。A4審査計算書を即時発行できます。
+            </p>
+          </div>
+          <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+            <a href="/workspace.html" target="_blank" rel="noopener" class="btn btn-primary" style="padding:14px 28px; font-size:1rem; background:linear-gradient(135deg, #0ea5e9, #0284c7); border:none; box-shadow:0 4px 15px rgba(14,165,233,0.4);">
+              <span class="material-symbols-outlined" style="font-size:20px;">tab</span> 案件コンソールを開く (1タブ統合)
+            </a>
+            <a href="#pricingPlans" class="btn btn-ghost" style="padding:14px 20px; font-size:0.9rem;">
+              <span class="material-symbols-outlined" style="font-size:18px;">payments</span> 料金プランを見る
+            </a>
+          </div>
+        </div>
 
       </div>
     </div>
@@ -1038,60 +1124,98 @@
         <p class="section-sub">スポットの1計算から、事務所全体の全ツール使い放題まで。無駄のないプランをお選びいただけます。</p>
       </div>
 
-      <div class="pricing-grid" id="pricingGrid">
-        <!-- プラン1: ツール個別プラン -->
-        <div class="pricing-card" id="planIndividual">
+        <!-- プラン1: 完全無料ツール＆マニュアル -->
+        <div class="pricing-card" id="planFreeDocs">
           <div>
-            <h3 class="plan-name">ツール個別プラン</h3>
-            <p class="plan-desc">必要なツールだけをピンポイントで契約したい設計者様向け。</p>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+              <h3 class="plan-name">完全無償ツール群</h3>
+              <span class="nav-free-tag" style="font-size:0.72rem; padding:2px 8px;">登録不要 ¥0</span>
+            </div>
+            <p class="plan-desc">案内図作図・地域定数検索・基礎断面図プレビューなど、今すぐ利用可能。</p>
+            <div class="plan-price">
+              <span class="currency">¥</span><span class="amount">0</span>
+              <span class="period">/ 完全無料提供</span>
+            </div>
+            <ul class="plan-features">
+              <li><span class="material-symbols-outlined">check</span> <strong>案内図作図 (map.mdo3.com)</strong></li>
+              <li><span class="material-symbols-outlined">check</span> <strong>地域定数・都市計画自動検索</strong></li>
+              <li><span class="material-symbols-outlined">check</span> <strong>基礎断面図プレビュー ＆ dt算定</strong></li>
+              <li><span class="material-symbols-outlined">check</span> 全ツールの操作動画・マニュアル</li>
+            </ul>
+          </div>
+          <a href="#freeToolsZone" class="btn btn-ghost" style="width: 100%; text-align: center; text-decoration: none;">
+            無償ツールを使う (¥0)
+          </a>
+        </div>
+
+        <!-- プラン2: 【新設・一番使いやすい】基本⑥ツールパック (最頻出コアセット) -->
+        <div class="pricing-card featured" id="planBasic6" style="border-color: rgba(6, 182, 212, 0.6); background: radial-gradient(circle at top right, rgba(6, 182, 212, 0.12), rgba(15, 23, 42, 0.95));">
+          <div class="badge-featured" style="background: linear-gradient(135deg, #06b6d4, #0284c7); color: #fff;">日常実務の決定版</div>
+          <div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+              <h3 class="plan-name" style="color: var(--accent-cyan);">基本⑥ツールパック</h3>
+              <span style="font-size:0.75rem; color:var(--accent-cyan); font-weight:800; background:rgba(6,182,212,0.15); padding:2px 8px; border-radius:12px; border:1px solid rgba(6,182,212,0.3);">木造最頻出</span>
+            </div>
+            <p class="plan-desc">木造住宅の日常設計で最も使う6大必須計算を1パックに凝縮。</p>
+            <div class="plan-price">
+              <span class="currency" style="color: var(--accent-cyan);">¥</span><span class="amount" style="color: var(--accent-cyan);">980</span>
+              <span class="period">/ 月 (税込)</span>
+              <div style="font-size: 0.85rem; color: #38bdf8; margin-top: 4px; font-weight: 700;">
+                年額一括: ¥10,000/年 (実質約2ヶ月お得)
+              </div>
+            </div>
+            <ul class="plan-features">
+              <li><span class="material-symbols-outlined" style="color:var(--accent-cyan);">verified</span> ① <strong>Z低減係数</strong> (横架材)</li>
+              <li><span class="material-symbols-outlined" style="color:var(--accent-cyan);">verified</span> ② <strong>めり込み補強計算</strong> (柱脚・土台・梁)</li>
+              <li><span class="material-symbols-outlined" style="color:var(--accent-cyan);">verified</span> ③ <strong>人通口補強計算</strong> (開口・割増筋)</li>
+              <li><span class="material-symbols-outlined" style="color:var(--accent-cyan);">verified</span> ④ <strong>基本の屋根構面 (直貼り)</strong></li>
+              <li><span class="material-symbols-outlined" style="color:var(--accent-cyan);">verified</span> ⑤ <strong>基本の屋根構面 (垂木工法)</strong></li>
+              <li><span class="material-symbols-outlined" style="color:var(--accent-cyan);">verified</span> ⑥ <strong>基本の床構面 (合板剛床)</strong></li>
+              <li><span class="material-symbols-outlined" style="color:var(--accent-cyan);">verified</span> <strong>案件コンソール1タブ統合 ＆ A4印刷</strong></li>
+            </ul>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <button type="button" class="btn btn-primary" style="width: 100%; cursor: pointer; background: linear-gradient(135deg, #06b6d4, #0284c7); border: none;" onclick="startCheckout('core_pack_monthly')">
+              月額プランで始める (¥980/月)
+            </button>
+            <button type="button" class="btn btn-ghost" style="width: 100%; cursor: pointer; font-size: 0.82rem;" onclick="startCheckout('core_pack_annual')">
+              年額一括で申し込む (¥10,000/年)
+            </button>
+          </div>
+        </div>
+
+        <!-- プラン3: カテゴリ別パック -->
+        <div class="pricing-card" id="planCategory">
+          <div>
+            <h3 class="plan-name">カテゴリ別パック</h3>
+            <p class="plan-desc">「基礎・擁壁」や「水平構面」など、専門分野の全ツールを使い放題。</p>
             <div class="plan-price">
               <span class="currency">¥</span><span class="amount">980</span>
               <span class="period">/ 月 (税込)</span>
             </div>
             <ul class="plan-features">
-              <li><span class="material-symbols-outlined">check</span> 選択した対象ツール 1件</li>
-              <li><span class="material-symbols-outlined">check</span> A4計算書出力 (無制限)</li>
-              <li><span class="material-symbols-outlined">check</span> JSON保存・復元機能</li>
-              <li><span class="material-symbols-outlined">check</span> 操作動画・マニュアル閲覧</li>
-            </ul>
-          </div>
-          <button type="button" class="btn btn-ghost" style="width: 100%; cursor: pointer;" onclick="startCheckout('individual_monthly')">
-            ツールを選んで登録 (¥980/月)
-          </button>
-        </div>
-
-        <!-- プラン2: カテゴリ別パック -->
-        <div class="pricing-card" id="planCategory">
-          <div>
-            <h3 class="plan-name">カテゴリ別パック</h3>
-            <p class="plan-desc">「基礎・擁壁」や「木造軸組」など、特定分野のツール群を使い放題。</p>
-            <div class="plan-price">
-              <span class="currency">¥</span><span class="amount">1,980</span>
-              <span class="period">/ 月 (税込)</span>
-            </div>
-            <ul class="plan-features">
               <li><span class="material-symbols-outlined">check</span> 対象カテゴリ内 全ツール使い放題</li>
-              <li><span class="material-symbols-outlined">check</span> 基礎・擁壁系なら8ツールすべて対応</li>
-              <li><span class="material-symbols-outlined">check</span> A4計算書出力 (無制限)</li>
-              <li><span class="material-symbols-outlined">check</span> 将来追加される同一カテゴリ新ツール</li>
+              <li><span class="material-symbols-outlined">check</span> 基礎・擁壁系なら9ツールすべて対応</li>
+              <li><span class="material-symbols-outlined">check</span> A4審査計算書出力 (無制限)</li>
+              <li><span class="material-symbols-outlined">check</span> 同一カテゴリの将来追加ツール自動対応</li>
             </ul>
           </div>
           <button type="button" class="btn btn-ghost" style="width: 100%; cursor: pointer;" onclick="startCheckout('category_monthly')">
-            カテゴリを選択して登録 (¥1,980/月)
+            カテゴリを選んで登録 (¥980/月)
           </button>
         </div>
 
-        <!-- プラン3: 全ツール使い放題 (VIP・おすすめ) -->
+        <!-- プラン4: 全ツール使い放題 (VIP・おすすめ) -->
         <div class="pricing-card featured" id="planAllAccess">
-          <div class="badge-featured">一番人気・おすすめ</div>
+          <div class="badge-featured">全機能VIP・おすすめ</div>
           <div>
             <h3 class="plan-name" style="color: #fff;">全ツール使い放題</h3>
             <p class="plan-desc">専門構造計算ツール群を制限なく自由に使えるプロフェッショナル仕様。</p>
             <div class="plan-price">
-              <span class="currency" style="color: var(--accent-gold);">¥</span><span class="amount" style="color: var(--accent-gold);">3,980</span>
+              <span class="currency" style="color: var(--accent-gold);">¥</span><span class="amount" style="color: var(--accent-gold);">1,980</span>
               <span class="period">/ 月 (税込)</span>
               <div style="font-size: 0.85rem; color: #a5b4fc; margin-top: 4px; font-weight: 700;">
-                年額一括: ¥39,800/年 (実質2ヶ月分無料)
+                年額一括: ¥19,800/年 (実質2ヶ月分無料)
               </div>
             </div>
             <ul class="plan-features">
@@ -1104,25 +1228,46 @@
           </div>
           <div style="display: flex; flex-direction: column; gap: 8px;">
             <button type="button" class="btn btn-gold" style="width: 100%; cursor: pointer;" onclick="startCheckout('all_access_monthly')">
-              月額プランを始める (¥3,980/月)
+              月額プランを始める (¥1,980/月)
             </button>
             <button type="button" class="btn btn-ghost" style="width: 100%; cursor: pointer; font-size: 0.82rem;" onclick="startCheckout('all_access_annual')">
-              年額一括で申し込む (¥39,800/年)
+              年額一括で申し込む (¥19,800/年)
             </button>
           </div>
         </div>
 
-        <!-- プラン4: AZ斜め壁CAD Pro (アーキトレンドゼロ連携) -->
+        <!-- プラン5: ツール個別プラン -->
+        <div class="pricing-card" id="planIndividual">
+          <div>
+            <h3 class="plan-name">ツール個別プラン</h3>
+            <p class="plan-desc">必要なツールだけをピンポイントで契約したい設計者様向け。</p>
+            <div class="plan-price">
+              <span class="currency">¥</span><span class="amount">490</span>
+              <span class="period">/ 月 (税込)</span>
+            </div>
+            <ul class="plan-features">
+              <li><span class="material-symbols-outlined">check</span> 選択した対象ツール 1件</li>
+              <li><span class="material-symbols-outlined">check</span> A4計算書出力 (無制限)</li>
+              <li><span class="material-symbols-outlined">check</span> JSON保存・復元機能</li>
+              <li><span class="material-symbols-outlined">check</span> 操作動画・マニュアル閲覧</li>
+            </ul>
+          </div>
+          <button type="button" class="btn btn-ghost" style="width: 100%; cursor: pointer;" onclick="startCheckout('individual_monthly')">
+            ツールを選んで登録 (¥490/月)
+          </button>
+        </div>
+
+        <!-- プラン6: AZ斜め壁CAD Pro (アーキトレンドゼロ連携) -->
         <div class="pricing-card cad-pro" id="planAzCad">
-          <div class="badge-cad-pro">CAD自動連携 Pro</div>
+          <div class="badge-cad-pro">CAD自動連携 ＆ サポート付</div>
           <div>
             <h3 class="plan-name" style="color: var(--accent-cyan);">AZ斜め壁 構造計算補助</h3>
-            <p class="plan-desc">ARCHITREND ZEROと直結。DXF自動パース・斜め耐力壁抽出Web-CAD。</p>
+            <p class="plan-desc">ARCHITREND ZEROと直結。DXF自動パース・斜め耐力壁抽出Web-CAD。実務サポートQ&A対応。</p>
             <div class="plan-price">
-              <span class="currency" style="color: var(--accent-cyan);">¥</span><span class="amount" style="color: var(--accent-cyan);">5,980</span>
-              <span class="period">/ 月 (税抜)</span>
+              <span class="currency" style="color: var(--accent-cyan);">¥</span><span class="amount" style="color: var(--accent-cyan);">19,800</span>
+              <span class="period">/ 月 (税込)</span>
               <div style="font-size: 0.85rem; color: #38bdf8; margin-top: 4px; font-weight: 700;">
-                年額一括: ¥39,800/年 (約4.5ヶ月分お得)
+                年額一括: ¥98,000/年 (年間約14万円お得)
               </div>
             </div>
             <ul class="plan-features">
@@ -1130,38 +1275,55 @@
               <li><span class="material-symbols-outlined">check</span> 直骨格(Straight Skeleton)自動重心・壁線算定</li>
               <li><span class="material-symbols-outlined">check</span> 3Dプレビュー＆多階層管理</li>
               <li><span class="material-symbols-outlined">check</span> 斜め耐力壁水平力分担・偏心率根拠出力</li>
+              <li><span class="material-symbols-outlined" style="color:var(--accent-gold);">support_agent</span> <strong>実務専門スタッフによる個別サポートQ&A付</strong></li>
             </ul>
           </div>
           <div style="display: flex; flex-direction: column; gap: 8px;">
             <button type="button" class="btn btn-gold" style="width: 100%; cursor: pointer;" onclick="startCheckout('az_monthly', 'az')">
-              月額プランで契約 (¥5,980/月)
+              月額プランで契約 (¥19,800/月)
             </button>
             <button type="button" class="btn btn-ghost" style="width: 100%; cursor: pointer; font-size: 0.82rem;" onclick="startCheckout('az_annual', 'az')">
-              年額一括で申し込む (¥39,800/年)
+              年額一括で申し込む (¥98,000/年)
             </button>
           </div>
         </div>
 
-        <!-- プラン5: マニュアル・解説動画 ＆ 案内図 (完全無料) -->
-        <div class="pricing-card" id="planFreeDocs">
+        <!-- プラン1: 実務者向け 完全無償プラン (¥0) -->
+        <div class="pricing-card free-tier" id="planFree" style="border-color: rgba(16,185,129,0.4); background: rgba(16,185,129,0.03);">
           <div>
-            <h3 class="plan-name">解説動画・案内図作図</h3>
-            <p class="plan-desc">適合判断リソース＆案内図ツール。どなたでも完全無料で今すぐ利用可能。</p>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+              <h3 class="plan-name" style="color: var(--accent-green);">実務者 完全無償プラン</h3>
+              <span style="font-size:0.75rem; color:var(--accent-green); font-weight:800; background:rgba(16,185,129,0.15); padding:2px 8px; border-radius:12px; border:1px solid rgba(16,185,129,0.3);">登録不要</span>
+            </div>
+            <p class="plan-desc">実務を加速する6大無償エンジン＆マニュアル。どなたでも完全無料で今すぐ利用可能。</p>
             <div class="plan-price">
-              <span class="currency">¥</span><span class="amount">0</span>
+              <span class="currency" style="color:var(--accent-green);">¥</span><span class="amount" style="color:var(--accent-green);">0</span>
               <span class="period">/ 完全無料提供</span>
             </div>
             <ul class="plan-features">
-              <li><span class="material-symbols-outlined">check</span> <strong>案内図作図 (map.mdo3.com) 完全無料</strong></li>
-              <li><span class="material-symbols-outlined">check</span> 全ツールの操作解説動画</li>
-              <li><span class="material-symbols-outlined">check</span> 機能・判断基準マニュアル</li>
-              <li><span class="material-symbols-outlined">check</span> 地域定数自動検索 (Z・S・V0)</li>
-              <li><span class="material-symbols-outlined">check</span> 登録不要で誰でも閲覧・利用可能</li>
+              <li><span class="material-symbols-outlined" style="color:var(--accent-green);">check</span> <strong>案内図作図 (map.mdo3.com) 完全無料</strong></li>
+              <li><span class="material-symbols-outlined" style="color:var(--accent-green);">check</span> <strong>木造ベタ基礎 断面図作図＆dt算定CAD</strong></li>
+              <li><span class="material-symbols-outlined" style="color:var(--accent-green);">check</span> <strong>屋根葺き材検討・柱曲げ計算・梁上耐力壁</strong></li>
+              <li><span class="material-symbols-outlined" style="color:var(--accent-green);">check</span> 設計用 地域定数自動検索 (Z・S・V0)</li>
+              <li><span class="material-symbols-outlined" style="color:var(--accent-green);">check</span> 全ツールの操作解説動画・マニュアル閲覧</li>
             </ul>
           </div>
-          <a href="https://map.mdo3.com" target="_blank" class="btn btn-ghost" style="width: 100%; border-color: rgba(16,185,129,0.4); color: var(--accent-green);">
-            <span class="material-symbols-outlined">map</span> 案内図ツールを開く (無料)
+          <a href="#freeToolsZone" class="btn btn-ghost" style="width: 100%; border-color: rgba(16,185,129,0.4); color: var(--accent-green); text-align:center;">
+            <span class="material-symbols-outlined">redeem</span> 無償ツール群を使う (¥0)
           </a>
+        </div>
+
+      </div>
+
+      <!-- アカウント同時アクセス・データ保存に関する重要注意事項 -->
+      <div style="margin-top: 32px; background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(239, 68, 68, 0.35); border-radius: var(--radius-md); padding: 20px 24px; display: flex; align-items: flex-start; gap: 16px;">
+        <span class="material-symbols-outlined" style="color: #ef4444; font-size: 26px; flex-shrink: 0; margin-top: 2px;">gpp_maybe</span>
+        <div style="font-size: 0.88rem; line-height: 1.6; color: var(--text-sub);">
+          <strong style="color: #fff; font-size: 0.95rem; display: block; margin-bottom: 4px;">
+            【重要】アカウントのご利用・同時アクセス制限およびデータ保存について
+          </strong>
+          有償ツール群はセキュリティおよびライセンス保護のため、<strong>1アカウントにつき「同時にアクセスできる端末は1台（1ユーザー）のみ」</strong>に制限されています。<br>
+          別端末から新しくログインした場合、それまで作業していた端末は即座に自動ログアウトされます。<strong>その際、保存（JSON保存等）していなかった編集中の入力データは破棄・消去されます</strong>ので、作業の中断や端末の切替時は必ず事前にデータの保存を行ってください。複数名で同時にご利用される場合は、人数分のアカウント契約をお願い申し上げます。
         </div>
       </div>
     </div>
@@ -1366,6 +1528,9 @@
             <a href="https://x.com/mdo3_official" target="_blank" rel="noopener" class="footer-sns-badge" title="公式X (ツール改変速報)" style="display:inline-flex; align-items:center; gap:6px; padding:6px 12px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); border-radius:20px; font-size:0.78rem; color:#f8fafc; text-decoration:none; transition:all 0.2s;">
               <span style="font-weight:900; font-size:0.85rem;">𝕏</span> <span>@mdo3_official</span>
             </a>
+            <a href="https://www.threads.net/@mdo3_official" target="_blank" rel="noopener" class="footer-sns-badge" title="公式Threads (開発背景・実務話)" style="display:inline-flex; align-items:center; gap:6px; padding:6px 12px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); border-radius:20px; font-size:0.78rem; color:#f8fafc; text-decoration:none; transition:all 0.2s;">
+              <span style="font-weight:900; font-size:0.85rem;">＠</span> <span>Threads</span>
+            </a>
             <a href="https://note.com/mdo3" target="_blank" rel="noopener" class="footer-sns-badge" title="公式note+ (技術解説・Q&A)" style="display:inline-flex; align-items:center; gap:6px; padding:6px 12px; background:rgba(40,199,111,0.1); border:1px solid rgba(40,199,111,0.25); border-radius:20px; font-size:0.78rem; color:#4ade80; text-decoration:none; transition:all 0.2s;">
               <span style="font-weight:700;">note+</span>
             </a>
@@ -1382,30 +1547,31 @@
         <div class="footer-col">
           <h5>サービス群</h5>
           <ul>
+            <li><a href="/workspace.html" target="_blank">案件統合コンソール (1タブ作業)</a></li>
             <li><a href="https://app.mdo3.com/index.html" target="_blank">構造計算補助ツール群 (29)</a></li>
             <li><a href="#regionalSearch">地域定数自動検索 (Z・S・V0)</a></li>
             <li><a href="https://map.mdo3.com" target="_blank">案内図申請作図 (MAP / 無料)</a></li>
             <li><a href="https://az.mdo3.com" target="_blank">斜め壁計算補助 (AZ / CAD)</a></li>
-            <li><a href="/studio/" target="_blank" style="color:var(--accent-gold);">動画広告スタジオ (Studio)</a></li>
           </ul>
         </div>
 
         <div class="footer-col">
-          <h5>ご利用案内</h5>
+          <h5>ご利用・サポート</h5>
           <ul>
             <li><a href="#toolsCatalog">ツール一覧 & 判断基準</a></li>
-            <li><a href="#freeLearning">操作解説動画・マニュアル</a></li>
+            <li><a href="/faq.html" style="color:var(--accent-cyan); font-weight:700;">よくある質問・技術Q&A</a></li>
             <li><a href="#pricingPlans">料金プラン案内</a></li>
-            <li><a href="https://app.mdo3.com/login">ログイン / 会員登録</a></li>
+            <li><a href="/contact.html">不具合報告・改善要望フォーム</a></li>
+            <li><a href="/studio/" target="_blank">広報スタジオ (Studio)</a></li>
           </ul>
         </div>
 
         <div class="footer-col">
-          <h5>規約・企業情報</h5>
+          <h5>規約・法的表記</h5>
           <ul>
-            <li><a href="https://app.mdo3.com/lp/terms/index.html" target="_blank">利用規約</a></li>
-            <li><a href="https://app.mdo3.com/lp/privacy/index.html" target="_blank">プライバシーポリシー</a></li>
-            <li><a href="https://app.mdo3.com/lp/tokusho/index.html" target="_blank">特定商取引法に基づく表記</a></li>
+            <li><a href="/terms.html">利用規約（免責・サポート範囲）</a></li>
+            <li><a href="/privacy.html">プライバシーポリシー</a></li>
+            <li><a href="/tokusho.html">特定商取引法に基づく表記</a></li>
             <li><a href="https://t-smile.co.jp" target="_blank">運営会社概要</a></li>
           </ul>
         </div>

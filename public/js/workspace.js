@@ -65,6 +65,16 @@
       desc: "垂木＋構造用合板屋根の倍率算定 (告示1541号)",
       planGroup: ["core_pack", "all"]
     },
+    {
+      id: "yuka_kihon",
+      name: "⑥ 基本の床構面 (合板床)",
+      category: "horizontal",
+      frequent: true,
+      icon: "grid_view",
+      url: "/app/tools/shosai-yuka-kihon.html",
+      desc: "根太レス剛床・合板床構面の床倍率算定 (告示1541号)",
+      planGroup: ["core_pack", "all"]
+    },
 
     // --- 基礎・擁壁系 ---
     {
@@ -138,27 +148,65 @@
       planGroup: ["all"]
     },
 
-    // --- 木造軸組・接合部系 ---
+    // --- 🎁 実務者向け 完全無償ツール群 (登録不要・いつでも¥0) ---
+    {
+      id: "foundation_cad",
+      name: "木造ベタ基礎 梁断面図作図 (CAD)",
+      category: "free",
+      frequent: false,
+      isFree: true,
+      icon: "draw",
+      url: "/foundation-cad.html",
+      desc: "【完全無償】平均GL連動・令38条判定・主筋dt算定・PROモード一括DXF",
+      planGroup: ["free_trial", "core_pack", "single_jintsuko", "all"]
+    },
+    {
+      id: "roof_calc",
+      name: "屋根葺き材等の検討",
+      category: "free",
+      frequent: false,
+      isFree: true,
+      icon: "roofing",
+      url: "/app/tools/roof_calc.html",
+      desc: "【完全無償】基準風速V0・地表面粗度・屋根勾配による風圧力＆野地板耐風圧検定",
+      planGroup: ["free_trial", "core_pack", "single_jintsuko", "all"]
+    },
     {
       id: "hasira_mage",
       name: "柱の曲げ計算 (V0連動)",
-      category: "wood",
+      category: "free",
       frequent: false,
-      icon: "view_column",
+      isFree: true,
+      icon: "vertical_align_center",
       url: "/app/tools/hasira-mage.html",
-      desc: "外壁柱・吹抜通し柱の風圧力曲げ応力検定",
-      planGroup: ["all"]
+      desc: "【完全無償】風圧力と軸力の複合応力比検定 ＆ M図リアルタイム描画",
+      planGroup: ["free_trial", "core_pack", "single_jintsuko", "all"]
     },
     {
       id: "hariue",
       name: "梁上耐力壁の剛性低減",
-      category: "wood",
+      category: "free",
       frequent: false,
-      icon: "call_split",
+      isFree: true,
+      icon: "architecture",
       url: "/app/tools/hariue.html",
-      desc: "梁上に配置された耐力壁の剛性低減係数算定",
-      planGroup: ["all"]
+      desc: "【完全無償】梁上に載る耐力壁の剛性低減係数γ算定 ＆ 横架材断面検定",
+      planGroup: ["free_trial", "core_pack", "single_jintsuko", "all"]
     },
+    {
+      id: "map_editor",
+      name: "スマート案内図作成 (別タブ)",
+      category: "free",
+      frequent: false,
+      isFree: true,
+      isExternal: true,
+      icon: "map",
+      url: "https://map.mdo3.com/",
+      desc: "【完全無償】確認申請第1面添付の敷地付近見取図を1分でPDF/画像出力",
+      planGroup: ["free_trial", "core_pack", "single_jintsuko", "all"]
+    },
+
+    // --- 木造軸組・接合部系 (有償) ---
     {
       id: "hashigo",
       name: "はしご垂木 計算",
@@ -177,16 +225,6 @@
       icon: "balcony",
       url: "/app/tools/rigid_frame_R.html",
       desc: "木造片持ち庇・バルコニーの曲げモーメント算定",
-      planGroup: ["all"]
-    },
-    {
-      id: "roof_calc",
-      name: "屋根葺き材等の検討",
-      category: "wood",
-      frequent: false,
-      icon: "roofing",
-      url: "/app/tools/roof_calc.html",
-      desc: "屋根ふき材の風圧力・固定釘の引抜耐力検討",
       planGroup: ["all"]
     },
 
@@ -249,16 +287,6 @@
       icon: "sync_alt",
       url: "/app/tools/shosai-shinkabe.html",
       desc: "⑧釘配列連動: 真壁耐力壁の許容せん断耐力・壁倍率算定",
-      planGroup: ["all"]
-    },
-    {
-      id: "yuka_kihon",
-      name: "基本の床構面 (合板床・告示)",
-      category: "horizontal",
-      frequent: false,
-      icon: "grid_view",
-      url: "/app/tools/shosai-yuka-kihon.html",
-      desc: "根太レス剛床・合板床構面の床倍率算定 (告示1541号)",
       planGroup: ["all"]
     },
     {
@@ -394,6 +422,7 @@
 
     // 2. カテゴリ別プルタブ (ドロップダウン)
     const categories = [
+      { id: 'free', name: '🎁 完全無償実務ツール', icon: 'redeem' },
       { id: 'foundation', name: '基礎・擁壁系', icon: 'foundation' },
       { id: 'wood', name: '木造軸組系', icon: 'view_column' },
       { id: 'horizontal', name: '水平構面・2in1任意配列', icon: 'sync_alt' },
@@ -410,8 +439,8 @@
 
       return `
         <div class="ws-dropdown ${isCurrentCatActive ? 'has-active' : ''}" id="dropdown_${cat.id}">
-          <button type="button" class="ws-dropdown-btn ${isCurrentCatActive ? 'active' : ''}" onclick="window.toggleDropdown('${cat.id}')">
-            <span class="material-symbols-outlined" style="font-size:15px; color:var(--ws-cyan);">${cat.icon}</span>
+          <button type="button" class="ws-dropdown-btn ${isCurrentCatActive ? 'active' : ''} ${cat.id === 'free' ? 'btn-free-group' : ''}" onclick="window.toggleDropdown('${cat.id}')" style="${cat.id === 'free' ? 'border-color:rgba(16,185,129,0.4); color:#4ade80; background:rgba(16,185,129,0.08);' : ''}">
+            <span class="material-symbols-outlined" style="font-size:15px; color:${cat.id === 'free' ? '#4ade80' : 'var(--ws-cyan)'};">${cat.icon}</span>
             <span>${labelText}</span>
             <span class="material-symbols-outlined" style="font-size:14px;">arrow_drop_down</span>
           </button>
@@ -422,16 +451,17 @@
               const classes = [
                 'ws-dropdown-item',
                 isActive ? 'active' : '',
-                isSubscribed ? 'subscribed' : 'locked'
+                isSubscribed ? 'subscribed' : 'locked',
+                tool.isFree ? 'is-free-item' : ''
               ].filter(Boolean).join(' ');
 
               return `
                 <button type="button" class="${classes}" onclick="window.onSelectToolTab('${tool.id}'); window.closeAllDropdowns();">
                   <span style="display:flex; align-items:center; gap:6px;">
-                    <span class="material-symbols-outlined" style="font-size:14px;">${isSubscribed ? tool.icon : 'lock'}</span>
+                    <span class="material-symbols-outlined" style="font-size:14px; color:${tool.isFree ? '#4ade80' : ''};">${isSubscribed ? tool.icon : 'lock'}</span>
                     <span>${tool.name}</span>
                   </span>
-                  ${!isSubscribed ? '<span class="material-symbols-outlined" style="font-size:13px; color:#f59e0b;">lock</span>' : ''}
+                  ${tool.isFree ? '<span class="tag-free-mini" style="font-size:0.68rem; background:rgba(16,185,129,0.2); color:#4ade80; border:1px solid rgba(16,185,129,0.4); padding:1px 6px; border-radius:10px;">¥0</span>' : (!isSubscribed ? '<span class="material-symbols-outlined" style="font-size:13px; color:#f59e0b;">lock</span>' : '')}
                 </button>
               `;
             }).join('')}
@@ -466,14 +496,23 @@
 
   // サブスク判定ロジック
   function checkSubscription(toolId) {
-    if (currentPlanMode === 'all') return true;
     const tool = WORKSPACE_TOOLS.find(t => t.id === toolId);
     if (!tool) return false;
+    if (tool.isFree) return true; // 無償ツールは常にアンロック
+    if (currentPlanMode === 'all') return true;
     return tool.planGroup.includes(currentPlanMode);
   }
 
   // ツール切り替えイベント
   window.onSelectToolTab = function(toolId) {
+    const tool = WORKSPACE_TOOLS.find(t => t.id === toolId);
+    if (!tool) return;
+
+    if (tool.isExternal) {
+      window.open(tool.url, '_blank');
+      return;
+    }
+
     const isSubscribed = checkSubscription(toolId);
     if (!isSubscribed) {
       openSubscriptionModal(toolId);
@@ -584,9 +623,9 @@
 
   function getPlanName(plan) {
     switch (plan) {
-      case 'all': return '全ツール使い放題 (月額¥3,980)';
-      case 'core_pack': return '基本構造セット (Z/めり込み/人通口/屋根)';
-      case 'single_jintsuko': return '人通口補強 単体契約 (月額¥980)';
+      case 'all': return '全ツール使い放題 (月額¥1,980 / 年額¥19,800)';
+      case 'core_pack': return '基本⑥ツールパック (Z/めり込み/人通口/屋根直/屋根垂/床) [月額¥980 / 年額¥10,000]';
+      case 'single_jintsuko': return '個別ツール契約 (月額¥490)';
       default: return 'フリー体験';
     }
   }

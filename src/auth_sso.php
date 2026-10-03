@@ -53,6 +53,10 @@ class MDO3_Auth {
         $upd = $pdo->prepare("UPDATE magic_links SET used_at = ? WHERE id = ?");
         $upd->execute([$now, $record['id']]);
 
+        // 【単一端末制限 (Single Session)】過去の既存セッションを全削除（他端末は即座に無効化）
+        $delOld = $pdo->prepare("DELETE FROM sessions WHERE user_id = ?");
+        $delOld->execute([$record['user_id']]);
+
         // 共通セッショントークン生成 (128文字)
         $sessionToken = bin2hex(random_bytes(64));
         $expiresAt = date('Y-m-d H:i:s', strtotime('+30 days'));

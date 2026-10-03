@@ -12,9 +12,23 @@
  */
 
 $stripeSecretKey = getenv('STRIPE_SECRET_KEY');
-if (!$stripeSecretKey && file_exists(__DIR__ . '/../.env')) {
-    $env = parse_ini_file(__DIR__ . '/../.env');
-    $stripeSecretKey = $env['STRIPE_SECRET_KEY'] ?? null;
+if (!$stripeSecretKey) {
+    $envPaths = [
+        __DIR__ . '/../.env',
+        '/home/mdo3/mdo3.com/public_html/app/.env',
+        dirname(__DIR__) . '/.env'
+    ];
+    foreach ($envPaths as $ep) {
+        if (file_exists($ep)) {
+            $lines = file($ep, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+            foreach ($lines as $line) {
+                if (strpos(trim($line), 'STRIPE_SECRET_KEY=') === 0) {
+                    $stripeSecretKey = trim(substr(trim($line), strlen('STRIPE_SECRET_KEY=')));
+                    break 2;
+                }
+            }
+        }
+    }
 }
 if (!$stripeSecretKey) {
     die("Error: STRIPE_SECRET_KEY is not set.\n");
@@ -49,50 +63,70 @@ foreach ($existingProducts as $p) {
     }
 }
 
-// 登録定義
+// 登録定義 (2026-10-02 全面価格改定)
 $plansToCreate = [
     [
         'product_name' => 'mdo3 構造計算 ツール個別プラン',
-        'description'  => '必要な計算ツールを1件選択して利用できる個別月額プラン (980円/月)',
+        'description'  => '必要な計算ツールを1件選択して利用できる個別月額プラン (490円/月)',
         'prices' => [
             [
-                'unit_amount' => 980,
+                'unit_amount' => 490,
                 'currency'    => 'jpy',
                 'recurring'   => ['interval' => 'month'],
-                'nickname'    => 'ツール個別 月額980円',
+                'nickname'    => 'ツール個別 月額490円',
                 'key'         => 'individual_monthly'
             ]
         ]
     ],
     [
-        'product_name' => 'mdo3 構造計算 カテゴリ別パック',
-        'description'  => '基礎・擁壁、木造軸組、水平構面など特定カテゴリのツールが使い放題 (1,980円/月)',
+        'product_name' => 'mdo3 構造計算 基本⑥ツールパック',
+        'description'  => '木造実務の最頻出6大ツール（Z低減係数・めり込み・人通口補強・屋根直貼り・屋根垂木・合板床）が使い放題 (980円/月, 10,000円/年)',
         'prices' => [
             [
-                'unit_amount' => 1980,
+                'unit_amount' => 980,
                 'currency'    => 'jpy',
                 'recurring'   => ['interval' => 'month'],
-                'nickname'    => 'カテゴリ別パック 月額1,980円',
+                'nickname'    => '基本⑥ツールパック 月額980円',
+                'key'         => 'core_pack_monthly'
+            ],
+            [
+                'unit_amount' => 10000,
+                'currency'    => 'jpy',
+                'recurring'   => ['interval' => 'year'],
+                'nickname'    => '基本⑥ツールパック 年額10,000円 (実質約2ヶ月お得)',
+                'key'         => 'core_pack_annual'
+            ]
+        ]
+    ],
+    [
+        'product_name' => 'mdo3 構造計算 カテゴリ別パック',
+        'description'  => '基礎・擁壁、木造軸組、水平構面など特定カテゴリのツールが使い放題 (980円/月)',
+        'prices' => [
+            [
+                'unit_amount' => 980,
+                'currency'    => 'jpy',
+                'recurring'   => ['interval' => 'month'],
+                'nickname'    => 'カテゴリ別パック 月額980円',
                 'key'         => 'category_monthly'
             ]
         ]
     ],
     [
         'product_name' => 'mdo3 構造計算 全ツール使い放題 (VIP)',
-        'description'  => '全28の専門構造計算ツール＋今後追加される新ツールが完全使い放題のプロフェッショナルプラン',
+        'description'  => '全29の専門構造計算ツール＋今後追加される新ツールが完全使い放題のプロフェッショナルプラン',
         'prices' => [
             [
-                'unit_amount' => 3980,
+                'unit_amount' => 1980,
                 'currency'    => 'jpy',
                 'recurring'   => ['interval' => 'month'],
-                'nickname'    => '全ツール使い放題 月額3,980円',
+                'nickname'    => '全ツール使い放題 月額1,980円',
                 'key'         => 'all_access_monthly'
             ],
             [
-                'unit_amount' => 39800,
+                'unit_amount' => 19800,
                 'currency'    => 'jpy',
                 'recurring'   => ['interval' => 'year'],
-                'nickname'    => '全ツール使い放題 年額39,800円 (実質2ヶ月無料)',
+                'nickname'    => '全ツール使い放題 年額19,800円 (実質2ヶ月分無料)',
                 'key'         => 'all_access_annual'
             ]
         ]
@@ -181,5 +215,16 @@ echo json_encode($generatedPriceIDs, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)
 
 // 設定ファイルの雛形出力
 $configContent = "<?php\n// Generated Stripe Plans Configuration\nreturn " . var_export($generatedPriceIDs, true) . ";\n";
-file_put_contents(__DIR__ . '/../config/stripe_plans.php', $configContent);
-echo "[+] Saved configuration to config/stripe_plans.php\n";
+
+$targetDirs = [
+    __DIR__ . '/../config',
+    '/home/mdo3/mdo3.com/public_html/config',
+    '/home/mdo3/config'
+];
+foreach ($targetDirs as $td) {
+    if (is_dir(dirname($td))) {
+        if (!is_dir($td)) @mkdir($td, 0755, true);
+        @file_put_contents($td . '/stripe_plans.php', $configContent);
+    }
+}
+echo "[+] Saved configuration to stripe_plans.php\n";

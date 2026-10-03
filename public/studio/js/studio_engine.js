@@ -147,12 +147,119 @@
 
   document.addEventListener('DOMContentLoaded', () => {
     initDomReferences();
+    initStudioAuth();
     populateToolSelect();
     bindEvents();
     generateScenarioDraft(); // 初期素案生成
     fetchUploadedVideos();
     fetchToolUpdates();
   });
+
+  // ==========================================
+  // STUDIO 認証マネージャー
+  // ==========================================
+  function initStudioAuth() {
+    const overlay = document.getElementById('studioAuthOverlay');
+    const userBadge = document.getElementById('studioUserBadge');
+    const userNameSpan = document.getElementById('studioUserName');
+    const pinInput = document.getElementById('authPinInput');
+    const btnQuickAuth = document.getElementById('btnQuickAuth');
+    const emailInput = document.getElementById('authEmailInput');
+    const btnSendMagic = document.getElementById('btnSendMagicLink');
+    const statusMsg = document.getElementById('authStatusMsg');
+
+    // 1. 認証状態チェック
+    fetch('api/studio_auth.php?action=check')
+      .then(res => res.json())
+      .then(data => {
+        if (data.authenticated) {
+          if (overlay) overlay.style.display = 'none';
+          if (userBadge) {
+            userBadge.style.display = 'inline-flex';
+            if (userNameSpan) userNameSpan.innerText = data.user.name || '管理者';
+          }
+        } else {
+          if (overlay) overlay.style.display = 'flex';
+        }
+      })
+      .catch(() => {
+        // オフラインまたはローカルフォールバック
+        if (overlay) overlay.style.display = 'none';
+      });
+
+    // 2. クイックPIN認証
+    if (btnQuickAuth && pinInput) {
+      const doQuickAuth = () => {
+        const pin = pinInput.value.trim();
+        if (!pin) {
+          if (statusMsg) statusMsg.innerHTML = '<span style="color:#ef4444;">PINコードを入力してください</span>';
+          return;
+        }
+        if (statusMsg) statusMsg.innerHTML = '<span style="color:#f59e0b;">認証中...</span>';
+
+        fetch('api/studio_auth.php?action=quick_auth', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ passcode: pin })
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            if (statusMsg) statusMsg.innerHTML = `<span style="color:#10b981;">✅ ${data.message}</span>`;
+            setTimeout(() => {
+              if (overlay) overlay.style.display = 'none';
+              if (userBadge) {
+                userBadge.style.display = 'inline-flex';
+                if (userNameSpan) userNameSpan.innerText = data.user?.name || '管理者';
+              }
+            }, 600);
+          } else {
+            if (statusMsg) statusMsg.innerHTML = `<span style="color:#ef4444;">❌ ${data.error || '認証エラー'}</span>`;
+          }
+        })
+        .catch(err => {
+          if (statusMsg) statusMsg.innerHTML = `<span style="color:#ef4444;">通信エラー: ${err.message}</span>`;
+        });
+      };
+
+      btnQuickAuth.addEventListener('click', doQuickAuth);
+      pinInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') doQuickAuth();
+      });
+    }
+
+    // 3. マジックリンク送信
+    if (btnSendMagic && emailInput) {
+      btnSendMagic.addEventListener('click', () => {
+        const email = emailInput.value.trim();
+        if (!email) {
+          if (statusMsg) statusMsg.innerHTML = '<span style="color:#ef4444;">メールアドレスを入力してください</span>';
+          return;
+        }
+        if (statusMsg) statusMsg.innerHTML = '<span style="color:#f59e0b;">マジックリンク送信中...</span>';
+
+        fetch('api/studio_auth.php?action=request_magic_link', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: email })
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            if (statusMsg) statusMsg.innerHTML = `<span style="color:#10b981;">✅ ${data.message}</span>`;
+            if (data.debug_url) {
+              console.log('[STUDIO Auth Debug URL]', data.debug_url);
+            }
+          } else {
+            if (statusMsg) statusMsg.innerHTML = `<span style="color:#ef4444;">❌ ${data.error || '送信失敗'}</span>`;
+          }
+        })
+        .catch(err => {
+          if (statusMsg) statusMsg.innerHTML = `<span style="color:#ef4444;">通信エラー: ${err.message}</span>`;
+        });
+      });
+    }
+  }
 
   function initDomReferences() {
     tabStudio = document.getElementById('tabStudio');
@@ -1070,13 +1177,22 @@ https://${isMap ? 'map' : 'app'}.mdo3.com/
           </div>
         </div>
 
-        <!-- アクションボタン群 (note+ / X) -->
-        <div class="update-actions-bar">
+        <!-- アクションボタン群 (5大SNS: Threads / note+ / X / Instagram / YouTube) -->
+        <div class="update-actions-bar" style="display:flex; flex-wrap:wrap; gap:6px;">
+          <button type="button" class="btn-update-action" onclick="window.copyThreadsPost(${idx})" style="background:rgba(168,85,247,0.15); border-color:rgba(168,85,247,0.4); color:#c084fc;">
+            <span class="material-symbols-outlined" style="font-size:15px;">forum</span> 🧵 Threads用 投稿文をコピー
+          </button>
           <button type="button" class="btn-update-action note-btn" onclick="window.copyNoteArticle(${idx})">
             <span class="material-symbols-outlined" style="font-size:15px;">article</span> 📝 note+ 記事ドラフトをコピー
           </button>
           <button type="button" class="btn-update-action x-btn" onclick="window.copyXPost(${idx})">
             <span class="material-symbols-outlined" style="font-size:15px;">content_copy</span> 🐦 X 速報ポストをコピー
+          </button>
+          <button type="button" class="btn-update-action" onclick="window.copyInstagramCaption(${idx})" style="background:rgba(225,48,108,0.15); border-color:rgba(225,48,108,0.4); color:#f472b6;">
+            <span class="material-symbols-outlined" style="font-size:15px;">photo_camera</span> 📸 Instagram キャプションをコピー
+          </button>
+          <button type="button" class="btn-update-action" onclick="window.copyYouTubeDescription(${idx})" style="background:rgba(239,68,68,0.15); border-color:rgba(239,68,68,0.4); color:#f87171;">
+            <span class="material-symbols-outlined" style="font-size:15px;">play_circle</span> ▶ YouTube 概要欄・タグをコピー
           </button>
           <button type="button" class="btn-update-action x-btn" onclick="window.openXIntent(${idx})" style="background:rgba(56, 189, 248, 0.2);">
             <span class="material-symbols-outlined" style="font-size:15px;">send</span> 🚀 Xで今すぐ投稿
@@ -1085,6 +1201,36 @@ https://${isMap ? 'map' : 'app'}.mdo3.com/
       </div>
     `).join('');
   }
+
+  // Threads用 投稿文コピー
+  window.copyThreadsPost = function(idx) {
+    if (!toolUpdatesData[idx]) return;
+    const item = toolUpdatesData[idx];
+    const text = item.threads_post || `${item.tool_name}の最新アップデート速報！\n\n【改変内容】\n${item.what_changed}\n\n【実務メリット】\n${item.user_benefit}\n\n【準拠法令】\n${item.standards_matched}\n\n詳細・ブラウザで試す▶ ${item.tool_url}\n\n#mdo3 #構造計算 #建築設計 #木造住宅 #確認申請`;
+    navigator.clipboard.writeText(text).then(() => {
+      alert(`【${item.tool_name}】の Threads用 投稿文（500文字・ハッシュタグ付）をコピーしました！\nThreadsアプリまたはブラウザに貼り付けて投稿できます。`);
+    });
+  };
+
+  // Instagram用 キャプションコピー
+  window.copyInstagramCaption = function(idx) {
+    if (!toolUpdatesData[idx]) return;
+    const item = toolUpdatesData[idx];
+    const text = item.instagram_caption || `【mdo3 構造計算アップデート】${item.tool_name}\n\n建築実務者の皆様へ！構造計算クラウドmdo3がアップデートしました。\n\n📌 改変内容:\n${item.what_changed}\n\n💡 設計実務のメリット:\n${item.user_benefit}\n\n🏛 準拠法令・規準:\n${item.standards_matched}\n\nプロフィールのリンクから今すぐブラウザでお試しいただけます👉 @mdo3_studio\n\n#構造計算 #建築士 #意匠設計 #確認申請 #木造住宅 #許容応力度計算 #mdo3`;
+    navigator.clipboard.writeText(text).then(() => {
+      alert(`【${item.tool_name}】の Instagram用 キャプションをコピーしました！`);
+    });
+  };
+
+  // YouTube用 概要欄コピー
+  window.copyYouTubeDescription = function(idx) {
+    if (!toolUpdatesData[idx]) return;
+    const item = toolUpdatesData[idx];
+    const text = item.youtube_description || `【mdo3 構造計算実務】${item.tool_name} の使い方・法改正対応解説\n\n▼ ツール利用URL:\n${item.tool_url}\n\n▼ 今回のアップデート概要:\n${item.what_changed}\n\n▼ 実務上のメリット:\n${item.user_benefit}\n\n▼ 準拠法令・審査適合:\n${item.standards_matched}\n\n#mdo3 #構造計算 #木造住宅 #建築確認申請 #許容応力度計算`;
+    navigator.clipboard.writeText(text).then(() => {
+      alert(`【${item.tool_name}】の YouTube用 概要欄・タグテキストをコピーしました！`);
+    });
+  };
 
   // note+ 記事ドラフトコピー
   window.copyNoteArticle = function(idx) {

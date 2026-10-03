@@ -4,15 +4,46 @@
  * mdo3 構造計算補助ツール 全28ツールのカタログマスターデータ
  * - カテゴリ分類 (4大カテゴリ)
  * - できること (Features) / できないこと・留意点 (Limitations)
- * - 価格区分 (個別980円/月、カテゴリ1,980円/月、全ツール3,980円/月)
+ * - 価格区分 (個別490円/月、基本⑥・カテゴリ別980円/月、全ツール1,980円/月・年額19,800円)
  * - 無料マニュアル & 操作説明動画 URL
  */
 
 const MDO3_TOOLS_CATALOG = [
   // ==========================================
-  // カテゴリ1: 基礎・擁壁・地盤系 (8ツール) - 利用頻度順
-  // ①人通口補強、②片持ち基礎梁(柱あり)、③片持ち基礎梁(柱なし)、④L型擁壁、⑤逆L/逆T擁壁、⑥土砂災害、⑦釣り合い鉄筋比、⑧KBI用
+  // カテゴリ1: 基礎・擁壁・地盤系 (9ツール) - 利用頻度順
+  // ⓪基礎断面図作図＆dt算定、①人通口補強、②片持ち基礎梁(柱あり)、③片持ち基礎梁(柱なし)、④L型擁壁、⑤逆L/逆T擁壁、⑥土砂災害、⑦釣り合い鉄筋比、⑧KBI用
   // ==========================================
+  {
+    id: "foundation_cad",
+    category: "foundation",
+    categoryName: "基礎・擁壁・地盤系",
+    sortOrder: 0,
+    title: "木造ベタ基礎 梁断面図作図 ＆ dt・平均GL自動算定",
+    summary: "2025年法改正対応。リアルタイムSVG断面作図、令38条・告示1347号・凍結深度適合判定、主筋2段配筋dt・有効梁成d算定、PROモード全符号DXF一括出力。",
+    icon: "draw",
+    url: "/foundation-cad.html",
+    videoUrl: "#video-foundation-cad",
+    manualUrl: "#manual-foundation-cad",
+    isFree: true,
+    priceText: "完全無償 (¥0)",
+    badgeLabel: "完全無償",
+    pricing: { individual: 0, categoryPack: 0, allAccess: 0 },
+    standards: [
+      "建築基準法施行令 第38条 (基礎立上り高・土台防腐)",
+      "平成12年建設省告示 第1347号 (根入れ深さ・凍結深度)",
+      "日本建築学会 木造軸組工法住宅の許容応力度設計 (グレー本)"
+    ],
+    canDo: [
+      "設計GLと平均GLの高低差入力による立上り高H・根入れDfのリアルタイム自動換算",
+      "上主筋・下主筋（D13/D16/D19・縦2段筋）の幾何重心距離dt・有効梁成dの即時算出",
+      "FG1〜FGn 全符号の一括管理・Shift_JIS互換DXF出力（PROモード）",
+      "ARCHITREND ZERO・許容応力度計算用プロパティテキストの一括コピー"
+    ],
+    cannotDo: [
+      "杭基礎の直接支持力解析（べた基礎・布基礎対象）",
+      "地盤改良体の3次元応力解析"
+    ]
+  },
   {
     id: "jintsuko",
     category: "foundation",
@@ -24,7 +55,7 @@ const MDO3_TOOLS_CATALOG = [
     url: "https://app.mdo3.com/tools/jintsuko.html",
     videoUrl: "#video-jintsuko",
     manualUrl: "#manual-jintsuko",
-    pricing: { individual: 980, categoryPack: 1980, allAccess: 3980 },
+    pricing: { individual: 490, categoryPack: 980, allAccess: 1980 },
     standards: [
       "建築基準法施行令 第82条 (許容応力度計算)",
       "住宅金融支援機構 木造住宅工事仕様書 (開口補強)",
@@ -51,7 +82,7 @@ const MDO3_TOOLS_CATALOG = [
     url: "https://app.mdo3.com/tools/cantilever_foundation_beam.html",
     videoUrl: "#video-cantilever-beam",
     manualUrl: "#manual-cantilever-beam",
-    pricing: { individual: 980, categoryPack: 1980, allAccess: 3980 },
+    pricing: { individual: 490, categoryPack: 980, allAccess: 1980 },
     standards: [
       "建築基準法施行令 第82条 (許容応力度計算)",
       "住宅金融支援機構 木造住宅工事仕様書 基礎構造編",
@@ -79,7 +110,7 @@ const MDO3_TOOLS_CATALOG = [
     url: "https://app.mdo3.com/tools/cantilever_beam_no_column.html",
     videoUrl: "#video-cantilever-no-col",
     manualUrl: "#manual-cantilever-no-col",
-    pricing: { individual: 980, categoryPack: 1980, allAccess: 3980 },
+    pricing: { individual: 490, categoryPack: 980, allAccess: 1980 },
     standards: [
       "建築基準法施行令 第82条 (許容応力度計算)",
       "建築物の構造関係技術基準解説書 (黄色本 / 片土圧・地耐力検討)",
@@ -107,7 +138,7 @@ const MDO3_TOOLS_CATALOG = [
     url: "https://app.mdo3.com/tools/youheki_L_calculator.html",
     videoUrl: "#video-l-youheki",
     manualUrl: "#manual-l-youheki",
-    pricing: { individual: 980, categoryPack: 1980, allAccess: 3980 },
+    pricing: { individual: 490, categoryPack: 980, allAccess: 1980 },
     standards: [
       "建築基準法施行令 第142条 (擁壁技術基準)",
       "宅地造成等規制法施行令 第7条〜第10条",
@@ -134,7 +165,7 @@ const MDO3_TOOLS_CATALOG = [
     url: "https://app.mdo3.com/tools/youheki_calculator.html",
     videoUrl: "#video-youheki",
     manualUrl: "#manual-youheki",
-    pricing: { individual: 980, categoryPack: 1980, allAccess: 3980 },
+    pricing: { individual: 490, categoryPack: 980, allAccess: 1980 },
     standards: [
       "建築基準法施行令 第142条 (擁壁技術基準)",
       "宅地造成等規制法施行令",
@@ -162,7 +193,7 @@ const MDO3_TOOLS_CATALOG = [
     url: "https://app.mdo3.com/tools/dosha_saigai.html",
     videoUrl: "#video-dosha",
     manualUrl: "#manual-dosha",
-    pricing: { individual: 980, categoryPack: 1980, allAccess: 3980 },
+    pricing: { individual: 490, categoryPack: 980, allAccess: 1980 },
     standards: [
       "土砂災害防止法 第24条 (特別警戒区域建築物構造基準)",
       "建築基準法施行令 第80条の3",
@@ -190,7 +221,7 @@ const MDO3_TOOLS_CATALOG = [
     url: "https://app.mdo3.com/tools/balanced_rebar_ratio.html",
     videoUrl: "#video-rebar-ratio",
     manualUrl: "#manual-rebar-ratio",
-    pricing: { individual: 980, categoryPack: 1980, allAccess: 3980 },
+    pricing: { individual: 490, categoryPack: 980, allAccess: 1980 },
     standards: [
       "建築基準法施行令 第77条 (RC造部材構造規定)",
       "日本建築学会 鉄筋コンクリート構造計算規準 (AIJ-RC)"
@@ -217,7 +248,7 @@ const MDO3_TOOLS_CATALOG = [
     url: "https://app.mdo3.com/tools/foundation_beam_horizontal.html",
     videoUrl: "#video-horizontal-beam",
     manualUrl: "#manual-horizontal-beam",
-    pricing: { individual: 980, categoryPack: 1980, allAccess: 3980 },
+    pricing: { individual: 490, categoryPack: 980, allAccess: 1980 },
     standards: [
       "建築基準法施行令 第82条 (許容応力度等計算)",
       "確認検査機関 (KBI等) 木造べた基礎梁の水平力取扱基準"
@@ -249,7 +280,7 @@ const MDO3_TOOLS_CATALOG = [
     url: "https://app.mdo3.com/tools/zi.html",
     videoUrl: "#video-zi",
     manualUrl: "#manual-zi",
-    pricing: { individual: 980, categoryPack: 1980, allAccess: 3980 },
+    pricing: { individual: 490, categoryPack: 980, allAccess: 1980 },
     standards: [
       "建築基準法告示 第1347号 (木材の許容応力度)",
       "日本建築防災協会 木造軸組工法住宅の許容応力度設計 (グレー本)"
@@ -275,7 +306,7 @@ const MDO3_TOOLS_CATALOG = [
     url: "https://app.mdo3.com/tools/merikomi.html",
     videoUrl: "#video-merikomi",
     manualUrl: "#manual-merikomi",
-    pricing: { individual: 980, categoryPack: 1980, allAccess: 3980 },
+    pricing: { individual: 490, categoryPack: 980, allAccess: 1980 },
     standards: [
       "建築基準法告示 第1452号 (木材の許容めり込み応力度)",
       "日本建築防災協会 木造軸組工法住宅の許容応力度設計 (グレー本)"
@@ -298,10 +329,13 @@ const MDO3_TOOLS_CATALOG = [
     title: "屋根葺き材等の検討",
     summary: "基準風速・地表面粗度区分に基づく速度圧および屋根勾配に応じた風圧力の検定。",
     icon: "roofing",
-    url: "https://app.mdo3.com/tools/roof_calc.html",
+    url: "/workspace.html?tool=roof_calc",
     videoUrl: "#video-roof-calc",
     manualUrl: "#manual-roof-calc",
-    pricing: { individual: 980, categoryPack: 1980, allAccess: 3980 },
+    isFree: true,
+    priceText: "完全無償 (¥0)",
+    badgeLabel: "完全無償",
+    pricing: { individual: 0, categoryPack: 0, allAccess: 0 },
     standards: [
       "建築基準法施行令 第82条の4 (風圧に対する構造耐力)",
       "平成12年建設省告示 第1458号 (屋根ふき材の構造計算)"
@@ -324,10 +358,13 @@ const MDO3_TOOLS_CATALOG = [
     title: "柱の曲げ計算",
     summary: "風圧力および軸力に対する柱の曲げ・座屈検定。M図の自動描画機能付き。",
     icon: "vertical_align_center",
-    url: "https://app.mdo3.com/tools/hasira-mage.html",
+    url: "/workspace.html?tool=hasira_mage",
     videoUrl: "#video-hasira-mage",
     manualUrl: "#manual-hasira-mage",
-    pricing: { individual: 980, categoryPack: 1980, allAccess: 3980 },
+    isFree: true,
+    priceText: "完全無償 (¥0)",
+    badgeLabel: "完全無償",
+    pricing: { individual: 0, categoryPack: 0, allAccess: 0 },
     standards: [
       "建築基準法施行令 第82条 (柱の長期・短期応力検定)",
       "日本建築防災協会 木造軸組工法住宅の許容応力度設計 (グレー本)"
@@ -354,7 +391,7 @@ const MDO3_TOOLS_CATALOG = [
     url: "https://app.mdo3.com/tools/hashigo.html",
     videoUrl: "#video-hashigo",
     manualUrl: "#manual-hashigo",
-    pricing: { individual: 980, categoryPack: 1980, allAccess: 3980 },
+    pricing: { individual: 490, categoryPack: 980, allAccess: 1980 },
     standards: [
       "平成12年建設省告示 第1458号 (強風地域・庇検討)",
       "日本建築学会 木質構造設計規準・同解説"
@@ -380,7 +417,7 @@ const MDO3_TOOLS_CATALOG = [
     url: "https://app.mdo3.com/tools/rigid_frame_R.html",
     videoUrl: "#video-rigid-r",
     manualUrl: "#manual-rigid-r",
-    pricing: { individual: 980, categoryPack: 1980, allAccess: 3980 },
+    pricing: { individual: 490, categoryPack: 980, allAccess: 1980 },
     standards: [
       "建築基準法施行令 第82条 (片持ち梁断面算定)",
       "日本建築防災協会 木造軸組工法住宅の許容応力度設計 (グレー本)"
@@ -403,10 +440,13 @@ const MDO3_TOOLS_CATALOG = [
     title: "梁上耐力壁の剛性低減",
     summary: "梁の上に載る耐力壁の剛性低減係数（γ）の算出および下部横架材の断面検定。",
     icon: "architecture",
-    url: "https://app.mdo3.com/tools/hariue.html",
+    url: "/workspace.html?tool=hariue",
     videoUrl: "#video-hariue",
     manualUrl: "#manual-hariue",
-    pricing: { individual: 980, categoryPack: 1980, allAccess: 3980 },
+    isFree: true,
+    priceText: "完全無償 (¥0)",
+    badgeLabel: "完全無償",
+    pricing: { individual: 0, categoryPack: 0, allAccess: 0 },
     standards: [
       "日本建築防災協会 木造軸組工法住宅の許容応力度設計 (グレー本 / 梁上耐力壁)",
       "日本建築学会 木質構造計算規準"
@@ -440,7 +480,7 @@ const MDO3_TOOLS_CATALOG = [
     url: "https://app.mdo3.com/tools/shosai-tarukiyane-kihon.html",
     videoUrl: "#video-taruki-kihon",
     manualUrl: "#manual-taruki-kihon",
-    pricing: { individual: 980, categoryPack: 1980, allAccess: 3980 },
+    pricing: { individual: 490, categoryPack: 980, allAccess: 1980 },
     standards: [
       "平成19年国土交通省告示 第1541号 (水平構面基本仕様)",
       "住宅金融支援機構 木造住宅工事仕様書"
@@ -465,7 +505,7 @@ const MDO3_TOOLS_CATALOG = [
     url: "https://app.mdo3.com/tools/shosai-yanejikabari-kihon.html",
     videoUrl: "#video-yanejika-kihon",
     manualUrl: "#manual-yanejika-kihon",
-    pricing: { individual: 980, categoryPack: 1980, allAccess: 3980 },
+    pricing: { individual: 490, categoryPack: 980, allAccess: 1980 },
     standards: [
       "平成19年国土交通省告示 第1541号 (面材直張り屋根基本仕様)",
       "住宅金融支援機構 木造住宅工事仕様書"
@@ -489,7 +529,7 @@ const MDO3_TOOLS_CATALOG = [
     url: "https://app.mdo3.com/tools/shosai-yuka-kihon.html",
     videoUrl: "#video-yuka-kihon",
     manualUrl: "#manual-yuka-kihon",
-    pricing: { individual: 980, categoryPack: 1980, allAccess: 3980 },
+    pricing: { individual: 490, categoryPack: 980, allAccess: 1980 },
     standards: [
       "平成19年国土交通省告示 第1541号 (面材張り床基本仕様)",
       "住宅金融支援機構 木造住宅工事仕様書"
@@ -513,7 +553,7 @@ const MDO3_TOOLS_CATALOG = [
     url: "https://app.mdo3.com/tools/neta.html",
     videoUrl: "#video-neta",
     manualUrl: "#manual-neta",
-    pricing: { individual: 980, categoryPack: 1980, allAccess: 3980 },
+    pricing: { individual: 490, categoryPack: 980, allAccess: 1980 },
     standards: [
       "平成19年国土交通省告示 第1541号 (根太工法水平構面)",
       "住宅金融支援機構 木造住宅工事仕様書"
@@ -541,7 +581,7 @@ const MDO3_TOOLS_CATALOG = [
     nailSetUrl: "https://app.mdo3.com/tools/kugihairetsushoteisu.html",
     videoUrl: "#video-taruki-yane",
     manualUrl: "#manual-taruki-yane",
-    pricing: { individual: 980, categoryPack: 1980, allAccess: 3980 },
+    pricing: { individual: 490, categoryPack: 980, allAccess: 1980 },
     standards: [
       "日本建築防災協会 木造軸組工法住宅の許容応力度設計 (グレー本 / 水平構面詳細算定)",
       "平成19年国土交通省告示 第1541号"
@@ -571,7 +611,7 @@ const MDO3_TOOLS_CATALOG = [
     nailSetUrl: "https://app.mdo3.com/tools/kugihairetsushoteisu.html",
     videoUrl: "#video-yanejika",
     manualUrl: "#manual-yanejika",
-    pricing: { individual: 980, categoryPack: 1980, allAccess: 3980 },
+    pricing: { individual: 490, categoryPack: 980, allAccess: 1980 },
     standards: [
       "日本建築防災協会 木造軸組工法住宅の許容応力度設計 (グレー本 / 水平構面編)",
       "平成19年国土交通省告示 第1541号"
@@ -599,7 +639,7 @@ const MDO3_TOOLS_CATALOG = [
     nailSetUrl: "https://app.mdo3.com/tools/kugihairetsushoteisu.html",
     videoUrl: "#video-yuka-opt",
     manualUrl: "#manual-yuka-opt",
-    pricing: { individual: 980, categoryPack: 1980, allAccess: 3980 },
+    pricing: { individual: 490, categoryPack: 980, allAccess: 1980 },
     standards: [
       "日本建築防災協会 木造軸組工法住宅の許容応力度設計 (グレー本 / 高倍率床算定)",
       "平成19年国土交通省告示 第1541号"
@@ -627,7 +667,7 @@ const MDO3_TOOLS_CATALOG = [
     nailSetUrl: "https://app.mdo3.com/tools/kugihairetsushoteisu.html",
     videoUrl: "#video-shosai-okabe",
     manualUrl: "#manual-shosai-okabe",
-    pricing: { individual: 980, categoryPack: 1980, allAccess: 3980 },
+    pricing: { individual: 490, categoryPack: 980, allAccess: 1980 },
     standards: [
       "日本建築防災協会 木造軸組工法住宅の許容応力度設計 (グレー本 / 大壁耐力壁算定)",
       "平成12年建設省告示 第1460号"
@@ -656,7 +696,7 @@ const MDO3_TOOLS_CATALOG = [
     nailSetUrl: "https://app.mdo3.com/tools/kugihairetsushoteisu.html",
     videoUrl: "#video-shosai-shinkabe",
     manualUrl: "#manual-shosai-shinkabe",
-    pricing: { individual: 980, categoryPack: 1980, allAccess: 3980 },
+    pricing: { individual: 490, categoryPack: 980, allAccess: 1980 },
     standards: [
       "日本建築防災協会 木造軸組工法住宅の許容応力度設計 (グレー本 / 伝統真壁仕様)",
       "平成12年建設省告示 第1100号"
@@ -684,7 +724,7 @@ const MDO3_TOOLS_CATALOG = [
     url: "https://app.mdo3.com/tools/kugihairetsushoteisu.html",
     videoUrl: "#video-kugi",
     manualUrl: "#manual-kugi",
-    pricing: { individual: 980, categoryPack: 1980, allAccess: 3980 },
+    pricing: { individual: 490, categoryPack: 980, allAccess: 1980 },
     standards: [
       "日本建築防災協会 木造軸組工法住宅の許容応力度設計 (グレー本 / 接合部編)",
       "日本建築学会 木質構造接合部規準"
@@ -715,7 +755,7 @@ const MDO3_TOOLS_CATALOG = [
     url: "https://app.mdo3.com/tools/wrc_simulator.html",
     videoUrl: "#video-wrc-sim",
     manualUrl: "#manual-wrc-sim",
-    pricing: { individual: 980, categoryPack: 1980, allAccess: 3980 },
+    pricing: { individual: 490, categoryPack: 980, allAccess: 1980 },
     standards: [
       "日本建築学会 壁式鉄筋コンクリート造設計規準・同解説 (AIJ-WRC)",
       "建築物の構造関係技術基準解説書 (黄色本)"
@@ -741,7 +781,7 @@ const MDO3_TOOLS_CATALOG = [
     url: "https://app.mdo3.com/tools/wrc_axial_force.html",
     videoUrl: "#video-wrc-axial",
     manualUrl: "#manual-wrc-axial",
-    pricing: { individual: 980, categoryPack: 1980, allAccess: 3980 },
+    pricing: { individual: 490, categoryPack: 980, allAccess: 1980 },
     standards: [
       "日本建築学会 壁式鉄筋コンクリート造設計規準・同解説",
       "建築基準法施行令 第82条"
@@ -770,9 +810,9 @@ const MDO3_TOOLS_CATALOG = [
     url: "https://az.mdo3.com/",
     videoUrl: "#video-az",
     manualUrl: "https://az.mdo3.com/frontend/manual.html",
-    pricing: { individual: 5980, annual: 39800, specialPlan: true },
-    priceText: "月額 ¥5,980 / 年額 ¥39,800",
-    badgeLabel: "CAD連携",
+    pricing: { individual: 19800, annual: 98000, specialPlan: true },
+    priceText: "月額 ¥19,800 / 年額 ¥98,000 (サポートQ&A付)",
+    badgeLabel: "CAD連携・サポート付",
     standards: [
       "日本建築防災協会 木造軸組工法住宅の許容応力度設計 (グレー本 / 非直交軸組)",
       "建築基準法施行令 第82条の3 (偏心率算定)"
@@ -781,7 +821,8 @@ const MDO3_TOOLS_CATALOG = [
       "アーキトレンドゼロ等のDXF構造図面ダイレクト読込・壁・スラブ自動認識",
       "Straight-Skeleton（直骨格）幾何解析による変形スラブの荷重自動分配",
       "柱・耐力壁・基礎梁の長期／短期応力検定および断面算定",
-      "全階層（1F/2F/3F/R/PH）Web-CADリアルタイム形状編集＆計算書出力"
+      "全階層（1F/2F/3F/R/PH）Web-CADリアルタイム形状編集＆計算書出力",
+      "実務専門スタッフによる個別サポートQ&A対応"
     ],
     cannotDo: [
       "木造3階建て以上の立体時刻歴応答解析（限界耐力計算）",

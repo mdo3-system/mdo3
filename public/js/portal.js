@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const isWrc = tool.category === 'wrc';
     const hasApiKey = isWrc && Boolean(getStoredApiKey());
     const isAz = tool.id === 'az_skew_wall';
-    const isFreeTool = tool.isFree === true;
+    const isFreeTool = tool.isFree === true || ['map_editor', 'annai_map', 'foundation_cad', 'roof_calc', 'hasira_mage', 'hariue'].includes(tool.id);
 
     let cardExtraClass = '';
     if (isNailSet) cardExtraClass = 'tool-card-nail-set';
@@ -133,7 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (isAz) cardExtraClass = 'tool-card-az-pro';
     if (isFreeTool) cardExtraClass = 'tool-card-free-tool';
 
-    let priceBadgeText = '月額 ¥980 (税込)';
+    let priceBadgeText = isFreeTool ? '🎁 完全無償' : '月額 ¥490 (税込)';
     if (tool.priceText) {
       priceBadgeText = tool.priceText;
     } else if (isNailSet) {
@@ -234,7 +234,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <span class="material-symbols-outlined" style="font-size:16px;">info</span> 判断基準
               </button>
               <button type="button" class="btn btn-gold btn-sm" onclick="startCheckout('az_monthly', 'az')">
-                契約 (¥5,980/月)
+                契約 (¥19,800/月)
               </button>
               <a href="${tool.url}" target="_blank" rel="noopener" class="btn btn-primary btn-sm">
                 CAD起動 <span class="material-symbols-outlined" style="font-size:16px;">launch</span>
@@ -387,7 +387,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 CADデータ連携 ＆ 建築実務支援ツール
               </h3>
               <p style="font-size:0.9rem; color:var(--text-sub); margin-bottom:0; line-height:1.5;">
-                ARCHITREND ZEROと連動した斜め壁・耐力壁自動抽出Web-CADツール（月額¥5,980 / 年額¥39,800）と、どなたでも無償でご利用いただけるスマート案内図作成ツール（完全無償提供 ¥0）です。
+                ARCHITREND ZEROと連動した斜め壁・耐力壁自動抽出Web-CADツール（月額¥19,800 / 年額¥98,000 / サポート付）と、どなたでも無償でご利用いただけるスマート案内図作成ツール（完全無償提供 ¥0）です。
               </p>
             </div>
           </div>
@@ -464,30 +464,32 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
 
       <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px; padding-top:20px; border-top:1px solid var(--border-card);">
-        ${tool.isFree ? `
+        ${(tool.isFree || ['map_editor', 'annai_map', 'foundation_cad', 'roof_calc', 'hasira_mage', 'hariue'].includes(tool.id)) ? `
           <div>
             <span style="font-size:0.8rem; color:var(--text-muted); display:block;">ご利用料金</span>
             <strong style="font-size:1.2rem; color:var(--accent-green);">完全無償提供 (¥0 / 登録不要)</strong>
           </div>
           <div style="display:flex; gap:12px;">
-            <a href="${tool.manualUrl}" target="_blank" class="btn btn-ghost">
-              <span class="material-symbols-outlined">menu_book</span> マニュアル
-            </a>
+            ${tool.manualUrl ? `
+              <a href="${tool.manualUrl}" target="_blank" class="btn btn-ghost">
+                <span class="material-symbols-outlined">menu_book</span> マニュアル
+              </a>
+            ` : ''}
             <a href="${tool.url}" target="_blank" class="btn btn-primary" style="background:var(--accent-green); border-color:var(--accent-green); color:#06140e; font-weight:700;">
-              エディタを開く <span class="material-symbols-outlined">launch</span>
+              ツールを起動 <span class="material-symbols-outlined">launch</span>
             </a>
           </div>
         ` : tool.id === 'az_skew_wall' ? `
           <div>
             <span style="font-size:0.8rem; color:var(--text-muted); display:block;">ご利用料金</span>
-            <strong style="font-size:1.2rem; color:var(--accent-gold);">月額 ¥5,980 / 年額 ¥39,800</strong>
+            <strong style="font-size:1.2rem; color:var(--accent-gold);">月額 ¥19,800 / 年額 ¥98,000 (サポート付)</strong>
           </div>
           <div style="display:flex; flex-wrap:wrap; gap:10px;">
             <button type="button" class="btn btn-gold" onclick="startCheckout('az_monthly', 'az')">
-              月額¥5,980で契約
+              月額¥19,800で契約
             </button>
             <button type="button" class="btn btn-gold" onclick="startCheckout('az_annual', 'az')" style="background:linear-gradient(135deg,#f59e0b,#d97706);">
-              年額¥39,800で契約 (お得)
+              年額¥98,000で契約 (お得)
             </button>
             <a href="${tool.url}" target="_blank" class="btn btn-primary">
               CAD起動 <span class="material-symbols-outlined">launch</span>
@@ -496,11 +498,11 @@ document.addEventListener('DOMContentLoaded', () => {
         ` : `
           <div>
             <span style="font-size:0.8rem; color:var(--text-muted); display:block;">ご利用料金</span>
-            <strong style="font-size:1.2rem; color:var(--accent-gold);">単体: 月額 ¥980 / 使い放題: 月額 ¥3,980</strong>
+            <strong style="font-size:1.2rem; color:var(--accent-gold);">単体: 月額 ¥490 / 使い放題: 月額 ¥1,980</strong>
           </div>
           <div style="display:flex; gap:12px;">
             <button type="button" class="btn btn-gold" onclick="startCheckout('individual_monthly', '${tool.id}')">
-              月額¥980で契約する
+              月額¥490で契約する
             </button>
             <a href="${tool.url}" target="_blank" class="btn btn-primary">
               ツールを開く <span class="material-symbols-outlined">launch</span>
