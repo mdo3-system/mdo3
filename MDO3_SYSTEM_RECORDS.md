@@ -902,8 +902,21 @@ WRC造の「開口部補強・割増検討（jintsuko_bf）」は削除。新た
      - **利用規約（`terms.html` 第5条）**: 同時アクセス制限および「後から別端末でログインされた場合、旧端末の未保存データは破棄・消去される免責」を正式条項化。
      - **特定商取引法（`tokusho.html`）**: 免責・注意事項に単一端末制限とJSON事前保存の推奨を明記。
      - **よくある質問（`faq.html`）**: アカウント仕様として同時ログイン不可と未保存データ消去の注意Q&Aを新設。
-     - **ポータル料金表（`index.html`）**: 料金グリッド直下に赤枠警告バナーを新設。
+     ## 34. リリース履歴: v2.2.7 (2026-10-03)
 
-
-
-
+### ① Z算出ツール（zi）および計算ツールの「build_circle」一本化 ＆ 過去JSON完全復元対応
+- **背景 & 課題**:
+  - Z算出ツール（`zi.html`）内に個別ボタン（「PDF出力」「ファイルを保存」「復元」）が残存し、共通ヘッダー（`common.js`）の「`build_circle` データ管理・帳票出力（保存/復元/A4印刷）」バーと二重化していた。
+  - 過去の旧ツール形式（`inputs` / `tableHtml`）で保存されたJSONファイルを `build_circle` から読み込んでも、復元ハンドラが欠落していたためフォーム値や履歴テーブルが復元されなかった。
+- **改修内容 & 実装**:
+  1. **操作インターフェースの「build_circle」への完全一本化**:
+     - `zi.html` 内の二重ボタン群（「PDF出力」「ファイルを保存」「復元」）およびファイル選択タグ（`#fileInput`）を完全撤去。「計算して追加」「履歴クリア」のみに整理。
+     - `shosai-tarukiyane-kihon.html` および `shosai-yanejikabari-kihon.html` 内の個別「📁 JSON読込」「💾 保存」「🖨 印刷」ボタンを完全撤去。
+  2. **双方向完全復元ハンドラ（`window.restoreToolData`）の実装**:
+     - `zi.js`: 旧形式（`inputs`/`tableHtml`）、新形式（`header`/`data`/`tableHtml`）、直接配列を自動判別。モード（プレカット仕口/渡り顎）の復元と `toggleMode()` 連動、梁寸法（幅/成/左右仕口/ほぞ/欠き込み）の完全復元、計算履歴テーブル（SVG断面図含む）の画面展開を保証。
+     - `shosai-tarukiyane-kihon.js`, `shosai-yanejikabari-kihon.js`: `window.restoreToolData` を実装し、合板種別・釘種・ピッチ・勾配・部材寸法・適用条件チェックボックス（conditions）の復元および自動再計算（`calc()`）を保証。
+  3. **A4印刷ハンドラ連動（`window.executeToolPrint`）**:
+     - `zi.js` に `window.executeToolPrint` を実装。`build_circle` の「🖨️ A4 印刷」クリック時に印刷タイトル（`#pdfTitle`）を自動表示してブラウザ印刷プレビューと連動。
+  4. **マスターリポジトリ（`sub`）への完全同期 ＆ 本番サーバー（XServer）デプロイ**:
+     - `sub` リポジトリへ修正を同期（`zi`, `jintsuko`, `merikomi`, `shosai-*`）。
+     - 基幹ポータル（`mdo3.com`）および計算ツール群（`app.mdo3.com`）を本番サーバーへ即時完全デプロイ。

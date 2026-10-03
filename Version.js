@@ -2,9 +2,10 @@
  * Version.js - mdo3.com 基幹ポータル & 統合SaaS バージョン管理
  */
 (function() {
-    window.APP_VERSION = 'v2.2.6';
-    window.APP_BUILD_DATE = '2026-10-02';
+    window.APP_VERSION = 'v2.2.7';
+    window.APP_BUILD_DATE = '2026-10-03';
     window.APP_RELEASE_NOTES = [
+        'v2.2.7 (2026-10-03): Z・I欠損低減算出ツール（zi）および勾配屋根詳細計算ツール（shosai-tarukiyane-kihon, shosai-yanejikabari-kihon）の個別ボタン二重化（PDF出力/保存/復元）を解消し、「build_circle データ管理・帳票出力（保存/復元/A4印刷）」へ完全一本化。新旧JSONフォーマット完全自動判別・フォーム値/履歴テーブル復元ハンドラ（window.restoreToolData）およびA4印刷連動（window.executeToolPrint）を実装。subリポジトリ同期およびXServer（mdo3.com & app.mdo3.com）への本番デプロイ完了',
         'v2.2.6 (2026-10-02): 1アカウント単一端末制限（Single Active Session）の強制化＆不正共有防止セキュリティ強化完了。別端末でのログイン時に旧端末セッションを即時無効化（強制ログアウト）。特定商取引法表記・利用規約（第5条）・料金プラン案内・FAQへ「1アカウント同時1人制限および端末切替時の未保存データ破棄に関する免責・事前保存推奨」を完全明記',
         'v2.2.5 (2026-10-02): mdo3 STUDIO (広報・動画・SNS制作スタジオ) 認証ガード基盤の実装完了。共通SSOセッション（mdo3_session_token）による自動ログイン連動、登録メール宛てマジックリンク発行・自動リダイレクト機能、および管理者クイックPIN認証（PIN: 2656）を完全配備。一般アクセスを安全に遮断しつつ、管理者は案件コンソール同様にストレスフリーで直接利用可能なセキュア運用環境を確立',
         'v2.2.4 (2026-10-02): AZ斜め壁CADの料金改定（月額¥19,800/年額¥98,000・サポートQ&A付）およびStripe本番Price発行・全ポータル同期完了。特定商取引法表記（川越市旭町・サービスURL mdo3.com 明記）の改定、ヘッダーナビゲーションのスマート化＆FHD・ノートPC・タブレット・スマホ全解像度対応流体レスポンシブCSS完全配備',

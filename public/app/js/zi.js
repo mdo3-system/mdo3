@@ -127,6 +127,67 @@ async function calculateAndAddRow() {
 
 function clearTable() { document.querySelector('#resultTable tbody').innerHTML = ''; }
 
+// build_circle 統一復元ハンドラ
+window.restoreToolData = function(payload) {
+    if (!payload || typeof payload !== 'object') return false;
+
+    let restored = false;
+
+    // 1. テーブルHTMLの復元（新旧あらゆる形式に対応）
+    const tableHtml = payload.tableHtml || payload.data?.tableHtml;
+    const tableBody = document.querySelector('#resultTable tbody');
+    if (tableHtml && tableBody) {
+        tableBody.innerHTML = tableHtml;
+        restored = true;
+    }
+
+    // 2. フォーム入力値の復元 (inputs, data, または payload 直下)
+    const inputs = payload.inputs || payload.data || payload;
+    if (inputs && typeof inputs === 'object') {
+        if (inputs.calcMode) {
+            const r = document.querySelector(`input[name="calcMode"][value="${inputs.calcMode}"]`);
+            if (r) {
+                r.checked = true;
+                if (typeof toggleMode === 'function') toggleMode();
+                restored = true;
+            }
+        }
+        const setVal = (id, val) => {
+            const el = document.getElementById(id);
+            if (el && val !== undefined) {
+                el.value = val;
+                restored = true;
+            }
+        };
+        setVal('mainB', inputs.mainB);
+        setVal('mainD', inputs.mainD);
+        setVal('leftD', inputs.leftD);
+        setVal('leftJoint', inputs.leftJoint);
+        setVal('rightD', inputs.rightD);
+        setVal('rightJoint', inputs.rightJoint);
+        setVal('watariDepth', inputs.watariDepth);
+        if (document.getElementById('chkHozo') && inputs.chkHozo !== undefined) {
+            document.getElementById('chkHozo').checked = !!inputs.chkHozo;
+            restored = true;
+        }
+    }
+
+    return restored;
+};
+
+// build_circle 統一A4印刷ハンドラ
+window.executeToolPrint = function() {
+    const pdfTitle = document.getElementById('pdfTitle');
+    if (pdfTitle) pdfTitle.style.display = 'block';
+    if (typeof GlobalInfo !== 'undefined' && GlobalInfo.updatePrintHeader) {
+        GlobalInfo.updatePrintHeader();
+    }
+    window.print();
+    setTimeout(() => {
+        if (pdfTitle) pdfTitle.style.display = 'none';
+    }, 1000);
+};
+
 async function exportToPDF() {
     if (!await window.checkAuth()) return;
     const element = document.getElementById('pdf-export-area');

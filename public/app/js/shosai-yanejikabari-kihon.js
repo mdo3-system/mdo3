@@ -249,6 +249,38 @@ function calc() {
     }
 }
 
+// --- build_circle 統一復元ハンドラ ---
+window.restoreToolData = function(data) {
+    if (!data) return false;
+    const p = data.params || data.data || data;
+    if (!p || typeof p !== 'object') return false;
+
+    if (p.panel_spec && document.getElementById('panel_spec')) {
+        document.getElementById('panel_spec').value = p.panel_spec;
+        updateOptions();
+    }
+    if (p.nail_type && document.getElementById('nail_type')) {
+        document.getElementById('nail_type').value = p.nail_type;
+    }
+    if (p.support_type && document.getElementById('support_type')) {
+        document.getElementById('support_type').value = p.support_type;
+    }
+    if (p.roof_slope && document.getElementById('roof_slope')) {
+        document.getElementById('roof_slope').value = p.roof_slope;
+    }
+    if (p.nail_pitch && document.getElementById('nail_pitch')) {
+        document.getElementById('nail_pitch').value = p.nail_pitch;
+    }
+    if (p.nail_pattern && document.getElementById('nail_pattern')) {
+        document.getElementById('nail_pattern').value = p.nail_pattern;
+    } else if (p.layout_type && document.getElementById('nail_pattern')) {
+        document.getElementById('nail_pattern').value = p.layout_type;
+    }
+
+    calc();
+    return true;
+};
+
 // --- JSON入出力機能 ---
 function exportData() {
     const data = {
