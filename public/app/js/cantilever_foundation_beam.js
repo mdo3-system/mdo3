@@ -248,6 +248,9 @@ function renderRows() {
     const sumLEl = document.getElementById('sum_L');
     if (sumPEl) sumPEl.innerText = sumP.toFixed(3);
     if (sumLEl) sumLEl.innerText = sumL.toFixed(2);
+
+    // 印刷用帳票テーブルを常時自動同期
+    syncPrintView();
 }
 
 function updateRow(idx, field, value) {
@@ -283,15 +286,15 @@ function removeRow(idx) {
     renderRows();
 }
 
-// 印刷用帳票の生成と実行
-function printReport() {
+
+function syncPrintView() {
     if (typeof GlobalInfo !== 'undefined' && GlobalInfo.updatePrintHeader) {
         GlobalInfo.updatePrintHeader();
     }
 
     const titleEl = document.getElementById('report_span_title');
-    const spanVal = document.getElementById('span_name').value;
-    if (titleEl) titleEl.innerText = spanVal;
+    const spanInput = document.getElementById('span_name');
+    if (titleEl && spanInput) titleEl.innerText = spanInput.value;
 
     const fcSelect = document.getElementById('fc_select');
     const fcVal = fcSelect ? fcSelect.value : '21';
@@ -353,11 +356,16 @@ function printReport() {
     const printSumL = document.getElementById('print_sum_L');
     if (printSumP) printSumP.innerText = sumP.toFixed(3);
     if (printSumL) printSumL.innerText = sumL.toFixed(2);
+}
 
+// 印刷実行
+function printReport() {
+    syncPrintView();
     window.print();
 }
 
-// 共通ヘッダー連携
+// 印刷前イベントおよび共通ヘッダー連携
+window.addEventListener('beforeprint', syncPrintView);
 window.executeToolPrint = printReport;
 
 window.restoreToolData = function(data) {
