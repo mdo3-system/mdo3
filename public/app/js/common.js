@@ -241,6 +241,9 @@ const ToolStorage = {
         if (typeof window.syncDomToOpenings === 'function') {
             window.syncDomToOpenings();
         }
+        if (typeof window.syncDomToBeamRows === 'function') {
+            window.syncDomToBeamRows();
+        }
 
         // 2. フォーム内の全input, select, textareaの値を収集
         const formValues = {};

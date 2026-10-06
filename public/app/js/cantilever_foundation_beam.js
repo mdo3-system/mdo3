@@ -265,13 +265,46 @@ function renderRows() {
     syncPrintView();
 }
 
+function syncDomToBeamRows() {
+    const stressRows = document.querySelectorAll('#stressTableBody tr');
+    const capRows = document.querySelectorAll('#capacityTableBody tr');
+    
+    stressRows.forEach((tr, idx) => {
+        if (!beamRows[idx]) return;
+        const inputs = tr.querySelectorAll('input');
+        if (inputs.length >= 6) {
+            beamRows[idx].pos = inputs[0].value;
+            beamRows[idx].P = parseFloat(inputs[1].value) || 0;
+            beamRows[idx].L = parseFloat(inputs[2].value) || 0;
+            beamRows[idx].b = parseFloat(inputs[3].value) || 0;
+            beamRows[idx].D = parseFloat(inputs[4].value) || 0;
+            beamRows[idx].leveler = parseFloat(inputs[5].value) || 0;
+        }
+    });
+
+    capRows.forEach((tr, idx) => {
+        if (!beamRows[idx]) return;
+        const inputs = tr.querySelectorAll('input');
+        const select = tr.querySelector('select');
+        if (inputs[0]) beamRows[idx].spanName = inputs[0].value;
+        if (select) beamRows[idx].rebar = select.value;
+        if (inputs[1]) beamRows[idx].dt = parseFloat(inputs[1].value) || 70;
+        if (inputs[2]) beamRows[idx].alpha = parseFloat(inputs[2].value) || 1.0;
+        if (inputs[3]) beamRows[idx].LQa_custom = inputs[3].value !== '' ? parseFloat(inputs[3].value) : '';
+    });
+    window.beamRows = beamRows;
+}
+window.syncDomToBeamRows = syncDomToBeamRows;
+
 function updateRow(idx, field, value) {
     if (!beamRows[idx]) return;
     beamRows[idx][field] = value;
+    window.beamRows = beamRows;
     renderRows();
 }
 
 function addRow() {
+    syncDomToBeamRows();
     const nextIdx = beamRows.length + 1;
     beamRows.push({
         pos: 'X1Y' + (3 - nextIdx > 0 ? (3 - nextIdx) : nextIdx),
@@ -291,6 +324,7 @@ function addRow() {
 }
 
 function removeRow(idx) {
+    syncDomToBeamRows();
     if (beamRows.length <= 1) {
         alert('少なくとも1行は必要です。');
         return;
@@ -301,6 +335,8 @@ function removeRow(idx) {
 }
 
 function syncPrintView() {
+    syncDomToBeamRows();
+
     if (typeof GlobalInfo !== 'undefined' && GlobalInfo.updatePrintHeader) {
         GlobalInfo.updatePrintHeader();
     }
@@ -381,32 +417,76 @@ function printReport() {
 window.addEventListener('beforeprint', syncPrintView);
 window.executeToolPrint = printReport;
 
-window.restoreToolData = function(data) {
-    if (!data) return false;
+// 汎用・過去形式・新形式すべてに対応する完全復元ハンドラ
+window.restoreToolData = function(payload) {
+    if (!payload || typeof payload !== 'object') return false;
+
     let targetRows = null;
-    if (Array.isArray(data.beamRows)) {
-        targetRows = data.beamRows;
-    } else if (Array.isArray(data.rows)) {
-        targetRows = data.rows;
-    } else if (Array.isArray(data.data?.beamRows)) {
-        targetRows = data.data.beamRows;
+
+    // 1. 多様なキー構造から配列データを網羅抽出
+    if (Array.isArray(payload)) {
+        targetRows = payload;
+    } else if (Array.isArray(payload.beamRows)) {
+        targetRows = payload.beamRows;
+    } else if (Array.isArray(payload.beam_rows)) {
+        targetRows = payload.beam_rows;
+    } else if (Array.isArray(payload.rows)) {
+        targetRows = payload.rows;
+    } else if (Array.isArray(payload.data?.beamRows)) {
+        targetRows = payload.data.beamRows;
+    } else if (Array.isArray(payload.data?.beam_rows)) {
+        targetRows = payload.data.beam_rows;
+    } else if (Array.isArray(payload.data?.rows)) {
+        targetRows = payload.data.rows;
+    } else if (Array.isArray(payload.params?.beamRows)) {
+        targetRows = payload.params.beamRows;
+    } else if (Array.isArray(payload.inputs?.beamRows)) {
+        targetRows = payload.inputs.beamRows;
+    } else if (Array.isArray(payload.items)) {
+        targetRows = payload.items;
+    } else if (Array.isArray(payload.cards)) {
+        targetRows = payload.cards;
+    } else if (payload.data && typeof payload.data === 'object' && (payload.data.P !== undefined || payload.data.axial_force !== undefined || payload.data.b !== undefined)) {
+        // 単一行オブジェクトの場合
+        targetRows = [payload.data];
     }
-    if (targetRows) {
-        beamRows = targetRows;
+
+    if (Array.isArray(targetRows) && targetRows.length > 0) {
+        // 2. 各行のプロパティを安全に正規化
+        beamRows = targetRows.map((r, idx) => {
+            return {
+                pos: r.pos || r.position || r.location || `X1Y${idx + 1}`,
+                spanName: r.spanName || r.span_name || r.span || (r.pos ? `スパン ${r.pos}` : `スパン ${idx + 1}`),
+                P: parseFloat(r.P !== undefined ? r.P : (r.axial_force !== undefined ? r.axial_force : (r.NL !== undefined ? r.NL : 5.0))) || 0,
+                L: parseFloat(r.L !== undefined ? r.L : (r.span_length !== undefined ? r.span_length : (r.span_m !== undefined ? r.span_m : 0.9))) || 0.9,
+                b: parseFloat(r.b !== undefined ? r.b : (r.width !== undefined ? r.width : 150)) || 150,
+                D: parseFloat(r.D !== undefined ? r.D : (r.height !== undefined ? r.height : (r.depth !== undefined ? r.depth : 600))) || 600,
+                leveler: parseFloat(r.leveler !== undefined ? r.leveler : (r.level !== undefined ? r.level : 10)) || 0,
+                rebar: r.rebar || r.tekkin || r.bar || '1-D13',
+                dt: parseFloat(r.dt !== undefined ? r.dt : 70) || 70,
+                alpha: parseFloat(r.alpha !== undefined ? r.alpha : 1.0) || 1.0,
+                LQa_custom: r.LQa_custom !== undefined ? r.LQa_custom : (r.LQa !== undefined ? r.LQa : '')
+            };
+        });
+
         window.beamRows = beamRows;
-        if (data.span_name && document.getElementById('span_name')) {
-            document.getElementById('span_name').value = data.span_name;
-        } else if (data.data?.span_name && document.getElementById('span_name')) {
-            document.getElementById('span_name').value = data.data.span_name;
+
+        // 3. 通り名・Fc強度の復元
+        const spanNameVal = payload.span_name || payload.data?.span_name || payload.params?.span_name || payload.header?.span_name;
+        if (spanNameVal && document.getElementById('span_name')) {
+            document.getElementById('span_name').value = spanNameVal;
         }
-        if (data.fc_select && document.getElementById('fc_select')) {
-            document.getElementById('fc_select').value = data.fc_select;
-        } else if (data.data?.fc_select && document.getElementById('fc_select')) {
-            document.getElementById('fc_select').value = data.data.fc_select;
+
+        const fcVal = payload.fc_select || payload.data?.fc_select || payload.params?.fc_select || payload.header?.fc;
+        if (fcVal && document.getElementById('fc_select')) {
+            document.getElementById('fc_select').value = String(fcVal).replace(/[^0-9]/g, '');
         }
+
         renderRows();
+        syncPrintView();
         return true;
     }
+
     return false;
 };
 
