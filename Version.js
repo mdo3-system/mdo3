@@ -2,9 +2,10 @@
  * Version.js - mdo3.com 基幹ポータル & 統合SaaS バージョン管理
  */
 (function() {
-    window.APP_VERSION = 'v2.2.9';
+    window.APP_VERSION = 'v2.2.10';
     window.APP_BUILD_DATE = '2026-10-06';
     window.APP_RELEASE_NOTES = [
+        'v2.2.10 (2026-10-06): 片持ち基礎梁ツール（cantilever_foundation_beam & cantilever_beam_no_column）の単一責任原則（SRP）に基づく完全リファクタリング完了。二重ヘッダー改修前の旧形式保存データ（refBeams 参照梁リスト / フォームキー群 / 単一オブジェクト / 配列直接形式）を自動判別・相互変換するユニバーサルデータ正規化エンジン（normalizeBeamData）を配備。保存直前・印刷直前の画面入力値完全リアルタイム同期（syncDomToBeamRows）およびA4印刷帳票（応力算定・検定 / 許容耐力算定）への100%出力保証・実機ブラウザ（Chrome Headless PDF生成）での検証完了',
         'v2.2.9 (2026-10-06): 全構造ツールの計算書表題部（工事名称/計算日/設計者/ツールタイトル）の完全一本化＆二重表示解消。片持ち基礎梁（cantilever_foundation_beam）の印刷用共通ヘッダー消滅不具合の修正（#global-header-containerのCSS競合解消・印刷テーブルへのリアルタイム値同期保証）、帳票内重複タイトルの撤去、Z算出（zi）・めり込み（merikomi）・勾配屋根詳細（shosai-tarukiyane-kihon, shosai-yanejikabari-kihon）の印刷時h1/タイトル二重化の完全解消、およびToolStorageでの片持ち基礎梁データ（beamRows/span_name/fc_select）の保存・復元完全連動を実装',
         'v2.2.8 (2026-10-06): 片持ち基礎梁の検定（柱あり / cantilever_foundation_beam）のUIおよび計算ロジック全面改訂。各入力欄のサイズ最適化（数値非表示解消）、梁成横へのレベラー入力枠追加（初期値10mm）、基礎自重自動算出（基礎幅×(基礎高さ+レベラー)×24）、等分布荷重w自動計算（自重/柱間）、合力重心La自動算出（多段スパン対応）、作用モーメントMおよび作用せん断力Qの完全自動連動計算、ならびに「応力の算定・検定」と「許容耐力の算定」の2段テーブル分離レイアウト化・ツール内重複印刷ボタン撤去＆共通データ管理ヘッダー（保存/復元/A4印刷）完全連動を実装',
         'v2.2.7 (2026-10-03): Z・I欠損低減算出ツール（zi）および勾配屋根詳細計算ツール（shosai-tarukiyane-kihon, shosai-yanejikabari-kihon）の個別ボタン二重化（PDF出力/保存/復元）を解消し、「build_circle データ管理・帳票出力（保存/復元/A4印刷）」へ完全一本化。新旧JSONフォーマット完全自動判別・フォーム値/履歴テーブル復元ハンドラ（window.restoreToolData）およびA4印刷連動（window.executeToolPrint）を実装。subリポジトリ同期およびXServer（mdo3.com & app.mdo3.com）への本番デプロイ完了',
