@@ -1,0 +1,257 @@
+@charset "UTF-8";
+
+/* =========================================
+   片持ち基礎梁の検定（玄関ポーチ等・柱あり）
+   cantilever_foundation_beam.css
+========================================= */
+
+.tool-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 16px;
+}
+
+.cfb-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 20px 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.cfb-card-header {
+    font-size: 1.18rem;
+    font-weight: 700;
+    color: #0f172a;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 12px;
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.cfb-config-bar {
+    display: flex;
+    gap: 18px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    background: #f8fafc;
+    padding: 12px 16px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+}
+
+.cfb-config-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.cfb-config-item label {
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: #334155;
+    white-space: nowrap;
+}
+
+.cfb-config-item input,
+.cfb-config-item select {
+    padding: 6px 10px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 0.92rem;
+    background: #ffffff;
+}
+
+.cfb-config-note {
+    font-size: 0.82rem;
+    color: #64748b;
+    margin-left: auto;
+}
+
+.cfb-section-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 16px 0 10px 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border-left: 4px solid #2563eb;
+    padding-left: 8px;
+}
+
+.cfb-table-wrapper {
+    overflow-x: auto;
+    margin-bottom: 16px;
+    background: #ffffff;
+    border-radius: 6px;
+    border: 1px solid #cbd5e1;
+}
+
+.cfb-table {
+    width: 100%;
+    min-width: 980px;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+}
+
+.cfb-table th,
+.cfb-table td {
+    border: 1px solid #cbd5e1;
+    padding: 7px 6px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.cfb-table th {
+    background-color: #f1f5f9;
+    color: #1e293b;
+    font-weight: 700;
+    font-size: 0.88rem;
+    line-height: 1.3;
+}
+
+.cfb-table th .unit {
+    font-size: 0.78rem;
+    font-weight: normal;
+    color: #64748b;
+}
+
+.cfb-input {
+    width: 100%;
+    min-width: 60px;
+    padding: 6px 6px;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    font-size: 0.92rem;
+    font-family: inherit;
+    box-sizing: border-box;
+    background: #fff;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.cfb-input:focus {
+    border-color: #2563eb;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+}
+
+.cfb-input-right {
+    text-align: right;
+}
+
+.cfb-input-center {
+    text-align: center;
+}
+
+.cfb-calc-val {
+    background: #f8fafc;
+    color: #0f172a;
+    font-variant-numeric: tabular-nums;
+    font-size: 0.92rem;
+    padding: 6px 6px;
+}
+
+.cfb-badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 0.82rem;
+}
+
+.cfb-badge-ok {
+    background: #dcfce7;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+}
+
+.cfb-badge-ng {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}
+
+.cfb-btn-del {
+    padding: 4px 8px;
+    font-size: 0.8rem;
+    border-radius: 4px;
+    background: #ef4444;
+    color: #ffffff;
+    border: none;
+    cursor: pointer;
+}
+.cfb-btn-del:hover {
+    background: #dc2626;
+}
+
+/* =========================================
+   印刷スタイル (@media print)
+========================================= */
+#print_area {
+    display: none;
+}
+
+@media print {
+    body {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        font-size: 8pt !important;
+    }
+
+    .no-print,
+    .cfb-card,
+    header,
+    #global-header-container,
+    .global-header-nav,
+    .global-header-inputs {
+        display: none !important;
+    }
+
+    #print_area {
+        display: block !important;
+        padding: 0;
+        margin: 0;
+    }
+
+    @page {
+        size: A4 portrait;
+        margin: 10mm 12mm;
+    }
+
+    .print-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 14px;
+        font-size: 7.8pt;
+    }
+
+    .print-table th,
+    .print-table td {
+        border: 1px solid #000000 !important;
+        padding: 4px 5px !important;
+        text-align: center;
+    }
+
+    .print-table th {
+        background-color: #f1f5f9 !important;
+        font-weight: 700 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .print-sec-title {
+        font-size: 9pt;
+        font-weight: 700;
+        border-left: 3px solid #000000;
+        padding-left: 6px;
+        margin: 12px 0 6px 0;
+    }
+}
