@@ -47,8 +47,8 @@
 <body>
 <div class="tool-container">
     <div id="global-header-container"></div>
-    <h1>Z・I 欠損低減算出ツール（アーキトレンド入力補助）</h1>
-    <div class="control-panel">
+    <h1 class="no-print">Z・I 欠損低減算出ツール（アーキトレンド入力補助）</h1>
+    <div class="control-panel no-print">
         <div class="mode-selector">
             <label><input type="radio" name="calcMode" value="precut" checked onchange="toggleMode()"> ① プレカット仕口</label>
             <label style="margin-left: 20px;"><input type="radio" name="calcMode" value="watari" onchange="toggleMode()"> ② 渡り顎</label>
@@ -86,8 +86,7 @@
         </div>
     </div>
     <div id="pdf-export-area">
-        <h2 class="pdf-title" id="pdfTitle">Z・I 欠損低減 検討表</h2>
-        <h2 id="screenTitle">計算結果</h2>
+        <h2 id="screenTitle" class="no-print">計算結果</h2>
         <table id="resultTable">
             <thead><tr><th width="15%">断面図</th><th>主材</th><th>条件</th><th>Z0</th><th>Ze</th><th>Z低減%</th><th>I係数</th><th class="no-print">操作</th></tr></thead>
             <tbody></tbody>

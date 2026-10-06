@@ -177,15 +177,10 @@ window.restoreToolData = function(payload) {
 
 // build_circle 統一A4印刷ハンドラ
 window.executeToolPrint = function() {
-    const pdfTitle = document.getElementById('pdfTitle');
-    if (pdfTitle) pdfTitle.style.display = 'block';
     if (typeof GlobalInfo !== 'undefined' && GlobalInfo.updatePrintHeader) {
         GlobalInfo.updatePrintHeader();
     }
     window.print();
-    setTimeout(() => {
-        if (pdfTitle) pdfTitle.style.display = 'none';
-    }, 1000);
 };
 
 async function exportToPDF() {

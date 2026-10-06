@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>片持ち基礎梁の検定（玄関ポーチ等・柱あり） | 構造計算補助ツール</title>
+    <title>片持ち基礎梁の検定計算書（玄関ポーチ等・柱あり）</title>
     <script>
         if (window.location.protocol !== 'file:') {
             fetch('/api/check_auth.php')
@@ -128,14 +128,10 @@
 
     <!-- 印刷用帳票エリア (A4対応) -->
     <div id="print_area">
-        <h2 style="text-align:center; font-size:1.25rem; margin-bottom:10px; border-bottom:2px solid #000; padding-bottom:5px;">
-            ■ 片持ち基礎梁の検定計算書（玄関ポーチ等・柱あり）
-        </h2>
-        
-        <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:8.5pt;">
-            <div style="font-weight:bold;">検討スパン: <span id="report_span_title">X1 通り Y3 - Y1</span></div>
-            <div>コンクリート強度 Fc: <span id="report_fc_val">21 N/mm²</span></div>
-            <div>構造設計基準：建築基準法施行令 / 木造住宅基礎設計指針</div>
+        <div class="print-sub-header">
+            <div style="font-weight:bold;">【検討スパン】 <span id="report_span_title" style="border-bottom:1px dotted #333; padding-bottom:1px;">X1 通り Y3 - Y1</span></div>
+            <div>【コンクリート強度】 <span id="report_fc_val">21 N/mm² (LFs=0.70)</span></div>
+            <div style="color:#555;">【準拠基準】 建築基準法施行令 / 木造住宅基礎設計指針</div>
         </div>
 
         <div class="print-sec-title">1. 応力の算定・検定</div>

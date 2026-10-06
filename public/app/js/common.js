@@ -300,6 +300,14 @@ const ToolStorage = {
             }
         }
 
+        // 7. 片持ち基礎梁ツール等の行データ (beamRows) を完全格納
+        if (Array.isArray(window.beamRows) && window.beamRows.length > 0) {
+            exportPayload.beamRows = window.beamRows;
+            exportPayload.rows = window.beamRows;
+            exportPayload.span_name = document.getElementById('span_name')?.value || "";
+            exportPayload.fc_select = document.getElementById('fc_select')?.value || "21";
+        }
+
         const jsonStr = JSON.stringify(exportPayload, null, 2);
         const blob = new Blob([jsonStr], { type: 'application/json' });
         const url = URL.createObjectURL(blob);

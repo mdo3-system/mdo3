@@ -143,8 +143,13 @@ function attemptPrint() {
         alert("【エラー】\n表の中に「NG」の項目が残っています。\nプレート幅（120用へ変更）や受材樹種（べいまつ等へ変更）を行い、すべての判定を「OK」にしてから印刷してください。");
         return;
     }
+    if (typeof GlobalInfo !== 'undefined' && GlobalInfo.updatePrintHeader) {
+        GlobalInfo.updatePrintHeader();
+    }
     window.print();
 }
+window.attemptPrint = attemptPrint;
+window.executeToolPrint = attemptPrint;
 
 // --- JSONデータのエクスポート・インポート ---
 function collectMerikomiRows() {

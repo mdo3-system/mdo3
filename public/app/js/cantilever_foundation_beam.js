@@ -52,6 +52,7 @@ let beamRows = [
         LQa_custom: 124.95
     }
 ];
+window.beamRows = beamRows;
 
 window.addEventListener('DOMContentLoaded', () => {
     renderRows();
@@ -274,6 +275,7 @@ function addRow() {
         alpha: 1.0,
         LQa_custom: ''
     });
+    window.beamRows = beamRows;
     renderRows();
 }
 
@@ -283,9 +285,9 @@ function removeRow(idx) {
         return;
     }
     beamRows.splice(idx, 1);
+    window.beamRows = beamRows;
     renderRows();
 }
-
 
 function syncPrintView() {
     if (typeof GlobalInfo !== 'undefined' && GlobalInfo.updatePrintHeader) {
@@ -370,13 +372,26 @@ window.executeToolPrint = printReport;
 
 window.restoreToolData = function(data) {
     if (!data) return false;
+    let targetRows = null;
     if (Array.isArray(data.beamRows)) {
-        beamRows = data.beamRows;
+        targetRows = data.beamRows;
+    } else if (Array.isArray(data.rows)) {
+        targetRows = data.rows;
+    } else if (Array.isArray(data.data?.beamRows)) {
+        targetRows = data.data.beamRows;
+    }
+    if (targetRows) {
+        beamRows = targetRows;
+        window.beamRows = beamRows;
         if (data.span_name && document.getElementById('span_name')) {
             document.getElementById('span_name').value = data.span_name;
+        } else if (data.data?.span_name && document.getElementById('span_name')) {
+            document.getElementById('span_name').value = data.data.span_name;
         }
         if (data.fc_select && document.getElementById('fc_select')) {
             document.getElementById('fc_select').value = data.fc_select;
+        } else if (data.data?.fc_select && document.getElementById('fc_select')) {
+            document.getElementById('fc_select').value = data.data.fc_select;
         }
         renderRows();
         return true;

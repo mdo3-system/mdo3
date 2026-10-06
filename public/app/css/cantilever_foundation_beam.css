@@ -209,9 +209,9 @@
     .no-print,
     .cfb-card,
     header,
-    #global-header-container,
     .global-header-nav,
-    .global-header-inputs {
+    .global-header-inputs,
+    .tool-action-bar {
         display: none !important;
     }
 
@@ -219,6 +219,19 @@
         display: block !important;
         padding: 0;
         margin: 0;
+    }
+
+    .print-sub-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 8.5pt;
+        background: #f8fafc;
+        border: 1px solid #000000;
+        padding: 5px 10px;
+        margin-bottom: 10px;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
     }
 
     @page {
@@ -229,14 +242,14 @@
     .print-table {
         width: 100%;
         border-collapse: collapse;
-        margin-bottom: 14px;
+        margin-bottom: 12px;
         font-size: 7.8pt;
     }
 
     .print-table th,
     .print-table td {
         border: 1px solid #000000 !important;
-        padding: 4px 5px !important;
+        padding: 4px 4px !important;
         text-align: center;
     }
 
@@ -252,6 +265,6 @@
         font-weight: 700;
         border-left: 3px solid #000000;
         padding-left: 6px;
-        margin: 12px 0 6px 0;
+        margin: 10px 0 5px 0;
     }
 }
