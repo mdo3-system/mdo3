@@ -512,9 +512,13 @@ const ToolStorage = {
 };
 
 // DOM読み込み完了時に初期化
-document.addEventListener('DOMContentLoaded', () => {
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        GlobalInfo.init();
+    });
+} else {
     GlobalInfo.init();
-});
+}
 
 async function checkAuth() {
     if (window.location.protocol === 'file:') return true;

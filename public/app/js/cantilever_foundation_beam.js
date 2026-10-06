@@ -54,7 +54,18 @@ let beamRows = [
 ];
 window.beamRows = beamRows;
 
-window.addEventListener('DOMContentLoaded', () => {
+function initCantilever() {
+    renderRows();
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCantilever);
+} else {
+    initCantilever();
+}
+
+// フォールバック（window load時にも確実同期）
+window.addEventListener('load', () => {
     renderRows();
 });
 
