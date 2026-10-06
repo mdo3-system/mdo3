@@ -356,3 +356,23 @@ function printReport() {
 
     window.print();
 }
+
+// 共通ヘッダー連携
+window.executeToolPrint = printReport;
+
+window.restoreToolData = function(data) {
+    if (!data) return false;
+    if (Array.isArray(data.beamRows)) {
+        beamRows = data.beamRows;
+        if (data.span_name && document.getElementById('span_name')) {
+            document.getElementById('span_name').value = data.span_name;
+        }
+        if (data.fc_select && document.getElementById('fc_select')) {
+            document.getElementById('fc_select').value = data.fc_select;
+        }
+        renderRows();
+        return true;
+    }
+    return false;
+};
+
