@@ -99,13 +99,13 @@
     },
     {
       id: "foundation_beam_horizontal",
-      name: "基礎梁水平力追加計算書 (KBI)",
+      name: "基礎梁水平力追加計算書",
       category: "foundation",
       frequent: false,
       icon: "straighten",
-      url: "/app/tools/foundation_beam_horizontal.html",
-      desc: "基礎梁水平力追加計算書 (KBI審査対応)",
-      planGroup: ["all"]
+      url: "/app/tools/foundation_beam_horizontal.html?v=20261009_v9",
+      desc: "基礎梁水平力追加計算書 (弾性支点＆簡易片持ちモード・短期応力検定)",
+      planGroup: ["core_pack", "all", "free_trial", "single_jintsuko"]
     },
     {
       id: "youheki_calculator",
@@ -544,7 +544,9 @@
       iframe = document.createElement('iframe');
       iframe.className = 'ws-tool-iframe active';
       iframe.id = `iframe_${toolId}`;
-      iframe.src = tool.url;
+      const cacheBust = 'v=20261010_v3';
+      const sep = tool.url.includes('?') ? '&' : '?';
+      iframe.src = `${tool.url}${sep}${cacheBust}`;
 
       iframe.addEventListener('load', () => {
         showLoading(false);
