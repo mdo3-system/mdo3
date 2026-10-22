@@ -4,3 +4,9 @@ Disallow: /api/
 Disallow: /studio/api/
 
 Sitemap: https://mdo3.com/sitemap.xml
+
+# LLM / AI Engine Directives (llms.txt standard)
+# See: https://llmstxt.org/
+User-agent: *
+Allow: /llms.txt
+Allow: /llms-full.txt
