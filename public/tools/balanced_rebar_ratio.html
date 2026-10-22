@@ -56,7 +56,7 @@
       "@id": "https://mdo3.com/tools/balanced_rebar_ratio.html#software",
       "name": "スラブ内補強 釣り合い鉄筋比の計算 | mdo3 構造計算クラウド",
       "applicationCategory": "BusinessApplication",
-      "operatingSystem": "All modern web browsers (Chrome, Edge, Safari, Firefox)",
+      "operatingSystem": "All modern web browsers",
       "url": "https://mdo3.com/tools/balanced_rebar_ratio.html",
       "description": "スラブ内補強 釣り合い鉄筋比の計算とは、建築基準法施行令 第77条 (RC造部材構造規定)に準拠し、木造・RC構造実務において要求される人通口等のスラブ内補強における引張鉄筋比と釣り合い鉄筋比（pt ≦ ptb）を判定。過鉄筋・脆性破壊防止の検討書出力。を即座に判定する専門計算エンジンです。主要算定式『釣り合い鉄筋比 pb = (0.85 · f'c / fy) · (600 / (600 + fy))』に基づき、確認申請・適判審査に直結するA4計算書帳票を出力します。",
       "author": {
@@ -76,6 +76,31 @@
       }
     },
     {
+      "@type": "HowTo",
+      "@id": "https://mdo3.com/tools/balanced_rebar_ratio.html#howto",
+      "name": "スラブ内補強 釣り合い鉄筋比の計算による確認申請用A4計算書の作成手順",
+      "step": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "name": "設計条件・部材寸法の入力",
+          "text": "物件名、設計者情報、および伏図・軸組図から拾い出した断面寸法や荷重値を画面フォームへ入力します。"
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "name": "リアルタイム応力算定・検定比判定",
+          "text": "アルゴリズムが主要算定式（釣り合い鉄筋比 pb = (0.85 · f'c / fy) · (600 / (600 + fy))）に基づき瞬時に応力と許容耐力を計算し、安全率判定を表示します。"
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "name": "A4確認申請提出用計算書の出力・保存",
+          "text": "印刷プレビューからA4統一フォーマットでPDF印刷出力し、物件JSONファイルをローカルに保存します。"
+        }
+      ]
+    },
+    {
       "@type": "FAQPage",
       "@id": "https://mdo3.com/tools/balanced_rebar_ratio.html#faq",
       "mainEntity": [
@@ -89,18 +114,18 @@
         },
         {
           "@type": "Question",
-          "name": "スラブ内補強 釣り合い鉄筋比の計算の計算書は確認申請や適判でそのまま提出できますか？",
+          "name": "スラブ内補強 釣り合い鉄筋比の計算で検定比オーバー（NG）が出た場合の設計変更の急所は何ですか？",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "はい、全計算書は確認検査機関および構造適判機関の審査実務に対応したA4統一フォーマットで設計されています。準拠法令（建築基準法施行令 第77条 (RC造部材構造規定)）および計算根拠式が明記されているため、確認申請の添付図書として直接提出可能です。"
+            "text": "鉄筋比が釣り合い鉄筋比 pb を超えて脆性破壊域に入る場合、鉄筋量を減らすか、コンクリート強度 Fc（21 ➔ 24N/㎟）をアップして耐圧盤の靭性を確保します。"
           }
         },
         {
           "@type": "Question",
-          "name": "利用にあたって特別なCADソフトの導入は必要ですか？",
+          "name": "スラブ内補強 釣り合い鉄筋比の計算の計算書は確認申請や適判でそのまま提出できますか？",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "いいえ、Google ChromeやMicrosoft Edge、Safari等の標準Webブラウザがあれば、PCやタブレットからインストール不要ですぐにご利用いただけます。"
+            "text": "はい、全計算書は確認検査機関および構造適判機関の審査実務に対応したA4統一フォーマットで設計されています。準拠法令（建築基準法施行令 第77条 (RC造部材構造規定)）および計算根拠式が明記されているため、確認申請の添付図書として直接提出可能です。"
           }
         }
       ]
@@ -294,6 +319,28 @@
       line-height: 1.6;
       color: #cbd5e1;
     }
+    .troubleshoot-box {
+      background: rgba(245, 158, 11, 0.06);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      border-radius: var(--radius-sm);
+      padding: 20px 22px;
+      margin-top: 16px;
+    }
+    .troubleshoot-head {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--accent-gold);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .troubleshoot-text {
+      font-size: 0.88rem;
+      line-height: 1.7;
+      color: #e2e8f0;
+      margin: 0;
+    }
     .faq-item {
       background: rgba(255, 255, 255, 0.03);
       border: 1px solid rgba(255, 255, 255, 0.08);
@@ -316,6 +363,12 @@
       color: var(--text-sub);
       margin: 0;
       padding-left: 24px;
+    }
+    .related-tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
     }
     .eeat-author-card {
       background: rgba(15, 23, 42, 0.7);
@@ -415,7 +468,7 @@
       </ul>
     </section>
 
-    <!-- 2. 手計算との違い・検討の急所 -->
+    <!-- 2. 手計算との違い・検討の急所 ＆ トラブルシューティング -->
     <section class="content-card">
       <h2 class="content-card-title">
         <span class="material-symbols-outlined" style="color:var(--accent-cyan);">psychology</span>
@@ -424,9 +477,17 @@
       <p style="font-size:0.92rem; line-height:1.75; color:#cbd5e1; margin-bottom:14px;">
         べた基礎耐圧盤スラブの引張鉄筋比 pt が釣り合い鉄筋比 pb を超えて脆性破壊（コンクリートの先行圧壊）を起こさないよう、最大配筋比および最小配筋比（0.2%規定）の限界値を照査します。
       </p>
-      <p style="font-size:0.88rem; line-height:1.7; color:var(--text-sub); margin:0;">
-        確認申請や構造適判において審査官から質疑を受けやすい「境界条件の仮定」「偏心時の割増検討」「許容応力度の低減係数」をアルゴリズム内で厳密に反映。手計算での煩雑な反復計算を完全自動化し、検定比をリアルタイムに可視化します。
-      </p>
+
+      <!-- ★ AIO/実務特化: NG時の設計見直し指針 -->
+      <div class="troubleshoot-box">
+        <div class="troubleshoot-head">
+          <span class="material-symbols-outlined" style="color:var(--accent-gold); font-size:20px;">engineering</span>
+          <span>【実務審査の急所】検定比オーバー（NG）時の設計見直し指針</span>
+        </div>
+        <p class="troubleshoot-text">
+          鉄筋比が釣り合い鉄筋比 pb を超えて脆性破壊域に入る場合、鉄筋量を減らすか、コンクリート強度 Fc（21 ➔ 24N/㎟）をアップして耐圧盤の靭性を確保します。
+        </p>
+      </div>
     </section>
 
     <!-- 3. 何ができて何ができないか (適用範囲) -->
@@ -476,20 +537,73 @@
 
       <div class="faq-item">
         <div class="faq-q">
+          <span style="color:var(--accent-cyan);">Q.</span> 検定比オーバー（NG）が出た場合の設計変更の急所は何ですか？
+        </div>
+        <p class="faq-a">
+          鉄筋比が釣り合い鉄筋比 pb を超えて脆性破壊域に入る場合、鉄筋量を減らすか、コンクリート強度 Fc（21 ➔ 24N/㎟）をアップして耐圧盤の靭性を確保します。
+        </p>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">
           <span style="color:var(--accent-cyan);">Q.</span> 確認申請機関や適判機関へそのまま提出できますか？
         </div>
         <p class="faq-a">
           はい。全ツールの帳票は審査官が直感的に検定根拠を追えるA4縦フォーマットで統一されています。工事件名、設計者名、計算日、準拠基準番号が印字され、正本・副本としてそのまま添付いただけます。
         </p>
       </div>
+    </section>
 
-      <div class="faq-item">
-        <div class="faq-q">
-          <span style="color:var(--accent-cyan);">Q.</span> 入力データの保存や次回案件への流用は可能ですか？
-        </div>
-        <p class="faq-a">
-          はい。ブラウザ内（LocalStorage）への自動一時保存に加え、ワンクリックでJSONファイルとしてローカルPCへ保存・復元が可能です。類似プランの案件作成時に大幅な省力化が図れます。
-        </p>
+    <!-- ★ 5. トピッククラスター: あわせて使われる連動・関連ツール -->
+    <section class="content-card">
+      <h2 class="content-card-title">
+        <span class="material-symbols-outlined" style="color:var(--accent-cyan);">hub</span>
+        あわせて使われる関連構造計算ツール
+      </h2>
+      <p style="font-size:0.86rem; color:var(--text-sub); margin:0 0 12px;">
+        実務案件において、スラブ内補強 釣り合い鉄筋比の計算とセットで検討・確認申請添付されることが多い関連ツールです。
+      </p>
+      <div class="related-tools-grid">
+        
+          <a href="/tools/jintsuko.html" class="related-tool-card" style="background:rgba(255,255,255,0.03); border:1px solid rgba(56,189,248,0.2); border-radius:10px; padding:16px 18px; text-decoration:none; display:flex; flex-direction:column; justify-content:space-between; transition:all 0.2s;" onmouseover="this.style.borderColor='var(--accent-cyan)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.borderColor='rgba(56,189,248,0.2)'; this.style.transform='none';">
+            <div>
+              <div style="font-size:0.75rem; color:var(--accent-cyan); font-weight:700; margin-bottom:4px; display:flex; align-items:center; gap:4px;">
+                <span class="material-symbols-outlined" style="font-size:14px;">link</span> 連動・関連ツール
+              </div>
+              <h4 style="font-size:0.95rem; font-weight:800; color:#f8fafc; margin:0 0 6px;">人通口補強計算</h4>
+            </div>
+            <div style="font-size:0.75rem; color:var(--text-sub); display:flex; align-items:center; gap:4px; margin-top:8px;">
+              <span>詳細解説を見る</span>
+              <span class="material-symbols-outlined" style="font-size:13px;">arrow_forward</span>
+            </div>
+          </a>
+        
+          <a href="/tools/foundation_cad.html" class="related-tool-card" style="background:rgba(255,255,255,0.03); border:1px solid rgba(56,189,248,0.2); border-radius:10px; padding:16px 18px; text-decoration:none; display:flex; flex-direction:column; justify-content:space-between; transition:all 0.2s;" onmouseover="this.style.borderColor='var(--accent-cyan)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.borderColor='rgba(56,189,248,0.2)'; this.style.transform='none';">
+            <div>
+              <div style="font-size:0.75rem; color:var(--accent-cyan); font-weight:700; margin-bottom:4px; display:flex; align-items:center; gap:4px;">
+                <span class="material-symbols-outlined" style="font-size:14px;">link</span> 連動・関連ツール
+              </div>
+              <h4 style="font-size:0.95rem; font-weight:800; color:#f8fafc; margin:0 0 6px;">木造ベタ基礎 梁断面図作図 ＆ dt・平均GL自動算定</h4>
+            </div>
+            <div style="font-size:0.75rem; color:var(--text-sub); display:flex; align-items:center; gap:4px; margin-top:8px;">
+              <span>詳細解説を見る</span>
+              <span class="material-symbols-outlined" style="font-size:13px;">arrow_forward</span>
+            </div>
+          </a>
+        
+          <a href="/tools/cantilever_foundation_beam.html" class="related-tool-card" style="background:rgba(255,255,255,0.03); border:1px solid rgba(56,189,248,0.2); border-radius:10px; padding:16px 18px; text-decoration:none; display:flex; flex-direction:column; justify-content:space-between; transition:all 0.2s;" onmouseover="this.style.borderColor='var(--accent-cyan)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.borderColor='rgba(56,189,248,0.2)'; this.style.transform='none';">
+            <div>
+              <div style="font-size:0.75rem; color:var(--accent-cyan); font-weight:700; margin-bottom:4px; display:flex; align-items:center; gap:4px;">
+                <span class="material-symbols-outlined" style="font-size:14px;">link</span> 連動・関連ツール
+              </div>
+              <h4 style="font-size:0.95rem; font-weight:800; color:#f8fafc; margin:0 0 6px;">片持ち基礎梁の検定 (柱あり)</h4>
+            </div>
+            <div style="font-size:0.75rem; color:var(--text-sub); display:flex; align-items:center; gap:4px; margin-top:8px;">
+              <span>詳細解説を見る</span>
+              <span class="material-symbols-outlined" style="font-size:13px;">arrow_forward</span>
+            </div>
+          </a>
+        
       </div>
     </section>
 
