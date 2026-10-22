@@ -538,7 +538,7 @@ WRC造の「開口部補強・割増検討（jintsuko_bf）」は削除。新た
      - `shosai-tarukiyane-kihon.html` / `shosai-yanejikabari-kihon.html`: 画面用 `h1` に `.no-print` を付与し、印刷時の二重タイトル表示を解消。
   3. **ToolStorage（common.js）の片持ち基礎梁（beamRows）完全保存・復元対応**:
      - 片持ち基礎梁の複数行データ（`beamRows`）、検討スパン名（`span_name`）、コンクリート強度（`fc_select`）のJSON保存・復元ハンドラを完全配備。
-��幌市、仙台市等の公式GISを網羅。
+��札幌市、仙台市等の公式GISを網羅。
      - 未登録の町村でもGoogle都市計画検索（`{自治体名} 都市計画情報 用途地域 WebGIS`）を自動生成し、全国1,892市区町村で1クリックアクセスを保証。
 
 ### ③ ポータル内 Leaflet 地図でのレイヤー切替（標準・淡色・航空写真 ＆ 洪水・土砂災害ハザード重ね合わせ）

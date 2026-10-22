@@ -1,0 +1,317 @@
+/* foundation_beam_horizontal.css - mdo3標準デザイン＆共通仕様適合スタイル */
+
+:root {
+    --primary: #1e3a8a;
+    --primary-light: #3b82f6;
+    --accent: #2563eb;
+    --border-color: #cbd5e1;
+}
+
+/* 入力設定カード */
+.fbh-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    padding: 16px 20px;
+    margin-bottom: 24px;
+}
+
+.fbh-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 10px;
+    margin-bottom: 14px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.fbh-mode-box {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.fbh-mode-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #1e3a8a;
+    cursor: pointer;
+}
+
+.fbh-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin-bottom: 14px;
+}
+
+.fbh-sec-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 12px 14px;
+}
+
+.fbh-sec-title {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: #334155;
+    margin-bottom: 10px;
+    border-left: 3px solid var(--accent);
+    padding-left: 6px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.fbh-form-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 0.88rem;
+}
+
+.fbh-form-row label {
+    color: #475569;
+}
+
+.fbh-input-group {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.fbh-input-group input, .fbh-input-group select {
+    padding: 5px 8px;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    font-size: 0.88rem;
+    text-align: right;
+    font-family: inherit;
+}
+
+.fbh-input-group select {
+    text-align: left;
+}
+
+.fbh-unit {
+    font-size: 0.8rem;
+    color: #64748b;
+    width: 34px;
+}
+
+/* 帳票印刷エリア (print_area) */
+#print_area {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    padding: 20px 24px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+    margin-bottom: 40px;
+    color: #1e293b;
+    font-size: 9pt;
+    line-height: 1.45;
+}
+
+.report-meta-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 8.5pt;
+    color: #334155;
+    border-bottom: 1px solid #cbd5e1;
+    padding-bottom: 4px;
+    margin-bottom: 10px;
+}
+
+.report-sec-heading {
+    font-size: 9.2pt;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 10px 0 4px 0;
+    border-left: 3px solid #1e3a8a;
+    padding-left: 6px;
+}
+
+/* テーブルスタイル */
+.report-data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 8px;
+    font-size: 8.5pt;
+    page-break-inside: avoid;
+    break-inside: avoid;
+}
+
+.report-data-table th, .report-data-table td {
+    border: 1px solid #94a3b8;
+    padding: 3px 5px;
+    text-align: center;
+}
+
+.report-data-table th {
+    background: #f1f5f9;
+    color: #0f172a;
+    font-weight: 700;
+}
+
+.badge-status-ok {
+    display: inline-block;
+    background: #dcfce7;
+    color: #166534;
+    font-weight: bold;
+    padding: 1px 8px;
+    border-radius: 4px;
+    font-size: 7.8pt;
+    border: 1px solid #86efac;
+}
+
+/* 変形図・反力図グリッド */
+.report-diagram-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 8px;
+    page-break-inside: avoid;
+    break-inside: avoid;
+}
+
+.report-diagram-card {
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    background: #f8fafc;
+    padding: 5px;
+    text-align: center;
+}
+
+.report-diagram-label {
+    font-size: 8pt;
+    font-weight: 700;
+    color: #1e3a8a;
+    margin-bottom: 2px;
+}
+
+.report-diagram-svg {
+    width: 100%;
+    height: 95px;
+    display: block;
+}
+
+/* 考察ボックス */
+.report-discussion-card {
+    margin-top: 8px;
+    border: 1px solid #cbd5e1;
+    background: #f8fafc;
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-size: 8pt;
+    line-height: 1.45;
+    color: #334155;
+    page-break-inside: avoid;
+    break-inside: avoid;
+}
+
+.report-discussion-card h4 {
+    margin: 0 0 4px 0;
+    font-size: 8.5pt;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.report-discussion-card ol {
+    margin: 0;
+    padding-left: 16px;
+}
+
+.report-discussion-card li {
+    margin-bottom: 3px;
+}
+
+/* 簡易片持ちボックス */
+.report-cantilever-card {
+    margin-top: 8px;
+    border: 1px solid #bfdbfe;
+    background: #f0f9ff;
+    border-radius: 4px;
+    padding: 10px 14px;
+    font-size: 8.2pt;
+    line-height: 1.45;
+    color: #1e293b;
+    page-break-inside: avoid;
+    break-inside: avoid;
+}
+
+.report-cantilever-card h4 {
+    margin: 0 0 6px 0;
+    font-size: 9pt;
+    font-weight: 800;
+    color: #1e3a8a;
+    border-bottom: 2px solid #bae6fd;
+    padding-bottom: 3px;
+}
+
+.report-calc-box {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    padding: 8px 12px;
+    margin: 6px 0 8px 0;
+    font-family: 'Cambria Math', 'Times New Roman', serif;
+    font-size: 8.5pt;
+}
+
+.report-footer-note {
+    text-align: right;
+    font-size: 7.5pt;
+    color: #64748b;
+    border-top: 1px solid #e2e8f0;
+    padding-top: 4px;
+    margin-top: 8px;
+    page-break-inside: avoid;
+    break-inside: avoid;
+}
+
+/* 印刷用スタイル */
+@media print {
+    body {
+        background: #ffffff !important;
+    }
+    .no-print, .fbh-card, #global-header-container .no-print {
+        display: none !important;
+    }
+    #print_area {
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 100% !important;
+    }
+    
+    /* ブロックごとの途中途切れを防止し、自然なページ分割を実現 */
+    .report-cantilever-card, 
+    .report-discussion-card, 
+    .report-diagram-grid, 
+    .report-data-table,
+    .fbh-sec-box {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+    }
+
+    @page {
+        size: A4 portrait;
+        margin: 10mm 12mm;
+    }
+}

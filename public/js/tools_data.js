@@ -242,7 +242,7 @@ const MDO3_TOOLS_CATALOG = [
     category: "foundation",
     categoryName: "基礎・擁壁・地盤系",
     sortOrder: 8,
-    title: "基礎梁 水平力追加計算書 (KBI用)",
+    title: "基礎梁 水平力追加計算書",
     summary: "弾性支点（Winklerモデル）による基礎梁の水平時FEM応力算定・短期断面検定。A4 1枚印刷・PDF出力対応。",
     icon: "calculate",
     url: "https://app.mdo3.com/tools/foundation_beam_horizontal.html",
@@ -251,12 +251,12 @@ const MDO3_TOOLS_CATALOG = [
     pricing: { individual: 490, categoryPack: 980, allAccess: 1980 },
     standards: [
       "建築基準法施行令 第82条 (許容応力度等計算)",
-      "確認検査機関 (KBI等) 木造べた基礎梁の水平力取扱基準"
+      "木造住宅基礎構造設計指針 / 許容応力度設計 (グレー本)"
     ],
     canDo: [
       "Winkler床モデル（弾性支点FEM）による基礎梁の水平時M・Q分布解析",
       "SMa（短期許容曲げモーメント）の自動算定・短期断面検定",
-      "建築確認・審査機関（KBI等）へのそのまま提出可能なA4追加計算書出力",
+      "確認審査機関提出用の追加計算書出力",
       "JSONデータ入出力・ブラウザLocalStorage自動保存"
     ],
     cannotDo: [
