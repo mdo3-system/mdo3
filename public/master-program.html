@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ARCHITREND ZERO × 木造許容応力度計算 実務マスタープログラム | mdo3.com</title>
+  <meta name="description" content="グレー本を100回読んでも身につかない「木造許容応力度計算の実務と審査突破」を、あなたの実案件で完全習得。アーキトレンドZEROの操作から審査質疑対応までを伴走指導する自社内製化プログラム。受講中mdo3全29ツール1年間無料。">
+  <link rel="canonical" href="https://mdo3.com/master-program.html">
+
+  <!-- OGP & Twitter Cards -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="ARCHITREND ZERO × 木造許容応力度計算 実務マスタープログラム | mdo3.com">
+  <meta property="og:description" content="グレー本を100回読んでも身につかない「木造許容応力度計算の実務と審査突破」を、あなたの実案件で完全習得。建売・工務店設計者のための自社内製化伴走支援。">
+  <meta property="og:url" content="https://mdo3.com/master-program.html">
+  <meta property="og:image" content="https://mdo3.com/assets/ogp/ogp_default.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://mdo3.com/assets/ogp/ogp_default.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="/assets/branding/favicon.svg">
+  <link rel="alternate icon" href="/favicon.ico">
+
+  <!-- Google Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
+
+  <link rel="stylesheet" href="/css/portal.css">
+  <style>
+    :root {
+      --gold-glow: rgba(245, 158, 11, 0.25);
+    }
+    body {
+      background: #0b0f19;
+      color: #f1f5f9;
+      font-family: 'Inter', 'Noto Sans JP', sans-serif;
+      line-height: 1.75;
+    }
+    .program-container {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 100px 20px 80px;
+    }
+    .program-hero {
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      border-radius: var(--radius-lg);
+      padding: 48px 40px;
+      margin-bottom: 40px;
+      position: relative;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 40px var(--gold-glow);
+    }
+    .hero-badge-gold {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid var(--accent-gold);
+      color: var(--accent-gold);
+      padding: 6px 14px;
+      border-radius: 9999px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+    .program-hero-title {
+      font-size: clamp(2rem, 4vw, 2.7rem);
+      font-weight: 800;
+      line-height: 1.3;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, #ffffff 40%, #fef08a 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .program-hero-subtitle {
+      font-size: 1.15rem;
+      color: #38bdf8;
+      font-weight: 700;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+    .hero-lead-text {
+      font-size: 1rem;
+      color: #cbd5e1;
+      line-height: 1.8;
+      margin-bottom: 30px;
+    }
+    .hero-perks-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin: 28px 0;
+    }
+    .hero-perk-card {
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-sm);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .hero-perk-icon {
+      font-size: 28px;
+      color: var(--accent-gold);
+      flex-shrink: 0;
+    }
+    .hero-perk-title {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    .hero-perk-sub {
+      font-size: 0.78rem;
+      color: var(--text-sub);
+    }
+    .section-card {
+      background: var(--surface-card);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-md);
+      padding: 36px;
+      margin-bottom: 32px;
+    }
+    .section-title {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 14px;
+    }
+    .pain-box {
+      background: rgba(244, 63, 94, 0.08);
+      border-left: 4px solid var(--accent-rose);
+      border-radius: 4px;
+      padding: 20px 24px;
+      margin-bottom: 24px;
+      font-size: 0.95rem;
+      color: #ffe4e6;
+    }
+    .solution-box {
+      background: rgba(16, 185, 129, 0.08);
+      border-left: 4px solid var(--accent-green);
+      border-radius: 4px;
+      padding: 20px 24px;
+      margin-bottom: 24px;
+      font-size: 0.95rem;
+      color: #d1fae5;
+    }
+    .pricing-table-wrap {
+      overflow-x: auto;
+      margin: 24px 0;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--radius-sm);
+    }
+    .pricing-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+      text-align: left;
+    }
+    .pricing-table th, .pricing-table td {
+      padding: 16px 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      line-height: 1.6;
+    }
+    .pricing-table th {
+      background: rgba(15, 23, 42, 0.9);
+      color: #f8fafc;
+      font-weight: 700;
+    }
+    .pricing-table tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+    .highlight-cell {
+      background: rgba(245, 158, 11, 0.1) !important;
+      border-left: 2px solid var(--accent-gold);
+      font-weight: 700;
+    }
+    .guarantee-box {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(15, 23, 42, 0.8) 100%);
+      border: 2px solid var(--accent-gold);
+      border-radius: var(--radius-md);
+      padding: 28px 32px;
+      margin: 28px 0;
+    }
+    .guarantee-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #fef08a;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .scope-notice-box {
+      background: rgba(56, 189, 248, 0.08);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      border-radius: var(--radius-sm);
+      padding: 20px 24px;
+      margin: 20px 0;
+      font-size: 0.92rem;
+      color: #e0f2fe;
+      line-height: 1.7;
+    }
+    .cta-banner {
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      border-radius: var(--radius-lg);
+      padding: 44px 36px;
+      text-align: center;
+      margin-top: 40px;
+      box-shadow: 0 20px 40px -15px rgba(2, 132, 199, 0.5);
+    }
+    .cta-title {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 12px;
+    }
+    .cta-desc {
+      font-size: 1rem;
+      color: #e0f2fe;
+      max-width: 680px;
+      margin: 0 auto 28px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 共通ヘッダー -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="/" class="brand-logo">
+        <div class="logo-badge">M</div>
+        <div class="brand-name">mdo3<span>.com</span></div>
+      </a>
+      <nav class="nav-container">
+        <ul class="nav-links">
+          <li><a href="/"><span class="material-symbols-outlined" style="font-size:15px;">home</span> ポータルトップ</a></li>
+          <li><a href="/master-program.html" style="color:var(--accent-gold); font-weight:700;"><span class="material-symbols-outlined" style="font-size:15px;">school</span> 実務マスタープログラム</a></li>
+          <li><a href="/#toolsCatalog"><span class="material-symbols-outlined" style="font-size:15px;">grid_view</span> 全29ツール一覧</a></li>
+          <li><a href="/faq.html"><span class="material-symbols-outlined" style="font-size:15px;">help</span> 技術Q&A</a></li>
+        </ul>
+      </nav>
+      <div class="header-actions">
+        <a href="/contact.html?type=master_program" class="btn btn-primary" style="white-space:nowrap;">
+          <span class="material-symbols-outlined">send</span> 事前相談・面談申込み
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="program-container">
+
+    <!-- ヒーローセクション -->
+    <section class="program-hero">
+      <div class="hero-badge-gold">
+        <span class="material-symbols-outlined" style="font-size:16px;">verified</span>
+        木造許容応力度計算 自社内製化・実務伴走プログラム
+      </div>
+      <h1 class="program-hero-title">
+        グレー本を100回読んでも、<br>実務の構造計算はできるようになりません。
+      </h1>
+      <div class="program-hero-subtitle">
+        ARCHITREND ZEROの実務操作 × あなたの実案件での構造設計・審査質疑対応まで完全伴走指導
+      </div>
+      <p class="hero-lead-text">
+        架空のモデルプランではなく、あなたが現在抱えている「本物の実案件」を教材に、現役の管理建築士が入力から計算書のまとめ、審査機関の質疑・補正対応までを完全実況動画化＆マンツーマン伴走。外注頼みから脱却し、あなた自身が本物の「構造設計者」として自立するための実践特化プログラムです。
+      </p>
+
+      <!-- 3大受講特典 -->
+      <div class="hero-perks-grid">
+        <div class="hero-perk-card">
+          <span class="material-symbols-outlined hero-perk-icon">card_membership</span>
+          <div>
+            <div class="hero-perk-title">mdo3全29ツール 1年間無料</div>
+            <div class="hero-perk-sub">受講期間中、全補助ツールが使い放題</div>
+          </div>
+        </div>
+        <div class="hero-perk-card">
+          <span class="material-symbols-outlined hero-perk-icon">support_agent</span>
+          <div>
+            <div class="hero-perk-title">1年間 質疑・補正伴走サポート</div>
+            <div class="hero-perk-sub">審査機関からの指摘対応まで徹底指導</div>
+          </div>
+        </div>
+        <div class="hero-perk-card">
+          <span class="material-symbols-outlined hero-perk-icon">shield</span>
+          <div>
+            <div class="hero-perk-title">挫折ゼロ：万全のバックアップ保証</div>
+            <div class="hero-perk-sub">万一の際も通常半額で図書作成支援を約束</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:32px; display:flex; gap:16px; flex-wrap:wrap;">
+        <a href="/contact.html?type=master_program" class="btn btn-primary" style="padding:16px 36px; font-size:1.05rem;">
+          <span class="material-symbols-outlined">event_available</span> まずはオンライン事前相談（無料）を申し込む
+        </a>
+        <a href="#curriculum" class="btn btn-ghost" style="padding:16px 28px;">
+          <span class="material-symbols-outlined">expand_more</span> プログラム詳細を見る
+        </a>
+      </div>
+    </section>
+
+    <!-- 1. なぜ教科書では身につかないのか？（課題の提示） -->
+    <section class="section-card">
+      <h2 class="section-title">
+        <span class="material-symbols-outlined" style="color:var(--accent-rose);">warning</span>
+        なぜ、グレー本の解説やモデルプランを眺めても身につかないのか？
+      </h2>
+      <div class="pain-box">
+        <strong>【現場で直面する厳しい現実】</strong><br>
+        市販のグレー本や解説書に載っているモデルプランは、整形かつ柱通りが綺麗に揃った「理想的な住宅」ばかりです。しかし、実際の業務で設計する建物は、狭小間口、人通口による梁欠損、ポーチの持ち出し梁、耐力壁直下の梁たわみなど、教科書通りにいかないトラブルの連続です。<br>
+        「アーキトレンドに入力したら人通口が全部地中梁になってしまい基礎コストが跳ね上がった」「偏心率がどうしても収まらない」「審査官から予想外の質疑が来て回答書が書けない」――これらは、教科書をどれだけ読んでも解決できません。
+      </div>
+
+      <div class="solution-box">
+        <strong>【本プログラムの解決策：あなたの実案件をそのまま教材にする】</strong><br>
+        本プログラムは、あなたが現在抱えている（またはこれから申請する）「実際の実務物件」を題材にします。プロの管理建築士が、その案件のアーキトレンドZERO操作から、問題直面時の回避策（mdo3ツール群によるスラブ内補強筋での地中梁回避など）、計算書のまとめ、そして民間検査機関からの質疑・補正回答まで、**泥臭い実務の全工程を動画化して解説**します。
+      </div>
+    </section>
+
+    <!-- 2. 学習対象案件についての重要なお知らせ -->
+    <section class="section-card">
+      <h2 class="section-title">
+        <span class="material-symbols-outlined" style="color:var(--accent-gold);">info</span>
+        学習対象とする案件の推奨レベルについて
+      </h2>
+      <div class="scope-notice-box">
+        <p style="margin:0 0 10px;">
+          <strong>【建売業者様・工務店様の標準プランからのスタートを強く推奨します】</strong>
+        </p>
+        <p style="margin:0 0 10px;">
+          本プログラムで構造計算の内製化を目指す方の多くは、建売分譲住宅や標準的な注文住宅を手掛ける設計者様です。まずは**「比較的整形な単純プラン」**から学習を開始することを強く推奨します。
+        </p>
+        <p style="margin:0; font-size:0.88rem; color:#94a3b8;">
+          ※ スキップフロア、過度な突出部、不整形な建物など、極めて複雑で難易度の高い物件を教材として持ち込むことも可能ですが、ゾーン別の検定や確認事項、学習すべきボリュームが数倍に膨らみます。あらかじめその難易度・学習量をご承知おきの上、教材とする案件をご選定ください。
+        </p>
+      </div>
+    </section>
+
+    <!-- 3. プログラム構成と費用体系 -->
+    <section class="section-card" id="curriculum">
+      <h2 class="section-title">
+        <span class="material-symbols-outlined" style="color:var(--accent-cyan);">menu_book</span>
+        プログラム構成と明快な料金体系
+      </h2>
+      <p style="font-size:0.92rem; color:var(--text-sub); margin-bottom:18px;">
+        設計者はあくまでも「あなた自身」です。本プログラムはその徹底サポートに徹し、あなたが自信を持って構造計算書に記名・押印し、審査を突破できる本物の設計者になるまで伴走します。
+      </p>
+
+      <div class="pricing-table-wrap">
+        <table class="pricing-table">
+          <thead>
+            <tr>
+              <th style="width:25%;">プログラム項目</th>
+              <th style="width:20%;">費用（税込）</th>
+              <th style="width:55%;">提供内容・実務サポート詳細</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>① 実案件 完全実況・構造計算解説動画</strong><br><span style="font-size:0.8rem; color:var(--accent-gold);">（実案件 2件分）</span></td>
+              <td class="highlight-cell">500,000 円<br><span style="font-size:0.75rem; font-weight:400; color:var(--text-sub);">（一括）</span></td>
+              <td>
+                受講者が抱える実案件（2件）を対象に、管理建築士がアーキトレンドZERO操作、mdo3補助ツール連携、図書作成、確認申請、審査質疑応答・補正まで全プロセスを完全実況・個別動画化して提供。一生モノの実務リファレンスとなります。
+              </td>
+            </tr>
+            <tr>
+              <td><strong>② 実案件 構造設計・図書作成サポート</strong><br><span style="font-size:0.8rem; color:var(--text-sub);">（個別案件対応）</span></td>
+              <td class="highlight-cell">100,000 〜<br>200,000 円 / 件</td>
+              <td>
+                受講生が設計者として申請を行うにあたり、各案件の応力解析・断面検定・図書作成を当事務所がバックアップし、整合性の取れた提出用計算書を完成させる実務サポート費用です（通常外注相場の約半額水準）。
+              </td>
+            </tr>
+            <tr>
+              <td><strong>③ 1年間 構造設計・審査質疑アドバイザリー</strong><br><span style="font-size:0.8rem; color:var(--accent-cyan);">（12ヶ月継続サポート）</span></td>
+              <td class="highlight-cell">月額 50,000 円<br><span style="font-size:0.75rem; font-weight:400; color:var(--text-sub);">（1年間継続）</span></td>
+              <td>
+                受講生が自ら構造計算・確認申請を行った案件について、民間検査機関や特定行政庁から届く指摘・質疑に対する「補正回答書の書き方・是正方針」までを直接助言。審査完了まで孤独にさせません。
+              </td>
+            </tr>
+            <tr>
+              <td><strong>★ 受講生限定 特別特典</strong></td>
+              <td style="color:var(--accent-green); font-weight:700;">1年間 完全無料</td>
+              <td>
+                <strong>mdo3に収録されている全29の専門構造計算ツール群が1年間使い放題。</strong>（受講終了の翌年以降は通常課金となります）
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ギブアップ保証（セーフティネット） -->
+      <div class="guarantee-box">
+        <div class="guarantee-title">
+          <span class="material-symbols-outlined" style="font-size:26px; color:var(--accent-gold);">verified_user</span>
+          挫折させない約束：万全のバックアップ保証（セーフティネット）
+        </div>
+        <p style="font-size:0.92rem; line-height:1.75; color:#fef3c7; margin:0;">
+          「忙しくて計算が追いつかない」「どうしても自力での進行が困難になった」という場合でもご安心ください。受講生がギブアップした場合でも、<strong>通常の構造設計請負相場の50%の費用にて、当事務所が構造計算書・図書一式の作成を全力でバックアップ支援</strong>することを約束します。<br>
+          申請業務がストップして建主様に迷惑をかけるリスクを完全に排除した状態で、安心して構造計算の内製化に挑戦していただけます。
+        </p>
+      </div>
+    </section>
+
+    <!-- 4. 受講の流れ -->
+    <section class="section-card">
+      <h2 class="section-title">
+        <span class="material-symbols-outlined" style="color:var(--accent-green);">alt_route</span>
+        受講までの流れ（安心の秘密保持契約）
+      </h2>
+      <div style="display:flex; flex-direction:column; gap:16px;">
+        <div style="background:rgba(15, 23, 42, 0.6); padding:16px 20px; border-radius:6px; border-left:3px solid var(--accent-cyan);">
+          <strong style="color:#fff;">STEP 1: オンライン事前相談（無料・30分）</strong><br>
+          <span style="font-size:0.88rem; color:var(--text-sub);">現在の設計状況、アーキトレンドZEROの導入環境、内製化したい物件規模をヒアリングし、最適な学習プランをご提案します。</span>
+        </div>
+        <div style="background:rgba(15, 23, 42, 0.6); padding:16px 20px; border-radius:6px; border-left:3px solid var(--accent-cyan);">
+          <strong style="color:#fff;">STEP 2: 秘密保持契約（NDA）の締結 ＆ 正式お申し込み</strong><br>
+          <span style="font-size:0.88rem; color:var(--text-sub);">実務案件の図面・個人情報を取り扱うため、事前に厳格な秘密保持契約を締結いたします。建主様のプライバシーも万全です。</span>
+        </div>
+        <div style="background:rgba(15, 23, 42, 0.6); padding:16px 20px; border-radius:6px; border-left:3px solid var(--accent-cyan);">
+          <strong style="color:#fff;">STEP 3: 実案件の選定 ＆ 動画解説・伴走サポート開始</strong><br>
+          <span style="font-size:0.88rem; color:var(--text-sub);">最初の実案件の図面データをお預かりし、管理建築士による完全実況解説動画の作成、およびあなたの手による構造計算実務をスタートします。</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. 監修・指導体制 -->
+    <div class="eeat-author-card" style="margin-top:20px;">
+      <div class="author-avatar-badge">
+        <span class="material-symbols-outlined" style="font-size:28px; color:var(--accent-gold);">architecture</span>
+      </div>
+      <div>
+        <div style="font-size:0.75rem; color:var(--accent-gold); font-weight:700; text-transform:uppercase; margin-bottom:2px;">
+          PRACTITIONER SUPERVISION & MENTORSHIP
+        </div>
+        <div style="font-size:0.95rem; font-weight:800; color:#fff; margin-bottom:4px;">
+          一級建築士事務所 構造開発実務チーム（監修: 管理建築士）
+        </div>
+        <div style="font-size:0.82rem; line-height:1.65; color:var(--text-sub);">
+          自ら建築士事務所を開設し、日々の確認申請・構造審査業務を現場の第一線で統括。市販の計算ソフトでは手が届かない部位を補う自作ツール群（mdo3）を駆使し、数多くの審査一発通過を達成。現場のリアルな質疑対応や補正回答のノウハウを惜しみなく受講生へ伝授します。
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA バナー -->
+    <div class="cta-banner">
+      <h2 class="cta-title">まずは、現在の設計課題をお聞かせください</h2>
+      <p class="cta-desc">
+        「自社の案件で本当に内製化できるか？」「どの物件から始めればよいか？」など、管理建築士がオンラインにて個別にご相談に乗ります（無理な勧誘は一切ございません）。
+      </p>
+      <a href="/contact.html?type=master_program" class="btn btn-primary" style="background:#f59e0b; color:#0f172a; font-weight:800; padding:16px 36px; font-size:1.05rem; border:none;">
+        <span class="material-symbols-outlined" style="font-size:20px;">mail</span> 無料事前相談・面談を申し込む
+      </a>
+    </div>
+
+  </main>
+
+  <!-- 共通フッター -->
+  <footer class="site-footer">
+    <div class="container" style="text-align:center; padding:30px 20px;">
+      <p style="font-size:0.85rem; color:var(--text-sub); margin-bottom:8px;">
+        <a href="/" style="color:var(--text-main); text-decoration:none;">mdo3.com 基幹ポータル</a> | 
+        <a href="/master-program.html" style="color:var(--accent-gold); text-decoration:none;">実務マスタープログラム</a> | 
+        <a href="/#toolsCatalog" style="color:var(--text-main); text-decoration:none;">全29ツール一覧</a> | 
+        <a href="/terms.html" style="color:var(--text-main); text-decoration:none;">利用規約</a> | 
+        <a href="/tokusho.html" style="color:var(--text-main); text-decoration:none;">特定商取引法</a>
+      </p>
+      <small style="color:var(--text-sub); font-size:0.75rem;">&copy; 2026 株式会社ティー・スマイル (T-Smile Co., Ltd.) All Rights Reserved.</small>
+    </div>
+  </footer>
+
+</body>
+</html>
