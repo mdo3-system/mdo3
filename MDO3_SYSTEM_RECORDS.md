@@ -1037,4 +1037,25 @@ WRC造の「開口部補強・割増検討（jintsuko_bf）」は削除。新た
   5. **本番Webサーバー（XServer）およびGitHubへの完全デプロイ**:
      - GitHubへプッシュし、SCP経由で `public/tools/`、`sitemap.xml`、`index.html`、`portal.js`、`Version.js` を本番サーバーへ反映完了。
 
+---
+
+## 38. リリース履歴: v2.2.14 (2026-10-22)
+
+### ① 全30ツール個別静的LPの独自算定数式・技術急所（Deep Dive）肉付け ＆ ポータルへの静的HTML構造化ディレクトリ（#toolsDirectory）配備
+- **背景 & 課題**:
+  - 全30ツールの静的LPを配備したものの、解説文の一部が共通テンプレート化しており、Googleによるドアウェイ・Thin Content判定のリスクがあった。
+  - トップページ（`index.html`）のツール一覧がJavaScript動的描画であったため、Googlebot第1パス（静的クロール）においてトップページから各ツールLPへの直接リンクが存在せず、内部リンク（PageRank）伝播が不完全であった。
+  - AI検索（Perplexity, SearchGPT, AI Overview）において、ツールの「主要計算式」が機械可読化されていないため、技術質問の回答ソースに選ばれにくい弱点があった。
+- **改修内容 & 実装**:
+  1. **全30ツールの独自算定数式・技術急所（Deep Dive）の完全個別特化**:
+     - `public/tools/*.html` 全30ページを再生成。各ツール固有の主要算定式（例: 人通口の $at, aw$ 算定式、片持ち基礎梁の $M = P \cdot L + w L^2/2$、Z低減係数式、めり込み応力度式、斜め壁剛性マトリクス式、WRC壁量比等）をコードブロックおよびFAQに個別注入。
+     - 定義文（AIO定義ブロック）を「〇〇とは、〜〜に準拠し、主要算定式『……』に基づき……」と完全固有化し、テンプレート重複ペナルティリスクを根絶。
+  2. **ポータルへの全30ツール静的HTMLディレクトリ（`#toolsDirectory`）の埋め込み**:
+     - `public/index.html` のフッター直前に、5大カテゴリ別の静的HTMLリンク一覧ブロックを直接マークアップ。
+     - GooglebotがJavaScriptを実行する前の第1パスで、トップページのPageRankを全30ツールへ100%ダイレクトに伝播させる盤石のSilo Architectureを確立。
+  3. **本番Webサーバー（XServer）およびGitHubへの完全デプロイ**:
+     - GitHubへプッシュ完了。
+     - SCP経由で `public/tools/`、`public/index.html`、`Version.js`、`MDO3_SYSTEM_RECORDS.md` を本番サーバーへ反映完了。
+
+
 

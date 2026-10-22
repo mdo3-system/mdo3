@@ -2,9 +2,10 @@
  * Version.js - mdo3.com 基幹ポータル & 統合SaaS バージョン管理
  */
 (function() {
-    window.APP_VERSION = 'v2.2.13';
+    window.APP_VERSION = 'v2.2.14';
     window.APP_BUILD_DATE = '2026-10-22';
     window.APP_RELEASE_NOTES = [
+        'v2.2.14 (2026-10-22): 全30ツール個別静的LPの独自算定数式・技術急所（Deep Dive）肉付け ＆ ポータルへの静的HTML構造化ディレクトリ（#toolsDirectory）配備完了。①全30ツールのLP（public/tools/*.html）に対し、開口比・割増筋算定式、片持ち基礎梁モーメント式、Z低減係数式、めり込み許容応力度式、斜め壁剛性マトリクス式等の主要算定式バッジおよび審査官質疑傾向を完全個別特化、②ポータル（index.html）フッター直前に全30ツール静的HTMLディレクトリを直接埋め込み、Googlebot第1パスでのPageRank完全伝播（Link Equity）を確立、③AI Overview/Perplexityでの第一引用ソース獲得要件を完全充足',
         'v2.2.13 (2026-10-22): 全29ツール＋無償実務CADの個別静的LP（public/tools/）全30ページ一括展開 ＆ AIO・EEATオーソリティ強化完了。①各ツール個別ページへのAIO要約定義ブロック（100〜150字）、準拠法令・告示番号、手計算対比、Can/Cannot機能比較表、A4審査提出仕様、個別Schema.org（SoftwareApplication + FAQPage + BreadcrumbList）の静的配備、②ポータル（index.html）への代表者クレジット（一級建築士・実務開発者 菅原浩樹）およびPerson構造化データ・29ツールカタログ（hasPart）完全網羅、③XMLサイトマップ（sitemap.xml）への全30LP（priority 0.85）追加、④ポータルツールカードへの個別「解説」静的リンク配備（portal.js?v=2.2.13）',
         'v2.2.12 (2026-10-22): SEOおよびAIO（AI Overview / LLMO）対応基盤の緊急全面配備。①検索エンジン・AIクローラー巡回制御用「robots.txt」新設、②全公開URL・更新優先度・更新頻度を定義した標準XMLサイトマップ「sitemap.xml」配備、③SNS・被リンク拡散を加速するOGP（Open Graph Protocol）およびTwitter Cards（summary_large_image）の完全実装、④Google検索ナレッジ・AI検索ボット（Perplexity, SearchGPT等）向けSchema.org JSON-LD構造化データ（WebSite, Organization, SoftwareApplication, FAQPage）の基幹ポータル（index.html）への実装完了',
         'v2.2.11 (2026-10-06): 片持ち基礎梁の検定計算書における表示・復元不具合の完全解消。①HTML/JS/CSSへの強力なキャッシュバスター（?v=20261006_v11）強制付与によるブラウザキャッシュ問題の完全撲滅、②2重ヘッダー改修前の最小保存データ（span_name/fc_selectのみ）および旧refBeams形式・単一形式・新beamRows形式の全バリエーション完全復元＆自動再計算エンジンの配備、③単一責任の原則（SRP: CONFIG, Normalizer, PhysicsEngine, Renderer, Controller）に基づく5層アーキテクチャへの完全洗練、④入力フォーカスを維持したリアルタイムDOM計算更新＆A4印刷プレビュー（応力・耐力テーブル）への100%出力保証・Headless Chrome自動テスト検証完了',
