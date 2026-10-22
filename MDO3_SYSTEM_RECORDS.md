@@ -1010,3 +1010,31 @@ WRC造の「開口部補強・割増検討（jintsuko_bf）」は削除。新た
      - GitHub（`mdo3-system/mdo3` mainブランチ）へプッシュ完了。
      - SCP経由で本番サーバー（`/home/mdo3/mdo3.com/public_html/`）へ `robots.txt`, `sitemap.xml`, `index.html`, `Version.js` を即時反映し、本番HTTPエンドポイント（`https://mdo3.com/robots.txt`, `https://mdo3.com/sitemap.xml`）にて正常配信を完全検証。
 
+---
+
+## 37. リリース履歴: v2.2.13 (2026-10-22)
+
+### ① 全29ツール＋無償実務CADの個別静的LP（public/tools/）全30ページ展開 ＆ AIO・EEATオーソリティ強化
+- **背景 & 課題**:
+  - トップページ1枚に全機能が詰め込まれていたため、建築実務者が直面するロングテール課題（例：「人通口補強 計算書」「片持ち基礎梁 水平力」等）での検索流入を逃していた。
+  - AI検索（Google AI Overview, Perplexity, SearchGPT等）が直接引用できる要約定義ブロックや、実務開発者・監修者の資格情報（EEAT）が不足していた。
+- **改修内容 & 実装**:
+  1. **完全独立ディレクトリ `public/tools/` への全30ツール静的LP配備**:
+     - 既存のアプリやツール動作に一切影響を与えない独立構成で、全30ページの静的LPを新設。
+     - 各LP内に以下のSEO/AIO特化コンテンツを実装：
+       - **AIO要約定義ブロック（100〜150字）**: AIがDirect Answerとして引用しやすい定義テキスト
+       - **準拠法令・告示番号バッジ**: 建築基準法施行令第82条、各告示番号、学会規準等の明記
+       - **実務検討の急所**: 手計算での煩雑さ、審査官からの質疑傾向、計算根拠
+       - **Can / Cannot 機能比較表**: 対応可能範囲と適用制限事項の明快な対比
+       - **個別Schema.org JSON-LD**: `BreadcrumbList`, `SoftwareApplication`, `FAQPage`, `Person`（菅原浩樹）の完全構造化
+  2. **基幹ポータル（`index.html`）のEEATオーソリティ強化**:
+     - 代表者クレジット（株式会社ティー・スマイル 代表取締役・現役構造計算実務者 菅原浩樹）を本文およびSchema.org（`Person`, `author`, `creator`, `founder`）に正式接続。
+     - `SoftwareApplication` の `hasPart` として全29ツールの個別LP URLを構造化データ内に網羅。
+  3. **標準XMLサイトマップ `sitemap.xml` の拡張**:
+     - 主要8ページに加え、全30ツールの個別静的LP（`priority: 0.85` / weekly）を登録し全38URL体制へ拡張。
+  4. **ポータルツールカードへの個別「解説」静的リンク配備**:
+     - `public/js/portal.js` のカードレンダラーを更新（`?v=2.2.13`）。動画ボタンの隣に `<a href="/tools/${tool.id}.html">` の「解説」ボタンを追加し、クローラー巡回動線とユーザー閲覧導線を確立。
+  5. **本番Webサーバー（XServer）およびGitHubへの完全デプロイ**:
+     - GitHubへプッシュし、SCP経由で `public/tools/`、`sitemap.xml`、`index.html`、`portal.js`、`Version.js` を本番サーバーへ反映完了。
+
+

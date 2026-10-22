@@ -221,6 +221,10 @@ document.addEventListener('DOMContentLoaded', () => {
             <a href="${tool.videoUrl || 'https://www.youtube.com/@mdo3_official'}" target="_blank" rel="noopener" class="btn btn-ghost btn-sm" title="マニュアル解説動画 (登録不要・無料閲覧)" style="color:#ef4444; border-color:rgba(239,68,68,0.25);">
               <span class="material-symbols-outlined" style="font-size:16px;">play_circle</span> 動画
             </a>
+            <!-- 詳細解説・判定基準LP (SEO/AIO 静的ページ) -->
+            <a href="/tools/${tool.id}.html" target="_blank" class="btn btn-ghost btn-sm" title="詳細仕様・判定基準・A4計算書サンプル" style="color:var(--accent-cyan); border-color:rgba(56,189,248,0.25);">
+              <span class="material-symbols-outlined" style="font-size:16px;">article</span> 解説
+            </a>
 
             ${isFreeTool ? `
               <a href="${tool.manualUrl}" target="_blank" rel="noopener" class="btn btn-ghost btn-sm">
