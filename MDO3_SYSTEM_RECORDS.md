@@ -983,3 +983,30 @@ WRC造の「開口部補強・割増検討（jintsuko_bf）」は削除。新た
      - 印刷帳票として、数値の3桁カンマ区切り表記（`7,600 N`、`48,095 N`）、受材仕様の整然としたテキスト印字、階・位置の確実なセンタリング、建築確認申請基準の美しい罫線（`1px solid #000`）を備えたプロ仕様の計算書帳票として出力するよう全面刷新。
   3. **リアルタイム同期 ＆ 互換性の維持**:
      - `merikomi.js` において、画面入力値と印刷用テキストの双方向リアルタイム同期を配備。従来のJSON保存・復元（`collectMerikomiRows` / `restoreToolData`）およびPDF自動抽出機能との完全な後方互換性を保証。
+
+---
+
+## 36. リリース履歴: v2.2.12 (2026-10-22)
+
+### ① SEOおよびAIO（AI Overview / LLMO）対応基盤の緊急全面配備
+- **背景 & 課題**:
+  - 全29ツールの計算エンジンや実務機能が完成しているにもかかわらず、検索クローラーへの指示（`robots.txt`）、XMLサイトマップ（`sitemap.xml`）、SNS拡散用のメタデータ（OGP・Twitter Cards）、および検索・AIエンジン向けの構造化データ（Schema.org JSON-LD）が欠落しており、検索エンジンや生成AI（Perplexity・SearchGPT・Google AI Overview等）からの発見・引用可能性が著しく制限されていた。
+- **改修内容 & 実装**:
+  1. **クローラー巡回制御 `robots.txt` の新設**:
+     - `public/robots.txt` を新規作成。全検索クローラー（`User-agent: *`）へのルート許可、APIエンドポイント（`/api/`, `/studio/api/`）の保護、およびサイトマップURL（`https://mdo3.com/sitemap.xml`）の自動通知を配備。
+  2. **標準XMLサイトマップ `sitemap.xml` の配備**:
+     - `public/sitemap.xml` を新規作成。トップポータル（`1.0`）、案件コンソール（`0.9`）、技術Q&A（`0.8`）、基礎CAD（`0.8`）、お問い合わせ（`0.6`）、利用規約・特商法・プライバシー（`0.5`）を優先度・更新頻度とともに網羅。
+  3. **ソーシャルメタデータ（OGP & Twitter Cards）の完全実装**:
+     - `public/index.html` に `og:type`, `og:url`, `og:title`, `og:description`, `og:image`, `og:site_name`, `og:locale` を追加。
+     - Twitter Cards（`summary_large_image`）および公式アカウント（`@mdo3_official`）連携タグを実装。
+     - ファビコン（`favicon` / `apple-touch-icon`）として高解像度アバターを正式指定。
+  4. **Schema.org JSON-LD 構造化データ（マルチスキーマ `@graph`）の実装**:
+     - `public/index.html` の `<head>` に `@graph` 形式で以下4大エンティティを構造化：
+       - `WebSite`: サイト名・多言語対応・発行元連携
+       - `Organization`: 運営法人（株式会社ティー・スマイル）、ロゴ、公式SNS（X, note+, YouTube, Threads, Instagram）の完全紐付け（`sameAs`）
+       - `SoftwareApplication`: クラウドプラットフォーム定義、対象ブラウザ、全29ツールの機能リスト、および無料・個別・使い放題プランの料金モデル（`offers`）
+       - `FAQPage`: 確認申請・審査提出対応、無償ツール利用条件、2025年4号特例縮小法改正対応に関する重要Q&Aを機械可読化
+  5. **本番Webサーバー（XServer）およびGitHubへの完全デプロイ**:
+     - GitHub（`mdo3-system/mdo3` mainブランチ）へプッシュ完了。
+     - SCP経由で本番サーバー（`/home/mdo3/mdo3.com/public_html/`）へ `robots.txt`, `sitemap.xml`, `index.html`, `Version.js` を即時反映し、本番HTTPエンドポイント（`https://mdo3.com/robots.txt`, `https://mdo3.com/sitemap.xml`）にて正常配信を完全検証。
+
