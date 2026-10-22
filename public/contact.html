@@ -202,6 +202,51 @@
   </footer>
 
   <script>
+    // URLパラメータの判別 (?type=master_program)
+    var urlParams = new URLSearchParams(window.location.search);
+    var isMasterProgram = (urlParams.get('type') === 'master_program');
+
+    if (isMasterProgram) {
+      document.querySelector('h1').textContent = 'ARCHITREND ZERO 実務マスタープログラム 事前相談・面談お申込み';
+      document.querySelector('h1 + p').textContent = '木造許容応力度計算の自社内製化をご検討中の設計者様・工務店様向け、無料事前相談（オンライン）窓口です。';
+      
+      var noticeBox = document.querySelector('.contact-notice');
+      noticeBox.style.borderLeftColor = 'var(--accent-gold)';
+      noticeBox.style.background = 'rgba(245, 158, 11, 0.1)';
+      noticeBox.innerHTML = '<strong>【実務マスタープログラム 事前相談・受講案内】</strong><br>' +
+        '・管理建築士が、貴社の設計状況・アーキトレンド導入環境・教材とする案件選定についてオンラインにて直接ご相談を承ります。<br>' +
+        '・<strong>法人様対応（銀行振込・請求書払い）および月20万円程度の分割払いにも柔軟に対応しております。</strong><br>' +
+        '・受講生には専用ポータル（案件別ダッシュボード）を開設し、図面・計算書・限定実況動画の授受およびチャット質疑を一元管理します。<br>' +
+        '・無理な勧誘は一切ございません。お気軽にお問い合わせください。';
+
+      var typeSelect = document.getElementById('contactType');
+      var opt = document.createElement('option');
+      opt.value = '実務マスタープログラム 事前相談・面談申込み';
+      opt.textContent = '実務マスタープログラム 事前相談・面談申込み';
+      opt.selected = true;
+      typeSelect.insertBefore(opt, typeSelect.firstChild);
+
+      var toolLabel = document.querySelector('label[for="contactTool"]');
+      if (toolLabel) toolLabel.textContent = '検討中の物件種別 / アーキトレンド導入状況';
+      var toolSelect = document.getElementById('contactTool');
+      toolSelect.innerHTML = 
+        '<option value="木造2階 建売分譲住宅 (整形)">木造2階 建売分譲住宅 (整形)</option>' +
+        '<option value="木造2階 注文住宅">木造2階 注文住宅</option>' +
+        '<option value="木造3階 狭小・都市型住宅">木造3階 狭小・都市型住宅</option>' +
+        '<option value="アーキトレンド導入済み・これから構造計算を導入">アーキトレンド導入済み・これから構造計算を導入</option>' +
+        '<option value="その他">その他</option>';
+
+      var msgLabel = document.querySelector('label[for="contactMessage"]');
+      if (msgLabel) msgLabel.innerHTML = 'ご相談内容・ご希望事項 <span style="color:#ef4444;">*</span>';
+      var msgArea = document.getElementById('contactMessage');
+      msgArea.placeholder = '受講を検討されている時期、現在抱えている設計課題、銀行振込や分割払いのご希望、ご都合の良い面談日時候補などをご自由にご記入ください。';
+
+      var submitBtn = document.getElementById('btnSubmitContact');
+      submitBtn.style.background = 'linear-gradient(135deg, #f59e0b, #d97706)';
+      submitBtn.style.color = '#0f172a';
+      submitBtn.innerHTML = '<span class="material-symbols-outlined">event_available</span> 無料事前相談・面談を申し込む';
+    }
+
     document.getElementById('contactForm').addEventListener('submit', function(e) {
       e.preventDefault();
       var btn = document.getElementById('btnSubmitContact');
@@ -227,10 +272,14 @@
       .then(function(res) { return res.json(); })
       .then(function(data) {
         btn.disabled = false;
-        btn.innerHTML = '<span class="material-symbols-outlined">send</span> 管理者へ送信する';
+        btn.innerHTML = isMasterProgram 
+          ? '<span class="material-symbols-outlined">event_available</span> 無料事前相談・面談を申し込む' 
+          : '<span class="material-symbols-outlined">send</span> 管理者へ送信する';
         if (data.success) {
           alertBox.style.display = 'block';
-          msgBox.textContent = data.message || '送信が完了しました。';
+          msgBox.textContent = isMasterProgram
+            ? '事前相談のお申し込みを受け付けました。担当の管理建築士より日程調整メールをお送りいたします。'
+            : (data.message || '送信が完了しました。');
           document.getElementById('contactForm').reset();
         } else {
           alert('エラー: ' + (data.message || '送信に失敗しました。'));
@@ -238,7 +287,9 @@
       })
       .catch(function(err) {
         btn.disabled = false;
-        btn.innerHTML = '<span class="material-symbols-outlined">send</span> 管理者へ送信する';
+        btn.innerHTML = isMasterProgram 
+          ? '<span class="material-symbols-outlined">event_available</span> 無料事前相談・面談を申し込む' 
+          : '<span class="material-symbols-outlined">send</span> 管理者へ送信する';
         alert('通信エラーが発生しました。時間をおいて再試行してください。');
       });
     });
