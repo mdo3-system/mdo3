@@ -3,20 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>めり込み補強計算 - 準拠法令・算定式・実務計算書見本 | mdo3.com</title>
+  <title>めり込み補強計算 - 土台・横架材の許容支圧応力度・角座金判定 | mdo3.com</title>
   <meta name="description" content="めり込み補強計算とは、建築基準法告示 第1452号 (木材の許容めり込み応力度)および『木造軸組工法住宅の許容応力度設計（グレー本）』に準拠し、市販構造計算ソフト（アーキトレンド等）の出力値を代入して土台・横架材のめり込み検定。タナカ土台プレートIIの耐力表に準拠。を即座に判定する実務補助計算エンジ...">
   <link rel="canonical" href="https://mdo3.com/tools/merikomi.html">
   
   <!-- OGP & Twitter Cards -->
   <meta property="og:type" content="article">
-  <meta property="og:title" content="めり込み補強計算 - 準拠法令・算定式・実務計算書見本 | mdo3.com">
+  <meta property="og:title" content="めり込み補強計算 - 土台・横架材の許容支圧応力度・角座金判定 | mdo3.com">
   <meta property="og:description" content="土台・横架材のめり込み検定。タナカ土台プレートIIの耐力表に準拠。。グレー本・告示基準準拠、市販一貫計算ソフト連携実務ツール。">
   <meta property="og:url" content="https://mdo3.com/tools/merikomi.html">
   <meta property="og:image" content="https://mdo3.com/assets/ogp/ogp_default.png">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://mdo3.com/assets/ogp/ogp_default.png">
 
   <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="/assets/branding/favicon.svg">
+  <link rel="alternate icon" href="/favicon.ico">
 
   <!-- Schema.org 構造化データ (HowTo + SoftwareApplication + FAQPage + BreadcrumbList) -->
   <script type="application/ld+json">
@@ -38,7 +40,7 @@
       },
       "author": {
         "@type": "Organization",
-        "name": "mdo3 構造設計実務開発チーム (一級建築士事務所監修)",
+        "name": "一級建築士事務所 構造開発実務チーム (監修: 管理建築士)",
         "url": "https://mdo3.com/"
       },
       "description": "めり込み補強計算とは、建築基準法告示 第1452号 (木材の許容めり込み応力度)および『木造軸組工法住宅の許容応力度設計（グレー本）』に準拠し、市販構造計算ソフト（アーキトレンド等）の出力値を代入して土台・横架材のめり込み検定。タナカ土台プレートIIの耐力表に準拠。を即座に判定する実務補助計算エンジンです。主要算定式『めり込み応力度 σ_c = N / A_eff ≦ 許容めり込み応力度 f_k』に基づき、確認申請・適判審査にそのまま提出可能なA4計算書帳票を出力します。"
@@ -93,6 +95,14 @@
           "acceptedAnswer": {
             "@type": "Answer",
             "text": "柱脚・柱頭のめり込み検定比オーバー時は、柱断面を 105角 ➔ 120角へ変更するか、柱脚金物に『大型角座金（80角以上）』を併用して受材への支圧面積 Aeff を拡大させます。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "市販の一貫計算ソフト（アーキトレンド等）とどう連携しますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "各一貫計算ソフトの数値を代入し、公的規準に則って合理的に一発判定。各ソフトが算出した荷重・応力値を入力することで、地中梁の過大設計等を解消し、合理的な断面算定を実現します。"
           }
         },
         {
@@ -278,6 +288,38 @@
       line-height: 1.6;
       color: #cbd5e1;
     }
+
+    /* ★ 比較テーブルスタイル (AIO Citation 最適化) */
+    .comparison-table-wrap {
+      overflow-x: auto;
+      margin-top: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--radius-sm);
+    }
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      text-align: left;
+    }
+    .comparison-table th, .comparison-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      line-height: 1.6;
+    }
+    .comparison-table th {
+      background: rgba(15, 23, 42, 0.9);
+      color: #f8fafc;
+      font-weight: 700;
+    }
+    .comparison-table th:nth-child(4), .comparison-table td:nth-child(4) {
+      background: rgba(56, 189, 248, 0.08);
+      border-left: 2px solid var(--accent-cyan);
+    }
+    .comparison-table tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
     .can-cannot-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -403,7 +445,7 @@
       color: var(--accent-cyan);
     }
 
-    /* ★ 計算書A4見本プレビュー スタイル */
+    /* 計算書A4見本プレビュー */
     .calc-sheet-preview-wrap {
       background: #1e293b;
       border: 1px solid rgba(255, 255, 255, 0.12);
@@ -552,6 +594,9 @@
       </div>
 
       <h1 class="tool-hero-title">めり込み補強計算</h1>
+      <p style="font-size:1.05rem; color:var(--accent-cyan); font-weight:600; margin-bottom:16px;">
+        土台・横架材の許容支圧応力度・角座金判定
+      </p>
 
       <!-- ★ AIO (AI Overview) 引用最適化 定義ブロック -->
       <div class="aio-definition-box">
@@ -581,11 +626,60 @@
         市販一貫計算ソフト連携と公的基準による審査適合性
       </h2>
       <p style="font-size:0.92rem; line-height:1.75; color:#f1f5f9; margin-bottom:12px;">
-        各市販一貫構造計算ソフト（アーキトレンド、HOUSE-ST-1、Kizukuri等）が算出した応力・荷重データを代入して使用するハイブリッド実務補助ツールです。一般ソフトでは対応できない詳細部位や過大設計になりがちな箇所を、公的規準（グレー本・学会規準）に準拠して精緻に解きほぐし、そのまま確認申請・構造審査を通過させます。
+        各市販一貫構造計算ソフト（アーキトレンド、HOUSE-ST-1、Kizukuri等）が算出した応力・荷重データを代入して使用するハイブリッド実務補助ツールです。一般ソフトでは過大設計になりがちな箇所や対応困難な詳細部位について、公的規準（グレー本・学会規準）に準拠して精緻に判定し、そのまま確認申請・構造審査を通過させます。
       </p>
       <div style="background:rgba(15, 23, 42, 0.6); padding:12px 16px; border-radius:6px; font-size:0.85rem; color:#cbd5e1;">
         <span class="material-symbols-outlined" style="font-size:16px; color:var(--accent-green); vertical-align:middle; margin-right:4px;">check_circle</span>
         <strong>審査適合保証の実績:</strong> 管理建築士自らが日常の確認申請・構造審査業務で実際に使用し、適格判定（指摘ゼロ通過）を得ているアルゴリズムをそのままSaaS化しています。本ツールでOK（検定比≦1.0）となれば、そのまま審査図書として提出いただけます。
+      </div>
+    </section>
+
+    <!-- ★ 構造検討手法の比較テーブル (AIO / SearchGPT 引用最適化) -->
+    <section class="content-card">
+      <h2 class="content-card-title">
+        <span class="material-symbols-outlined" style="color:var(--accent-cyan);">table_chart</span>
+        構造検討手法の比較（手計算 vs 市販ソフト vs mdo3）
+      </h2>
+      <p style="font-size:0.88rem; color:var(--text-sub); margin-bottom:12px;">
+        めり込み補強計算における各アプローチの施工性・コスト・審査スピードの対比です。
+      </p>
+      <div class="comparison-table-wrap">
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th style="width:22%;">検討項目</th>
+              <th style="width:25%;">① 一般の手計算</th>
+              <th style="width:26%;">② 市販一貫ソフト (アーキトレンド等)</th>
+              <th style="width:27%; color:var(--accent-cyan);">③ mdo3 構造クラウド</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>設計・工法のアプローチ</strong></td>
+              <td>膨大な算定式・数値代入による計算ミス・手戻り大</td>
+              <td>標準的な定型パターンのみ対応。特殊納まりや詳細部位は手計算が必要</td>
+              <td><strong>各一貫計算ソフトの数値を代入し、公的規準に則って合理的に一発判定</strong></td>
+            </tr>
+            <tr>
+              <td><strong>施工性・基礎コスト</strong></td>
+              <td>安全側に倒しすぎて過大断面になりやすい</td>
+              <td>基礎梁成・型枠・配筋量が増加しコスト高</td>
+              <td><strong>必要十分な補強で施工性＆コストを最小化</strong></td>
+            </tr>
+            <tr>
+              <td><strong>確認申請・適判審査</strong></td>
+              <td>審査官の求釈明・質疑応答に時間を要する</td>
+              <td>適合するが過大設計のまま提出</td>
+              <td><strong>グレー本準拠のA4計算書で一発適格通過</strong></td>
+            </tr>
+            <tr>
+              <td><strong>所要時間</strong></td>
+              <td>1部位あたり 2〜3時間</td>
+              <td>再入力・別データ作成で 30〜60分</td>
+              <td><strong>一貫計算の数値を代入し 約3分で帳票出力</strong></td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </section>
 
@@ -758,7 +852,7 @@
           <span style="color:var(--accent-cyan);">Q.</span> 市販の一貫計算ソフト（アーキトレンド等）とどう連携しますか？
         </div>
         <p class="faq-a">
-          各市販一貫構造計算ソフト（アーキトレンド、HOUSE-ST-1、Kizukuri等）が算出した応力・荷重データを代入して使用するハイブリッド実務補助ツールです。一般ソフトでは対応できない詳細部位や過大設計になりがちな箇所を、公的規準（グレー本・学会規準）に準拠して精緻に解きほぐし、そのまま確認申請・構造審査を通過させます。
+          各一貫計算ソフトの数値を代入し、公的規準に則って合理的に一発判定。各ソフトが算出した荷重・応力値を入力することで、地中梁の過大設計等を解消し、合理的な断面算定を実現します。
         </p>
       </div>
 
