@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /studio/api/
+
+Sitemap: https://mdo3.com/sitemap.xml

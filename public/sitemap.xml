@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- トップページ（基幹ポータル） -->
+  <url>
+    <loc>https://mdo3.com/</loc>
+    <lastmod>2026-10-22</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <!-- 案件統合コンソール（Workspace） -->
+  <url>
+    <loc>https://mdo3.com/workspace.html</loc>
+    <lastmod>2026-10-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <!-- 技術Q&A / よくある質問・不具合対応実績 -->
+  <url>
+    <loc>https://mdo3.com/faq.html</loc>
+    <lastmod>2026-10-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- 木造ベタ基礎 梁断面図作図＆dt算定CAD -->
+  <url>
+    <loc>https://mdo3.com/foundation-cad.html</loc>
+    <lastmod>2026-10-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- お問い合わせ / 不具合報告・改善要望 -->
+  <url>
+    <loc>https://mdo3.com/contact.html</loc>
+    <lastmod>2026-10-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <!-- 利用規約 -->
+  <url>
+    <loc>https://mdo3.com/terms.html</loc>
+    <lastmod>2026-10-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <!-- プライバシーポリシー -->
+  <url>
+    <loc>https://mdo3.com/privacy.html</loc>
+    <lastmod>2026-10-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <!-- 特定商取引法に基づく表記 -->
+  <url>
+    <loc>https://mdo3.com/tokusho.html</loc>
+    <lastmod>2026-10-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+</urlset>
