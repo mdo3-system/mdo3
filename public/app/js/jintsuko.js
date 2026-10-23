@@ -154,14 +154,22 @@ function _fromPdf() {
             }
         }
     });
-    if (!foundL && !foundS) return alert("応力データが解析できませんでした。");
+    if (!foundL && !foundS) return alert(`「${line}通り ${spanStart}-${spanEnd}間」の応力データがPDF内に見つかりませんでした。\n通り芯名（例: Y7）やスパン記号がPDF計算書の表記と一致しているかご確認ください。`);
     _addExtractedCard(line, spanStart, spanEnd, extMs, extQs);
 }
 
 function _addExtractedCard(l, s, e, ms, qs) {
-    let o = newOpening(); o.posA = l; o.posB = s; o.posC = e;
-    o.m_L_mid = ms[0]; o.m_L_end = ms[1]; o.m_S_LD_L = ms[2]; o.m_S_LD_R = ms[3]; o.m_S_RU_L = ms[4]; o.m_S_RU_R = ms[5];
-    o.q_L = qs[0]; o.q_S_L = qs[1]; o.q_S_R = qs[2];
+    let o = newOpening(); 
+    o.posA = l || ""; o.posB = s || ""; o.posC = e || "";
+    o.m_L_mid = (ms && ms[0] !== undefined && ms[0] !== null) ? String(ms[0]) : "";
+    o.m_L_end = (ms && ms[1] !== undefined && ms[1] !== null) ? String(ms[1]) : "";
+    o.m_S_LD_L = (ms && ms[2] !== undefined && ms[2] !== null) ? String(ms[2]) : "";
+    o.m_S_LD_R = (ms && ms[3] !== undefined && ms[3] !== null) ? String(ms[3]) : "";
+    o.m_S_RU_L = (ms && ms[4] !== undefined && ms[4] !== null) ? String(ms[4]) : "";
+    o.m_S_RU_R = (ms && ms[5] !== undefined && ms[5] !== null) ? String(ms[5]) : "";
+    o.q_L = (qs && qs[0] !== undefined && qs[0] !== null) ? String(qs[0]) : "";
+    o.q_S_L = (qs && qs[1] !== undefined && qs[1] !== null) ? String(qs[1]) : "";
+    o.q_S_R = (qs && qs[2] !== undefined && qs[2] !== null) ? String(qs[2]) : "";
     openings.push(o); mountCards(); window.updateAllCardsFc();
     setTimeout(() => { 
         const cards = document.querySelectorAll('.card');
@@ -555,49 +563,85 @@ window.updatePrintPreview = function() {
     });
 };
 
-document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('pdf_upload')?.addEventListener('change', async function(e) {
-        const file = e.target.files[0]; if (!file) return;
-        updateSourceDisplay("PDF", "解析中...", "#2b6cb0");
-        const reader = new FileReader();
-        reader.onload = async function(ev) {
-            try {
-                const typedarray = new Uint8Array(ev.target.result);
-                const pdf = await pdfjsLib.getDocument(typedarray).promise;
-                rawPdfText = "";
-                for (let i = 1; i <= pdf.numPages; i++) {
-                    const page = await pdf.getPage(i);
-                    const textContent = await page.getTextContent();
-                    rawPdfText += textContent.items.map(item => item.str).join(' ') + "\n";
-                }
-                updateSourceDisplay("PDF", "PDF", "#e53e3e"); 
-            } catch(err) {
-                alert("PDFの読み込みに失敗しました。");
-            }
-        };
-        reader.readAsArrayBuffer(file);
-    });
+function initJintsukoApp() {
+    // PDF読み込みイベント
+    const pdfInput = document.getElementById('pdf_upload');
+    if (pdfInput && !pdfInput.dataset.bound) {
+        pdfInput.dataset.bound = "true";
+        pdfInput.addEventListener('change', async function(e) {
+            const file = e.target.files && e.target.files[0];
+            if (!file) return;
+            updateSourceDisplay("PDF", "解析中...", "#2b6cb0");
+            const reader = new FileReader();
+            reader.onload = async function(ev) {
+                try {
+                    const typedarray = new Uint8Array(ev.target.result);
+                    let pdf = null;
+                    try {
+                        const loadingTask = pdfjsLib.getDocument({
+                            data: typedarray,
+                            cMapUrl: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/cmaps/',
+                            cMapPacked: true
+                        });
+                        pdf = await loadingTask.promise;
+                    } catch (workerErr) {
+                        console.warn("Worker failed, trying fallback without worker:", workerErr);
+                        pdfjsLib.GlobalWorkerOptions.workerSrc = '';
+                        const fallbackTask = pdfjsLib.getDocument({
+                            data: typedarray,
+                            cMapUrl: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/cmaps/',
+                            cMapPacked: true
+                        });
+                        pdf = await fallbackTask.promise;
+                    }
 
-    document.getElementById('xlsx_upload')?.addEventListener('change', function(e) {
-        const file = e.target.files[0]; if (!file) return;
-        updateSourceDisplay("EXCEL", "解析中...", "#2b6cb0");
-        const reader = new FileReader();
-        reader.onload = (ev) => {
-            try {
-                const data = new Uint8Array(ev.target.result);
-                const workbook = XLSX.read(data, { type: 'array' });
-                excelRowsData = [];
-                workbook.SheetNames.forEach(name => {
-                    const rows = XLSX.utils.sheet_to_json(workbook.Sheets[name], { header: 1 });
-                    excelRowsData.push(...rows);
-                });
-                updateSourceDisplay("EXCEL", "Excel", "#3182ce"); 
-            } catch(err) {
-                alert("Excelの読み込みに失敗しました。");
-            }
-        };
-        reader.readAsArrayBuffer(file);
-    });
+                    rawPdfText = "";
+                    for (let i = 1; i <= pdf.numPages; i++) {
+                        const page = await pdf.getPage(i);
+                        const textContent = await page.getTextContent();
+                        rawPdfText += textContent.items.map(item => item.str).join(' ') + "\n";
+                    }
+                    updateSourceDisplay("PDF", `PDF準備完了 (${pdf.numPages}P)`, "#e53e3e");
+                    alert(`✅ PDF（全${pdf.numPages}ページ）の読み込みが完了しました。\n続けて「通り芯（例: Y7）」と「間（例: X6 〜 X7）」を入力し、「抽出して追加 ↓」を押してください。`);
+                } catch(err) {
+                    console.error("PDF parse error:", err);
+                    updateSourceDisplay("未読込", "PDF読込失敗", "#e53e3e");
+                    alert("PDFの読み込みに失敗しました。\n・テキスト情報が含まれるARCHITRENDのPDF計算書を選択してください。\n・スキャンした画像PDFは読み込めません。\n詳細: " + (err.message || err));
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        });
+    }
+
+    // Excel読み込みイベント
+    const xlsxInput = document.getElementById('xlsx_upload');
+    if (xlsxInput && !xlsxInput.dataset.bound) {
+        xlsxInput.dataset.bound = "true";
+        xlsxInput.addEventListener('change', function(e) {
+            const file = e.target.files && e.target.files[0];
+            if (!file) return;
+            updateSourceDisplay("EXCEL", "解析中...", "#2b6cb0");
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                try {
+                    const data = new Uint8Array(ev.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    excelRowsData = [];
+                    workbook.SheetNames.forEach(name => {
+                        const rows = XLSX.utils.sheet_to_json(workbook.Sheets[name], { header: 1 });
+                        excelRowsData.push(...rows);
+                    });
+                    updateSourceDisplay("EXCEL", `Excel準備完了 (${excelRowsData.length}行)`, "#3182ce");
+                    alert(`✅ Excel（全${excelRowsData.length}行）の読み込みが完了しました。\n続けて「通り芯」と「間」を入力し、「抽出して追加 ↓」を押してください。`);
+                } catch(err) {
+                    console.error("Excel parse error:", err);
+                    updateSourceDisplay("未読込", "Excel読込失敗", "#e53e3e");
+                    alert("Excelの読み込みに失敗しました。\n形式（.xlsx）をご確認ください。\n詳細: " + (err.message || err));
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        });
+    }
 
     document.getElementById("btnAdd")?.addEventListener("click", () => { openings.push(newOpening()); mountCards(); window.updateGlobalControls(); });
     document.getElementById("btnClear")?.addEventListener("click", () => { if(confirm('全てクリアしますか？')) { openings = []; mountCards(); window.updateGlobalControls(); }});
@@ -636,4 +680,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     mountCards();
     window.updateGlobalControls();
-});
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initJintsukoApp);
+} else {
+    initJintsukoApp();
+}
