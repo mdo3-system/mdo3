@@ -319,7 +319,7 @@
       icon: "density_medium",
       url: "/app/tools/wrc_axial_force.html",
       desc: "壁式RC造の各階壁軸力・長期応力算定",
-      planGroup: ["all"]
+      planGroup: ["all", "core_pack"]
     }
   ];
 
@@ -544,7 +544,7 @@
       iframe = document.createElement('iframe');
       iframe.className = 'ws-tool-iframe active';
       iframe.id = `iframe_${toolId}`;
-      const cacheBust = 'v=20261010_v3';
+      const cacheBust = 'v=20261023_v4';
       const sep = tool.url.includes('?') ? '&' : '?';
       iframe.src = `${tool.url}${sep}${cacheBust}`;
 
