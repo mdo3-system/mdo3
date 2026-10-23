@@ -225,13 +225,9 @@ async function processExcelFile(file) {
                         let floor = colMap.floor >= 0 && r[colMap.floor] !== undefined ? String(r[colMap.floor]).trim() : '';
                         const item = colMap.item >= 0 && r[colMap.item] !== undefined ? String(r[colMap.item]).trim() : '';
                         let unitLoad = colMap.unitLoad >= 0 && r[colMap.unitLoad] !== undefined ? String(r[colMap.unitLoad]).trim() : '';
-                        let area = colMap.area >= 0 && r[colMap.area] !== undefined ? String(r[colMap.area]).trim() : '';
+                        const rawArea = colMap.area >= 0 && r[colMap.area] !== undefined ? String(r[colMap.area]).trim() : '';
+                        let area = rawArea;
                         let directLoad = colMap.directLoad >= 0 && r[colMap.directLoad] !== undefined ? String(r[colMap.directLoad]).trim() : '';
-
-                        // 数値クリーンアップ
-                        unitLoad = unitLoad.replace(/[^0-9.-]/g, '');
-                        area = area.replace(/[^0-9.-]/g, '');
-                        directLoad = directLoad.replace(/[^0-9.-]/g, '');
 
                         // セル結合（Merged Cells）による符号・階の自動補完
                         if (symbol !== '') {
@@ -247,16 +243,26 @@ async function processExcelFile(file) {
                         }
 
                         // 【最重要】アーキトレンドの直接荷重判定と二重乗算防止
-                        // 外壁・妻壁等、面積がなくF列に Po(kN) が直接記載されている場合は、Po(kN) を単位荷重に代入し面積を 1.000 とする
-                        const hasArea = area !== '' && parseFloat(area) > 0;
-                        const hasDirectPo = directLoad !== '' && parseFloat(directLoad) > 0;
+                        // 外壁・妻壁等、面積欄に算定式（例: 0.950×3.190×0.500）が入っている、または面積がなくF列に Po(kN) が直接記載されている場合は、Po(kN) を単位荷重に代入し面積を 1.000 とする
+                        const isFormula = /[×~*xX]/.test(rawArea) || (rawArea.includes('.') && (rawArea.match(/\./g) || []).length >= 2);
+                        const hasDirectPo = directLoad !== '' && !isNaN(directLoad.replace(/[^0-9.-]/g, '')) && parseFloat(directLoad.replace(/[^0-9.-]/g, '')) > 0;
 
-                        if (!hasArea && hasDirectPo) {
+                        // 数値クリーンアップ
+                        unitLoad = unitLoad.replace(/[^0-9.-]/g, '');
+                        directLoad = directLoad.replace(/[^0-9.-]/g, '');
+
+                        if (isFormula || (rawArea === '' && hasDirectPo)) {
                             unitLoad = directLoad;
                             area = '1.000';
-                        } else if (hasArea && (!unitLoad || parseFloat(unitLoad) === 0) && hasDirectPo) {
-                            // 面積はあるが単位荷重が空でPoがある場合
-                            unitLoad = (parseFloat(directLoad) / parseFloat(area)).toFixed(3);
+                        } else {
+                            area = area.replace(/[^0-9.-]/g, '');
+                            const hasArea = area !== '' && parseFloat(area) > 0;
+                            if (!hasArea && hasDirectPo) {
+                                unitLoad = directLoad;
+                                area = '1.000';
+                            } else if (hasArea && (!unitLoad || parseFloat(unitLoad) === 0) && hasDirectPo) {
+                                unitLoad = (parseFloat(directLoad) / parseFloat(area)).toFixed(3);
+                            }
                         }
 
                         if (symbol || floor || item || unitLoad || area) {
@@ -347,16 +353,79 @@ async function processPdfDirect(file) {
     let curFloor = '';
 
     extractedLines.forEach(line => {
-        // アーキトレンド等の行パターン例: "W1 2F 屋根一般 0.300 12.50"
-        const tokens = line.split(/\s+/);
-        if (tokens.length >= 3) {
-            // 数値トークン（単位荷重・面積）を探す
-            let numTokens = [];
-            let textTokens = [];
+        // タイトル・ヘッダー・小計・累計ヘッダー行の除外
+        if (/ARCHITREND|軸力算定表|常時軸力|長期軸力|単位荷重|Po\(kN\)|ΣP\(kN\)|P\(kN\)/i.test(line)) {
+            return;
+        }
+
+        const tokens = line.split(/\s+/).filter(t => t.length > 0);
+        if (tokens.length < 2) return;
+
+        // 1. 符号（X1Y1, X2aY1, W1, C1, G1 等）の判定
+        if (/^[XYZWCGB][0-9]+[a-zA-Z0-9._-]*$/.test(tokens[0]) || /^[A-Z]{1,3}[0-9]+[a-zA-Z0-9._-]*$/.test(tokens[0])) {
+            curSymbol = tokens.shift();
+        }
+
+        if (tokens.length === 0) return;
+
+        // 2. 階（PH, PHR, 3, 2, 1, 3階, 2階, PH階, R階 等）の判定
+        if (/^(PHR?|RF?|[1-9][0-9]?[fF階]?|B[1-9]F?)$/i.test(tokens[0])) {
+            let fl = tokens.shift();
+            curFloor = fl.replace('階', '');
+            if (!curFloor.endsWith('F') && !curFloor.startsWith('PH')) {
+                curFloor += 'F';
+            }
+        }
+
+        // 階の二重記載（例: "3 3階" の2つ目）を除去
+        if (tokens.length > 0 && /^(PHR?|RF?|[1-9][0-9]?[fF階]?|B[1-9]F?)$/i.test(tokens[0])) {
+            tokens.shift();
+        }
+
+        if (tokens.length === 0) return;
+
+        // 3. 算定式（外壁・妻壁・梁など：×, ~, *, x が含まれるトークン）の判定
+        let formulaIdx = -1;
+        for (let i = 0; i < tokens.length; i++) {
+            if (/[×~*xX]/.test(tokens[i]) && /\d/.test(tokens[i])) {
+                formulaIdx = i;
+                break;
+            }
+        }
+
+        if (formulaIdx !== -1) {
+            // 【外壁・妻壁・梁行】算定式がある場合
+            // 算定式より前の非数値トークンを項目名とする（例: "外壁", "妻壁", "梁X2Y2"）
+            const itemParts = [];
+            for (let i = 0; i < formulaIdx; i++) {
+                const tok = tokens[i];
+                if (!/^[0-9]+(\.[0-9]+)?$/.test(tok)) {
+                    itemParts.push(tok);
+                }
+            }
+            const item = itemParts.length > 0 ? itemParts.join(' ') : '外壁';
+
+            // 算定式の直後のトークンが直接軸力 Po(kN)
+            if (formulaIdx + 1 < tokens.length) {
+                const poToken = tokens[formulaIdx + 1].replace(/,/g, '');
+                if (!isNaN(poToken) && poToken !== '') {
+                    extractedRows.push({
+                        symbol: curSymbol,
+                        floor: curFloor,
+                        item: item,
+                        unitLoad: poToken,
+                        area: '1.000'
+                    });
+                }
+            }
+        } else {
+            // 【屋根・床・バルコニー行】算定式がない場合
+            const numTokens = [];
+            const textTokens = [];
 
             tokens.forEach(tok => {
                 const cleaned = tok.replace(/,/g, '');
-                if (!isNaN(cleaned) && cleaned !== '') {
+                if (!isNaN(cleaned) && cleaned !== '' && /^[0-9.-]+$/.test(cleaned)) {
                     numTokens.push(cleaned);
                 } else {
                     textTokens.push(tok);
@@ -364,15 +433,10 @@ async function processPdfDirect(file) {
             });
 
             if (numTokens.length >= 1) {
-                let unitLoad = numTokens.length >= 2 ? numTokens[0] : '';
-                let area = numTokens.length >= 2 ? numTokens[1] : numTokens[0];
-                let item = textTokens.join(' ');
-
-                // 符号や階の推測
-                if (textTokens.length > 0 && /^[A-Za-z0-9_-]+$/.test(textTokens[0])) {
-                    curSymbol = textTokens[0];
-                    item = textTokens.slice(1).join(' ');
-                }
+                // 1番目: 単位荷重(kN/㎡), 2番目: 面積(㎡), 3番目以降: Poや小計(無視)
+                const unitLoad = numTokens[0];
+                const area = numTokens.length >= 2 ? numTokens[1] : '1.000';
+                const item = textTokens.join(' ');
 
                 if (item) {
                     extractedRows.push({
