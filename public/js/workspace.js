@@ -344,8 +344,8 @@
     }
   };
 
-  // サブスクシミュレーション状態 ('all', 'core_pack', 'single_jintsuko', 'free_trial')
-  let currentPlanMode = "core_pack";
+  // サブスクシミュレーション状態: 初期設定は「全ツール使い放題 (all)」
+  let currentPlanMode = localStorage.getItem('mdo3_workspace_plan') || "all";
   let activeToolId = "zi";
 
   // iframe インスタンスキャッシュ
@@ -358,12 +358,31 @@
   function initWorkspace() {
     loadProjectFromStorage();
     setupUrlParams();
+    checkAuthAndSetPlan();
     renderNavBar();
     setupEventListeners();
     updateProjectHeaderUI();
     
     // 初回ツールをiframeで表示
     switchTool(activeToolId);
+  }
+
+  // ログイン認証状態をチェックし、ログイン済みなら「全ツール使い放題」を完全保証
+  function checkAuthAndSetPlan() {
+    if (window.location.protocol !== 'file:') {
+      fetch('/api/check_auth.php')
+        .then(res => res.ok ? res.json() : null)
+        .then(data => {
+          if (data && data.authenticated) {
+            currentPlanMode = "all";
+            localStorage.setItem('mdo3_workspace_plan', "all");
+            const select = document.getElementById('simPlanSelect');
+            if (select) select.value = "all";
+            renderNavBar();
+          }
+        })
+        .catch(err => console.warn('Auth check skipped:', err));
+    }
   }
 
   // URLパラメータ (?tool=jintsuko 等) の処理
@@ -544,7 +563,8 @@
       iframe = document.createElement('iframe');
       iframe.className = 'ws-tool-iframe active';
       iframe.id = `iframe_${toolId}`;
-      const cacheBust = 'v=20261023_v5';
+      // ★ 常に最新のミリ秒タイムスタンプを付与し、ブラウザのiframeキャッシュを100%破棄
+      const cacheBust = 't=' + Date.now();
       const sep = tool.url.includes('?') ? '&' : '?';
       iframe.src = `${tool.url}${sep}${cacheBust}`;
 
@@ -560,6 +580,15 @@
       injectProjectDataIntoIframe(iframe);
     }
   }
+
+  // ★ 現在アクティブなツールを直接ブラウザ別タブで最大化起動（推奨実務）
+  window.openCurrentToolExternal = function() {
+    const tool = WORKSPACE_TOOLS.find(t => t.id === activeToolId);
+    if (!tool) return;
+    const sep = tool.url.includes('?') ? '&' : '?';
+    const bustUrl = `${tool.url}${sep}t=${Date.now()}`;
+    window.open(bustUrl, '_blank');
+  };
 
   // 建設地・地域定数をiframe内部の入力欄に自動転記
   function injectProjectDataIntoIframe(iframe) {
@@ -615,12 +644,13 @@
 
   window.activateDemoPlan = function(planMode) {
     currentPlanMode = planMode;
+    localStorage.setItem('mdo3_workspace_plan', planMode);
     const select = document.getElementById('simPlanSelect');
     if (select) select.value = planMode;
     renderNavBar();
     closeSubscriptionModal();
     switchTool(activeToolId);
-    showWsToast(`プラン表示を【${getPlanName(planMode)}】に切り替えました`);
+    showWsToast(`プラン設定を【${getPlanName(planMode)}】に更新・記憶しました`);
   };
 
   function getPlanName(plan) {

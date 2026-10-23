@@ -2,9 +2,10 @@
  * Version.js - mdo3.com 基幹ポータル & 統合SaaS バージョン管理
  */
 (function() {
-    window.APP_VERSION = 'v2.2.22';
+    window.APP_VERSION = 'v2.2.23';
     window.APP_BUILD_DATE = '2026-10-23';
     window.APP_RELEASE_NOTES = [
+        'v2.2.23 (2026-10-23): 案件コンソール（workspace.html）プラン固定・キャッシュ滞留の根本解消 ＆ 初期設定「全ツール使い放題（all）」完全恒久化。①workspace.htmlリロード時に「基本⑥ツールパック」へ強制初期化される仕様を撤廃し、デフォルトおよびログイン認証時を「👑 全ツール使い放題（all）」へ完全固定、②localStorage連携によるプラン選択の永続記憶（リロード時も維持）を配備、③iframe読み込みURLへの動的ミリ秒タイムスタンプ（t=Date.now()）強制付与により、ブラウザのiframe内部キャッシュによる旧画面滞留・Ctrl+F5不発を完全撲滅、④ヘッダーに「別タブで最大化」ダイレクト起動ボタンを新設、⑤本番サーバーへ即時完全デプロイ完了',
         'v2.2.22 (2026-10-23): WRC造 長期軸力分割ツール（荷重分割シミュレーター）アーキトレンドZERO計算書データモデルの完全統合＆二重乗算バグ完全撲滅。①アーキトレンドの長期常時軸力Excel（D列:単位荷重, E列:面積, F列:Po(kN), G列:P(kN), H列:ΣP(kN)）の直接荷重列Po(kN)を正確に判別し、外壁等の面積なし行を安全に直接代入（unitLoad=Po, area=1.000）して二重乗算による過大算出（11.173kN）を完全防止、②合算荷重9.019kNから固定8.314kN・積載0.705kN・地震0.271kNへの厳密な分割算定ロジックを確立しMDO3_SYSTEM_RECORDS.mdへ公式仕様として定義、③Gemini AIプロンプトの厳密化によるPDF解析時の階数誤認識・二重乗算の完全防止、④本番サーバー（mdo3.com/app/およびthanks.work/kozo/）への完全同期完了',
         'v2.2.21 (2026-10-23): WRC造 長期軸力分割ツール（荷重分割シミュレーター）PDF・Excel・画像抽出の不具合完全解消。①PDF/Excelアップロード時にresizeImage内のImageオブジェクトがonerrorを起こし引数なしreject()により「解析失敗: undefined」となっていた根本不具合を完全修正、②クライアント側でのSheetJS（xlsx.full.min.js）統合によりExcel（.xlsx/.xls/.csv）のAPIキー不要・直接高速自動パースを実現、③Gemini 1.5/2.0マルチモーダル（mimeType: application/pdf）連携によりアーキトレンド等の構造計算書PDFから高精度なデータ抽出（符号・階・項目・単位荷重・面積）を実現、④画像アップロード時のCanvas変換・Base64化の安全化と包括的例外処理（undefined防止）を配備、⑤mdo3.com/app/およびsubへの完全同期・本番反映完了',
         'v2.2.20 (2026-10-23): 人通口補強計算（jintsuko）応力抽出（PDF/Excel）の不具合解消 ＆ master-program.html「E-E-A-T監修資格（二級建築士事務所 埼玉県知事登録(5)第10278号・実務歴30年・取引先127社・累計670棟超・審査質疑突破3,150件超・thanks.work母体連携）」＆「AIO即答要約カード」全面配備完了。①jintsuko.jsのイベント初期化を安全な即時評価（initJintsukoApp）へ改修しiframe内でのイベントリスナー不発・undefined混入を撲滅、PDF.js日本語CMap連携＆Workerフォールバックを実装しARCHITREND ZEROのPDF計算書抽出を完全復旧、②master-program.htmlに「二級建築士事務所 埼玉県知事登録(5)第10278号」「木造設計・構造実務歴30年（自社20年＋外注10年）」「取引先127社・累計670棟超（直近年間150〜180棟ペース）・日本ERIやUDI等審査質疑突破3,150件超」の客観的確定ファクトを完全開示、③技術母体「木造住宅設計サポート（thanks.work）」への公式リンクを配備、④ハウスメーカー勤務時の驚愕から独学の苦闘、審査官の嫌味を乗り越えた開発者の魂のストーリーセクションを新設、⑤Perplexity/Google SGE等のAI検索エンジンがダイレクト引用するAIO要約データマトリクスをファーストビュー直下に配備、⑥index.htmlのoffers構造化データへ実務マスタープログラムを正式統合し、BreadcrumbListを配備',

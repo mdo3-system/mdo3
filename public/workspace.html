@@ -83,13 +83,19 @@
 
       <!-- ヘッダー右側アクション (プラン切り替え / CAD別タブ / ポータル戻る) -->
       <div class="ws-header-actions">
-        <!-- サブスク契約切り替えシミュレーター -->
+        <!-- サブスク契約切り替えシミュレーター (初期設定: 全ツール使い放題) -->
         <select id="simPlanSelect" class="ws-sim-select" title="サブスク契約状態のシミュレーション">
-          <option value="core_pack" selected>基本⑥ツールパック (月額¥980 / 年額¥10,000)</option>
-          <option value="all">全ツール使い放題 (月額¥1,980 / 年額¥19,800)</option>
+          <option value="all" selected>👑 全ツール使い放題 (ログイン・正規版)</option>
+          <option value="core_pack">基本⑥ツールパック (月額¥980 / 年額¥10,000)</option>
           <option value="single_jintsuko">個別ツール契約 (月額¥490)</option>
           <option value="free_trial">フリー体験</option>
         </select>
+
+        <!-- 現在のツールを別タブで直接最大化起動 -->
+        <button type="button" class="btn-ws-cad" id="btnOpenCurrentToolNewTab" title="現在のツールを別タブで全画面起動（推奨）" onclick="window.openCurrentToolExternal();" style="background:#0284c7; border-color:#38bdf8;">
+          <span class="material-symbols-outlined" style="font-size:15px;">open_in_new</span>
+          <span>別タブで最大化</span>
+        </button>
 
         <!-- CAD連携・斜め壁 (別タブで独立起動) -->
         <a href="https://az.mdo3.com" target="_blank" rel="noopener" class="btn-ws-cad" title="ARCHITREND ZERO連動・斜め壁自動抽出Web-CAD (月額¥19,800・サポート付 / 別タブで起動)">
@@ -323,6 +329,6 @@
   <script src="js/city_planning_service.js?v=1.6.8"></script>
   <script src="js/geo_service.js?v=1.6.8"></script>
   <script src="js/regional_calc.js?v=1.6.8"></script>
-  <script src="js/workspace.js?v=1.7.1"></script>
+  <script src="js/workspace.js?v=1.7.2"></script>
 </body>
 </html>
