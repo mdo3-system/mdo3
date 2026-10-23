@@ -544,7 +544,7 @@
       iframe = document.createElement('iframe');
       iframe.className = 'ws-tool-iframe active';
       iframe.id = `iframe_${toolId}`;
-      const cacheBust = 'v=20261023_v4';
+      const cacheBust = 'v=20261023_v5';
       const sep = tool.url.includes('?') ? '&' : '?';
       iframe.src = `${tool.url}${sep}${cacheBust}`;
 

@@ -172,7 +172,7 @@ async function processExcelFile(file) {
 
                     // ヘッダー判定
                     let headerRowIdx = -1;
-                    let colMap = { symbol: -1, floor: -1, item: -1, unitLoad: -1, area: -1, directLoad: -1 };
+                    let colMap = { symbol: -1, floor: -1, item: -1, unitLoad: -1, area: -1, directLoad: -1, subtotal: -1, accumTotal: -1 };
 
                     for (let i = 0; i < Math.min(rows.length, 30); i++) {
                         const row = rows[i].map(c => String(c).trim().toLowerCase());
@@ -189,8 +189,13 @@ async function processExcelFile(file) {
                                 if (colMap.unitLoad === -1) { colMap.unitLoad = idx; matchedCols++; }
                             } else if (cell.includes('面積') || cell.includes('㎡') || cell.includes('m2') || cell.includes('area') || cell.includes('負担')) {
                                 if (colMap.area === -1) { colMap.area = idx; matchedCols++; }
-                            } else if ((cell.includes('荷重') || cell.includes('軸力') || cell.includes('自重') || cell.includes('po')) && cell.includes('kn') && !cell.includes('㎡')) {
+                            } else if (cell === 'po(kn)' || cell === 'po' || (cell.includes('po') && cell.includes('kn'))) {
+                                // アーキトレンドの F列: 各部位の算出済み長期軸力 Po(kN)
                                 if (colMap.directLoad === -1) { colMap.directLoad = idx; }
+                            } else if (cell === 'p(kn)' || cell.includes('小計')) {
+                                if (colMap.subtotal === -1) { colMap.subtotal = idx; }
+                            } else if (cell.includes('σp') || cell.includes('合計') || cell.includes('累計')) {
+                                if (colMap.accumTotal === -1) { colMap.accumTotal = idx; }
                             }
                         });
 
@@ -200,9 +205,9 @@ async function processExcelFile(file) {
                         }
                     }
 
-                    // ヘッダー未検出時はデフォルト配置（0:符号, 1:階, 2:項目, 3:単位荷重, 4:面積）
+                    // ヘッダー未検出時はアーキトレンド標準配置（0:符号, 1:階, 2:項目, 3:単位荷重, 4:面積, 5:Po(kN)）
                     if (colMap.item === -1 && colMap.area === -1 && colMap.unitLoad === -1) {
-                        colMap = { symbol: 0, floor: 1, item: 2, unitLoad: 3, area: 4, directLoad: -1 };
+                        colMap = { symbol: 0, floor: 1, item: 2, unitLoad: 3, area: 4, directLoad: 5, subtotal: 6, accumTotal: 7 };
                     }
 
                     const startRow = (headerRowIdx >= 0) ? headerRowIdx + 1 : 0;
@@ -241,15 +246,24 @@ async function processExcelFile(file) {
                             floor = lastFloor || sheetFloorGuess;
                         }
 
-                        // 壁自重や集中荷重等で「単位荷重×面積」ではなく「荷重(kN)」が直接記載されている場合の補正
-                        if ((!unitLoad || !area || parseFloat(area) === 0) && directLoad && parseFloat(directLoad) > 0) {
+                        // 【最重要】アーキトレンドの直接荷重判定と二重乗算防止
+                        // 外壁・妻壁等、面積がなくF列に Po(kN) が直接記載されている場合は、Po(kN) を単位荷重に代入し面積を 1.000 とする
+                        const hasArea = area !== '' && parseFloat(area) > 0;
+                        const hasDirectPo = directLoad !== '' && parseFloat(directLoad) > 0;
+
+                        if (!hasArea && hasDirectPo) {
                             unitLoad = directLoad;
                             area = '1.000';
+                        } else if (hasArea && (!unitLoad || parseFloat(unitLoad) === 0) && hasDirectPo) {
+                            // 面積はあるが単位荷重が空でPoがある場合
+                            unitLoad = (parseFloat(directLoad) / parseFloat(area)).toFixed(3);
                         }
 
                         if (symbol || floor || item || unitLoad || area) {
-                            // タイトル行や合計行等のノイズを除外
-                            if (item.includes('合計') || item.includes('小計') || item.includes('算定表') || item.includes('柱・壁軸力')) continue;
+                            // タイトル行や合計・小計等のノイズを除外
+                            if (item.includes('合計') || item.includes('小計') || item.includes('算定表') || item.includes('軸力表') || item.includes('長期常時軸力')) continue;
+                            // 数値が一切ない行を除外
+                            if ((!unitLoad || parseFloat(unitLoad) === 0) && (!area || parseFloat(area) === 0)) continue;
                             allExtracted.push({ symbol, floor, item, unitLoad, area });
                         }
                     }
@@ -530,14 +544,22 @@ async function processImage() {
         }
 
         const promptText = `
-提供された資料は建築構造計算書（アーキトレンド等の出力）または長期軸力・荷重計算に関する書類です。
-資料内の表から各行のデータを抽出し、以下のキーを持つJSON配列（Array）として出力してください。
+提供された資料は建築構造計算書（アーキトレンドZERO等の出力）または長期常時軸力・荷重拾い算定表です。
+資料内の表から各行のデータを正確に抽出し、以下のキーを持つJSON配列（Array）として出力してください。
 Markdownコードブロックは含めず、純粋なJSON文字列のみを出力してください。
-- "symbol": 符号（例: "W1", "C1", "X1Y1" など）。空欄の場合は ""。
-- "floor": 階（例: "PH", "R", "3", "2", "1" など）。空欄の場合は ""。
-- "item": 項目・部位名称（例: "屋根一般", "外壁", "床", "バルコニー" など）。
-- "unitLoad": 単位荷重（kN/㎡）の数値。ない場合は ""。
-- "area": 面積（㎡）の数値（計算式ではなく計算後の数値のみ）。ない場合は ""。
+
+【厳格な抽出・換算ルール】
+1. アーキトレンド等の軸力表では、外壁・妻壁などの行は「面積」がなく、直接「Po(kN)」列に算出荷重が記載されています。この場合、"unitLoad" にその「Po(kN)」の数値を格納し、"area" には必ず "1.000" をセットしてください。決して「Po(kN)」の数値をareaに入れて二重乗算しないでください。
+2. 屋根や床のように「単位荷重(kN/㎡)」と「面積(㎡)」の両方が存在する行は、それぞれの数値をそのまま "unitLoad" と "area" に格納してください。
+3. 符号（例: "X1Y1", "X1Y2"）や階（例: "PH", "3", "2"）が縦にセル結合・省略されている行は、直前の行の符号・階を引き継いで必ず補完してください。「階」列の数字（3や2など）をunitLoadに誤認識してはいけません。
+4. 各階の小計行「P(kN)」や最下階累加行「ΣP(kN)」は二重計上となるため除外してください。
+
+JSONキー仕様:
+- "symbol": 符号（例: "X1Y1", "X1Y2" など）。
+- "floor": 階（例: "PH", "3", "2", "1" など）。
+- "item": 項目・部位名称（例: "屋根一般", "屋根軒先", "外壁", "床" など）。
+- "unitLoad": 単位荷重の数値（外壁など面積なし行は直接Po(kN)の数値）。
+- "area": 面積の数値（外壁など面積なし行は "1.000"）。
 `;
 
         const requestBody = {
