@@ -454,6 +454,56 @@
     .story-body-text strong {
       color: #f1f5f9;
     }
+
+    /* 実績エビデンス（客観的数値）グリッド */
+    .stats-track-record-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 16px;
+      margin: 28px 0;
+    }
+    .stats-metric-card {
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      border-radius: var(--radius-md);
+      padding: 18px 20px;
+      text-align: center;
+    }
+    .stats-metric-val {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: #f59e0b;
+      line-height: 1.2;
+      margin-bottom: 4px;
+      font-family: 'Inter', sans-serif;
+    }
+    .stats-metric-lbl {
+      font-size: 0.8rem;
+      color: #cbd5e1;
+      font-weight: 600;
+    }
+    .stats-metric-sub {
+      font-size: 0.72rem;
+      color: #94a3b8;
+      margin-top: 4px;
+    }
+
+    .agency-chips-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+      align-items: center;
+    }
+    .agency-chip {
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: #38bdf8;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
   </style>
 </head>
 <body>
@@ -614,15 +664,66 @@
           AIもインターネットの解説記事もなかった時代です。日本建築学会の学術文献を貪るように読み漁り、高額な技術書を何冊も買い込み、審査官の指摘事項を1行ずつ解読しながら、泥臭く体当たりでノウハウを蓄積していきました。
         </p>
         <p>
-          それから20年間、自社で年間30〜50棟の設計施工を手がけ、この10年間は外部の設計事務所様・工務店様から年間約150件もの許容応力度計算を受注し、全国の検査機関の審査をすべて突破してきました。
+          それから20年間、自社で年間30〜50棟の設計施工を手がけ、この10年間は外部の設計事務所様・工務店様から年間約150件〜180件もの許容応力度計算を受注し、全国の民間検査機関・特定行政庁の審査をすべて突破してきました。
         </p>
+
+        <!-- 客観的エビデンス（実案件フォルダ確定集計データ） -->
+        <div class="stats-track-record-grid">
+          <div class="stats-metric-card">
+            <div class="stats-metric-val">127<span style="font-size:1rem; font-weight:600;"> 社</span></div>
+            <div class="stats-metric-lbl">受託取引・設計事務所数</div>
+            <div class="stats-metric-sub">全国の中小工務店・設計事務所様</div>
+          </div>
+          <div class="stats-metric-card">
+            <div class="stats-metric-val">670<span style="font-size:1rem; font-weight:600;"> 棟超</span></div>
+            <div class="stats-metric-lbl">累計 許容応力度計算受託実績</div>
+            <div class="stats-metric-sub">直近だけでも年間150〜180棟ペース</div>
+          </div>
+          <div class="stats-metric-card">
+            <div class="stats-metric-val">3,150<span style="font-size:1rem; font-weight:600;"> 件超</span></div>
+            <div class="stats-metric-lbl">審査機関 質疑・補正回答 突破実績</div>
+            <div class="stats-metric-sub">泥臭い質疑対応ノウハウの蓄積</div>
+          </div>
+          <div class="stats-metric-card">
+            <div class="stats-metric-val">100<span style="font-size:1rem; font-weight:600;"> %</span></div>
+            <div class="stats-metric-lbl">確認申請 適合・審査通過率</div>
+            <div class="stats-metric-sub">ルート1 / ルート2審査対応</div>
+          </div>
+        </div>
+
+        <div style="background:rgba(15, 23, 42, 0.6); border:1px solid rgba(255,255,255,0.1); border-radius:6px; padding:14px 18px; margin-bottom:20px;">
+          <div style="font-size:0.85rem; font-weight:700; color:#cbd5e1; margin-bottom:8px;">
+            🏛️ 審査突破・日常的協議を行っている主要確認検査機関（実務実績）:
+          </div>
+          <div class="agency-chips-row">
+            <span class="agency-chip">日本ERI (1,900件超)</span>
+            <span class="agency-chip">UDI確認検査 (700件超)</span>
+            <span class="agency-chip">住宅性能評価センター (280件超)</span>
+            <span class="agency-chip">ビューローベリタス (200件超)</span>
+            <span class="agency-chip">ハウスプラス確認検査</span>
+            <span class="agency-chip">JIO (日本住宅保証検査機構)</span>
+            <span class="agency-chip">各自治体・特定行政庁 建築指導課</span>
+          </div>
+        </div>
+
         <p>
           <strong>「できるようになることが目的ならば、実際の仕事で教えてもらわなければ、誰もが途中で挫折します。」</strong><br>
           私ほど負けず嫌いで我慢強い人間はそう多くありません。だからこそ、50万円という費用で迷っている設計者の方々の背中を全力で押してあげたいのです。架空の教科書ではなく、あなたの実案件を私が直接動画で手ほどきし、審査が通るまで1年間伴走します。
         </p>
         <p style="margin-bottom:0; color:#93c5fd; font-weight:600;">
-          本プログラムを修了した暁には、当事務所が抱える年間150件の構造案件を、在宅パートナーとして一緒にお手伝いいただけるような強固なアライアンスを築くことも視野に入れています。日本の木造建築を支える真の構造設計者として、共に一歩を踏み出しましょう。
+          本プログラムを修了した暁には、当事務所が抱える年間150件超の構造案件を、在宅パートナーとして一緒にお手伝いいただけるような強固なアライアンスを築くことも視野に入れています。日本の木造建築を支える真の構造設計者として、共に一歩を踏み出しましょう。
         </p>
+
+        <!-- 技術母体・受託元リンク -->
+        <div style="margin-top:20px; padding-top:16px; border-top:1px dashed rgba(255,255,255,0.15); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+          <span style="font-size:0.85rem; color:#94a3b8;">
+            運営元・技術監修母体：<strong>木造住宅設計サポート（thanks.work）</strong>
+          </span>
+          <a href="https://thanks.work/" target="_blank" rel="noopener noreferrer" style="font-size:0.85rem; font-weight:700; color:#38bdf8; text-decoration:none; display:inline-flex; align-items:center; gap:4px;">
+            <span>木造住宅設計サポート 公式サイトを見る</span>
+            <span class="material-symbols-outlined" style="font-size:14px;">open_in_new</span>
+          </a>
+        </div>
       </div>
     </section>
 
