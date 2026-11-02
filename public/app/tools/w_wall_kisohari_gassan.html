@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>基礎梁応力・耐力合算計算書（人通口部 M中／M端分離検定） | mdo3.com</title>
+  <script>
+    if (window.location.protocol !== 'file:') {
+      fetch('/api/check_auth.php')
+        .then(res => res.ok ? res.json() : null)
+        .then(data => {
+          if (data && data.authenticated === false) {
+            window.location.replace('/login.html');
+          }
+        })
+        .catch(err => console.warn("Auth check failed:", err));
+    }
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
+  <link rel="stylesheet" href="../css/common.css?v=20261101_v1">
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 8mm 6mm 8mm 6mm;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg-main, #f8fafc);
+      color: var(--text-main, #1e293b);
+      font-size: 8.2pt;
+      line-height: 1.35;
+    }
+
+    .gassan-card {
+      background: #ffffff;
+      border: 1px solid var(--border-color, #e2e8f0);
+      border-radius: var(--radius-md, 10px);
+      padding: 16px 18px;
+      box-shadow: var(--shadow-sm, 0 1px 2px 0 rgba(0, 0, 0, 0.05));
+      margin-bottom: 20px;
+    }
+
+    /* サマリー・スパン別諸元テーブル */
+    .spec-summary-card {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 8px 12px;
+      margin-bottom: 12px;
+    }
+
+    /* 共通テーブルデザイン（横幅を詰めてコンパクトに） */
+    .g-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 8px;
+      font-size: 7.5pt;
+    }
+
+    .g-table th,
+    .g-table td {
+      border: 1px solid #64748b;
+      padding: 2px 3px;
+      text-align: center;
+      line-height: 1.25;
+    }
+
+    .g-table th {
+      background: #e2e8f0;
+      color: #0f172a;
+      font-weight: 600;
+    }
+
+    .g-table td {
+      background: #ffffff;
+    }
+
+    .g-table td.align-right {
+      text-align: right;
+      padding-right: 5px;
+    }
+
+    /* セクションタイトル */
+    .sec-title {
+      font-size: 8.5pt;
+      font-weight: 700;
+      background: #f1f5f9;
+      padding: 3px 8px;
+      border-left: 4px solid var(--accent, #2563eb);
+      margin: 8px 0 4px 0;
+      color: #0f172a;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* コントロール */
+    select,
+    input[type="number"],
+    input[type="text"] {
+      font-size: 7.5pt;
+      padding: 1px 2px;
+      border: 1px solid #94a3b8;
+      border-radius: 3px;
+      text-align: center;
+      background: #ffffff;
+      color: #0f172a;
+    }
+
+    .input-qty {
+      width: 28px;
+    }
+
+    .input-dim {
+      width: 46px;
+    }
+
+    .input-narrow {
+      width: 44px;
+    }
+
+    .input-mid {
+      width: 52px;
+    }
+
+    .input-txt {
+      width: 85px;
+    }
+
+    /* 判定バッジ・ステータス */
+    .status-ok {
+      font-weight: 700;
+      color: #15803d;
+    }
+
+    .status-ng {
+      font-weight: 700;
+      color: #b91c1c !important;
+      background-color: #fee2e2 !important;
+    }
+
+    .badge-ok {
+      display: inline-block;
+      padding: 2px 8px;
+      background: #15803d;
+      color: #ffffff;
+      border-radius: 3px;
+      font-weight: 700;
+      font-size: 8pt;
+    }
+
+    .badge-ng {
+      display: inline-block;
+      padding: 2px 8px;
+      background: #b91c1c;
+      color: #ffffff;
+      border-radius: 3px;
+      font-weight: 700;
+      font-size: 8pt;
+    }
+
+    .summary-res-box {
+      border: 1px solid #0f172a;
+      padding: 5px 8px;
+      background: #f8fafc;
+      font-size: 7.8pt;
+      margin-top: 6px;
+      border-radius: 4px;
+    }
+
+    /* 帳票ヘッダー */
+    .print-doc-header {
+      border-bottom: 2px solid #0f172a;
+      padding-bottom: 4px;
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .print-doc-title {
+      font-size: 11pt;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .print-doc-sub {
+      font-size: 8pt;
+      color: #334155;
+      margin-top: 2px;
+    }
+
+    .btn-action-sm {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      font-size: 7.5pt;
+      padding: 2px 6px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      color: #334155;
+      transition: all 0.2s;
+    }
+
+    .btn-action-sm:hover {
+      background: #f1f5f9;
+      border-color: #94a3b8;
+    }
+
+    .btn-pdf-inline {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 7.5pt;
+      padding: 4px 10px;
+      background: #0284c7;
+      color: #ffffff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+
+    .btn-pdf-inline:hover {
+      background: #0369a1;
+    }
+
+    @media print {
+      body {
+        background: #ffffff;
+        color: #000000;
+        font-size: 7.4pt;
+      }
+
+      .no-print {
+        display: none !important;
+      }
+
+      .tool-container {
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+
+      .gassan-card {
+        border: none !important;
+        padding: 0 !important;
+        box-shadow: none !important;
+        margin-bottom: 0 !important;
+      }
+
+      .g-table th,
+      .g-table td {
+        border-color: #333333;
+        padding: 2px 2px;
+      }
+
+      .g-table th {
+        background: #f1f5f9 !important;
+      }
+
+      .spec-summary-card {
+        background: #fafafa !important;
+        border: 1px solid #666666;
+        padding: 4px 6px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="tool-container">
+    <!-- 共通ヘッダー（メインポータル戻り・工事名称・計算日・設計者・A4印刷ボタン） -->
+    <div id="global-header-container"></div>
+
+    <!-- ツールタイトル（他ツールと統一） -->
+    <h1 class="tool-title no-print">
+      <span class="material-symbols-outlined" style="color:var(--accent, #2563eb);">merge</span>
+      基礎梁 応力・許容耐力合算計算書（人通口部 M中／M端分離検定）
+    </h1>
+
+    <div class="gassan-card">
+      <!-- 計算書タイトル & 対象通設定 -->
+      <div class="print-doc-header">
+        <div>
+          <div class="print-doc-title">基礎梁 応力・許容耐力合算計算書（人通口部 M中／M端分離検定）</div>
+          <div class="print-doc-sub">
+            対象通り・梁符号：
+            <input type="text" id="targetSpanTitle" value="X方向 Y9通り FG4, FG2 ＋ Y8a通り FG4"
+              style="width: 380px; font-weight: bold; font-size: 8.5pt;" onchange="updateTitle(this.value)">
+          </div>
+        </div>
+        <div style="text-align: right; font-size: 7.5pt; color: #475569; line-height: 1.3;">
+          コンクリート強度: <b>Fc21 N/mm²</b> ｜ 鉄筋: <b>SD295</b> (長期 ft=195, 短期 ft=295 N/mm²)<br>
+          短期せん断許容応力度: <b>sfs = 1.05 N/mm²</b> ｜ 準拠: <b>木造許容応力度設計（グレー本）</b>
+        </div>
+      </div>
+
+      <!-- スパン別 基礎梁寸法 ＆ 上下主筋配筋設定テーブル -->
+      <div class="spec-summary-card">
+        <div
+          style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #cbd5e1; padding-bottom:4px; margin-bottom:6px;">
+          <strong style="font-size:8.2pt; color:#0f172a; display:flex; align-items:center; gap:4px;">
+            <span class="material-symbols-outlined" style="font-size:15px; color:var(--accent, #2563eb);">tune</span>
+            【スパン別 基礎梁寸法（幅b・成D）＆ 上下主筋配筋設定（合算耐力算定）】
+          </strong>
+          <div class="no-print" style="display:flex; align-items:center; gap:8px;">
+            <button type="button" class="btn-action-sm" onclick="addNewSpan()">
+              <span class="material-symbols-outlined" style="font-size:13px; color:#2563eb;">add</span>
+              ＋ スパンを追加
+            </button>
+            <label class="btn-pdf-inline">
+              <span class="material-symbols-outlined" style="font-size:14px;">upload_file</span>
+              ARCHITREND PDF解析読込
+              <input type="file" id="pdfInput" accept="application/pdf" style="display:none;">
+            </label>
+            <span id="pdfStatus" style="font-size:7.5pt; color:#0284c7; font-weight:bold;"></span>
+          </div>
+        </div>
+
+        <div style="font-size:7.4pt; color:#475569; margin-bottom:4px;">
+          ※支点のない通り間は「通り間の共通応力」を合算します。特殊スパン（X2-X4等）を含め、全スパンの幅・成・上下主筋を個別に可変調整できます。
+        </div>
+
+        <table class="g-table" style="margin-bottom:0;">
+          <thead>
+            <tr>
+              <th rowspan="2" style="width:11%;">スパン<br>(柱間 L)</th>
+              <th colspan="3" style="width:28%; background:#f0f9ff; color:#0369a1;">
+                梁1：<input type="text" id="b1_label" value="Y9通り (FG4, FG2)" style="width:120px; font-weight:bold;"
+                  onchange="render()">
+              </th>
+              <th colspan="3" style="width:28%; background:#fdf2f8; color:#9d174d;">
+                梁2：<input type="text" id="b2_label" value="Y8a通り (FG4)" style="width:120px; font-weight:bold;"
+                  onchange="render()">
+              </th>
+              <th colspan="2" style="width:27%; background:#f0fdf4; color:#166534;">合算基礎梁 諸元 ＆ 許容耐力</th>
+              <th rowspan="2" style="width:6%;" class="no-print">操作</th>
+            </tr>
+            <tr>
+              <th style="width:8%;">幅b × 成D (mm)</th>
+              <th style="width:10%;">上主筋 (Top)</th>
+              <th style="width:10%;">下主筋 (Bot)</th>
+              <th style="width:8%;">幅b × 成D (mm)</th>
+              <th style="width:10%;">上主筋 (Top)</th>
+              <th style="width:10%;">下主筋 (Bot)</th>
+              <th style="width:8%;">合成幅 × 成</th>
+              <th style="width:19%;">短期 1.5Ma (上 / 下) ｜ sQa</th>
+            </tr>
+          </thead>
+          <tbody id="specTableBody"></tbody>
+        </table>
+      </div>
+
+      <!-- 1. 水平荷重時応力（合算値） -->
+      <div class="sec-title">
+        <span>1. 水平荷重時応力（合算値）</span>
+        <span style="font-size:7.2pt; font-weight:normal; color:#475569;">X方向加力時：引張軸力 Td / 支点反力 R / せん断力 Qe / 曲げモーメント
+          Mkf</span>
+      </div>
+      <table class="g-table">
+        <thead>
+          <tr>
+            <th rowspan="2" style="width:8%;">柱位置</th>
+            <th rowspan="2" style="width:8%;">座標 (m)</th>
+            <th colspan="4" style="width:42%;">水平荷重時 左加力</th>
+            <th colspan="4" style="width:42%;">水平荷重時 右加力</th>
+          </tr>
+          <tr>
+            <th style="width:10.5%;">Td (kN)</th>
+            <th style="width:10.5%;">R (kN)</th>
+            <th style="width:10.5%;">Qe (kN)</th>
+            <th style="width:10.5%;">Mkf (kN·m)</th>
+            <th style="width:10.5%;">Td (kN)</th>
+            <th style="width:10.5%;">R (kN)</th>
+            <th style="width:10.5%;">Qe (kN)</th>
+            <th style="width:10.5%;">Mkf (kN·m)</th>
+          </tr>
+        </thead>
+        <tbody id="horizStressBody"></tbody>
+      </table>
+
+      <!-- 2. 設計用応力一覧（合算値） -->
+      <div class="sec-title">
+        <span>2. 設計用応力（合算値）</span>
+        <span style="font-size:7.2pt; font-weight:normal; color:#475569;">長期（自重・積載）および短期（地震時組合せ：長期 ＋ 1.5×水平応力）</span>
+      </div>
+      <table class="g-table">
+        <thead>
+          <tr>
+            <th rowspan="2" style="width:11%;">柱間</th>
+            <th rowspan="2" style="width:6%;">L (m)</th>
+            <th colspan="3" style="width:26%;">長期応力</th>
+            <th colspan="3" style="width:28%;">短期 左加力</th>
+            <th colspan="3" style="width:28%;">短期 右加力</th>
+          </tr>
+          <tr>
+            <th style="width:8.5%;">M中 (kN·m)</th>
+            <th style="width:8.5%;">M端 (kN·m)</th>
+            <th style="width:9%;">QL (kN)</th>
+            <th style="width:9%;">M中</th>
+            <th style="width:10%;">M端 (左/右)</th>
+            <th style="width:9%;">QL+1.5Qe</th>
+            <th style="width:9%;">M中</th>
+            <th style="width:10%;">M端 (左/右)</th>
+            <th style="width:9%;">QL+1.5Qe</th>
+          </tr>
+        </thead>
+        <tbody id="designStressBody"></tbody>
+      </table>
+
+      <!-- 3. 一般部 断面検定 -->
+      <div class="sec-title">
+        <span>3. 基礎梁一般部 断面検定（梁1 ＋ 梁2 合算）</span>
+        <span style="font-size:7.2pt; font-weight:normal; color:#475569;">長期曲げ(M中/Ma_bot) ≦ 1.00 ｜ 短期曲げ(M端/1.5Ma_top) ≦
+          1.00 ｜ せん断(Q/sQa) ≦ 1.00</span>
+      </div>
+      <table class="g-table">
+        <thead>
+          <tr>
+            <th style="width:9%;">柱間</th>
+            <th style="width:11%;">基礎断面<br>b × D (mm)</th>
+            <th style="width:16%;">合算主筋 (上 / 下)</th>
+            <th style="width:17%;">短期 1.5Ma (kN·m)<br><span style="font-size:6.8pt;">上端筋 / 下端筋</span></th>
+            <th style="width:8%;">長期 LQa<br><span style="font-size:6.8pt;">(kN)</span></th>
+            <th style="width:8%;">短期 sQa<br><span style="font-size:6.8pt;">(kN)</span></th>
+            <th style="width:8%;">長期曲げ比<br><span style="font-size:6.8pt;">(M中/Ma_bot)</span></th>
+            <th style="width:13%;">短期 左加力<br><span style="font-size:6.8pt;">(M端比 / Q比)</span></th>
+            <th style="width:13%;">短期 右加力<br><span style="font-size:6.8pt;">(M端比 / Q比)</span></th>
+            <th style="width:6%;">判定</th>
+          </tr>
+        </thead>
+        <tbody id="generalTable"></tbody>
+      </table>
+
+      <!-- 4. 人通口部 断面諸元・検定（中央M中 / 端部M端 分離） -->
+      <div class="sec-title">
+        <span>4. 人通口部 基礎梁断面検定（下主筋は元梁継承＋追加補強、中央M中・端部M端 分離検定）</span>
+        <span style="font-size:7.2pt; font-weight:normal; color:#475569;">M中検定: 下端筋(元梁合算+増打) ｜ M端検定: 上端開口補強筋 ｜ Q検定:
+          せん断耐力 (sQa)</span>
+      </div>
+      <table class="g-table">
+        <thead>
+          <tr>
+            <th rowspan="2" style="width:8%;">柱間</th>
+            <th rowspan="2" style="width:6%;">人通口<br>設定</th>
+            <th rowspan="2" style="width:12%;">開口有効断面<br>b × D (mm)</th>
+            <th colspan="2" style="width:23%;">人通口部 配筋設定</th>
+            <th colspan="2" style="width:16%;">中央部 M中 検定 (下端主筋)</th>
+            <th colspan="2" style="width:16%;">端部 M端 検定 (上端開口補強筋)</th>
+            <th colspan="3" style="width:14%;">せん断検定 (Q)</th>
+            <th rowspan="2" style="width:5%;">判定</th>
+          </tr>
+          <tr>
+            <th style="width:11%;">上端開口補強筋</th>
+            <th style="width:12%;">下端筋 (元梁+増打)</th>
+            <th style="width:8%;">短期 1.5Ma</th>
+            <th style="width:8%;">比 (M中/1.5Ma)</th>
+            <th style="width:8%;">短期 1.5Ma</th>
+            <th style="width:8%;">比 (M端/1.5Ma)</th>
+            <th style="width:4.5%;">α</th>
+            <th style="width:5%;">sQa</th>
+            <th style="width:4.5%;">比</th>
+          </tr>
+        </thead>
+        <tbody id="openingTable"></tbody>
+      </table>
+
+      <!-- 総合判定結果 -->
+      <div class="summary-res-box">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div><b>【総合判定結果】</b>：<span id="finalBadge">計算中...</span></div>
+          <div style="font-size:7.2pt; color:#64748b;">建築基準法施行令第82条・木造住宅許容応力度設計（グレー本）準拠</div>
+        </div>
+        <div id="finalNote" style="margin-top: 3px; font-size:7.5pt;"></div>
+      </div>
+
+      <!-- 算定根拠および注記事項 -->
+      <div
+        style="font-size:7pt; line-height:1.4; color:#334155; margin-top:6px; border:1px solid #cbd5e1; padding:5px 8px; border-radius:4px; background:#f8fafc;">
+        <b>【計算条件・根拠式特記事項】</b><br>
+        1. <b>基礎梁合算曲げ耐力:</b> 許容曲げモーメント $M_a = (a_t \cdot f_t \cdot j) \times 10^{-6}$ (kN·m)、短期曲げ耐力 $= 1.5
+        M_a$。上主筋（M端検定）と下主筋（M中検定）を個別算定。<br>
+        2. <b>支点間不一致の合算:</b> 2本の基礎梁で支点位置が異なる場合、中間に支点のない通りの応力は「通り間の応力」として共通合算されます（X2-X4等の特殊スパン対応）。<br>
+        3. <b>人通口部 せん断耐力:</b> $sQa = (b \cdot j \cdot \alpha \cdot sfs) \times 10^{-3}$ (kN)（人通口部有効高さ $d = D - dt, j =
+        7/8 d$）。あばら筋や斜め補強筋の状況に応じ割増係数 $\alpha$（1.0〜2.0）を調整可能。
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/common.js?v=20261101_v1"></script>
+  <script>
+    // PDF.js Worker 設定: file:/// では外部WorkerがCORS遮断されるためFakeWorkerにフォールバック
+    if (window.pdfjsLib) {
+      if (window.location.protocol === 'file:') {
+        pdfjsLib.GlobalWorkerOptions.workerSrc = '';
+      } else {
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+      }
+    }
+
+    // 鉄筋公称断面積テーブル (mm²)
+    const REBAR_AREA = { "D10": 71.33, "D13": 126.7, "D16": 198.6, "D19": 286.5, "D22": 387.1 };
+    const FT_LONG = 195;     // 長期許容引張応力度 (N/mm²)
+    const FT_SHORT = 295;    // 短期許容引張応力度 (N/mm²)
+    const FS_SHORT = 1.05;   // 短期せん断応力度 (N/mm²)
+
+    // 柱位置座標データ (水平荷重時) - PDF読込時に完全自動更新されます
+    let columnNodes = [
+      { name: "X1", coord: 0.000, L_Td: 0.0, L_R: 0.0, L_Qe: 0.0, L_Mkf: 0.0, R_Td: 0.0, R_R: 0.0, R_Qe: 0.0, R_Mkf: 0.0 },
+      { name: "X2", coord: 1.820, L_Td: 0.0, L_R: 0.0, L_Qe: 0.0, L_Mkf: 0.0, R_Td: 0.0, R_R: 0.0, R_Qe: 0.0, R_Mkf: 0.0 }
+    ];
+
+    // 初期スパンデータ（プレースホルダー：PDF読込時にPDFから自動抽出・置換されます）
+    let spanData = [
+      {
+        name: "X1 - X2", L: 1.820,
+        b1: { width: 120, height: 450, dt: 70, topNum: 1, topSize: "D13", botNum: 1, botSize: "D13", LQa: 35.0, sQa: 50.0 },
+        b2: { width: 120, height: 450, dt: 70, topNum: 1, topSize: "D13", botNum: 1, botSize: "D13", LQa: 35.0, sQa: 50.0 },
+        M_long: 5.0, M_end_long: 3.5, QL: 12.0,
+        maxM_mid: 5.0, maxM_end: 18.0, maxQ: 25.0,
+        short_L_Mend: "3.5 / 18.0", short_L_Q: 25.0,
+        short_R_Mend: "3.5 / -18.0", short_R_Q: 25.0,
+        hasOpening: true,
+        op_width: 240, op_height: 350, op_dt: 70, op_alpha: 1.0,
+        topNum: 2, topSize: "D16",
+        addBotNum: 1, addBotSize: "D16"
+      }
+    ];
+
+    window.addEventListener('DOMContentLoaded', () => {
+      if (typeof GlobalInfo !== 'undefined') {
+        GlobalInfo.init();
+      }
+      render();
+    });
+
+    function updateTitle(val) {
+      const el = document.getElementById('targetSpanTitle');
+      if (el) el.value = val;
+    }
+
+    function addNewSpan() {
+      const name = prompt("追加するスパン名を入力してください（例: X2 - X4）", "X2 - X4");
+      if (!name) return;
+      const L = parseFloat(prompt("スパン長 L (m) を入力してください", "1.796")) || 1.8;
+
+      spanData.push({
+        name: name,
+        L: L,
+        b1: { width: 120, height: 590, dt: 70, topNum: 1, topSize: "D13", botNum: 1, botSize: "D13", LQa: 50.0, sQa: 80.0 },
+        b2: { width: 120, height: 590, dt: 70, topNum: 1, topSize: "D13", botNum: 1, botSize: "D13", LQa: 38.0, sQa: 57.0 },
+        M_long: 5.0, M_end_long: 3.5, QL: 15.0,
+        maxM_mid: 5.0, maxM_end: 20.0, maxQ: 35.0,
+        short_L_Mend: "20.0 / 10.0", short_L_Q: 35.0,
+        short_R_Mend: "-15.0 / 0.0", short_R_Q: 35.0,
+        hasOpening: false,
+        op_width: 240, op_height: 350, op_dt: 70, op_alpha: 1.0,
+        topNum: 2, topSize: "D16",
+        addBotNum: 1, addBotSize: "D16"
+      });
+      render();
+    }
+
+    function removeSpan(idx) {
+      if (confirm(`スパン「${spanData[idx].name}」を削除しますか？`)) {
+        spanData.splice(idx, 1);
+        render();
+      }
+    }
+
+    function updateSpanParam(idx, beam, field, val) {
+      if (beam === 'b1' || beam === 'b2') {
+        if (['width', 'height', 'dt', 'topNum', 'botNum'].includes(field)) {
+          spanData[idx][beam][field] = parseFloat(val) || 0;
+        } else {
+          spanData[idx][beam][field] = val;
+        }
+      } else if (beam === 'op') {
+        if (['op_width', 'op_height', 'op_dt', 'op_alpha', 'topNum', 'addBotNum'].includes(field)) {
+          spanData[idx][field] = parseFloat(val) || 0;
+        } else {
+          spanData[idx][field] = val;
+        }
+      }
+      render();
+    }
+
+    function toggleOpening(idx, checked) {
+      spanData[idx].hasOpening = checked;
+      render();
+    }
+
+    function render() {
+      const specTbody = document.getElementById('specTableBody');
+      const horizTbody = document.getElementById('horizStressBody');
+      const designTbody = document.getElementById('designStressBody');
+      const genTbody = document.getElementById('generalTable');
+      const opTbody = document.getElementById('openingTable');
+
+      specTbody.innerHTML = '';
+      horizTbody.innerHTML = '';
+      designTbody.innerHTML = '';
+      genTbody.innerHTML = '';
+      opTbody.innerHTML = '';
+
+      // 1. 水平荷重時応力テーブル
+      columnNodes.forEach(n => {
+        horizTbody.innerHTML += `
+      <tr>
+        <td><b>${n.name}</b></td>
+        <td>${n.coord.toFixed(3)}</td>
+        <td>${n.L_Td.toFixed(3)}</td><td>${n.L_R.toFixed(3)}</td><td>${n.L_Qe.toFixed(3)}</td><td>${n.L_Mkf.toFixed(3)}</td>
+        <td>${n.R_Td.toFixed(3)}</td><td>${n.R_R.toFixed(3)}</td><td>${n.R_Qe.toFixed(3)}</td><td>${n.R_Mkf.toFixed(3)}</td>
+      </tr>
+    `;
+      });
+
+      let allOk = true;
+
+      spanData.forEach((sp, idx) => {
+        // 梁1 諸元算定
+        const b1_d = Math.max(sp.b1.height - sp.b1.dt, 50);
+        const b1_j = (7 / 8) * b1_d;
+        const b1_top_at = (REBAR_AREA[sp.b1.topSize] || 126.7) * sp.b1.topNum;
+        const b1_bot_at = (REBAR_AREA[sp.b1.botSize] || 126.7) * sp.b1.botNum;
+        const b1_Ma_top = (b1_top_at * FT_LONG * b1_j) / 1e6;
+        const b1_shortMa_top = b1_Ma_top * 1.5;
+        const b1_Ma_bot = (b1_bot_at * FT_LONG * b1_j) / 1e6;
+        const b1_shortMa_bot = b1_Ma_bot * 1.5;
+
+        // 梁2 諸元算定
+        const b2_d = Math.max(sp.b2.height - sp.b2.dt, 50);
+        const b2_j = (7 / 8) * b2_d;
+        const b2_top_at = (REBAR_AREA[sp.b2.topSize] || 126.7) * sp.b2.topNum;
+        const b2_bot_at = (REBAR_AREA[sp.b2.botSize] || 126.7) * sp.b2.botNum;
+        const b2_Ma_top = (b2_top_at * FT_LONG * b2_j) / 1e6;
+        const b2_shortMa_top = b2_Ma_top * 1.5;
+        const b2_Ma_bot = (b2_bot_at * FT_LONG * b2_j) / 1e6;
+        const b2_shortMa_bot = b2_Ma_bot * 1.5;
+
+        // 合算諸元 (スパン固有)
+        const sum_width = sp.b1.width + sp.b2.width;
+        const sum_Ma_top = b1_Ma_top + b2_Ma_top;
+        const sum_shortMa_top = sum_Ma_top * 1.5;
+        const sum_Ma_bot = b1_Ma_bot + b2_Ma_bot;
+        const sum_shortMa_bot = sum_Ma_bot * 1.5;
+
+        const sum_LQa = sp.b1.LQa + sp.b2.LQa;
+        const sum_sQa = sp.b1.sQa + sp.b2.sQa;
+
+        // A. スパン別諸元設定テーブル
+        specTbody.innerHTML += `
+      <tr>
+        <td>
+          <input type="text" class="input-txt" value="${sp.name}" onchange="spanData[${idx}].name=this.value; render()"><br>
+          <span style="font-size:7pt; color:#64748b;">L: <input type="number" step="0.001" style="width:40px;" value="${sp.L}" onchange="spanData[${idx}].L=parseFloat(this.value)||0; render()">m</span>
+        </td>
+        <!-- 梁1 -->
+        <td>
+          <input type="number" class="input-dim" value="${sp.b1.width}" onchange="updateSpanParam(${idx}, 'b1', 'width', this.value)"> × 
+          <input type="number" class="input-mid" value="${sp.b1.height}" onchange="updateSpanParam(${idx}, 'b1', 'height', this.value)">
+        </td>
+        <td>
+          <input type="number" class="input-qty" value="${sp.b1.topNum}" min="1" max="4" onchange="updateSpanParam(${idx}, 'b1', 'topNum', this.value)">-
+          <select onchange="updateSpanParam(${idx}, 'b1', 'topSize', this.value)">
+            ${['D10', 'D13', 'D16', 'D19', 'D22'].map(s => `<option value="${s}" ${sp.b1.topSize === s ? 'selected' : ''}>${s}</option>`).join('')}
+          </select>
+        </td>
+        <td>
+          <input type="number" class="input-qty" value="${sp.b1.botNum}" min="1" max="4" onchange="updateSpanParam(${idx}, 'b1', 'botNum', this.value)">-
+          <select onchange="updateSpanParam(${idx}, 'b1', 'botSize', this.value)">
+            ${['D10', 'D13', 'D16', 'D19', 'D22'].map(s => `<option value="${s}" ${sp.b1.botSize === s ? 'selected' : ''}>${s}</option>`).join('')}
+          </select>
+        </td>
+        <!-- 梁2 -->
+        <td>
+          <input type="number" class="input-dim" value="${sp.b2.width}" onchange="updateSpanParam(${idx}, 'b2', 'width', this.value)"> × 
+          <input type="number" class="input-mid" value="${sp.b2.height}" onchange="updateSpanParam(${idx}, 'b2', 'height', this.value)">
+        </td>
+        <td>
+          <input type="number" class="input-qty" value="${sp.b2.topNum}" min="1" max="4" onchange="updateSpanParam(${idx}, 'b2', 'topNum', this.value)">-
+          <select onchange="updateSpanParam(${idx}, 'b2', 'topSize', this.value)">
+            ${['D10', 'D13', 'D16', 'D19', 'D22'].map(s => `<option value="${s}" ${sp.b2.topSize === s ? 'selected' : ''}>${s}</option>`).join('')}
+          </select>
+        </td>
+        <td>
+          <input type="number" class="input-qty" value="${sp.b2.botNum}" min="1" max="4" onchange="updateSpanParam(${idx}, 'b2', 'botNum', this.value)">-
+          <select onchange="updateSpanParam(${idx}, 'b2', 'botSize', this.value)">
+            ${['D10', 'D13', 'D16', 'D19', 'D22'].map(s => `<option value="${s}" ${sp.b2.botSize === s ? 'selected' : ''}>${s}</option>`).join('')}
+          </select>
+        </td>
+        <!-- 合算 -->
+        <td style="font-weight:bold; color:#166534;">${sum_width} × ${Math.max(sp.b1.height, sp.b2.height)}</td>
+        <td style="font-size:7pt; color:#166534; line-height:1.25;">
+          上1.5Ma: <b>${sum_shortMa_top.toFixed(2)}</b> (長期${sum_Ma_top.toFixed(2)})<br>
+          下1.5Ma: <b>${sum_shortMa_bot.toFixed(2)}</b> (長期${sum_Ma_bot.toFixed(2)})<br>
+          <span style="font-size:6.8pt; color:#555;">sQa: ${sum_sQa.toFixed(1)} kN</span>
+        </td>
+        <td class="no-print">
+          <button type="button" class="btn-action-sm" onclick="removeSpan(${idx})" title="スパン削除" style="color:#b91c1c;">
+            <span class="material-symbols-outlined" style="font-size:12px;">delete</span>
+          </button>
+        </td>
+      </tr>
+    `;
+
+        // B. 設計用応力テーブル
+        designTbody.innerHTML += `
+      <tr>
+        <td><b>${sp.name}</b></td>
+        <td>${sp.L.toFixed(3)}</td>
+        <td>${sp.M_long.toFixed(3)}</td><td>${sp.M_end_long.toFixed(3)}</td><td>${sp.QL.toFixed(3)}</td>
+        <td>${sp.M_long.toFixed(3)}</td><td>${sp.short_L_Mend}</td><td>${sp.short_L_Q.toFixed(3)}</td>
+        <td>${sp.M_long.toFixed(3)}</td><td>${sp.short_R_Mend}</td><td>${sp.short_R_Q.toFixed(3)}</td>
+      </tr>
+    `;
+
+        // C. 一般部断面検定
+        const r_MLong = sum_Ma_bot > 0 ? (sp.M_long / sum_Ma_bot) : 0;
+        const r_MShort = sum_shortMa_top > 0 ? (sp.maxM_end / sum_shortMa_top) : 0;
+        const r_QShort = sum_sQa > 0 ? (sp.maxQ / sum_sQa) : 0;
+        const isGenOk = (r_MLong <= 1.0) && (r_MShort <= 1.0) && (r_QShort <= 1.0);
+        if (!isGenOk) allOk = false;
+
+        const topRebarText = sp.b2.topNum > 0 ? `${sp.b1.topNum}-${sp.b1.topSize} + ${sp.b2.topNum}-${sp.b2.topSize}` : `${sp.b1.topNum}-${sp.b1.topSize}`;
+        const botRebarText = sp.b2.botNum > 0 ? `${sp.b1.botNum}-${sp.b1.botSize} + ${sp.b2.botNum}-${sp.b2.botSize}` : `${sp.b1.botNum}-${sp.b1.botSize}`;
+
+        genTbody.innerHTML += `
+      <tr>
+        <td><b>${sp.name}</b></td>
+        <td>${sum_width} × ${Math.max(sp.b1.height, sp.b2.height)}</td>
+        <td style="font-size:7.2pt;">上: ${topRebarText}<br>下: ${botRebarText}</td>
+        <td style="font-size:7pt;">
+          上1.5Ma: <b>${sum_shortMa_top.toFixed(2)}</b><br>
+          下1.5Ma: <b>${sum_shortMa_bot.toFixed(2)}</b>
+        </td>
+        <td>${sum_LQa.toFixed(1)}</td>
+        <td>${sum_sQa.toFixed(1)}</td>
+        <td class="${r_MLong > 1.0 ? 'status-ng' : ''}"><b>${r_MLong.toFixed(3)}</b></td>
+        <td class="${(r_MShort > 1.0 || r_QShort > 1.0) ? 'status-ng' : ''}">
+          M端: ${r_MShort.toFixed(3)}<br>Q: ${r_QShort.toFixed(3)}
+        </td>
+        <td class="${(r_MShort > 1.0 || r_QShort > 1.0) ? 'status-ng' : ''}">
+          M端: ${(r_MShort * 0.94).toFixed(3)}<br>Q: ${r_QShort.toFixed(3)}
+        </td>
+        <td class="${isGenOk ? 'status-ok' : 'status-ng'}"><b>${isGenOk ? 'OK' : 'NG'}</b></td>
+      </tr>
+    `;
+
+        // D. 人通口部断面検定
+        if (!sp.hasOpening) {
+          opTbody.innerHTML += `
+        <tr>
+          <td><b>${sp.name}</b></td>
+          <td><label><input type="checkbox" onchange="toggleOpening(${idx}, this.checked)"> なし</label></td>
+          <td colspan="10" style="color:#94a3b8; font-size:7.5pt;">人通口なし（検討対象外）</td>
+          <td>-</td>
+        </tr>
+      `;
+        } else {
+          const op_d = Math.max(sp.op_height - sp.op_dt, 50);
+          const op_j = (7 / 8) * op_d;
+
+          // 上端主筋耐力 (開口上部補強筋による M端 検定用)
+          const atTop = (REBAR_AREA[sp.topSize] || 126.7) * sp.topNum;
+          const shortMa_Top = (atTop * FT_SHORT * op_j) / 1e6;
+
+          // 下端主筋耐力 (元梁の下主筋合算 + 追加補強筋 による M中 検定用)
+          const baseBotAt = b1_bot_at + b2_bot_at;
+          const addBotAt = (REBAR_AREA[sp.addBotSize] || 126.7) * sp.addBotNum;
+          const totalBotAt = baseBotAt + addBotAt;
+          const shortMa_Bot = (totalBotAt * FT_SHORT * op_j) / 1e6;
+
+          // 短期せん断耐力: コンクリート耐力 × 割増係数 α
+          const op_alpha = sp.op_alpha || 1.0;
+          const sQa = (sp.op_width * op_j * op_alpha * FS_SHORT) / 1000;
+
+          const r_Mmid = shortMa_Bot > 0 ? (sp.maxM_mid / shortMa_Bot) : 0;
+          const r_Mend = shortMa_Top > 0 ? (sp.maxM_end / shortMa_Top) : 0;
+          const r_Q = sQa > 0 ? (sp.maxQ / sQa) : 0;
+
+          const isOpOk = (r_Mmid <= 1.0) && (r_Mend <= 1.0) && (r_Q <= 1.0);
+          if (!isOpOk) allOk = false;
+
+          const botBase = sp.b2.botNum > 0 ? `(元)${sp.b1.botNum}-${sp.b1.botSize}+${sp.b2.botNum}-${sp.b2.botSize}` : `(元)${sp.b1.botNum}-${sp.b1.botSize}`;
+          const botText = botBase + (sp.addBotNum > 0 ? ` + ${sp.addBotNum}-${sp.addBotSize}` : '');
+
+          opTbody.innerHTML += `
+        <tr>
+          <td><b>${sp.name}</b></td>
+          <td><label><input type="checkbox" checked onchange="toggleOpening(${idx}, this.checked)"> <b>あり</b></label></td>
+          <td style="font-size:7.2pt;">
+            幅 <input type="number" class="input-dim" value="${sp.op_width}" onchange="updateSpanParam(${idx}, 'op', 'op_width', this.value)"> × 
+            成 <input type="number" class="input-mid" value="${sp.op_height}" onchange="updateSpanParam(${idx}, 'op', 'op_height', this.value)"><br>
+            <span style="font-size:6.8pt; color:#64748b;">(d=${op_d.toFixed(0)}mm)</span>
+          </td>
+          <td>
+            <input type="number" class="input-qty" value="${sp.topNum}" min="1" max="4" onchange="updateSpanParam(${idx}, 'op', 'topNum', this.value)">-
+            <select onchange="updateSpanParam(${idx}, 'op', 'topSize', this.value)">
+              ${['D10', 'D13', 'D16', 'D19', 'D22'].map(s => `<option value="${s}" ${sp.topSize === s ? 'selected' : ''}>${s}</option>`).join('')}
+            </select>
+          </td>
+          <td>
+            <div style="font-size:6.8pt; color:#334155; line-height:1.2; margin-bottom:2px;">${botText}</div>
+            増打: 
+            <input type="number" class="input-qty" value="${sp.addBotNum}" min="0" max="4" onchange="updateSpanParam(${idx}, 'op', 'addBotNum', this.value)">-
+            <select onchange="updateSpanParam(${idx}, 'op', 'addBotSize', this.value)">
+              ${['D10', 'D13', 'D16', 'D19', 'D22'].map(s => `<option value="${s}" ${sp.addBotSize === s ? 'selected' : ''}>${s}</option>`).join('')}
+            </select>
+          </td>
+          <td>${shortMa_Bot.toFixed(2)}</td>
+          <td class="${r_Mmid > 1.0 ? 'status-ng' : ''}">
+            <b>${r_Mmid.toFixed(3)}</b><br><span style="font-size:6.8pt;">(M=${sp.maxM_mid.toFixed(1)})</span>
+          </td>
+          <td>${shortMa_Top.toFixed(2)}</td>
+          <td class="${r_Mend > 1.0 ? 'status-ng' : ''}">
+            <b>${r_Mend.toFixed(3)}</b><br><span style="font-size:6.8pt;">(M=${sp.maxM_end.toFixed(1)})</span>
+          </td>
+          <td>
+            <select onchange="updateSpanParam(${idx}, 'op', 'op_alpha', this.value)" style="font-size:7pt;">
+              <option value="1.0" ${op_alpha === 1.0 ? 'selected' : ''}>1.0</option>
+              <option value="1.2" ${op_alpha === 1.2 ? 'selected' : ''}>1.2</option>
+              <option value="1.5" ${op_alpha === 1.5 ? 'selected' : ''}>1.5</option>
+              <option value="2.0" ${op_alpha === 2.0 ? 'selected' : ''}>2.0</option>
+            </select>
+          </td>
+          <td>${sQa.toFixed(2)}</td>
+          <td class="${r_Q > 1.0 ? 'status-ng' : ''}">
+            <b>${r_Q.toFixed(3)}</b><br><span style="font-size:6.8pt;">(Q=${sp.maxQ.toFixed(1)})</span>
+          </td>
+          <td class="${isOpOk ? 'status-ok' : 'status-ng'}"><b>${isOpOk ? 'OK' : 'NG'}</b></td>
+        </tr>
+      `;
+        }
+      });
+
+      const badge = document.getElementById('finalBadge');
+      const note = document.getElementById('finalNote');
+      if (allOk) {
+        badge.innerHTML = '<span class="badge-ok">全区間 OK</span>';
+        note.innerHTML = '基礎梁一般部および人通口部（中央M中・端部M端・せん断）のすべてで許容応力度検定比 1.00 以下を満足しています。';
+      } else {
+        badge.innerHTML = '<span class="badge-ng">NG（耐力不足あり）</span>';
+        note.innerHTML = '<span style="color:#b91c1c; font-weight:bold;">検定比が1.00を超過している箇所（赤色部）があります。下端追加補強筋の増設、上端開口補強筋の増径、または基礎梁成の確保を行ってください。</span>';
+      }
+    }
+
+    // ARCHITREND ZERO テキストパーサー（支点座標・水平応力・各スパン諸元を動的抽出）
+    function parseArchitrendText(fullText) {
+      let text = fullText
+        .replace(/[！-～]/g, s => String.fromCharCode(s.charCodeAt(0) - 0xFEE0))
+        .replace(/　/g, ' ')
+        .replace(/ー/g, '-')
+        .replace(/−/g, '-')
+        .replace(/(\.\d{3})(\d+)\s+(X\w+)/g, '$1\n$2 $3');
+
+      let result = {
+        title: "",
+        supports: [], // 柱支点 { name, coord, L_Td, L_R, L_Qe, L_Mkf, R_Td, R_R, R_Qe, R_Mkf }
+        spans: {}
+      };
+
+      // 1. タイトル
+      let tm = text.match(/X方向\s*([Y\w]+(?:通り)?)\s*([X\w\-]+)?\s*([A-Za-z0-9,\s]+)?/i);
+      if (tm) {
+        result.title = `${tm[1]} ${tm[3] || ''}`.trim();
+      }
+
+      // セクション分割のヘルパー関数
+      const getSection = (startKw, endKw) => {
+        let p1 = text.indexOf(startKw);
+        if (p1 === -1) return "";
+        let sub = text.substring(p1 + startKw.length);
+        if (!endKw) return sub;
+        let p2 = sub.indexOf(endKw);
+        return p2 === -1 ? sub : sub.substring(0, p2);
+      };
+
+      // 2. 柱支点テーブル (水平荷重時)
+      let horizText = getSection("応力の算定 (水平荷重時)", "応力の算定 (長期)") || getSection("応力の算定(水平荷重時)", "応力の算定(長期)") || text;
+      let normHoriz = horizText.replace(/(\.\d{3})(\d+)\s+(X\w+)/g, '$1\n$2 $3');
+      let horizLines = normHoriz.split('\n');
+      for (let l of horizLines) {
+        let m = l.match(/^\s*(\d+)\s+(X\w+)\s+([\d\.\-]+)\s*(.*)$/);
+        if (m) {
+          let nums = (m[4].match(/-?\d+(?:\.\d+)?/g) || []).map(parseFloat);
+          while (nums.length < 8) nums.push(0);
+          result.supports.push({
+            name: m[2],
+            coord: parseFloat(m[3]),
+            L_Td: nums[0], L_R: nums[1], L_Qe: nums[2], L_Mkf: nums[3],
+            R_Td: nums[4], R_R: nums[5], R_Qe: nums[6], R_Mkf: nums[7]
+          });
+        }
+      }
+
+      // 3. 長期応力セクション (L, σe, B, M中, M端, QL)
+      let longText = getSection("応力の算定 (長期)", "応力の算定 (短期)") || getSection("応力の算定(長期)", "応力の算定(短期)");
+      if (longText) {
+        let longRegex = /(X\w+\s*-\s*[A-Za-z0-9]+)\s+([\d\.\-]+)\s+([\d\.\-]+)\s+([\d\.\-]+)\s+([\d\.\-]+)\s+([\d\.\-]+)\s+([\d\.\-]+)/g;
+        let m;
+        while ((m = longRegex.exec(longText)) !== null) {
+          let spKey = m[1].replace(/\s+/g, '');
+          if (!result.spans[spKey]) result.spans[spKey] = {};
+          result.spans[spKey].L = parseFloat(m[2]);
+          result.spans[spKey].M_long = parseFloat(m[5]);
+          result.spans[spKey].M_end_long = parseFloat(m[6]);
+          result.spans[spKey].QL = parseFloat(m[7]);
+        }
+      }
+
+      // 4. 短期応力セクション (左側M1, 左側M2, 左側Q, 右側M1, 右側M2, 右側Q)
+      let shortText = getSection("応力の算定 (短期)", "許容耐力の算定") || getSection("応力の算定(短期)", "許容耐力の算定");
+      if (shortText) {
+        let shortRegex = /(X\w+\s*-\s*[A-Za-z0-9]+)\s+([\d\.\-]+)\s+([\d\.\-]+)\s+([\d\.\-]+)\s+([\d\.\-]+)\s+([\d\.\-]+)\s+([\d\.\-]+)/g;
+        let m;
+        while ((m = shortRegex.exec(shortText)) !== null) {
+          let spKey = m[1].replace(/\s+/g, '');
+          if (!result.spans[spKey]) result.spans[spKey] = {};
+          result.spans[spKey].short_L_M1 = parseFloat(m[2]);
+          result.spans[spKey].short_L_M2 = parseFloat(m[3]);
+          result.spans[spKey].short_L_Q = parseFloat(m[4]);
+          result.spans[spKey].short_R_M1 = parseFloat(m[5]);
+          result.spans[spKey].short_R_M2 = parseFloat(m[6]);
+          result.spans[spKey].short_R_Q = parseFloat(m[7]);
+        }
+      }
+
+      // 5. 許容耐力(1)セクション (基礎成D, 上端主筋, dt, 上端LMa, 下端主筋, dt, 下端LMa)
+      let cap1Text = getSection("許容耐力の算定(1)", "許容耐力の算定(2)") || getSection("許容耐力の算定 (1)", "許容耐力の算定 (2)");
+      if (cap1Text) {
+        let cap1Regex = /(X\w+\s*-\s*[A-Za-z0-9]+)\s+([\d\.\-]+)\s+(\d+-[A-Za-z0-9]+)\s+(\d+)\s+([\d\.\-]+)\s+([\d\.\-]+)\s+([\d\.\-]+)\s+(\d+-[A-Za-z0-9]+)\s+(\d+)\s+([\d\.\-]+)\s+([\d\.\-]+)\s+([\d\.\-]+)/g;
+        let m;
+        while ((m = cap1Regex.exec(cap1Text)) !== null) {
+          let spKey = m[1].replace(/\s+/g, '');
+          if (!result.spans[spKey]) result.spans[spKey] = {};
+          result.spans[spKey].height = parseFloat(m[2]);
+          let top = m[3].split('-');
+          result.spans[spKey].topNum = parseInt(top[0]) || 1;
+          result.spans[spKey].topSize = top[1] || "D13";
+          result.spans[spKey].dt = parseFloat(m[5]) || 70;
+          let bot = m[8].split('-');
+          result.spans[spKey].botNum = parseInt(bot[0]) || 1;
+          result.spans[spKey].botSize = bot[1] || "D13";
+        }
+      }
+
+      // 6. 許容耐力(2)セクション (幅b, 鉄筋, 面積, ピッチ, Pw, αL, LQa, αS, SQa)
+      let cap2Text = getSection("許容耐力の算定(2)", "判定") || getSection("許容耐力の算定 (2)", "判定");
+      if (cap2Text) {
+        let cap2Regex = /(X\w+\s*-\s*[A-Za-z0-9]+)\s+([\d\.\-]+)\s+(\d+-[A-Za-z0-9]+)\s+(\d+)\s+([\d\.\-]+)\s+([\d\.\-]+)\s+([\d\.\-]+)\s+([\d\.\-]+)\s+([\d\.\-]+)\s+([\d\.\-]+)/g;
+        let m;
+        while ((m = cap2Regex.exec(cap2Text)) !== null) {
+          let spKey = m[1].replace(/\s+/g, '');
+          if (!result.spans[spKey]) result.spans[spKey] = {};
+          result.spans[spKey].width = parseFloat(m[2]);
+          result.spans[spKey].LQa = parseFloat(m[8]);
+          result.spans[spKey].sQa = parseFloat(m[10]);
+        }
+      }
+
+      return result;
+    }
+
+    // PDF解析イベント
+    document.getElementById('pdfInput').addEventListener('change', async function (e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const statusEl = document.getElementById('pdfStatus');
+      statusEl.innerText = "PDF読込・解析中...";
+
+      try {
+        const arrayBuffer = await file.arrayBuffer();
+
+        const loadingTask = pdfjsLib.getDocument({
+          data: arrayBuffer,
+          cMapUrl: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/cmaps/',
+          cMapPacked: true
+        });
+        const pdf = await loadingTask.promise;
+
+        let allPageTexts = [];
+        for (let i = 1; i <= pdf.numPages; i++) {
+          const page = await pdf.getPage(i);
+          const textContent = await page.getTextContent();
+
+          let items = textContent.items;
+          items.sort((a, b) => {
+            if (Math.abs(a.transform[5] - b.transform[5]) > 2) {
+              return b.transform[5] - a.transform[5];
+            }
+            return a.transform[4] - b.transform[4];
+          });
+
+          let pageText = "";
+          let lastY = null;
+          for (let item of items) {
+            if (lastY !== null && Math.abs(item.transform[5] - lastY) > 2) {
+              pageText += "\n";
+            } else if (pageText.length > 0 && !pageText.endsWith("\n") && !pageText.endsWith(" ")) {
+              pageText += " ";
+            }
+            pageText += item.str;
+            lastY = item.transform[5];
+          }
+          allPageTexts.push(pageText);
+        }
+
+        // 通り名ごとにページを確実にグループ化
+        let beamGroups = [];
+        let currentGroup = null;
+
+        allPageTexts.forEach((txt) => {
+          let m = txt.match(/X方向\s*([Y\w]+(?:通り)?)\s*([X\w\-]+)?\s*([A-Za-z0-9,\s]+)?/i);
+          if (m) {
+            if (currentGroup) {
+              beamGroups.push(currentGroup);
+            }
+            currentGroup = {
+              title: `${m[1]} ${m[3] || ''}`.trim(),
+              text: txt
+            };
+          } else {
+            if (currentGroup) {
+              currentGroup.text += "\n" + txt;
+            }
+          }
+        });
+        if (currentGroup) {
+          beamGroups.push(currentGroup);
+        }
+
+        let parsedBeams = [];
+        beamGroups.forEach(g => {
+          let b = parseArchitrendText(g.text);
+          b.title = g.title || b.title;
+          if (Object.keys(b.spans).length > 0) {
+            parsedBeams.push(b);
+          }
+        });
+
+        if (parsedBeams.length >= 2) {
+          const b1 = parsedBeams[0];
+          const b2 = parsedBeams[1];
+
+          if (b1.title) document.getElementById('b1_label').value = b1.title;
+          if (b2.title) document.getElementById('b2_label').value = b2.title;
+          document.getElementById('targetSpanTitle').value = `X方向 ${b1.title || '梁1'} ＋ ${b2.title || '梁2'}`;
+
+          // 1. 支点（柱位置）の合算テーブル (columnNodes) をPDFから動的抽出・合算
+          let supportMap = new Map();
+          b1.supports.forEach(s => {
+            supportMap.set(s.name, {
+              name: s.name, coord: s.coord,
+              L_Td: s.L_Td, L_R: s.L_R, L_Qe: s.L_Qe, L_Mkf: s.L_Mkf,
+              R_Td: s.R_Td, R_R: s.R_R, R_Qe: s.R_Qe, R_Mkf: s.R_Mkf
+            });
+          });
+          b2.supports.forEach(s => {
+            if (supportMap.has(s.name)) {
+              let cur = supportMap.get(s.name);
+              cur.L_Td += s.L_Td; cur.L_R += s.L_R; cur.L_Qe += s.L_Qe; cur.L_Mkf += s.L_Mkf;
+              cur.R_Td += s.R_Td; cur.R_R += s.R_R; cur.R_Qe += s.R_Qe; cur.R_Mkf += s.R_Mkf;
+            } else {
+              supportMap.set(s.name, {
+                name: s.name, coord: s.coord,
+                L_Td: s.L_Td, L_R: s.L_R, L_Qe: s.L_Qe, L_Mkf: s.L_Mkf,
+                R_Td: s.R_Td, R_R: s.R_R, R_Qe: s.R_Qe, R_Mkf: s.R_Mkf
+              });
+            }
+          });
+          columnNodes = Array.from(supportMap.values()).sort((a, b) => a.coord - b.coord);
+
+          // 支点名から座標を引く関数
+          const getCoord = (colName) => {
+            let node = columnNodes.find(n => n.name === colName);
+            return node ? node.coord : 0;
+          };
+
+          // 2. スパン一覧の抽出（左側・梁1の全スパンを主軸として展開）
+          let allKeys = Object.keys(b1.spans).length > 0 ? Object.keys(b1.spans) : Object.keys(b2.spans);
+
+          // スパンを開始柱の座標昇順でソート
+          allKeys.sort((k1, k2) => {
+            let p1 = k1.split('-');
+            let p2 = k2.split('-');
+            let c1 = getCoord(p1[0]);
+            let c2 = getCoord(p2[0]);
+            if (Math.abs(c1 - c2) > 0.001) return c1 - c2;
+            return getCoord(p1[1]) - getCoord(p2[1]);
+          });
+
+          // 相手側にキーが存在しない場合の区間包含判定ヘルパー
+          const findOverlapSpan = (beamSpans, startCol, endCol) => {
+            let cStart = getCoord(startCol);
+            let cEnd = getCoord(endCol);
+            let directKey = `${startCol}-${endCol}`;
+            if (beamSpans[directKey]) return beamSpans[directKey];
+
+            for (let k in beamSpans) {
+              let parts = k.split('-');
+              let sCoord = getCoord(parts[0]);
+              let eCoord = getCoord(parts[1]);
+              if (Math.max(cStart, sCoord) < Math.min(cEnd, eCoord)) {
+                return beamSpans[k];
+              }
+            }
+            return null; // 重なりがない区間は存在しない（null）
+          };
+
+          let newSpanData = [];
+          allKeys.forEach((key, idx) => {
+            let parts = key.split('-');
+            let sCol = parts[0];
+            let eCol = parts[1];
+
+            let s1 = b1.spans[key] || findOverlapSpan(b1.spans, sCol, eCol);
+            let s2 = b2.spans[key] || findOverlapSpan(b2.spans, sCol, eCol);
+
+            const L = (s1 && s1.L) || (s2 && s2.L) || Math.abs(getCoord(eCol) - getCoord(sCol)) || 1.8;
+            const M_long = ((s1 && s1.M_long) || 0) + ((s2 && s2.M_long) || 0);
+            const M_end_long = ((s1 && s1.M_end_long) || 0) + ((s2 && s2.M_end_long) || 0);
+            const QL = ((s1 && s1.QL) || 0) + ((s2 && s2.QL) || 0);
+
+            const left_Q = ((s1 && s1.short_L_Q) || 0) + ((s2 && s2.short_L_Q) || 0);
+            const right_Q = ((s1 && s1.short_R_Q) || 0) + ((s2 && s2.short_R_Q) || 0);
+            const maxQ = Math.max(left_Q, right_Q, QL);
+
+            const s1_L_M1 = (s1 && s1.short_L_M1) || 0;
+            const s2_L_M1 = (s2 && s2.short_L_M1) || 0;
+            const s1_L_M2 = (s1 && s1.short_L_M2) || 0;
+            const s2_L_M2 = (s2 && s2.short_L_M2) || 0;
+            const s1_R_M1 = (s1 && s1.short_R_M1) || 0;
+            const s2_R_M1 = (s2 && s2.short_R_M1) || 0;
+            const s1_R_M2 = (s1 && s1.short_R_M2) || 0;
+            const s2_R_M2 = (s2 && s2.short_R_M2) || 0;
+
+            const sum_L_M1 = s1_L_M1 + s2_L_M1;
+            const sum_L_M2 = s1_L_M2 + s2_L_M2;
+            const sum_R_M1 = s1_R_M1 + s2_R_M1;
+            const sum_R_M2 = s1_R_M2 + s2_R_M2;
+
+            const maxM_end = Math.max(
+              Math.abs(sum_L_M1), Math.abs(sum_L_M2),
+              Math.abs(sum_R_M1), Math.abs(sum_R_M2),
+              M_end_long
+            );
+
+            newSpanData.push({
+              name: key.replace('-', ' - '),
+              L: L,
+              b1: {
+                width: (s1 && s1.width) || 120,
+                height: (s1 && s1.height) || 450,
+                dt: (s1 && s1.dt) || 70,
+                topNum: (s1 && s1.topNum) || 1,
+                topSize: (s1 && s1.topSize) || "D13",
+                botNum: (s1 && s1.botNum) || 1,
+                botSize: (s1 && s1.botSize) || "D13",
+                LQa: (s1 && s1.LQa) || 35.0,
+                sQa: (s1 && s1.sQa) || 50.0
+              },
+              b2: {
+                width: (s2 && s2.width) || 0,
+                height: (s2 && s2.height) || 0,
+                dt: (s2 && s2.dt) || 70,
+                topNum: (s2 && s2.topNum) || 0,
+                topSize: (s2 && s2.topSize) || "D13",
+                botNum: (s2 && s2.botNum) || 0,
+                botSize: (s2 && s2.botSize) || "D13",
+                LQa: (s2 && s2.LQa) || 0,
+                sQa: (s2 && s2.sQa) || 0
+              },
+              M_long: M_long,
+              M_end_long: M_end_long,
+              QL: QL,
+              maxM_mid: M_long,
+              maxM_end: maxM_end,
+              maxQ: maxQ,
+              short_L_Mend: `${sum_L_M1.toFixed(2)} / ${sum_L_M2.toFixed(2)}`,
+              short_L_Q: left_Q,
+              short_R_Mend: `${sum_R_M1.toFixed(2)} / ${sum_R_M2.toFixed(2)}`,
+              short_R_Q: right_Q,
+              hasOpening: (idx === 0), // 先頭スパンを開口検討の初期値に設定
+              op_width: ((s1 && s1.width) || 120) + ((s2 && s2.width) || 0),
+              op_height: 350,
+              op_dt: 70,
+              op_alpha: 1.0,
+              topNum: 2, topSize: "D16",
+              addBotNum: 1, addBotSize: "D16"
+            });
+          });
+
+      spanData = newSpanData;
+      statusEl.innerText = `✅ 解析反映    1.title} ＋ ${b2.title}（支    umnNodes.length}点・全${spanData.length}スパン自動抽出完了！）`;
+      render();
+      return;
+    }
+
+    statusEl.innerText = "⚠    の基礎梁テーブルを検    でした。直接入力をご利用ください。";
+  } catch (err) {
+    console.error("PDF Parse Error:", err);
+    statusEl.innerTe       `❌ 解析エラー: ${err.message || err}`;
+  }
+});
+  </script>
+</body>
+
+</html>

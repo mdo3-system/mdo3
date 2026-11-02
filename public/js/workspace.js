@@ -108,6 +108,16 @@
       planGroup: ["core_pack", "all", "free_trial", "single_jintsuko"]
     },
     {
+      id: "w_wall_kisohari_gassan",
+      name: "基礎梁合算・人通口検定",
+      category: "foundation",
+      frequent: false,
+      icon: "merge",
+      url: "/app/tools/w_wall_kisohari_gassan.html",
+      desc: "基礎梁応力・耐力合算計算書（人通口部 M中／M端分離検定）",
+      planGroup: ["all"]
+    },
+    {
       id: "youheki_calculator",
       name: "逆L型・逆T型擁壁の計算",
       category: "foundation",

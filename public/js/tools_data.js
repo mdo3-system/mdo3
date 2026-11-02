@@ -264,6 +264,35 @@ const MDO3_TOOLS_CATALOG = [
       "液状化層を考慮した動的相互作用解析"
     ]
   },
+  {
+    id: "w_wall_kisohari_gassan",
+    category: "foundation",
+    categoryName: "基礎・擁壁・地盤系",
+    sortOrder: 9,
+    title: "基礎梁 応力・許容耐力合算計算書（人通口部 M中／M端分離検定）",
+    summary: "並列基礎梁の長期・短期応力および許容耐力の合算算定。人通口部の中央M中・端部M端分離検定とせん断検定に対応。ARCHITREND ZERO PDF解析読み込み対応。",
+    icon: "merge",
+    url: "/app/tools/w_wall_kisohari_gassan.html",
+    videoUrl: "#video-w-wall-kisohari-gassan",
+    manualUrl: "#manual-w-wall-kisohari-gassan",
+    pricing: { individual: 490, categoryPack: 980, allAccess: 1980 },
+    standards: [
+      "建築基準法施行令 第82条 (許容応力度計算)",
+      "日本建築学会 木造軸組工法住宅の許容応力度設計 (グレー本)"
+    ],
+    canDo: [
+      "並列基礎梁の長期・短期曲げモーメントおよびせん断力の合算検定",
+      "人通口開口部における中央M中（下主筋元梁継承＋追加補強）と端部M端（上端開口補強筋）の分離検定",
+      "人通口短期せん断耐力検定（α係数調整対応）",
+      "スパン間可変の基礎梁寸法（幅b・成D）および上下主筋配筋設定",
+      "ARCHITREND ZERO 木造構造計算書PDFからの支点・応力・配筋自動抽出",
+      "A4縦1枚レイアウト印刷・JSONデータ保存復元"
+    ],
+    cannotDo: [
+      "開口補強筋の3次元鉄筋干渉自動チェック",
+      "3本以上の基礎梁の同時合算解析（2本の基礎梁合算に対応）"
+    ]
+  },
 
   // ==========================================
   // カテゴリ2: 木造軸組・接合部系 (7ツール) - 利用頻度順
