@@ -1,0 +1,1794 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ARCHITREND ZERO 実務マスター 受講生専用ダッシュボード | mdo3.com</title>
+  
+  <!-- Google Fonts & Material Symbols -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
+
+  <style>
+    :root {
+      --bg-dark: #090d16;
+      --bg-panel: #0f172a;
+      --bg-card: #1e293b;
+      --bg-card-hover: #273549;
+      --border-color: rgba(255, 255, 255, 0.08);
+      --border-accent: rgba(245, 158, 11, 0.4);
+      --accent-gold: #f59e0b;
+      --accent-gold-light: #fbbf24;
+      --accent-cyan: #06b6d4;
+      --accent-green: #10b981;
+      --accent-purple: #8b5cf6;
+      --accent-red: #ef4444;
+      --text-main: #f8fafc;
+      --text-sub: #94a3b8;
+      --text-muted: #64748b;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Noto Sans JP', 'Inter', sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* 上部ヘッダーバー（FHD画面向けに高さ52pxに最適化） */
+    .top-header {
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-badge {
+      background: linear-gradient(135deg, var(--accent-gold), #d97706);
+      color: #0f172a;
+      font-size: 0.7rem;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 4px;
+      letter-spacing: 0.5px;
+    }
+
+    .brand-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-size: 0.8rem;
+    }
+
+    .progress-pill {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 3px 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .progress-bar-wrap {
+      width: 80px;
+      height: 5px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-cyan), var(--accent-green));
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .user-pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-sub);
+    }
+
+    .user-pill strong {
+      color: var(--text-main);
+    }
+
+    .session-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.72rem;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: var(--accent-green);
+      padding: 2px 8px;
+      border-radius: 12px;
+    }
+
+    .session-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--accent-green);
+      border-radius: 50%;
+      animation: pulseDot 1.8s infinite;
+    }
+
+    @keyframes pulseDot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.8); }
+    }
+
+    /* メイングリッドコンテナ（FHD 1080pでスクロールを抑える設計） */
+    .dashboard-container {
+      display: grid;
+      grid-template-columns: 310px 1fr;
+      flex: 1;
+      height: calc(100vh - 52px);
+      overflow: hidden;
+    }
+
+    /* 左サイドバー: カリキュラムリスト（アコーディオン化） */
+    .sidebar {
+      background: var(--bg-panel);
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .sidebar-head {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .tab-pills {
+      display: flex;
+      gap: 4px;
+      background: rgba(0, 0, 0, 0.25);
+      padding: 3px;
+      border-radius: 6px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 6px 8px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: var(--text-sub);
+      background: transparent;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      transition: all 0.2s ease;
+    }
+
+    .tab-btn.active {
+      background: var(--bg-card);
+      color: #fff;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    .sidebar-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      padding: 0 4px;
+    }
+
+    .toggle-all-btn {
+      background: transparent;
+      border: none;
+      color: var(--accent-cyan);
+      font-size: 0.7rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .curriculum-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 8px 10px;
+    }
+
+    /* アコーディオン カテゴリーカード */
+    .category-group {
+      margin-bottom: 8px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      background: rgba(30, 41, 59, 0.3);
+    }
+
+    .category-header {
+      padding: 8px 10px;
+      background: rgba(15, 23, 42, 0.6);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      user-select: none;
+      transition: background 0.15s ease;
+    }
+
+    .category-header:hover {
+      background: rgba(30, 41, 59, 0.6);
+    }
+
+    .category-title-text {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .category-meta {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .category-badge {
+      font-size: 0.68rem;
+      font-family: 'Fira Code', monospace;
+      color: var(--text-muted);
+      background: rgba(0, 0, 0, 0.3);
+      padding: 1px 6px;
+      border-radius: 10px;
+    }
+
+    .category-chevron {
+      font-size: 16px;
+      color: var(--text-muted);
+      transition: transform 0.2s ease;
+    }
+
+    .category-group.open .category-chevron {
+      transform: rotate(180deg);
+    }
+
+    .category-body {
+      display: none;
+      padding: 4px 6px 6px;
+      background: rgba(15, 23, 42, 0.3);
+    }
+
+    .category-group.open .category-body {
+      display: block;
+    }
+
+    .step-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 8px;
+      border-radius: 4px;
+      margin-bottom: 2px;
+      cursor: pointer;
+      transition: all 0.12s ease;
+      background: transparent;
+      border: 1px solid transparent;
+      font-size: 0.78rem;
+    }
+
+    .step-item:hover {
+      background: var(--bg-card);
+    }
+
+    .step-item.active {
+      background: rgba(245, 158, 11, 0.15);
+      border-color: rgba(245, 158, 11, 0.4);
+      color: #fff;
+      font-weight: 700;
+    }
+
+    .step-check {
+      width: 16px;
+      height: 16px;
+      border-radius: 3px;
+      border: 1.5px solid var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: transparent;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .step-item.completed .step-check {
+      background: var(--accent-green);
+      border-color: var(--accent-green);
+      color: #0f172a;
+    }
+
+    .step-name {
+      flex: 1;
+      line-height: 1.3;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .step-duration {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      font-family: 'Fira Code', monospace;
+      flex-shrink: 0;
+    }
+
+    .step-item.active .step-duration {
+      color: var(--accent-gold);
+    }
+
+    /* 右メインコンテンツエリア（FHD 1080p最適化パディング） */
+    .main-stage {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      overflow-y: auto;
+      background: var(--bg-dark);
+      padding: 16px 20px;
+      gap: 16px;
+    }
+
+    /* プレイヤーカード（16:9を保ちつつ高さを抑える） */
+    .player-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.5);
+    }
+
+    .video-viewport-wrap {
+      position: relative;
+      background: #000;
+      aspect-ratio: 16 / 9;
+      max-height: 440px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    /* 字幕オーバーレイバー */
+    .subtitle-bar {
+      position: absolute;
+      bottom: 48px;
+      left: 4%;
+      right: 4%;
+      text-align: center;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .subtitle-text {
+      display: inline-block;
+      background: rgba(0, 0, 0, 0.85);
+      color: #fff;
+      font-size: 0.95rem;
+      font-weight: 600;
+      line-height: 1.45;
+      padding: 5px 14px;
+      border-radius: 5px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+      max-width: 90%;
+    }
+
+    /* プレイヤー下部メタバー */
+    .player-meta-bar {
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--border-color);
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    .current-step-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--accent-gold);
+      background: rgba(245, 158, 11, 0.12);
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-bottom: 2px;
+    }
+
+    .current-step-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .player-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-action {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.15s ease;
+    }
+
+    .btn-action:hover {
+      background: var(--bg-card-hover);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-action.btn-complete {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: #fff;
+      border: none;
+    }
+
+    /* 3連実務リファレンスパネル */
+    .ref-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .ref-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .ref-card-head {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .ref-card-body {
+      font-size: 0.8rem;
+      color: var(--text-sub);
+      line-height: 1.55;
+      flex: 1;
+    }
+
+    .ref-card-body strong {
+      color: var(--text-main);
+    }
+
+    .ref-link-btn {
+      margin-top: 4px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--accent-cyan);
+      text-decoration: none;
+      padding: 5px 10px;
+      background: rgba(6, 182, 212, 0.1);
+      border: 1px solid rgba(6, 182, 212, 0.25);
+      border-radius: 4px;
+      transition: all 0.15s ease;
+      width: fit-content;
+    }
+
+    .ref-link-btn:hover {
+      background: rgba(6, 182, 212, 0.2);
+      border-color: var(--accent-cyan);
+    }
+
+    /* 下部：CAD連携 ＆ 質疑応答スレッド（講師回答＋スクショ添付＋クリック拡大） */
+    .bottom-grid {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 12px;
+    }
+
+    .integration-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .integration-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .integration-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* 質疑応答スレッド */
+    .qa-thread-container {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      height: 250px; /* FHD向けに高さ完全固定 */
+    }
+
+    /* Q&A 上部タブバー */
+    .qa-tabs-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .qa-tab-item {
+      padding: 5px 10px;
+      background: rgba(30, 41, 59, 0.5);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      font-size: 0.74rem;
+      color: var(--text-sub);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+      user-select: none;
+    }
+
+    .qa-tab-item:hover {
+      background: var(--bg-card);
+      color: #fff;
+    }
+
+    .qa-tab-item.active {
+      background: rgba(245, 158, 11, 0.15);
+      border-color: rgba(245, 158, 11, 0.5);
+      color: #fff;
+      font-weight: 700;
+    }
+
+    .qa-tab-badge {
+      font-size: 0.65rem;
+      padding: 1px 5px;
+      border-radius: 10px;
+      background: rgba(16, 185, 129, 0.2);
+      color: var(--accent-green);
+    }
+
+    .qa-tab-add-btn {
+      padding: 5px 8px;
+      background: transparent;
+      border: 1px dashed var(--border-color);
+      border-radius: 4px;
+      font-size: 0.72rem;
+      color: var(--accent-cyan);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+    }
+
+    .qa-tab-add-btn:hover {
+      border-color: var(--accent-cyan);
+      background: rgba(6, 182, 212, 0.1);
+    }
+
+    /* タブ内コンテンツ表示カード */
+    .qa-tab-content-card {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding-right: 4px;
+    }
+
+    .qa-bubble {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 8px 12px;
+      font-size: 0.78rem;
+    }
+
+    .qa-bubble.instructor {
+      background: rgba(30, 41, 59, 0.75);
+      border-color: rgba(245, 158, 11, 0.35);
+    }
+
+    .qa-bubble-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 4px;
+      font-size: 0.72rem;
+    }
+
+    .qa-bubble-sender {
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .qa-thread-container {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .qa-thread-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-height: 240px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .qa-msg {
+      display: flex;
+      gap: 10px;
+      font-size: 0.8rem;
+    }
+
+    .qa-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .qa-msg.student .qa-avatar {
+      background: rgba(6, 182, 212, 0.2);
+      color: var(--accent-cyan);
+      border: 1px solid rgba(6, 182, 212, 0.4);
+    }
+
+    .qa-msg.instructor .qa-avatar {
+      background: rgba(245, 158, 11, 0.2);
+      color: var(--accent-gold);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+    }
+
+    .qa-body {
+      flex: 1;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 8px 12px;
+    }
+
+    .qa-msg.instructor .qa-body {
+      background: rgba(30, 41, 59, 0.7);
+      border-color: rgba(245, 158, 11, 0.3);
+    }
+
+    .qa-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 4px;
+    }
+
+    .qa-sender-name {
+      font-weight: 700;
+      color: #fff;
+      font-size: 0.75rem;
+    }
+
+    .qa-time {
+      color: var(--text-muted);
+      font-size: 0.68rem;
+      font-family: 'Fira Code', monospace;
+    }
+
+    .qa-text {
+      color: var(--text-sub);
+      line-height: 1.5;
+    }
+
+    .qa-text strong {
+      color: var(--text-main);
+    }
+
+    /* 添付スクショ画像サムネイル（クリックで拡大） */
+    .qa-attachment-wrap {
+      margin-top: 8px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .qa-img-thumb {
+      width: 140px;
+      height: 85px;
+      object-fit: cover;
+      border-radius: 4px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      cursor: zoom-in;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+      background: #000;
+    }
+
+    .qa-img-thumb:hover {
+      transform: scale(1.03);
+      border-color: var(--accent-gold);
+    }
+
+    .qa-img-caption {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    .qa-img-caption span {
+      display: block;
+      color: var(--accent-gold-light);
+      font-weight: 600;
+    }
+
+    /* 質疑投稿フォーム */
+    .qa-input-box {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding-top: 8px;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .qa-textarea-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .qa-textarea {
+      flex: 1;
+      height: 48px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 6px 10px;
+      color: #fff;
+      font-size: 0.78rem;
+      font-family: inherit;
+      resize: none;
+    }
+
+    .qa-textarea:focus {
+      outline: none;
+      border-color: var(--accent-gold);
+    }
+
+    .qa-action-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .btn-attach {
+      background: transparent;
+      border: 1px dashed var(--border-color);
+      color: var(--text-sub);
+      font-size: 0.72rem;
+      padding: 4px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-attach:hover {
+      border-color: var(--accent-gold);
+      color: var(--accent-gold);
+    }
+
+    /* 高解像度画像拡大モーダル (Lightbox) */
+    .lightbox-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 30px;
+      cursor: zoom-out;
+    }
+
+    .lightbox-content {
+      position: relative;
+      max-width: 90vw;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: default;
+    }
+
+    .lightbox-img {
+      max-width: 100%;
+      max-height: 80vh;
+      object-fit: contain;
+      border-radius: var(--radius-sm);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .lightbox-title {
+      margin-top: 10px;
+      font-size: 0.85rem;
+      color: #fff;
+      font-weight: 600;
+      background: rgba(15, 23, 42, 0.85);
+      padding: 4px 14px;
+      border-radius: 20px;
+      border: 1px solid var(--border-color);
+    }
+
+    .lightbox-close-btn {
+      position: absolute;
+      top: -36px;
+      right: 0;
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-size: 28px;
+      cursor: pointer;
+    }
+
+    /* 同時接続遮断モーダル */
+    .conflict-modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .conflict-modal {
+      background: #111827;
+      border: 2px solid var(--accent-red);
+      border-radius: var(--radius-lg);
+      max-width: 440px;
+      width: 100%;
+      padding: 24px;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(239, 68, 68, 0.25);
+    }
+
+    .conflict-icon {
+      font-size: 44px;
+      color: var(--accent-red);
+      margin-bottom: 10px;
+    }
+
+    .conflict-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+
+    .conflict-desc {
+      font-size: 0.82rem;
+      color: var(--text-sub);
+      line-height: 1.55;
+      margin-bottom: 18px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 上部ヘッダーバー -->
+  <header class="top-header">
+    <div class="brand-wrap">
+      <span class="brand-badge">実務マスター OJT</span>
+      <span class="brand-title">ARCHITREND ZERO 構造計算自社内製化 ポータル</span>
+    </div>
+
+    <div class="header-right">
+      <!-- 習得進捗インジケーター -->
+      <div class="progress-pill">
+        <span class="material-symbols-outlined" style="font-size:15px; color:var(--accent-gold);">emoji_events</span>
+        <span style="font-size:0.75rem; font-weight:700;" id="progressLabel">進捗: 1 / 44 (2%)</span>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-fill" id="progressBar"></div>
+        </div>
+      </div>
+
+      <!-- ユーザー情報 -->
+      <div class="user-pill">
+        <span class="material-symbols-outlined" style="font-size:16px;">account_circle</span>
+        <span>受講生: <strong id="userName">設計者 様</strong></span>
+      </div>
+
+      <!-- 1端末アクティブ接続バッジ -->
+      <div class="session-badge" title="1申し込みにつき1端末限定でセキュア接続中">
+        <span class="session-dot"></span>
+        <span>単独接続中 (同時再生防止 稼働中)</span>
+      </div>
+
+      <!-- 同時アクセス検知テスト用ボタン -->
+      <button class="btn-action" style="font-size:0.7rem; padding:3px 7px; border-color:var(--accent-red);" onclick="triggerConflictSimulation()">
+        <span class="material-symbols-outlined" style="font-size:13px; color:var(--accent-red);">phonelink_erase</span>
+        他端末ログイン検知シミュレート
+      </button>
+    </div>
+  </header>
+
+  <!-- メインダッシュボード分割画面 -->
+  <div class="dashboard-container">
+
+    <!-- 左サイドバー: カリキュラムステップ一覧（アコーディオン化） -->
+    <aside class="sidebar">
+      <div class="sidebar-head">
+        <div class="tab-pills">
+          <button class="tab-btn active" id="tabBasic" onclick="switchTab('basic')">
+            <span class="material-symbols-outlined" style="font-size:15px;">format_list_numbered</span>
+            基本 44ステップ
+          </button>
+          <button class="tab-btn" id="tabAdvanced" onclick="switchTab('advanced')">
+            <span class="material-symbols-outlined" style="font-size:15px; color:var(--accent-gold);">star</span>
+            別枠 アドバンス
+          </button>
+        </div>
+        <div class="sidebar-controls">
+          <span>全6章 アコーディオン展開</span>
+          <button class="toggle-all-btn" onclick="toggleAllAccordions()">
+            <span class="material-symbols-outlined" style="font-size:13px;" id="toggleAllIcon">unfold_more</span>
+            <span id="toggleAllLabel">すべて展開</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ステップ一覧スクロール領域 -->
+      <div class="curriculum-list" id="curriculumList">
+        <!-- JSで動的アコーディオン生成 -->
+      </div>
+    </aside>
+
+    <!-- 右メイン学習ステージ -->
+    <main class="main-stage">
+
+      <!-- 1. HTML5動画プレイヤーエリア -->
+      <div class="player-card">
+        <div class="video-viewport-wrap" id="videoWrap">
+          <video id="mainVideo" controls playsinline poster="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='450' viewBox='0 0 800 450'><rect width='800' height='450' fill='%230f172a'/><text x='50%25' y='50%25' font-size='20' fill='%2394a3b8' text-anchor='middle' font-family='sans-serif'>ARCHITREND ZERO 操作解説実況動画（各5分以内）</text></svg>">
+            <source src="" type="video/mp4" id="videoSource">
+            お使いのブラウザは動画再生に対応していません。
+          </video>
+
+          <!-- 自動字幕オーバーレイバー -->
+          <div class="subtitle-bar" id="subBar">
+            <div class="subtitle-text" id="subText">【解説】伏せ方の基本とグリッド設定から、アーキトレンドZEROの入力設定を順を追って進めていきます。</div>
+          </div>
+        </div>
+
+        <!-- プレイヤー下部メタバー -->
+        <div class="player-meta-bar">
+          <div>
+            <div class="current-step-badge" id="currentStepBadge">STEP 01 / 44</div>
+            <h1 class="current-step-title" id="currentStepTitle">① 伏せ方の基本 ＆ グリッド設定</h1>
+          </div>
+          <div class="player-actions">
+            <button class="btn-action" onclick="changePlaybackSpeed()">
+              <span class="material-symbols-outlined" style="font-size:15px;">speed</span>
+              <span id="speedLabel">1.0x</span>
+            </button>
+            <button class="btn-action btn-complete" id="btnToggleComplete" onclick="toggleCurrentComplete()">
+              <span class="material-symbols-outlined" style="font-size:15px;">check_circle</span>
+              <span id="completeLabel">このステップを完了にする</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. 3連実務リファレンスパネル（グレー本・エラー解説・mdo3ツール） -->
+      <div class="ref-grid">
+        <!-- カード1: グレー本2025 参照箇所 -->
+        <div class="ref-card">
+          <div class="ref-card-head">
+            <span class="material-symbols-outlined" style="color:var(--accent-purple); font-size:18px;">menu_book</span>
+            グレー本2025 基準根拠
+          </div>
+          <div class="ref-card-body" id="refGrayBook"></div>
+        </div>
+
+        <!-- カード2: よく出るエラーと対策 -->
+        <div class="ref-card">
+          <div class="ref-card-head">
+            <span class="material-symbols-outlined" style="color:var(--accent-gold); font-size:18px;">warning</span>
+            頻出エラー ＆ チェックポイント
+          </div>
+          <div class="ref-card-body" id="refErrorTip"></div>
+        </div>
+
+        <!-- カード3: mdo3 直通補助ツール -->
+        <div class="ref-card">
+          <div class="ref-card-head">
+            <span class="material-symbols-outlined" style="color:var(--accent-cyan); font-size:18px;">build</span>
+            使用する mdo3 補助計算ツール
+          </div>
+          <div class="ref-card-body" id="refTool"></div>
+        </div>
+      </div>
+
+      <!-- 3. 下部：福井コンピュータ ONE 連携 ＆ 質疑応答スレッド（講師回答・スクショ拡大機能付き） -->
+      <div class="bottom-grid">
+        <!-- 福井コンピュータ ONE 連携カード -->
+        <div class="integration-card">
+          <div class="integration-head">
+            <div class="integration-title">
+              <span class="material-symbols-outlined" style="color:var(--accent-cyan); font-size:18px;">cloud_done</span>
+              CADデータ連携 (福井コンピュータ ONE)
+            </div>
+            <span style="font-size:0.7rem; color:var(--text-muted);">クラウド共有</span>
+          </div>
+          <p style="font-size:0.78rem; color:var(--text-sub); line-height:1.55; margin-bottom:10px;">
+            受講物件のアーキトレンドZERO物件データ（.bld/設定ファイル）は、福井コンピュータの「ONE」クラウドにて直接授受します。
+          </p>
+          <a href="https://one.fukuicompu.co.jp/" target="_blank" rel="noopener" class="ref-link-btn" style="color:var(--accent-gold); border-color:var(--accent-gold); background:rgba(245,158,11,0.1);">
+            <span class="material-symbols-outlined" style="font-size:15px;">open_in_new</span>
+            ONE 物件フォルダを開く
+          </a>
+        </div>
+
+        <!-- ステップ別 実務Q&A・講師指導ノート（上部タブ切り替え式） -->
+        <div class="qa-thread-container">
+          <div class="integration-head" style="margin-bottom:6px;">
+            <div class="integration-title">
+              <span class="material-symbols-outlined" style="color:var(--accent-green); font-size:18px;">help_center</span>
+              このステップの指導メモ ＆ 個別Q&A
+            </div>
+            <span style="font-size:0.68rem; color:var(--text-muted);">タブ切り替えで質問・回答を閲覧・追加</span>
+          </div>
+
+          <!-- 上部 Q&A トピックタブバー -->
+          <div class="qa-tabs-bar" id="qaTabsBar">
+            <!-- JSで動的生成 -->
+          </div>
+
+          <!-- タブコンテンツ表示領域（高さ固定で縦に伸びない設計） -->
+          <div class="qa-tab-content-card" id="qaTabContent">
+            <!-- JSで動的生成 -->
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- 高解像度画像拡大モーダル (Lightbox) -->
+  <div class="lightbox-overlay" id="lightboxModal" onclick="closeLightbox()">
+    <div class="lightbox-content" onclick="event.stopPropagation()">
+      <button class="lightbox-close-btn" onclick="closeLightbox()">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+      <img src="" alt="拡大図面・スクショ" class="lightbox-img" id="lightboxImg">
+      <div class="lightbox-title" id="lightboxCaption">グレー本2025 該当図面・キャプチャ拡大</div>
+    </div>
+  </div>
+
+  <!-- 同時ログイン衝突（2人同時再生遮断）モーダル -->
+  <div class="conflict-modal-overlay" id="conflictModal">
+    <div class="conflict-modal">
+      <span class="material-symbols-outlined conflict-icon">phonelink_erase</span>
+      <h3 class="conflict-title">別の端末でログインされました</h3>
+      <p class="conflict-desc">
+        本プログラムは、設計者ご本人の1申込みにつき1端末限定の受講規約となっております。<br>
+        他のPC・ブラウザからログインされたため、本画面での再生およびセッションを停止いたしました。
+      </p>
+      <button class="btn-action btn-complete" style="width:100%; justify-content:center; padding:10px;" onclick="resumeSession()">
+        <span class="material-symbols-outlined">refresh</span>
+        この端末で再ログインして再開する
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // ==========================================
+    // カリキュラムデータ定義（全44ステップ ＋ アドバンス）
+    // ==========================================
+    const CURRICULUM_DATA = {
+      basic: [
+        {
+          catId: "cat_1",
+          cat: "第1章：基本計画・グリッド・インポート",
+          steps: [
+            {
+              id: 1, title: "① 伏せ方の基本 ＆ グリッド設定", dur: "4:30",
+              gray: "第1章 構造計画の基本方針・グリッド計画（P.18〜P.28）<br>・鉛直荷重と水平力の明確な伝達ルートの確保<br>・通し柱・管柱の配置基準と基本構造グリッド（910mm / 1000mm）の設定",
+              err: "・梁の掛け違いや支点のない架構を作ってしまう<br>・意匠グリッドと構造モジュール（芯ズレ）による部材認識エラー",
+              tool: { name: "木造ベタ基礎 梁断面図作図＆dt算定", url: "/tools/foundation_cad.html" }
+            },
+            {
+              id: 2, title: "② 構造計算プログラムへ読込", dur: "3:45",
+              gray: "第2章 計算モデル化の前提（P.42〜P.46）<br>・意匠CAD図面と構造骨組モデルの整合性チェック",
+              err: "・壁芯・柱芯のグリッドずれによる部材認識エラー<br>・階高・下がり壁・吹き抜けの階層認識ミス",
+              tool: { name: "AZ斜め壁 Web-CAD", url: "/tools/az_skew_wall.html" }
+            }
+          ]
+        },
+        {
+          catId: "cat_2",
+          cat: "第2章：構造設計プログラム初期設定",
+          steps: [
+            {
+              id: 3, title: "③ 構造設計プログラムの設定 - 物件情報", dur: "3:20",
+              gray: "第2章 第1節 一般事項・地域定数（P.50〜P.55）<br>・多雪・一般区域区分、基準風速V0、地表面粗度区分",
+              err: "・建設地の市区町村コードと基準風速の不整合<br>・多雪区域フラグのチェック漏れ（積雪考慮の欠落）",
+              tool: { name: "設計用地域定数 自動検索", url: "/tools/dosha_saigai.html" }
+            },
+            {
+              id: 4, title: "④ 構造設計プログラムの設定 - 設計方針", dur: "4:15",
+              gray: "第2章 ルート1・許容応力度計算の選択基準（P.60〜P.68）<br>・偏心率・剛性率・耐震等級（等級2/3）目標の設定",
+              err: "・耐震等級3計算時の1.5倍割増し係数の指定ミス<br>・水平構面検定の省略設定ミス",
+              tool: { name: "Z低減係数算定ツール", url: "/tools/zi.html" }
+            },
+            {
+              id: 5, title: "⑤ 構造設計プログラムの設定 - チェックリスト", dur: "3:50",
+              gray: "第1章 設計フローと確認申請提出前チェック（P.30〜P.35）",
+              err: "・特定行政庁独自のローカルルール（基礎深さ・凍結深度等）の見落とし",
+              tool: { name: "全30計算ツール ポータル", url: "/#toolsCatalog" }
+            },
+            {
+              id: 6, title: "⑥ 構造設計プログラムの設定 - 接合部仕様", dur: "4:40",
+              gray: "第3章 第4節 接合部の設計基準（P.210〜P.225）<br>・N値計算または許容応力度設計法による金物選定方針",
+              err: "・告示1460号表と計算金物の混同<br>・柱頭柱脚の引抜耐力不足",
+              tool: { name: "めり込み補強計算", url: "/tools/merikomi.html" }
+            },
+            {
+              id: 7, title: "⑦ 構造設計プログラムの設定 - 仕様共通部材", dur: "4:10",
+              gray: "第3章 第1節 木材の基準強度・樹種区分（P.90〜P.105）<br>・E105-F300等の材料等級・ヤング係数と断面寸法",
+              err: "・プレカット業者の標準在庫材と指定樹種の不一致<br>・米松・杉・集成材の許容応力度差によるNG",
+              tool: { name: "めり込み補強計算", url: "/tools/merikomi.html" }
+            },
+            {
+              id: 8, title: "⑧ 構造設計プログラムの設定 - 固定荷重・積載荷重", dur: "4:50",
+              gray: "第2章 第2節 荷重および外力（P.70〜P.85）<br>・屋根仕上げ材自重（瓦/ガルバ/コロニアル）、太陽光パネル加算",
+              err: "・PV（太陽光発電）パネル自重（約15〜20kg/㎡）の計上漏れ<br>・外壁サイディング厚・モルタル塗り厚の過小評価",
+              tool: { name: "屋根構面計算ツール", url: "/tools/roof_calc.html" }
+            },
+            {
+              id: 9, title: "⑨ 構造設計プログラムの設定 - 外力設定", dur: "4:00",
+              gray: "第2章 地震力・風圧力の算定（P.86〜P.98）<br>・地震層せん断力係数Ci、見付面積あたりの風圧荷重",
+              err: "・風圧力見付面積のパラペット・バルコニー手すり分の漏れ",
+              tool: { name: "設計用地域定数 自動検索", url: "/tools/dosha_saigai.html" }
+            },
+            {
+              id: 10, title: "⑩ 構造設計プログラムの設定 - 計算条件", dur: "3:30",
+              gray: "第2章 解析オプションと許容応力度の割増し条件（P.100〜P.108）",
+              err: "・短期荷重時（積雪＋地震）の組合せチェック漏れ",
+              tool: { name: "Z低減係数算定ツール", url: "/tools/zi.html" }
+            },
+            {
+              id: 11, title: "⑪ 構造設計プログラムの設定 - 条件", dur: "3:15",
+              gray: "第2章 たわみ制限値・クリープ変形の許容限界（P.110〜P.114）",
+              err: "・梁たわみ限界1/300と1/250の指定不一致",
+              tool: { name: "片持ち梁計算ツール", url: "/tools/cantilever_beam_no_column.html" }
+            },
+            {
+              id: 12, title: "⑫ 構造設計プログラムの設定 - 追加使用部材・グリッド", dur: "3:40",
+              gray: "第1章 構造グリッドと特記部材の指定（P.36〜P.40）",
+              err: "・登り梁・タイバー・特殊集成材断面の登録漏れ",
+              tool: { name: "木造ベタ基礎 梁断面図作図＆dt算定", url: "/tools/foundation_cad.html" }
+            }
+          ]
+        },
+        {
+          catId: "cat_3",
+          cat: "第3章：外観・荷重・構面モデリング",
+          steps: [
+            { id: 13, title: "⑬ 外観・見附図", dur: "4:20", gray: "第2章 風圧力見付面積の算定基準（P.88〜P.92）", err: "・立面形状の凹凸反映漏れによる風荷重の過小計算", tool: { name: "AZ斜め壁 Web-CAD", url: "/tools/az_skew_wall.html" } },
+            { id: 14, title: "⑭ 荷重", dur: "4:10", gray: "第2章 特殊荷重（ピアノ・小屋裏収納・バルコニー水勾配）の配置", err: "・小屋裏収納（積載荷重加算）の配置抜け", tool: { name: "基本の床構面 (合板床)", url: "/tools/shosai_yuka_kihon.html" } },
+            { id: 15, title: "⑮ 水平構面", dur: "4:50", gray: "第3章 第3節 水平構面の設計（P.180〜P.205）", err: "・吹抜け周囲の水平構面倍率不足・火打金物不足", tool: { name: "基本の屋根構面 (垂木)", url: "/tools/shosai_tarukiyane_kihon.html" } },
+            { id: 16, title: "⑯ 鉛直構面（耐力壁）", dur: "4:40", gray: "第3章 第2節 耐力壁の設計・壁倍率算定（P.120〜P.160）", err: "・耐力壁の有効壁長（600mm未満の除外）判定エラー", tool: { name: "真壁・大壁 詳細壁倍率計算", url: "/tools/shosai_okabe.html" } },
+            { id: 17, title: "⑰ 根太荷重方向", dur: "3:30", gray: "第2章 荷重分配とスラブ・根太の荷重伝達方向", err: "・根太受け梁への荷重集中見落とし", tool: { name: "根太計算ツール", url: "/tools/neta.html" } }
+          ]
+        },
+        {
+          catId: "cat_4",
+          cat: "第4章：解析実行とエラー解消マスター",
+          steps: [
+            { id: 18, title: "⑱ 計算", dur: "3:00", gray: "第2章 応力解析の実行とエラーリスト確認手順", err: "・モデル不安定（機構化）による解析ストップ", tool: { name: "門型フレーム剛性計算", url: "/tools/rigid_frame_R.html" } },
+            { id: 19, title: "⑲ 横架材のエラー解消・ツールZI+垂木他", dur: "5:00", gray: "第3章 梁・胴差の曲げ・せん断・たわみ検定", err: "・スパン4m超の梁成不足（105×240→105×300等の選定）", tool: { name: "Z低減係数算定ツール", url: "/tools/zi.html" } },
+            { id: 20, title: "⑳ 鉛直構面（耐力壁）エラーの解消", dur: "4:45", gray: "第3章 耐力壁の強度比検定・偏心率0.15以下への調整", err: "・偏心率オーバー（重心と剛心の乖離是正手順）", tool: { name: "真壁詳細計算", url: "/tools/shosai_shinkabe.html" } },
+            { id: 21, title: "㉑ 水平構面エラーの解消・屋根構面ツール", dur: "4:30", gray: "第3章 吹抜け・勾配屋根の面内せん断力検定", err: "・登り淀・母屋直貼り構面の倍率不足", tool: { name: "基本の屋根構面 (直貼り)", url: "/tools/shosai_yanejikabari_kihon.html" } },
+            { id: 22, title: "㉒ 横架材接合部の確認・エラーの解消", dur: "4:15", gray: "第3章 仕口・継手の耐力検定と金物補強", err: "・大梁に架かる小梁の羽子板ボルト耐力不足", tool: { name: "釘配列諸定数算定", url: "/tools/kugihairetsushoteisu.html" } }
+          ]
+        },
+        {
+          catId: "cat_5",
+          cat: "第5章：基礎設計・人通口・再計算",
+          steps: [
+            { id: 23, title: "㉓ アンカーボルトの設置", dur: "3:40", gray: "第4章 第3節 ホールダウン金物・アンカーボルトの配置基準", err: "・耐力壁端部アンカーボルトの埋込み長さ・へりあき不足", tool: { name: "木造ベタ基礎 梁断面図作図＆dt算定", url: "/tools/foundation_cad.html" } },
+            { id: 24, title: "㉔ 基礎梁の設置", dur: "4:10", gray: "第4章 ベタ基礎梁の配筋・幅・成の決定基準（P.240〜P.260）", err: "・立ち上がり幅120mm/150mmの選定ミス", tool: { name: "基礎梁応力・許容耐力合算計算書", url: "/tools/w_wall_kisohari_gassan.html" } },
+            { id: 25, title: "㉕ スラブの設置", dur: "3:50", gray: "第4章 底盤スラブの曲げモーメント・せん断力検定", err: "・スラブ主筋ピッチ@200と@150の判定", tool: { name: "釣合鉄筋比算定ツール", url: "/tools/balanced_rebar_ratio.html" } },
+            { id: 26, title: "㉖ 基礎の計算・エラーの解消", dur: "4:50", gray: "第4章 地盤反力度・基礎梁応力の検定", err: "・地盤許容応力度（30kN/㎡等）オーバーによる接地圧NG", tool: { name: "地盤支持力・擁壁計算", url: "/tools/youheki_calculator.html" } },
+            { id: 27, title: "㉗ 人通口の設置", dur: "4:00", gray: "第4章 人通口開口部による耐力欠損の評価", err: "・耐力壁直下の開口配置（原則不可箇所の回避）", tool: { name: "人通口補強計算", url: "/tools/jintsuko.html" } },
+            { id: 28, title: "㉘ 人通口補強ツール", dur: "4:30", gray: "第4章 開口補強筋（斜め筋・増打梁）の設計算定", err: "・せん断補強筋（スターラップ）不足の解消", tool: { name: "基礎梁合算（人通口M中/M端分離検定）", url: "/tools/w_wall_kisohari_gassan.html" } },
+            { id: 29, title: "㉙ 再計算してエラーがないことを確認、めり込みエラーはツール利用", dur: "4:20", gray: "第3章 柱のめり込み耐力検定と添木・座金補強", err: "・管柱・通し柱の支圧応力度オーバー（めり込みNG）", tool: { name: "めり込み補強計算", url: "/tools/merikomi.html" } }
+          ]
+        },
+        {
+          catId: "cat_6",
+          cat: "第6章：構造図作図・仕上げ・凡例",
+          steps: [
+            { id: 30, title: "㉚ 構造図作図・読込 - 1F", dur: "3:40", gray: "第5章 構造図面の作成要領・整合性基準", err: "・意匠平面図と柱・壁位置の食い違い", tool: { name: "スマート案内図作図 (MAP)", url: "/tools/map_editor.html" } },
+            { id: 31, title: "㉛ 構造図作図・読込 - 2F", dur: "3:30", gray: "第5章 2階床伏図の表現と継手位置の図示", err: "・梁継手（プレカット継手位置）の図示漏れ", tool: { name: "基本の床構面 (合板床)", url: "/tools/shosai_yuka_kihon.html" } },
+            { id: 32, title: "㉜ 構造図作図・読込 - 3F", dur: "3:10", gray: "第5章 3階建て特有の柱頭柱脚金物図示", err: "・3階柱頭引抜力金物の図示抜け", tool: { name: "柱の曲げ応力検定", url: "/tools/hasira_mage.html" } },
+            { id: 33, title: "㉝ 構造図作図・読込 - 小屋", dur: "3:20", gray: "第5章 小屋伏図・小屋束・雲筋交いの表現", err: "・振れ止め・小屋ブレースの記載漏れ", tool: { name: "基本の屋根構面 (垂木)", url: "/tools/shosai_tarukiyane_kihon.html" } },
+            { id: 34, title: "㉞ 柱高さ補正", dur: "3:00", gray: "第5章 下がり床・土間・ポーチ柱の特殊高さ整合", err: "・土間柱の座屈長さ指定ミス", tool: { name: "柱の曲げ応力検定", url: "/tools/hasira_mage.html" } },
+            { id: 35, title: "㉟ 基礎伏図作図", dur: "4:00", gray: "第4章 基礎伏図・アンカーボルト位置・人通口記号の明記", err: "・アンカーボルト記号凡例との不整合", tool: { name: "木造ベタ基礎 梁断面図作図＆dt算定", url: "/tools/foundation_cad.html" } },
+            { id: 36, title: "㊱ 軸組図作図", dur: "4:15", gray: "第5章 通り別軸組図と筋交い配置・金物記号", err: "・筋交い向き（片筋交い・たすき掛け）の不一致", tool: { name: "はしご計算ツール", url: "/tools/hashigo.html" } },
+            { id: 37, title: "㊲ 構造標準図", dur: "3:50", gray: "第5章 特記仕様書・コンクリート呼び強度・鉄筋規格", err: "・SD295AとFc21の特記漏れ", tool: { name: "全30計算ツール ポータル", url: "/#toolsCatalog" } },
+            { id: 38, title: "㊳ 基礎伏図凡例他", dur: "3:20", gray: "第4章 基礎伏図の記号凡例・配筋リストの整理", err: "・ベース配筋記号の記載ミス", tool: { name: "基礎梁応力・許容耐力合算計算書", url: "/tools/w_wall_kisohari_gassan.html" } },
+            { id: 39, title: "㊴ 基礎断面図", dur: "4:10", gray: "第4章 標準配筋断面図（外周部・内部梁・人通口部）", err: "・かぶり厚さ（土に接する部分40mm/60mm）の図示ミス", tool: { name: "木造ベタ基礎 梁断面図作図＆dt算定", url: "/tools/foundation_cad.html" } },
+            { id: 40, title: "㊵ 1F床伏図凡例", dur: "3:00", gray: "第5章 樹種・等級・金物記号表の配置", err: "・使用釘（N50/N75/CN50）の凡例漏れ", tool: { name: "釘配列諸定数算定", url: "/tools/kugihairetsushoteisu.html" } },
+            { id: 41, title: "㊷ 2F～3F床伏図、小屋伏図、母屋・屋根伏図", dur: "4:30", gray: "第5章 各階床伏・屋根伏の図面セットまとめ", err: "・シートレイヤ間の通り芯ずれ", tool: { name: "基本の屋根構面 (直貼り)", url: "/tools/shosai_yanejikabari_kihon.html" } },
+            { id: 42, title: "㊸ 凡例コピー+貼り付け", dur: "2:50", gray: "第5章 審査機関が求める標準特記事項の一括配置", err: "・木材含水率（20%以下）特記の欠落", tool: { name: "全30計算ツール ポータル", url: "/#toolsCatalog" } },
+            { id: 43, title: "㊹ 軸組図（最終審査提出セット完成）", dur: "4:00", gray: "第5章 確認申請・審査機関提出用図書の最終バインド", err: "・計算書と構造図面の部材符号不一致（審査で最も多い指摘）", tool: { name: "スマート案内図作図 (MAP)", url: "/tools/map_editor.html" } }
+          ]
+        }
+      ],
+      advanced: [
+        {
+          catId: "cat_adv",
+          cat: "⭐ 特殊・アドバンス実践動画",
+          steps: [
+            {
+              id: 101, title: "★ 耐風梁の設計とアーキトレンド入力", dur: "5:50",
+              gray: "第3章 大開口部（吹抜け・大窓）の耐風梁設計基準",
+              err: "・風圧力による梁の弱軸曲げ・たわみ検定オーバーの解消",
+              tool: { name: "梁上柱・片持ち梁計算", url: "/tools/hariue.html" }
+            },
+            {
+              id: 102, title: "★ 基礎隅部・出隅の応力集中補強", dur: "5:20",
+              gray: "第4章 出隅部・入隅部の地盤反力とコーナー配筋補強",
+              err: "・出隅直下の浮き上がり・接地圧集中の補正テクニック",
+              tool: { name: "片持ち基礎梁計算", url: "/tools/cantilever_foundation_beam.html" }
+            },
+            {
+              id: 103, title: "★ 不整形スラブ・段差スラブの分割算定", dur: "6:10",
+              gray: "第4章 スキップフロア・深基礎・段差スラブの応力伝達",
+              err: "・スラブ段差部での応力遮断モデル化エラー",
+              tool: { name: "釣合鉄筋比算定ツール", url: "/tools/balanced_rebar_ratio.html" }
+            },
+            {
+              id: 104, title: "★ スキップフロア・段差床の水平構面置換", dur: "6:00",
+              gray: "第3章 床段差部における剛床仮定の成立限界と斜めブレース",
+              err: "・段差部耐力壁の高さ補正と吹抜け扱いエラー",
+              tool: { name: "基本の床構面 (合板床)", url: "/tools/shosai_yuka_kihon.html" }
+            }
+          ]
+        }
+      ]
+    };
+
+    // ==========================================
+    // アプリケーション状態管理
+    // ==========================================
+    let currentTab = "basic";
+    let currentStep = CURRICULUM_DATA.basic[0].steps[0];
+    let completedSteps = new Set([1]); // 初期サンプルとしてSTEP 1を完了状態に
+    let playbackSpeed = 1.0;
+    const speeds = [1.0, 1.25, 1.5, 2.0, 0.75];
+    let allAccordionsOpen = false;
+
+    // ステップ別 質疑・指導タブデータ（トピック別に上部タブで整理）
+    const QA_TOPICS_DATA = {
+      1: [
+        {
+          id: "t_note",
+          title: "📘 実務の急所ノート",
+          isFixedNote: true,
+          content: {
+            title: "【管理建築士の急所指導】伏図グリッド計画の注意点",
+            text: "意匠図面では玄関ポーチやバルコニーで部分的に455mmや1000mmのモジュールが混在しがちです。構造計算プログラムに入力する際は、基本構造グリッド（910mm等）を崩さずに「補助通り芯」として配置してください。柱芯と壁芯が微小にずれていると、部材認識エラーで応力解析がストップする最大の原因になります。",
+            attachment: {
+              title: "グレー本2025 P.22 構造グリッドと部分持ち出しの定義基準",
+              thumb: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='280' height='170' viewBox='0 0 280 170'><rect width='280' height='170' fill='%231e293b'/><rect x='20' y='20' width='240' height='130' fill='none' stroke='%23f59e0b' stroke-width='2'/><line x1='20' y1='80' x2='260' y2='80' stroke='%23475569' stroke-dasharray='4'/><line x1='140' y1='20' x2='140' y2='150' stroke='%23475569' stroke-dasharray='4'/><text x='140' y='65' fill='%23f8fafc' font-size='11' text-anchor='middle' font-family='sans-serif'>【グレー本2025 P.22 図1.2.3】</text><text x='140' y='105' fill='%2394a3b8' font-size='10' text-anchor='middle' font-family='sans-serif'>基本910モジュール＋出隅455補助線</text></svg>",
+              fullImg: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1000' height='600' viewBox='0 0 1000 600'><rect width='1000' height='600' fill='%230f172a'/><rect x='40' y='40' width='920' height='520' fill='%231e293b' stroke='%23f59e0b' stroke-width='3'/><text x='500' y='100' fill='%23f59e0b' font-size='24' font-weight='bold' text-anchor='middle' font-family='sans-serif'>【グレー本2025 P.22】基本構造グリッドと部分補助線の設計指針</text><line x1='100' y1='150' x2='900' y2='150' stroke='%23334155' stroke-width='2'/><text x='120' y='220' fill='%23f8fafc' font-size='16' font-family='sans-serif'>① 基本架構モジュール（910mm / 1000mm）は建物全体で統一することを原則とする。</text><text x='120' y='270' fill='%23f8fafc' font-size='16' font-family='sans-serif'>② バルコニー・玄関ポーチ等の持ち出し架構は「補助グリッド（455mm等）」で定義し、</text><text x='120' y='320' fill='%23f8fafc' font-size='16' font-family='sans-serif'>   主架構の耐力壁線と直交する大梁から片持ち梁として荷重を伝達させる。</text><text x='120' y='390' fill='%2306b6d4' font-size='16' font-family='sans-serif'>③ アーキトレンドZERO操作ポイント：</text><text x='140' y='430' fill='%2394a3b8' font-size='15' font-family='sans-serif'>   メニュー「配置」→「補助通り芯追加」よりオフセット距離455を入力して配置してください。</text><rect x='100' y='470' width='800' height='50' fill='rgba(16,185,129,0.1)' stroke='%2310b981' rx='6'/><text x='500' y='502' fill='%2310b981' font-size='14' font-weight='bold' text-anchor='middle' font-family='sans-serif'>✓ 審査官チェック：意匠図のグリッド寸法と構造計算書の節点座標が完全一致しているか確認されます</text></svg>"
+            }
+          }
+        },
+        {
+          id: "t_q1",
+          title: "Q1: ポーチ455mm飛び出し",
+          badge: "回答済・画像有",
+          question: {
+            time: "昨日 14:20",
+            text: "伏図のグリッド設定で、ポーチ部分が455mmの半グリッド飛び出しています。基本グリッドは910mmのままで部分グリッドを追加すればよいでしょうか？"
+          },
+          answer: {
+            time: "昨日 15:05",
+            text: "ご質問ありがとうございます。はい、基本グリッド910mmを維持したまま、ポーチ柱部分のみ「部分グリッド（455mm）」を追加してください。主架構の耐力壁線モジュールを崩さずに片持ち梁として荷重伝達させるのがポイントです。該当箇所のグレー本P.22の図解スクショを添付しますので、クリック拡大してご確認ください。",
+            attachment: {
+              title: "グレー本2025 P.22 該当図面スクショ（クリックで全画面拡大）",
+              thumb: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='280' height='170' viewBox='0 0 280 170'><rect width='280' height='170' fill='%231e293b'/><rect x='20' y='20' width='240' height='130' fill='none' stroke='%23f59e0b' stroke-width='2'/><text x='140' y='75' fill='%23f8fafc' font-size='12' text-anchor='middle' font-family='sans-serif'>【グレー本 P.22 図解】</text><text x='140' y='105' fill='%2306b6d4' font-size='11' text-anchor='middle' font-family='sans-serif'>補助通り芯の定義方法</text></svg>",
+              fullImg: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1000' height='600' viewBox='0 0 1000 600'><rect width='1000' height='600' fill='%230f172a'/><rect x='40' y='40' width='920' height='520' fill='%231e293b' stroke='%23f59e0b' stroke-width='3'/><text x='500' y='100' fill='%23f59e0b' font-size='24' font-weight='bold' text-anchor='middle' font-family='sans-serif'>【Q1回答図解】ポーチ飛び出し部分の梁掛けと補助通り芯</text><line x1='100' y1='150' x2='900' y2='150' stroke='%23334155' stroke-width='2'/><text x='120' y='220' fill='%23f8fafc' font-size='16' font-family='sans-serif'>・耐力壁線（910mmグリッド）から持ち出すポーチ梁は、内側の柱間梁まで連続させる。</text><text x='120' y='280' fill='%23f8fafc' font-size='16' font-family='sans-serif'>・アーキトレンド上では「部分通り芯」を配置し、端部接合部は柱頭・柱脚金物の設定と整合させる。</text><rect x='100' y='360' width='800' height='140' fill='rgba(6,182,212,0.1)' stroke='%2306b6d4' rx='6'/><text x='120' y='400' fill='%2306b6d4' font-size='15' font-weight='bold' font-family='sans-serif'>💡 補足テクニック：</text><text x='120' y='435' fill='%2394a3b8' font-size='14' font-family='sans-serif'>伏図の段階で持ち出し長さを1365mm以下に抑えておくと、たわみエラー（L/250）が出にくくなります。</text><text x='120' y='470' fill='%2394a3b8' font-size='14' font-family='sans-serif'>梁成は105×210以上を推奨します。</text></svg>"
+            }
+          }
+        }
+      ]
+    };
+
+    let activeTopicId = "t_note";
+
+    // 字幕サンプルリスト
+    const SAMPLE_CAPTIONS = {
+      1: "【伏せ方の基本 ＆ グリッド設定】まず意匠図面の耐力壁線とグリッドを確認し、鉛直荷重をスムーズに下階へ伝える基本スパンとモジュールを定義します。",
+      2: "【プログラム読込】CADで作成した下絵レイヤを構造計算プログラムにインポートする際、グリッド芯の微小なズレに注意してください。",
+      3: "【物件情報設定】建設地の基準風速V0、垂直積雪量、地表面粗度区分を設定します。ここはmdo3の地域定数自動検索で一発確認可能です。",
+      19: "【横架材エラー解消】スパン4mを超える大梁のたわみエラーが出た場合は、梁成アップまたはZ低減係数ツールで是正します。",
+      27: "【人通口設置】基礎梁に人通口を配置する際は、耐力壁直下の配置を避け、開口補強計算ツールでM中・M端を検定します。"
+    };
+
+    // 初期化実行
+    window.addEventListener('DOMContentLoaded', () => {
+      renderCurriculumList();
+      loadStep(currentStep);
+      updateProgress();
+    });
+
+    // タブ切り替え
+    function switchTab(tab) {
+      currentTab = tab;
+      document.getElementById('tabBasic').classList.toggle('active', tab === 'basic');
+      document.getElementById('tabAdvanced').classList.toggle('active', tab === 'advanced');
+      renderCurriculumList();
+    }
+
+    // 全アコーディオンの一括展開/折りたたみ
+    function toggleAllAccordions() {
+      allAccordionsOpen = !allAccordionsOpen;
+      const groups = document.querySelectorAll('.category-group');
+      groups.forEach(g => {
+        if (allAccordionsOpen) g.classList.add('open');
+        else g.classList.remove('open');
+      });
+      document.getElementById('toggleAllIcon').textContent = allAccordionsOpen ? 'unfold_less' : 'unfold_more';
+      document.getElementById('toggleAllLabel').textContent = allAccordionsOpen ? 'すべて折りたたむ' : 'すべて展開';
+    }
+
+    // カリキュラムリスト描画（アコーディオン化）
+    function renderCurriculumList() {
+      const container = document.getElementById('curriculumList');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const groups = CURRICULUM_DATA[currentTab] || [];
+      groups.forEach((g, gIdx) => {
+        const groupEl = document.createElement('div');
+        groupEl.className = 'category-group';
+        groupEl.id = g.catId;
+
+        // 現在選択中のステップが含まれている章は初期で開く
+        const containsActive = g.steps.some(st => st.id === currentStep.id);
+        if (containsActive || gIdx === 0 || allAccordionsOpen) {
+          groupEl.classList.add('open');
+        }
+
+        // 章内の完了数を集計
+        const compInCat = g.steps.filter(st => completedSteps.has(st.id)).length;
+
+        // ヘッダー（クリックで開閉）
+        const headEl = document.createElement('div');
+        headEl.className = 'category-header';
+        headEl.onclick = () => {
+          groupEl.classList.toggle('open');
+        };
+
+        headEl.innerHTML = `
+          <div class="category-title-text">
+            <span>${g.cat}</span>
+          </div>
+          <div class="category-meta">
+            <span class="category-badge">${compInCat}/${g.steps.length}</span>
+            <span class="material-symbols-outlined category-chevron">expand_more</span>
+          </div>
+        `;
+        groupEl.appendChild(headEl);
+
+        // ボディ（ステップ一覧）
+        const bodyEl = document.createElement('div');
+        bodyEl.className = 'category-body';
+
+        g.steps.forEach(st => {
+          const itemEl = document.createElement('div');
+          const isAct = (st.id === currentStep.id);
+          const isComp = completedSteps.has(st.id);
+
+          itemEl.className = `step-item ${isAct ? 'active' : ''} ${isComp ? 'completed' : ''}`;
+          itemEl.onclick = (e) => {
+            e.stopPropagation();
+            loadStep(st);
+          };
+
+          itemEl.innerHTML = `
+            <div class="step-check">✓</div>
+            <div class="step-name">${st.title}</div>
+            <div class="step-duration">${st.dur}</div>
+          `;
+          bodyEl.appendChild(itemEl);
+        });
+
+        groupEl.appendChild(bodyEl);
+        container.appendChild(groupEl);
+      });
+    }
+
+    // ステップ読み込み
+    function loadStep(st) {
+      currentStep = st;
+
+      // ヘッダー情報
+      document.getElementById('currentStepBadge').textContent = `STEP ${String(st.id).padStart(2, '0')}`;
+      document.getElementById('currentStepTitle').textContent = st.title;
+
+      // 完了ボタン状態
+      const isComp = completedSteps.has(st.id);
+      const btnComp = document.getElementById('btnToggleComplete');
+      if (btnComp) {
+        btnComp.style.background = isComp ? 'var(--bg-card)' : 'linear-gradient(135deg, #10b981, #059669)';
+        document.getElementById('completeLabel').textContent = isComp ? '完了を取り消す' : 'このステップを完了にする';
+      }
+
+      // 3連リファレンス情報
+      document.getElementById('refGrayBook').innerHTML = st.gray;
+      document.getElementById('refErrorTip').innerHTML = st.err;
+      document.getElementById('refTool').innerHTML = `
+        <strong>${st.tool.name}</strong><br>
+        <a href="${st.tool.url}" target="_blank" rel="noopener" class="ref-link-btn">
+          <span class="material-symbols-outlined" style="font-size:14px;">open_in_new</span>
+          ツールを別タブで起動
+        </a>
+      `;
+
+      // 字幕差し替え
+      const subText = SAMPLE_CAPTIONS[st.id] || `【${st.title}】の操作手順を画面をキャプチャしながら実践解説します。`;
+      document.getElementById('subText').textContent = subText;
+
+      // 質疑・指導タブを描画
+      renderQaThread(st.id);
+
+      // リストのアクティブ表示更新＆該当章を開く
+      renderCurriculumList();
+    }
+
+    // 質疑・指導タブ描画（上部タブ式）
+    function renderQaThread(stepId) {
+      const tabsBar = document.getElementById('qaTabsBar');
+      const contentCard = document.getElementById('qaTabContent');
+      if (!tabsBar || !contentCard) return;
+
+      tabsBar.innerHTML = '';
+      contentCard.innerHTML = '';
+
+      const topics = QA_TOPICS_DATA[stepId] || [
+        {
+          id: "t_note",
+          title: "📘 実務の急所ノート",
+          isFixedNote: true,
+          content: {
+            title: `【管理建築士の急所指導】${currentStep.title}のポイント`,
+            text: `このステップで初心者がつまずきやすいエラーや、審査機関が厳しくチェックする根拠図書について解説します。ご不明点があれば「＋質問を追加」よりいつでも質問をお寄せください。`
+          }
+        }
+      ];
+
+      // 該当トピックが存在しない場合は先頭にフォールバック
+      if (!topics.some(t => t.id === activeTopicId)) {
+        activeTopicId = topics[0].id;
+      }
+
+      // 1. 上部タブバー生成
+      topics.forEach(tp => {
+        const tabEl = document.createElement('div');
+        const isAct = (tp.id === activeTopicId);
+        tabEl.className = `qa-tab-item ${isAct ? 'active' : ''}`;
+        tabEl.onclick = () => {
+          activeTopicId = tp.id;
+          renderQaThread(stepId);
+        };
+
+        let badgeHtml = tp.badge ? `<span class="qa-tab-badge">${tp.badge}</span>` : '';
+        tabEl.innerHTML = `<span>${tp.title}</span>${badgeHtml}`;
+        tabsBar.appendChild(tabEl);
+      });
+
+      // 「＋ 質問を追加」ボタンをタブ末尾に追加
+      const addBtn = document.createElement('button');
+      addBtn.className = 'qa-tab-add-btn';
+      addBtn.onclick = () => showNewQuestionForm(stepId);
+      addBtn.innerHTML = `<span class="material-symbols-outlined" style="font-size:14px;">add</span>質問を追加`;
+      tabsBar.appendChild(addBtn);
+
+      // 2. 選択中タブのコンテンツ描画
+      const curTopic = topics.find(t => t.id === activeTopicId) || topics[0];
+
+      if (curTopic.isFixedNote) {
+        // 実務の急所ノート
+        let attachHtml = '';
+        if (curTopic.content.attachment) {
+          attachHtml = `
+            <div class="qa-attachment-wrap">
+              <img src="${curTopic.content.attachment.thumb}" alt="サムネイル" class="qa-img-thumb" onclick="openLightbox('${curTopic.content.attachment.fullImg}', '${curTopic.content.attachment.title}')">
+              <div class="qa-img-caption">
+                <span>📷 クリックして全画面拡大</span>
+                ${curTopic.content.attachment.title}
+              </div>
+            </div>
+          `;
+        }
+
+        contentCard.innerHTML = `
+          <div class="qa-bubble instructor" style="border-left: 3px solid var(--accent-gold);">
+            <div class="qa-bubble-head">
+              <span class="qa-bubble-sender">
+                <span class="material-symbols-outlined" style="font-size:15px; color:var(--accent-gold);">school</span>
+                ${curTopic.content.title}
+              </span>
+              <span class="qa-time">講師（管理建築士）監修</span>
+            </div>
+            <div class="qa-text">${curTopic.content.text}</div>
+            ${attachHtml}
+          </div>
+        `;
+      } else {
+        // 個別Q&A（受講生質問 ＋ 講師回答）
+        let attachHtml = '';
+        if (curTopic.answer.attachment) {
+          attachHtml = `
+            <div class="qa-attachment-wrap">
+              <img src="${curTopic.answer.attachment.thumb}" alt="サムネイル" class="qa-img-thumb" onclick="openLightbox('${curTopic.answer.attachment.fullImg}', '${curTopic.answer.attachment.title}')">
+              <div class="qa-img-caption">
+                <span>📷 クリックして全画面拡大</span>
+                ${curTopic.answer.attachment.title}
+              </div>
+            </div>
+          `;
+        }
+
+        contentCard.innerHTML = `
+          <!-- 受講生の質問 -->
+          <div class="qa-bubble" style="border-left: 3px solid var(--accent-cyan);">
+            <div class="qa-bubble-head">
+              <span class="qa-bubble-sender">
+                <span class="material-symbols-outlined" style="font-size:15px; color:var(--accent-cyan);">person</span>
+                受講生からの質問
+              </span>
+              <span class="qa-time">${curTopic.question.time}</span>
+            </div>
+            <div class="qa-text">${curTopic.question.text}</div>
+          </div>
+
+          <!-- 講師の回答 -->
+          <div class="qa-bubble instructor" style="border-left: 3px solid var(--accent-gold);">
+            <div class="qa-bubble-head">
+              <span class="qa-bubble-sender">
+                <span class="material-symbols-outlined" style="font-size:15px; color:var(--accent-gold);">school</span>
+                管理建築士（講師）からの回答 ＆ 図解
+              </span>
+              <span class="qa-time">${curTopic.answer.time}</span>
+            </div>
+            <div class="qa-text">${curTopic.answer.text}</div>
+            ${attachHtml}
+          </div>
+        `;
+      }
+    }
+
+    // 新規質問タブの追加フォーム表示
+    function showNewQuestionForm(stepId) {
+      const qText = prompt(`【${currentStep.title}】に関する新しい質問内容を入力してください：`);
+      if (!qText || !qText.trim()) return;
+
+      if (!QA_TOPICS_DATA[stepId]) {
+        QA_TOPICS_DATA[stepId] = [];
+      }
+
+      const qIndex = QA_TOPICS_DATA[stepId].filter(t => !t.isFixedNote).length + 1;
+      const newTopicId = `t_q${Date.now()}`;
+
+      QA_TOPICS_DATA[stepId].push({
+        id: newTopicId,
+        title: `Q${qIndex}: ${qText.substring(0, 10)}...`,
+        badge: "回答待ち",
+        question: {
+          time: "たった今",
+          text: qText.trim()
+        },
+        answer: {
+          time: "受付中",
+          text: "質問を受け付けました。管理建築士が確認し、グレー本の該当箇所やCAD画面のキャプチャを添付して回答いたします。"
+        }
+      });
+
+      activeTopicId = newTopicId;
+      renderQaThread(stepId);
+    }
+
+    // 画像添付機能
+    function triggerAttachImage() {
+      alert('【画像添付・スクショ貼り付け】\nクリップボードの画像を「Ctrl+V」で直接貼り付けるか、画像ファイルを選択して質問と一緒に送信できます。\n講師からの返答時にもグレー本書影やCAD画面のキャプチャが添付されます。');
+    }
+
+    // ライトボックス（拡大表示）
+    function openLightbox(src, caption) {
+      const modal = document.getElementById('lightboxModal');
+      const img = document.getElementById('lightboxImg');
+      const cap = document.getElementById('lightboxCaption');
+      if (!modal || !img || !cap) return;
+      img.src = src;
+      cap.textContent = caption || 'キャプチャ拡大';
+      modal.style.display = 'flex';
+    }
+
+    function closeLightbox() {
+      const modal = document.getElementById('lightboxModal');
+      if (modal) modal.style.display = 'none';
+    }
+
+    // ESCキーでライトボックスを閉じる
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeLightbox();
+    });
+
+    // ステップ完了切り替え
+    function toggleCurrentComplete() {
+      if (completedSteps.has(currentStep.id)) {
+        completedSteps.delete(currentStep.id);
+      } else {
+        completedSteps.add(currentStep.id);
+      }
+      loadStep(currentStep);
+      updateProgress();
+    }
+
+    // 進捗率更新
+    function updateProgress() {
+      const total = 44; // 基本44ステップ
+      let compCount = 0;
+      CURRICULUM_DATA.basic.forEach(g => {
+        g.steps.forEach(st => {
+          if (completedSteps.has(st.id)) compCount++;
+        });
+      });
+      const pct = Math.round((compCount / total) * 100);
+      document.getElementById('progressLabel').textContent = `進捗: ${compCount} / ${total} (${pct}%)`;
+      document.getElementById('progressBar').style.width = `${pct}%`;
+    }
+
+    // 再生速度切り替え
+    function changePlaybackSpeed() {
+      let idx = speeds.indexOf(playbackSpeed);
+      idx = (idx + 1) % speeds.length;
+      playbackSpeed = speeds[idx];
+      document.getElementById('speedLabel').textContent = `${playbackSpeed.toFixed(1)}x`;
+      document.getElementById('mainVideo').playbackRate = playbackSpeed;
+    }
+
+    // 同時アクセス防止シミュレーション
+    function triggerConflictSimulation() {
+      const modal = document.getElementById('conflictModal');
+      modal.style.display = 'flex';
+      document.getElementById('mainVideo').pause();
+    }
+
+    function resumeSession() {
+      const modal = document.getElementById('conflictModal');
+      modal.style.display = 'none';
+      alert('セッションを再取得し、この端末で再生を再開しました。');
+    }
+  </script>
+</body>
+</html>
