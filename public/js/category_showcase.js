@@ -17,7 +17,7 @@
     {
       id: 'foundation',
       name: '基礎・擁壁・地盤系',
-      badge: '全9ツール',
+      badge: '全11ツール',
       icon: 'foundation',
       color: '#06b6d4',
       bgGradient: 'linear-gradient(135deg, rgba(6, 182, 212, 0.15) 0%, rgba(15, 23, 42, 0.95) 100%)'
