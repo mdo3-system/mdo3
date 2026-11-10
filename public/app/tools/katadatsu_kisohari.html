@@ -18,7 +18,7 @@
     </script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     <link rel="stylesheet" href="../css/common.css?v=20261006_v11">
-    <link rel="stylesheet" href="../css/katadatsu_kisohari.css?v=20261110_v1">
+    <link rel="stylesheet" href="../css/katadatsu_kisohari.css?v=20261110_v2">
 </head>
 <body>
 
@@ -44,11 +44,31 @@
             </div>
         </div>
 
-        <!-- 総括判定バッジバナー -->
-        <div class="kth-summary-banner">
+        <!-- 総括判定バッジバナー (6大検定) -->
+        <div class="kth-summary-banner" style="grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));">
             <div class="kth-status-badge ok" id="badge_bend">
                 <div class="kth-status-label">
-                    <span>1. 長期曲げ検定 (LM/LMa)</span>
+                    <span>1. 梁スパン曲げ (下主筋)</span>
+                    <span class="kth-status-pill ok">判定中</span>
+                </div>
+                <div class="kth-status-value">
+                    <span class="kth-status-val-text">-</span>
+                </div>
+            </div>
+
+            <div class="kth-status-badge ok" id="badge_stem_bend">
+                <div class="kth-status-label">
+                    <span>2. 立ち上がり面外曲げ (縦筋)</span>
+                    <span class="kth-status-pill ok">判定中</span>
+                </div>
+                <div class="kth-status-value">
+                    <span class="kth-status-val-text">-</span>
+                </div>
+            </div>
+
+            <div class="kth-status-badge ok" id="badge_anchor">
+                <div class="kth-status-label">
+                    <span>3. スラブ定着飲み込み・曲げ</span>
                     <span class="kth-status-pill ok">判定中</span>
                 </div>
                 <div class="kth-status-value">
@@ -58,7 +78,7 @@
 
             <div class="kth-status-badge ok" id="badge_torsion1">
                 <div class="kth-status-label">
-                    <span>2. ねじり一次検定</span>
+                    <span>4. ねじり一次検定</span>
                     <span class="kth-status-pill ok">判定中</span>
                 </div>
                 <div class="kth-status-value">
@@ -68,7 +88,7 @@
 
             <div class="kth-status-badge ok" id="badge_torsion2">
                 <div class="kth-status-label">
-                    <span>3. ねじり二次検定</span>
+                    <span>5. ねじり二次検定</span>
                     <span class="kth-status-pill ok">判定中</span>
                 </div>
                 <div class="kth-status-value">
@@ -78,7 +98,7 @@
 
             <div class="kth-status-badge ok" id="badge_sliding">
                 <div class="kth-status-label">
-                    <span>4. 滑動検定 (F/P ≧ 1.5)</span>
+                    <span>6. 滑動検定 (F/P ≧ 1.5)</span>
                     <span class="kth-status-pill ok">判定中</span>
                 </div>
                 <div class="kth-status-value">
@@ -104,7 +124,7 @@
                         </div>
 
                         <div class="kth-form-group">
-                            <label for="input_b">基礎梁幅 b:</label>
+                            <label for="input_b">基礎梁幅 b (立ち上がり幅):</label>
                             <div class="kth-input-unit">
                                 <input type="number" id="input_b" value="150" step="10">
                                 <span class="kth-unit">mm</span>
@@ -112,7 +132,7 @@
                         </div>
 
                         <div class="kth-form-group">
-                            <label for="input_D">基礎梁せい D:</label>
+                            <label for="input_D">基礎梁せい D (全高):</label>
                             <div class="kth-input-unit">
                                 <input type="number" id="input_D" value="1500" step="50">
                                 <span class="kth-unit">mm</span>
@@ -152,7 +172,7 @@
                         </div>
 
                         <div class="kth-form-group">
-                            <label for="input_Lw">基礎梁スパン Lw:</label>
+                            <label for="input_Lw">基礎梁スパン Lw (梁曲げ用):</label>
                             <div class="kth-input-unit">
                                 <input type="number" id="input_Lw" value="3.640" step="0.001">
                                 <span class="kth-unit">m</span>
@@ -297,6 +317,68 @@
                         </div>
                     </div>
 
+                    <!-- 立ち上がり配筋形式（シングル／ダブル）＆ 縦筋 -->
+                    <div style="font-size:0.84rem; font-weight:800; color:#b91c1c; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+                        <span>【立ち上がり配筋形式 ＆ 面外曲げ負担縦筋】</span>
+                        <span id="disp_stem_type_badge" style="background:#fee2e2; color:#b91c1c; font-size:0.75rem; padding:2px 8px; border-radius:4px;">シングル</span>
+                    </div>
+                    <div class="kth-form-grid" style="margin-bottom:14px; background:#fff1f2; padding:10px 12px; border-radius:8px; border:1px solid #fecdd3;">
+                        <div class="kth-form-group">
+                            <label for="input_stem_rebar_type" style="color:#9f1239;">立ち上がり配筋方式:</label>
+                            <select id="input_stem_rebar_type" style="font-weight:bold; color:#9f1239;">
+                                <option value="single" selected>シングル配筋 (中央1列配筋)</option>
+                                <option value="double">ダブル配筋 (両面2列配筋・高耐力)</option>
+                            </select>
+                        </div>
+
+                        <div class="kth-form-group">
+                            <label for="input_vert_dia" style="color:#9f1239;">立ち上がり縦筋 径 / ピッチ:</label>
+                            <div class="kth-input-unit">
+                                <select id="input_vert_dia" style="width:50%;">
+                                    <option value="D10" selected>D10</option>
+                                    <option value="D13">D13</option>
+                                    <option value="D16">D16</option>
+                                </select>
+                                <select id="input_vert_pitch" style="width:50%;">
+                                    <option value="75">@75</option>
+                                    <option value="100">@100</option>
+                                    <option value="150">@150</option>
+                                    <option value="200" selected>@200</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="kth-form-group" style="grid-column: 1 / -1;">
+                            <label for="input_stem_moment_model" style="color:#9f1239;">面外曲げ解析モデル:</label>
+                            <select id="input_stem_moment_model">
+                                <option value="cantilever" selected>片持ち梁モデル (土圧全量T2で直接検定・安全側実務標準)</option>
+                                <option value="slab_3fix">3辺固定スラブモデル (PDF基準書式: 直交梁拘束考慮 Mx=Mx11+Mx12)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- スラブへの飲み込み定着 ＆ 根元曲げ -->
+                    <div style="font-size:0.84rem; font-weight:800; color:#0369a1; margin-bottom:8px;">
+                        【縦筋のスラブ内定着（飲み込み）＆ 曲げ出し】
+                    </div>
+                    <div class="kth-form-grid" style="margin-bottom:14px; background:#f0f9ff; padding:10px 12px; border-radius:8px; border:1px solid #bae6fd;">
+                        <div class="kth-form-group">
+                            <label for="input_anchor_hook" style="color:#0369a1;">スラブ内定着端部形状:</label>
+                            <select id="input_anchor_hook">
+                                <option value="hook" selected>フック付き引張定着 (必要定着長: 25d)</option>
+                                <option value="straight">フックなしストレート (必要定着長: 35d)</option>
+                            </select>
+                        </div>
+
+                        <div class="kth-form-group">
+                            <label for="input_L_bend" style="color:#0369a1;">スラブ内水平曲げ出し長 Lbend:</label>
+                            <div class="kth-input-unit">
+                                <input type="number" id="input_L_bend" value="200" step="25" min="50" max="600">
+                                <span class="kth-unit">mm</span>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- 上主筋 -->
                     <div style="font-size:0.84rem; font-weight:700; color:#1e40af; margin-bottom:8px; display:flex; justify-content:space-between;">
                         <span>【基礎梁 上主筋】(2種併用可)</span>
@@ -438,7 +520,7 @@
                 <div class="kth-preview-panel">
                     <div style="font-weight:800; font-size:0.95rem; color:#1e3a8a; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
                         <span>断面配筋図プレビュー (動的可変)</span>
-                        <span style="font-size:0.75rem; color:#64748b; font-weight:normal;">入力寸法・配筋に連動</span>
+                        <span id="disp_svg_stem_badge" style="font-size:0.75rem; color:#1e40af; font-weight:bold; background:#e0f2fe; padding:2px 8px; border-radius:4px;">シングル配筋</span>
                     </div>
                     <div class="kth-svg-container" id="preview_svg_container">
                         <!-- 動的SVGが挿入されます -->
@@ -452,10 +534,10 @@
                         片土圧基礎梁設計における構造力学上の重要チェック事項
                     </div>
                     <ul style="margin: 0; padding-left: 18px; font-size:0.8rem; line-height:1.55;">
-                        <li><b>自重抵抗モーメントT1の全量控除</b>: 基準書式では自重抵抗T1をそのまま全量差し引く仕様ですが、上部荷重の変動や浮き上がりを考慮し、実務上は安全側低減(×0.9)や自重抵抗を見込まない検討も併せてご確認ください。</li>
-                        <li><b>直交梁(ねじり抵抗梁)の回転拘束剛性</b>: 基礎梁が受けるねじりモーメントを支える直交梁の曲げ剛性が不足すると、基礎梁端部のねじれ角が増大します。直交梁のせい確保およびハンチ補強を推奨します。</li>
-                        <li><b>高成梁(W=150, H=1500)のねじれ座屈・面外曲げ</b>: アスペクト比10の高成梁は薄肉挙動を示しやすいため、側面筋(腹筋)を確実に配置し、ねじりによる斜めひび割れを抑制してください。</li>
-                        <li><b>接地圧偏心と浮き上がり</b>: 片土圧による転倒力で底盤下の接地圧はつま先側に偏心します。偏心距離 e ≦ B/6 を超える場合は浮き上がりによる地盤反力の局所化にご留意ください。</li>
+                        <li><b>立ち上がり縦筋による土圧面外曲げの負担</b>: 土圧による転倒曲げは基礎梁の軸直角方向（立ち上がり縦方向）に作用します。これを負担するのは下主筋ではなく<b>「立ち上がりの縦筋・スターラップ」</b>です。土圧が大きい場合はダブル配筋や縦筋径のアップ（D13等）をご検討ください。</li>
+                        <li><b>底盤スラブへの飲み込み定着長さ</b>: 立ち上がり縦筋が受ける引張力に対し、スラブ内への定着長（底盤厚dtb＋水平曲げ出し長Lbend）が所要の定着長（25dまたは35d）を満足していることを必ずご確認ください。</li>
+                        <li><b>自重抵抗モーメントT1の全量控除</b>: 基準書式では自重抵抗T1を全量差し引く規定ですが、上部荷重の変動や浮き上がりを考慮し、安全側低減(×0.9)や自重抵抗を見込まない検討も併せてご確認ください。</li>
+                        <li><b>直交梁の回転拘束剛性</b>: 基礎梁が受けるねじりモーメントを支える直交梁の曲げ剛性が不足すると、基礎梁端部のねじれ角が増大します。直交梁のせい確保およびハンチ補強を推奨します。</li>
                     </ul>
                 </div>
 
@@ -477,31 +559,49 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td style="text-align:left; font-weight:bold;">長期曲げ検定 (LM)</td>
+                                <td style="text-align:left; font-weight:bold;">1. 梁スパン曲げ検定 (下主筋)</td>
                                 <td>LM = <span id="res_LM">-</span> kN·m</td>
                                 <td>LMa = <span id="res_LMa">-</span> kN·m</td>
                                 <td><span id="res_bend_ratio">-</span> (<span id="res_bend_judge">-</span>)</td>
                             </tr>
                             <tr>
-                                <td style="text-align:left; font-weight:bold;">ねじり一次検定</td>
+                                <td style="text-align:left; font-weight:bold; background:#fff1f2; color:#9f1239;">2. 立ち上がり面外曲げ (縦筋)</td>
+                                <td style="background:#fff1f2;">Mstem = <span id="res_M_stem">-</span> kN·m/m</td>
+                                <td style="background:#fff1f2;">Mstema = <span id="res_M_stema">-</span> kN·m/m</td>
+                                <td style="background:#fff1f2;"><span id="res_stem_ratio">-</span> (<span id="res_stem_judge">-</span>)</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:left; font-weight:bold; background:#f0f9ff; color:#0369a1;">3. スラブ定着飲み込み長</td>
+                                <td style="background:#f0f9ff;">確保 Lact = <span id="res_L_act">-</span> mm</td>
+                                <td style="background:#f0f9ff;">必要 Lreq = <span id="res_L_req">-</span> mm</td>
+                                <td style="background:#f0f9ff;"><span id="res_anchor_judge">-</span></td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:left; font-weight:bold; background:#f0f9ff; color:#0369a1;">　 底盤スラブ根元曲げ</td>
+                                <td style="background:#f0f9ff;">Mslab = <span id="res_M_slab">-</span> kN·m/m</td>
+                                <td style="background:#f0f9ff;">Mslaba = <span id="res_M_slaba">-</span> kN·m/m</td>
+                                <td style="background:#f0f9ff;"><span id="res_slab_ratio">-</span> (<span id="res_slab_judge">-</span>)</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:left; font-weight:bold;">4. ねじり一次検定</td>
                                 <td>LT = <span id="res_LT">-</span> kN·m<br>LQ = <span id="res_LQ">-</span> kN</td>
                                 <td>LTa1 = <span id="res_LTa1">-</span> kN·m<br>LQa = <span id="res_LQa1">-</span> kN</td>
                                 <td>(T/Ta1)²+(Q/Qa)² = <span id="res_check1">-</span> ≦ 1.0 (<span id="res_check1_judge">-</span>)</td>
                             </tr>
                             <tr>
-                                <td style="text-align:left;">STP間隔規定</td>
+                                <td style="text-align:left;">　 STP間隔規定</td>
                                 <td>x = <span id="input_stp_pitch_disp">200</span> mm</td>
                                 <td>≦ min(aw/0.002b, D/2) = <span id="res_stp_limit">-</span> mm</td>
                                 <td><span id="res_stp_judge">-</span></td>
                             </tr>
                             <tr>
-                                <td style="text-align:left; font-weight:bold;">ねじり二次検定</td>
+                                <td style="text-align:left; font-weight:bold;">5. ねじり二次検定</td>
                                 <td>LT = <span id="res_LT_2">-</span> kN·m<br>LQ = <span id="res_LQ_2">-</span> kN</td>
                                 <td>LTa2 = <span id="res_LTa2">-</span> kN·m<br>LQa2 = <span id="res_LQa2">-</span> kN</td>
                                 <td>(T/Ta2)²+(Q/Qa2)² = <span id="res_check2">-</span> ≦ 1.0 (<span id="res_check2_judge">-</span>)</td>
                             </tr>
                             <tr>
-                                <td style="text-align:left; font-weight:bold;">滑動検定</td>
+                                <td style="text-align:left; font-weight:bold;">6. 滑動検定</td>
                                 <td>P = <span id="res_P_total">-</span> kN</td>
                                 <td>F = <span id="res_F_fric">-</span> kN</td>
                                 <td>安全率 = <span id="res_sliding_sf">-</span> ≧ 1.50 (<span id="res_sliding_judge">-</span>)</td>
@@ -537,9 +637,11 @@
 
             <!-- 総括判定概要 -->
             <div style="display:flex; justify-content:space-between; align-items:center; background:#f8fafc; border:1px solid #000; padding:4px 8px; margin-bottom:8px;">
-                <div style="font-weight:bold; font-size:8.5pt;">【検討部位】: <span id="print_part_name">-</span></div>
-                <div style="display:flex; gap:12px; font-size:8pt;">
-                    <span>長期曲げ: <span id="p_bend_badge" class="print-judgment-badge ok">適合 OK</span></span>
+                <div style="font-weight:bold; font-size:8pt;">【検討部位】: <span id="print_part_name">-</span></div>
+                <div style="display:flex; gap:8px; font-size:7.5pt; flex-wrap:wrap;">
+                    <span>梁曲げ: <span id="p_bend_badge" class="print-judgment-badge ok">適合 OK</span></span>
+                    <span>面外曲げ: <span id="p_stem_badge" class="print-judgment-badge ok">適合 OK</span></span>
+                    <span>スラブ定着: <span id="p_anchor_badge" class="print-judgment-badge ok">適合 OK</span></span>
                     <span>ねじり一次: <span id="p_check1_badge" class="print-judgment-badge ok">適合 OK</span></span>
                     <span>ねじり二次: <span id="p_check2_badge" class="print-judgment-badge ok">適合 OK</span></span>
                     <span>滑動: <span id="p_sliding_badge" class="print-judgment-badge ok">適合 OK</span></span>
@@ -556,6 +658,10 @@
                     <tr>
                         <th>地盤・土圧条件</th>
                         <td style="text-align:left;" id="p_soil">-</td>
+                    </tr>
+                    <tr>
+                        <th>立ち上がり・縦筋仕様</th>
+                        <td style="text-align:left;" id="p_stem_spec">-</td>
                     </tr>
                     <tr>
                         <th>基礎梁 配筋</th>
@@ -602,6 +708,12 @@
                         <td>kN·m/m</td>
                     </tr>
                     <tr>
+                        <td style="font-weight:bold;">立ち上がり面外曲げ Mstem</td>
+                        <td style="text-align:left;" id="p_M_stem_formula">片持ち梁モデル (土圧全量T2)</td>
+                        <td id="p_M_stem">-</td>
+                        <td>kN·m/m</td>
+                    </tr>
+                    <tr>
                         <td style="font-weight:bold;">設計用ねじりモーメント LT</td>
                         <td style="text-align:left;">(T2 - γres · T1) · Lo / 2</td>
                         <td id="p_LT">-</td>
@@ -624,12 +736,12 @@
 
             <div class="print-notes">
                 <b>【特記事項・設計条件】</b><br>
-                1. 片土圧基礎梁の応力算定は、背面土および地上載荷重による側圧に対し、梁自身のねじり剛性および直交基礎梁への応力伝達に基づき検討しています。<br>
+                1. 片土圧基礎梁の応力算定は、背面土および地上載荷重による側圧に対し、梁自身のねじり剛性および直交基礎梁への応力伝達、立ち上がり壁の面外曲げ、底盤スラブへの定着に基づき検討しています。<br>
                 2. コンクリート強度 Fc=21 N/mm² (長期せん断 Lfs=0.70 N/mm²), 鉄筋 SD295A (長期引張 Lft=196 N/mm²)。
             </div>
         </div>
 
-        <!-- ページ 2: 長期曲げ・ねじり一次・ねじり二次・滑動検定・構造力学上の留意事項 -->
+        <!-- ページ 2: 長期曲げ・面外曲げ・スラブ定着・ねじり一次・ねじり二次・滑動検定・構造力学上の留意事項 -->
         <div class="print-page">
             <div class="print-header-block">
                 <div class="print-main-title">片土圧基礎梁の計算書 (検定詳細)</div>
@@ -641,14 +753,14 @@
 
             <div class="print-sec-heading">4. 基礎梁断面検定</div>
 
-            <!-- 検定1: 長期曲げ -->
+            <!-- 検定1: 梁スパン曲げ -->
             <table class="print-table">
                 <thead>
                     <tr>
-                        <th colspan="4" style="text-align:left; background:#f1f5f9;">(1) 長期曲げ検定 (下端引張: LM ≦ LMa)</th>
+                        <th colspan="4" style="text-align:left; background:#f1f5f9;">(1) 基礎梁スパン長期曲げ検定 (下主筋負担: LM ≦ LMa)</th>
                     </tr>
                     <tr>
-                        <th>応力中心距離 j</th>
+                        <th>有効せい d / 応力中心距離 j</th>
                         <th>長期許容曲げモーメント LMa</th>
                         <th>検定比 (LM / LMa)</th>
                         <th>判定</th>
@@ -656,7 +768,7 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td>j = 7/8·d</td>
+                        <td>d = <span id="p_beam_d">-</span> mm, j = 7/8·d = <span id="p_beam_j">-</span> mm</td>
                         <td id="p_LMa">-</td>
                         <td id="p_bend_ratio">-</td>
                         <td id="p_bend_judge" style="font-weight:bold;">-</td>
@@ -664,11 +776,57 @@
                 </tbody>
             </table>
 
-            <!-- 検定2: ねじり一次 -->
+            <!-- 検定2: 立ち上がり面外曲げ -->
             <table class="print-table" style="margin-top:6px;">
                 <thead>
                     <tr>
-                        <th colspan="4" style="text-align:left; background:#f1f5f9;">(2) ねじり一次検定 (無補強コンクリートねじり耐力基準)</th>
+                        <th colspan="4" style="text-align:left; background:#f1f5f9;">(2) 立ち上がり面外曲げ検定 (縦筋・スターラップ負担: Mstem ≦ Mstema)</th>
+                    </tr>
+                    <tr>
+                        <th>配筋形式 / 有効せい dstem</th>
+                        <th>単位幅許容曲げモーメント Mstema</th>
+                        <th>検定比 (Mstem / Mstema)</th>
+                        <th>判定</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span id="p_stem_type_text">-</span> / dstem = <span id="p_stem_d">-</span> mm</td>
+                        <td id="p_M_stema">-</td>
+                        <td id="p_stem_ratio">-</td>
+                        <td id="p_stem_judge" style="font-weight:bold;">-</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- 検定3: スラブ定着飲み込み ＆ 根元曲げ -->
+            <table class="print-table" style="margin-top:6px;">
+                <thead>
+                    <tr>
+                        <th colspan="4" style="text-align:left; background:#f1f5f9;">(3) 縦筋のスラブ内定着長（飲み込み）および底盤根元曲げ検定</th>
+                    </tr>
+                    <tr>
+                        <th>必要定着長 Lreq / 確保定着長 Lact</th>
+                        <th>定着長判定</th>
+                        <th>スラブ根元曲げ Mslab / 許容耐力 Mslaba</th>
+                        <th>スラブ曲げ判定</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Lreq = <span id="p_L_req">-</span> mm / Lact = <span id="p_L_act">-</span> mm</td>
+                        <td id="p_anchor_judge" style="font-weight:bold;">-</td>
+                        <td>Mslab = <span id="p_M_slab">-</span> / Mslaba = <span id="p_M_slaba">-</span></td>
+                        <td id="p_slab_judge" style="font-weight:bold;">-</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- 検定4: ねじり一次 -->
+            <table class="print-table" style="margin-top:6px;">
+                <thead>
+                    <tr>
+                        <th colspan="4" style="text-align:left; background:#f1f5f9;">(4) ねじり一次検定 (無補強コンクリートねじり耐力基準)</th>
                     </tr>
                     <tr>
                         <th>許容ねじり耐力 LTa1</th>
@@ -687,11 +845,11 @@
                 </tbody>
             </table>
 
-            <!-- 検定3: ねじり二次 -->
+            <!-- 検定5: ねじり二次 -->
             <table class="print-table" style="margin-top:6px;">
                 <thead>
                     <tr>
-                        <th colspan="5" style="text-align:left; background:#f1f5f9;">(3) ねじり二次検定 (補強筋寄与によるねじり終局耐力基準)</th>
+                        <th colspan="5" style="text-align:left; background:#f1f5f9;">(5) ねじり二次検定 (補強筋寄与によるねじり終局耐力基準)</th>
                     </tr>
                     <tr>
                         <th>核断面積 Ao / 周長 ψo</th>
@@ -733,17 +891,18 @@
             </table>
 
             <div class="print-sec-heading">6. 構造力学上の考察および留意事項</div>
-            <div class="print-notes" style="font-size:7.2pt; line-height:1.45;">
-                <b>1. 自重抵抗モーメントT1の評価</b>: 基準書式では抵抗モーメントT1を全量差し引く規定ですが、建物鉛直荷重の低減や施工時の未載荷状態を考慮し、安全率の確認を行っています。<br>
-                <b>2. 直交梁(ねじり抵抗梁)との剛比分配</b>: 片土圧による基礎梁のねじれは、直交する基礎梁の曲げ剛性によって拘束されます。直交梁端部には基礎梁から伝達されたねじりモーメントに応じた曲げモーメントが発生するため、直交梁の配筋およびハンチ補強を適切に施工してください。<br>
-                <b>3. 高成偏平梁の薄肉ねじり挙動</b>: 幅150mm、せい1500mmの高成梁では、サンブナンねじりだけでなく面外変形・そりねじり応力が発生しやすくなります。側面筋(腹筋)を配置し、スターラップのかぶり厚さを確保して施工してください。<br>
-                <b>4. 底盤接地圧の偏心と浮き上がり</b>: 片土圧作用により底盤下の地盤反力は偏心します。つま先側端部の最大接地圧が地盤の長期許容支持力度以内であることを併せてご確認ください。
+            <div class="print-notes" style="font-size:7pt; line-height:1.4;">
+                <b>1. 立ち上がり縦筋による土圧面外曲げ負担</b>: 土圧による転倒力は立ち上がり壁を外側へ押し曲げるため、この片持ち曲げモーメントは立ち上がりの縦筋（スターラップ縦部）が直接負担します。シングル配筋では有効せいが幅b/2となるのに対し、ダブル配筋を採用することで外側引張筋の有効せいが最大化され、高い面外曲げ耐力が得られます。<br>
+                <b>2. スラブへの定着長さ（飲み込み）</b>: 立ち上がり縦筋の引張力を底盤スラブへ確実に伝達するため、底盤厚dtbおよび水平曲げ出し長Lbendによる確保定着長が基準必要長（フック付25d、ストレート35d）を満足していることを確認しています。<br>
+                <b>3. 自重抵抗モーメントT1の評価</b>: 基準書式では抵抗モーメントT1を全量差し引く規定ですが、建物鉛直荷重の低減や施工時の未載荷状態を考慮し、安全率の確認を行っています。<br>
+                <b>4. 直交梁(ねじり抵抗梁)との剛比分配</b>: 片土圧による基礎梁のねじれは、直交する基礎梁の曲げ剛性によって拘束されます。直交梁端部には基礎梁から伝達されたねじりモーメントに応じた曲げモーメントが発生するため、直交梁の配筋およびハンチ補強を適切に施工してください。<br>
+                <b>5. 高成偏平梁の薄肉ねじり挙動</b>: 幅150mm、せい1500mmの高成梁では、サンブナンねじりだけでなく面外変形・そりねじり応力が発生しやすくなります。側面筋(腹筋)を配置し、スターラップのかぶり厚さを確保して施工してください。
             </div>
         </div>
     </div>
 </div>
 
 <script src="../js/common.js?v=20261006_v11"></script>
-<script src="../js/katadatsu_kisohari.js?v=20261110_v1"></script>
+<script src="../js/katadatsu_kisohari.js?v=20261110_v2"></script>
 </body>
 </html>
