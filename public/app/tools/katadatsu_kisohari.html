@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>片土圧基礎梁の計算書 | 基礎擁壁構造計算 | mdo3</title>
+    <script>
+        if (window.location.protocol !== 'file:') {
+            fetch('/api/check_auth.php')
+                .then(res => res.ok ? res.json() : null)
+                .then(data => {
+                    if (data && data.authenticated === false) {
+                        window.location.replace('/login.html');
+                    }
+                })
+                .catch(err => console.warn("Auth check failed:", err));
+        }
+    </script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <link rel="stylesheet" href="../css/common.css?v=20261006_v11">
+    <link rel="stylesheet" href="../css/katadatsu_kisohari.css?v=20261110_v1">
+</head>
+<body>
+
+<div class="tool-container">
+    <!-- 共通グローバルヘッダー (工事名・日付・設計者・保存復元・A4印刷) -->
+    <div id="global-header-container"></div>
+
+    <!-- 画面操作部 (印刷時は非表示) -->
+    <div class="kth-card no-print">
+        <div class="kth-card-header">
+            <div class="kth-title-group">
+                <span class="material-symbols-outlined kth-title-icon">foundation</span>
+                <div>
+                    <span class="kth-card-title">片土圧基礎梁の計算書</span>
+                    <span class="kth-badge-paid">有料ツール / 基礎擁壁</span>
+                </div>
+            </div>
+            <div>
+                <button type="button" class="btn btn-primary" onclick="calculateAndRender()">
+                    <span class="material-symbols-outlined" style="font-size:16px;">refresh</span>
+                    再計算
+                </button>
+            </div>
+        </div>
+
+        <!-- 総括判定バッジバナー -->
+        <div class="kth-summary-banner">
+            <div class="kth-status-badge ok" id="badge_bend">
+                <div class="kth-status-label">
+                    <span>1. 長期曲げ検定 (LM/LMa)</span>
+                    <span class="kth-status-pill ok">判定中</span>
+                </div>
+                <div class="kth-status-value">
+                    <span class="kth-status-val-text">-</span>
+                </div>
+            </div>
+
+            <div class="kth-status-badge ok" id="badge_torsion1">
+                <div class="kth-status-label">
+                    <span>2. ねじり一次検定</span>
+                    <span class="kth-status-pill ok">判定中</span>
+                </div>
+                <div class="kth-status-value">
+                    <span class="kth-status-val-text">-</span>
+                </div>
+            </div>
+
+            <div class="kth-status-badge ok" id="badge_torsion2">
+                <div class="kth-status-label">
+                    <span>3. ねじり二次検定</span>
+                    <span class="kth-status-pill ok">判定中</span>
+                </div>
+                <div class="kth-status-value">
+                    <span class="kth-status-val-text">-</span>
+                </div>
+            </div>
+
+            <div class="kth-status-badge ok" id="badge_sliding">
+                <div class="kth-status-label">
+                    <span>4. 滑動検定 (F/P ≧ 1.5)</span>
+                    <span class="kth-status-pill ok">判定中</span>
+                </div>
+                <div class="kth-status-value">
+                    <span class="kth-status-val-text">-</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2カラムメイングリッド -->
+        <div class="kth-main-grid">
+            <!-- 左側: 入力設定フォーム -->
+            <div class="kth-form-column">
+                <!-- セクション1: 部位・断面諸元 -->
+                <div class="kth-sec-box accent-box">
+                    <div class="kth-sec-title">
+                        <span class="material-symbols-outlined">straighten</span>
+                        1. 部位および梁・底盤寸法
+                    </div>
+                    <div class="kth-form-grid">
+                        <div class="kth-form-group" style="grid-column: 1 / -1;">
+                            <label for="input_part_name">検討部位・通り名:</label>
+                            <input type="text" id="input_part_name" value="片土圧基礎梁 FG1 (X1通り Y1-Y3)" style="padding:6px 10px; border:1px solid #cbd5e1; border-radius:6px;">
+                        </div>
+
+                        <div class="kth-form-group">
+                            <label for="input_b">基礎梁幅 b:</label>
+                            <div class="kth-input-unit">
+                                <input type="number" id="input_b" value="150" step="10">
+                                <span class="kth-unit">mm</span>
+                            </div>
+                        </div>
+
+                        <div class="kth-form-group">
+                            <label for="input_D">基礎梁せい D:</label>
+                            <div class="kth-input-unit">
+                                <input type="number" id="input_D" value="1500" step="50">
+                                <span class="kth-unit">mm</span>
+                            </div>
+                        </div>
+
+                        <div class="kth-form-group">
+                            <label for="input_dh">人通口欠損せい:</label>
+                            <div class="kth-input-unit">
+                                <input type="number" id="input_dh" value="0" step="50">
+                                <span class="kth-unit">mm</span>
+                            </div>
+                        </div>
+
+                        <div class="kth-form-group">
+                            <label for="input_LB">つま先版の出 LB:</label>
+                            <div class="kth-input-unit">
+                                <input type="number" id="input_LB" value="450" step="50">
+                                <span class="kth-unit">mm</span>
+                            </div>
+                        </div>
+
+                        <div class="kth-form-group">
+                            <label for="input_a">かかと版の出 a:</label>
+                            <div class="kth-input-unit">
+                                <input type="number" id="input_a" value="0" step="50">
+                                <span class="kth-unit">mm</span>
+                            </div>
+                        </div>
+
+                        <div class="kth-form-group">
+                            <label for="input_dtb">底盤スラブ厚 dtb:</label>
+                            <div class="kth-input-unit">
+                                <input type="number" id="input_dtb" value="200" step="10">
+                                <span class="kth-unit">mm</span>
+                            </div>
+                        </div>
+
+                        <div class="kth-form-group">
+                            <label for="input_Lw">基礎梁スパン Lw:</label>
+                            <div class="kth-input-unit">
+                                <input type="number" id="input_Lw" value="3.640" step="0.001">
+                                <span class="kth-unit">m</span>
+                            </div>
+                        </div>
+
+                        <div class="kth-form-group">
+                            <label for="input_Lo">ねじり抵抗梁間内法 Lo:</label>
+                            <div class="kth-input-unit">
+                                <input type="number" id="input_Lo" value="3.640" step="0.001">
+                                <span class="kth-unit">m</span>
+                            </div>
+                        </div>
+
+                        <div class="kth-form-group">
+                            <label for="input_L">桁行スパン L (滑動用):</label>
+                            <div class="kth-input-unit">
+                                <input type="number" id="input_L" value="3.640" step="0.001">
+                                <span class="kth-unit">m</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- セクション2: 地盤および土圧条件 -->
+                <div class="kth-sec-box">
+                    <div class="kth-sec-title">
+                        <span class="material-symbols-outlined">terrain</span>
+                        2. 地盤・土圧および荷重条件
+                    </div>
+                    <div class="kth-form-grid">
+                        <div class="kth-form-group" style="grid-column: 1 / -1;">
+                            <label for="input_earth_direction">土圧の作用方向:</label>
+                            <select id="input_earth_direction" style="padding:6px 10px; border:1px solid #cbd5e1; border-radius:6px; font-weight:bold; color:#1e3a8a;">
+                                <option value="site_to_building" selected>敷地側（外側）から建物側へ押す 【標準】</option>
+                                <option value="building_to_site">建物側（内側）から敷地側へ押す</option>
+                            </select>
+                        </div>
+
+                        <div class="kth-form-group">
+                            <label for="input_delta_h">地盤差 Δh:</label>
+                            <div class="kth-input-unit">
+                                <input type="number" id="input_delta_h" value="0.800" step="0.05">
+                                <span class="kth-unit">m</span>
+                            </div>
+                        </div>
+
+                        <div class="kth-form-group">
+                            <label for="input_Df">根入れ深さ Df:</label>
+                            <div class="kth-input-unit">
+                                <input type="number" id="input_Df" value="0.400" step="0.05">
+                                <span class="kth-unit">m</span>
+                            </div>
+                        </div>
+
+                        <div class="kth-form-group">
+                            <label for="input_gamma_soil">土の単位体積重量 γ:</label>
+                            <div class="kth-input-unit">
+                                <input type="number" id="input_gamma_soil" value="16.0" step="1.0">
+                                <span class="kth-unit">kN/m³</span>
+                            </div>
+                        </div>
+
+                        <div class="kth-form-group">
+                            <label for="input_Ko">静止土圧係数 Ko:</label>
+                            <div class="kth-input-unit">
+                                <input type="number" id="input_Ko" value="0.50" step="0.05">
+                                <span class="kth-unit">-</span>
+                            </div>
+                        </div>
+
+                        <div class="kth-form-group">
+                            <label for="input_q2">地上表面載荷重 q2 (高側):</label>
+                            <div class="kth-input-unit">
+                                <input type="number" id="input_q2" value="2.0" step="0.5">
+                                <span class="kth-unit">kN/m²</span>
+                            </div>
+                        </div>
+
+                        <div class="kth-form-group">
+                            <label for="input_q1">地上表面載荷重 q1 (低側):</label>
+                            <div class="kth-input-unit">
+                                <input type="number" id="input_q1" value="0.0" step="0.5">
+                                <span class="kth-unit">kN/m²</span>
+                            </div>
+                        </div>
+
+                        <div class="kth-form-group">
+                            <label for="input_Wb">基礎梁長期等分布荷重 Wb:</label>
+                            <div class="kth-input-unit">
+                                <input type="number" id="input_Wb" value="12.50" step="0.5">
+                                <span class="kth-unit">kN/m</span>
+                            </div>
+                        </div>
+
+                        <div class="kth-form-group">
+                            <label for="input_sigma_w">建物全自重 ΣW (滑動用):</label>
+                            <div class="kth-input-unit">
+                                <input type="number" id="input_sigma_w" value="220.0" step="10.0">
+                                <span class="kth-unit">kN</span>
+                            </div>
+                        </div>
+
+                        <div class="kth-form-group">
+                            <label for="input_mu">地盤摩擦係数 μ:</label>
+                            <div class="kth-input-unit">
+                                <input type="number" id="input_mu" value="0.40" step="0.05">
+                                <span class="kth-unit">-</span>
+                            </div>
+                        </div>
+
+                        <div class="kth-form-group">
+                            <label for="input_res_moment_factor">自重抵抗モーメント考慮:</label>
+                            <select id="input_res_moment_factor">
+                                <option value="1.0" selected>基準書通り (T1 × 1.0)</option>
+                                <option value="0.9">安全側低減 (T1 × 0.9)</option>
+                                <option value="0.0">自重抵抗を見込まない (T1 = 0)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- セクション3: 配筋および材料設定 -->
+                <div class="kth-sec-box">
+                    <div class="kth-sec-title">
+                        <span class="material-symbols-outlined">rebar</span>
+                        3. 配筋および材料諸元
+                    </div>
+
+                    <div style="font-size:0.84rem; font-weight:700; color:#1e40af; margin-bottom:8px;">
+                        【コンクリート強度】
+                    </div>
+                    <div class="kth-form-grid" style="margin-bottom:14px;">
+                        <div class="kth-form-group">
+                            <label for="input_fc">設計基準強度 Fc:</label>
+                            <select id="input_fc">
+                                <option value="21" selected>Fc 21 N/mm² (長期Lfs = 0.70)</option>
+                                <option value="24">Fc 24 N/mm² (長期Lfs = 0.73)</option>
+                                <option value="27">Fc 27 N/mm² (長期Lfs = 0.76)</option>
+                                <option value="30">Fc 30 N/mm² (長期Lfs = 0.79)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- 上主筋 -->
+                    <div style="font-size:0.84rem; font-weight:700; color:#1e40af; margin-bottom:8px; display:flex; justify-content:space-between;">
+                        <span>【基礎梁 上主筋】(2種併用可)</span>
+                        <span id="disp_as_top" style="color:#0f172a; font-weight:800;">- mm²</span>
+                    </div>
+                    <div class="kth-form-grid" style="margin-bottom:12px;">
+                        <div class="kth-form-group">
+                            <label>径1 / 本数1:</label>
+                            <div class="kth-input-unit">
+                                <select id="input_top_dia1" style="width:50%;">
+                                    <option value="D10">D10</option>
+                                    <option value="D13" selected>D13</option>
+                                    <option value="D16">D16</option>
+                                </select>
+                                <input type="number" id="input_top_count1" value="1" min="0" max="8" style="width:50%;">
+                                <span class="kth-unit">本</span>
+                            </div>
+                        </div>
+                        <div class="kth-form-group">
+                            <label>径2 / 本数2 (追加):</label>
+                            <div class="kth-input-unit">
+                                <select id="input_top_dia2" style="width:50%;">
+                                    <option value="none" selected>なし</option>
+                                    <option value="D10">D10</option>
+                                    <option value="D13">D13</option>
+                                    <option value="D16">D16</option>
+                                </select>
+                                <input type="number" id="input_top_count2" value="0" min="0" max="8" style="width:50%;">
+                                <span class="kth-unit">本</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 下主筋 -->
+                    <div style="font-size:0.84rem; font-weight:700; color:#1e40af; margin-bottom:8px; display:flex; justify-content:space-between;">
+                        <span>【基礎梁 下主筋】(2種併用可)</span>
+                        <span id="disp_as_bot" style="color:#0f172a; font-weight:800;">- mm²</span>
+                    </div>
+                    <div class="kth-form-grid" style="margin-bottom:12px;">
+                        <div class="kth-form-group">
+                            <label>径1 / 本数1:</label>
+                            <div class="kth-input-unit">
+                                <select id="input_bot_dia1" style="width:50%;">
+                                    <option value="D10">D10</option>
+                                    <option value="D13" selected>D13</option>
+                                    <option value="D16">D16</option>
+                                </select>
+                                <input type="number" id="input_bot_count1" value="1" min="0" max="8" style="width:50%;">
+                                <span class="kth-unit">本</span>
+                            </div>
+                        </div>
+                        <div class="kth-form-group">
+                            <label>径2 / 本数2 (追加):</label>
+                            <div class="kth-input-unit">
+                                <select id="input_bot_dia2" style="width:50%;">
+                                    <option value="none" selected>なし</option>
+                                    <option value="D10">D10</option>
+                                    <option value="D13">D13</option>
+                                    <option value="D16">D16</option>
+                                </select>
+                                <input type="number" id="input_bot_count2" value="0" min="0" max="8" style="width:50%;">
+                                <span class="kth-unit">本</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- スターラップ & 側面筋 -->
+                    <div style="font-size:0.84rem; font-weight:700; color:#1e40af; margin-bottom:8px;">
+                        【せん断補強筋(STP) & 側面筋(ねじり補強軸筋)】
+                    </div>
+                    <div class="kth-form-grid" style="margin-bottom:12px;">
+                        <div class="kth-form-group">
+                            <label for="input_stp_dia">STP 径 / ピッチ:</label>
+                            <div class="kth-input-unit">
+                                <select id="input_stp_dia" style="width:50%;">
+                                    <option value="D10" selected>D10</option>
+                                    <option value="D13">D13</option>
+                                    <option value="D16">D16</option>
+                                </select>
+                                <select id="input_stp_pitch" style="width:50%;">
+                                    <option value="75">@75</option>
+                                    <option value="100">@100</option>
+                                    <option value="150">@150</option>
+                                    <option value="200" selected>@200</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="kth-form-group">
+                            <label for="input_side_dia">側面筋 径 / 本数:</label>
+                            <div class="kth-input-unit">
+                                <select id="input_side_dia" style="width:50%;">
+                                    <option value="D10" selected>D10</option>
+                                    <option value="D13">D13</option>
+                                    <option value="D16">D16</option>
+                                </select>
+                                <input type="number" id="input_side_count" value="4" min="0" max="10" step="2" style="width:50%;">
+                                <span class="kth-unit">本</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 底盤配筋 -->
+                    <div style="font-size:0.84rem; font-weight:700; color:#1e40af; margin-bottom:8px;">
+                        【底盤スラブ配筋】
+                    </div>
+                    <div class="kth-form-grid">
+                        <div class="kth-form-group">
+                            <label for="input_base_dia">底盤筋 径 / ピッチ:</label>
+                            <div class="kth-input-unit">
+                                <select id="input_base_dia" style="width:50%;">
+                                    <option value="D10">D10</option>
+                                    <option value="D13" selected>D13</option>
+                                    <option value="D16">D16</option>
+                                </select>
+                                <select id="input_base_pitch" style="width:50%;">
+                                    <option value="75">@75</option>
+                                    <option value="100">@100</option>
+                                    <option value="150" selected>@150</option>
+                                    <option value="200">@200</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="kth-form-group">
+                            <label for="input_base_type">底盤配筋種別:</label>
+                            <select id="input_base_type">
+                                <option value="single" selected>シングル配筋 (標準)</option>
+                                <option value="double">ダブル配筋</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右側: 動的断面図プレビュー & 詳細計算結果 & 構造力学的留意事項 -->
+            <div class="kth-preview-column">
+                <!-- SVGリアルタイム断面図 -->
+                <div class="kth-preview-panel">
+                    <div style="font-weight:800; font-size:0.95rem; color:#1e3a8a; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
+                        <span>断面配筋図プレビュー (動的可変)</span>
+                        <span style="font-size:0.75rem; color:#64748b; font-weight:normal;">入力寸法・配筋に連動</span>
+                    </div>
+                    <div class="kth-svg-container" id="preview_svg_container">
+                        <!-- 動的SVGが挿入されます -->
+                    </div>
+                </div>
+
+                <!-- 構造力学的注意点アドバイザリーカード -->
+                <div class="kth-alert-box warning">
+                    <div class="kth-alert-title">
+                        <span class="material-symbols-outlined" style="font-size:18px;">warning</span>
+                        片土圧基礎梁設計における構造力学上の重要チェック事項
+                    </div>
+                    <ul style="margin: 0; padding-left: 18px; font-size:0.8rem; line-height:1.55;">
+                        <li><b>自重抵抗モーメントT1の全量控除</b>: 基準書式では自重抵抗T1をそのまま全量差し引く仕様ですが、上部荷重の変動や浮き上がりを考慮し、実務上は安全側低減(×0.9)や自重抵抗を見込まない検討も併せてご確認ください。</li>
+                        <li><b>直交梁(ねじり抵抗梁)の回転拘束剛性</b>: 基礎梁が受けるねじりモーメントを支える直交梁の曲げ剛性が不足すると、基礎梁端部のねじれ角が増大します。直交梁のせい確保およびハンチ補強を推奨します。</li>
+                        <li><b>高成梁(W=150, H=1500)のねじれ座屈・面外曲げ</b>: アスペクト比10の高成梁は薄肉挙動を示しやすいため、側面筋(腹筋)を確実に配置し、ねじりによる斜めひび割れを抑制してください。</li>
+                        <li><b>接地圧偏心と浮き上がり</b>: 片土圧による転倒力で底盤下の接地圧はつま先側に偏心します。偏心距離 e ≦ B/6 を超える場合は浮き上がりによる地盤反力の局所化にご留意ください。</li>
+                    </ul>
+                </div>
+
+                <!-- 詳細計算結果テーブル -->
+                <div class="kth-sec-box" style="margin-top:18px;">
+                    <div class="kth-sec-title">
+                        <span class="material-symbols-outlined">calculate</span>
+                        作用断面力および検定詳細結果
+                    </div>
+
+                    <table class="kth-table">
+                        <thead>
+                            <tr>
+                                <th>項目</th>
+                                <th>算定値</th>
+                                <th>許容値・基準</th>
+                                <th>検定値 / 判定</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="text-align:left; font-weight:bold;">長期曲げ検定 (LM)</td>
+                                <td>LM = <span id="res_LM">-</span> kN·m</td>
+                                <td>LMa = <span id="res_LMa">-</span> kN·m</td>
+                                <td><span id="res_bend_ratio">-</span> (<span id="res_bend_judge">-</span>)</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:left; font-weight:bold;">ねじり一次検定</td>
+                                <td>LT = <span id="res_LT">-</span> kN·m<br>LQ = <span id="res_LQ">-</span> kN</td>
+                                <td>LTa1 = <span id="res_LTa1">-</span> kN·m<br>LQa = <span id="res_LQa1">-</span> kN</td>
+                                <td>(T/Ta1)²+(Q/Qa)² = <span id="res_check1">-</span> ≦ 1.0 (<span id="res_check1_judge">-</span>)</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:left;">STP間隔規定</td>
+                                <td>x = <span id="input_stp_pitch_disp">200</span> mm</td>
+                                <td>≦ min(aw/0.002b, D/2) = <span id="res_stp_limit">-</span> mm</td>
+                                <td><span id="res_stp_judge">-</span></td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:left; font-weight:bold;">ねじり二次検定</td>
+                                <td>LT = <span id="res_LT_2">-</span> kN·m<br>LQ = <span id="res_LQ_2">-</span> kN</td>
+                                <td>LTa2 = <span id="res_LTa2">-</span> kN·m<br>LQa2 = <span id="res_LQa2">-</span> kN</td>
+                                <td>(T/Ta2)²+(Q/Qa2)² = <span id="res_check2">-</span> ≦ 1.0 (<span id="res_check2_judge">-</span>)</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:left; font-weight:bold;">滑動検定</td>
+                                <td>P = <span id="res_P_total">-</span> kN</td>
+                                <td>F = <span id="res_F_fric">-</span> kN</td>
+                                <td>安全率 = <span id="res_sliding_sf">-</span> ≧ 1.50 (<span id="res_sliding_judge">-</span>)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div style="font-size:0.78rem; color:#64748b; margin-top:8px; line-height:1.45;">
+                        ※土圧合力: Pq=<span id="res_Pq">-</span> kN/m, Py=<span id="res_Py">-</span> kN/m | 土圧モーメント: Tq=<span id="res_Tq">-</span>, Ty=<span id="res_Ty">-</span>, T2=<span id="res_T2">-</span> kN·m/m | 抵抗モーメント: T1=<span id="res_T1">-</span> kN·m/m
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================================================
+         A4 印刷エリア (#print_area) - 印刷時のみ表示
+         ========================================================================== -->
+    <div id="print_area">
+        <!-- ページ 1: 設計条件・諸元・動的SVG断面図・作用力算定 -->
+        <div class="print-page">
+            <div class="print-header-block">
+                <div>
+                    <div class="print-main-title">片土圧基礎梁の計算書</div>
+                    <div style="font-size:8pt; color:#333;">準拠基準: 建築基礎構造設計基準 / 第5章 基礎ただし書計算基準</div>
+                </div>
+                <div class="print-meta-grid">
+                    <div><b>工事名称:</b> <span id="print_g_project">-</span></div>
+                    <div><b>計算日:</b> <span id="print_g_date">-</span></div>
+                    <div><b>設計者:</b> <span id="print_g_engineer">-</span></div>
+                </div>
+            </div>
+
+            <!-- 総括判定概要 -->
+            <div style="display:flex; justify-content:space-between; align-items:center; background:#f8fafc; border:1px solid #000; padding:4px 8px; margin-bottom:8px;">
+                <div style="font-weight:bold; font-size:8.5pt;">【検討部位】: <span id="print_part_name">-</span></div>
+                <div style="display:flex; gap:12px; font-size:8pt;">
+                    <span>長期曲げ: <span id="p_bend_badge" class="print-judgment-badge ok">適合 OK</span></span>
+                    <span>ねじり一次: <span id="p_check1_badge" class="print-judgment-badge ok">適合 OK</span></span>
+                    <span>ねじり二次: <span id="p_check2_badge" class="print-judgment-badge ok">適合 OK</span></span>
+                    <span>滑動: <span id="p_sliding_badge" class="print-judgment-badge ok">適合 OK</span></span>
+                </div>
+            </div>
+
+            <div class="print-sec-heading">1. 断面・地盤・配筋諸元一覧</div>
+            <table class="print-table">
+                <tbody>
+                    <tr>
+                        <th style="width:20%;">基礎梁・底盤寸法</th>
+                        <td style="text-align:left; width:80%;" id="p_dim">-</td>
+                    </tr>
+                    <tr>
+                        <th>地盤・土圧条件</th>
+                        <td style="text-align:left;" id="p_soil">-</td>
+                    </tr>
+                    <tr>
+                        <th>基礎梁 配筋</th>
+                        <td style="text-align:left;">
+                            上主筋: <span id="p_rebar_top">-</span> / 下主筋: <span id="p_rebar_bot">-</span><br>
+                            STP: <span id="p_rebar_stp">-</span> / 側面筋: <span id="p_rebar_side">-</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>底盤配筋・材料</th>
+                        <td style="text-align:left;">
+                            底盤筋: <span id="p_rebar_base">-</span> / 材料: <span id="p_material">-</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="print-sec-heading">2. 基礎梁配筋断面図</div>
+            <div class="print-svg-box" id="print_svg_container">
+                <!-- 動的SVGが挿入されます -->
+            </div>
+
+            <div class="print-sec-heading">3. 作用荷重および断面力の算定</div>
+            <table class="print-table">
+                <thead>
+                    <tr>
+                        <th>項目</th>
+                        <th>算定式・根拠</th>
+                        <th>数値</th>
+                        <th>単位</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="font-weight:bold;">土圧モーメント T2</td>
+                        <td style="text-align:left;">Tq + Ty = [Pq·(Δh+Df)/2] + [Py·(Δh+Df)/3]</td>
+                        <td id="p_T2">-</td>
+                        <td>kN·m/m</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:bold;">自重抵抗モーメント T1</td>
+                        <td style="text-align:left;">Σ(Wi · ei) (底盤自重・土重・表面載荷等による梁軸中心周り抵抗)</td>
+                        <td id="p_T1">-</td>
+                        <td>kN·m/m</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:bold;">設計用ねじりモーメント LT</td>
+                        <td style="text-align:left;">(T2 - γres · T1) · Lo / 2</td>
+                        <td id="p_LT">-</td>
+                        <td>kN·m</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:bold;">設計用長期せん断力 LQ</td>
+                        <td style="text-align:left;">Wb · Lw / 2</td>
+                        <td id="p_LQ">-</td>
+                        <td>kN</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:bold;">設計用長期曲げモーメント LM</td>
+                        <td style="text-align:left;">(1/8) · Wb · Lw²</td>
+                        <td id="p_LM">-</td>
+                        <td>kN·m</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="print-notes">
+                <b>【特記事項・設計条件】</b><br>
+                1. 片土圧基礎梁の応力算定は、背面土および地上載荷重による側圧に対し、梁自身のねじり剛性および直交基礎梁への応力伝達に基づき検討しています。<br>
+                2. コンクリート強度 Fc=21 N/mm² (長期せん断 Lfs=0.70 N/mm²), 鉄筋 SD295A (長期引張 Lft=196 N/mm²)。
+            </div>
+        </div>
+
+        <!-- ページ 2: 長期曲げ・ねじり一次・ねじり二次・滑動検定・構造力学上の留意事項 -->
+        <div class="print-page">
+            <div class="print-header-block">
+                <div class="print-main-title">片土圧基礎梁の計算書 (検定詳細)</div>
+                <div class="print-meta-grid">
+                    <div><b>工事名称:</b> <span id="print_g_project_p2">-</span></div>
+                    <div><b>部位:</b> <span id="print_part_name_p2">-</span></div>
+                </div>
+            </div>
+
+            <div class="print-sec-heading">4. 基礎梁断面検定</div>
+
+            <!-- 検定1: 長期曲げ -->
+            <table class="print-table">
+                <thead>
+                    <tr>
+                        <th colspan="4" style="text-align:left; background:#f1f5f9;">(1) 長期曲げ検定 (下端引張: LM ≦ LMa)</th>
+                    </tr>
+                    <tr>
+                        <th>応力中心距離 j</th>
+                        <th>長期許容曲げモーメント LMa</th>
+                        <th>検定比 (LM / LMa)</th>
+                        <th>判定</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>j = 7/8·d</td>
+                        <td id="p_LMa">-</td>
+                        <td id="p_bend_ratio">-</td>
+                        <td id="p_bend_judge" style="font-weight:bold;">-</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- 検定2: ねじり一次 -->
+            <table class="print-table" style="margin-top:6px;">
+                <thead>
+                    <tr>
+                        <th colspan="4" style="text-align:left; background:#f1f5f9;">(2) ねじり一次検定 (無補強コンクリートねじり耐力基準)</th>
+                    </tr>
+                    <tr>
+                        <th>許容ねじり耐力 LTa1</th>
+                        <th>許容せん断力 LQa1</th>
+                        <th>検定式: (LT/LTa1)² + (LQ/LQa1)²</th>
+                        <th>判定</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td id="p_LTa1">-</td>
+                        <td id="p_LQa1">-</td>
+                        <td id="p_check1">-</td>
+                        <td id="p_check1_judge" style="font-weight:bold;">-</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- 検定3: ねじり二次 -->
+            <table class="print-table" style="margin-top:6px;">
+                <thead>
+                    <tr>
+                        <th colspan="5" style="text-align:left; background:#f1f5f9;">(3) ねじり二次検定 (補強筋寄与によるねじり終局耐力基準)</th>
+                    </tr>
+                    <tr>
+                        <th>核断面積 Ao / 周長 ψo</th>
+                        <th>軸筋寄与 LTo1 / 肋筋寄与 LTo2</th>
+                        <th>許容ねじり耐力 LTa2</th>
+                        <th>偏心許容せん断力 LQa2</th>
+                        <th>検定値 / 判定</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span id="p_Ao">-</span> / <span id="p_psi_o">-</span></td>
+                        <td><span id="p_LTo1">-</span> / <span id="p_LTo2">-</span></td>
+                        <td id="p_LTa2">-</td>
+                        <td id="p_LQa2">-</td>
+                        <td><span id="p_check2">-</span> ≦ 1.0 (<span id="p_check2_judge" style="font-weight:bold;">-</span>)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="print-sec-heading">5. 基礎全体の滑動検定</div>
+            <table class="print-table">
+                <thead>
+                    <tr>
+                        <th>水平滑動力 P = (Pq + Py) · L</th>
+                        <th>基礎底面抵抗摩擦力 F = μ · ΣW</th>
+                        <th>滑動安全率 (F / P)</th>
+                        <th>判定 (基準: ≧ 1.50)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td id="p_P_total">-</td>
+                        <td id="p_F_fric">-</td>
+                        <td id="p_sliding_sf">-</td>
+                        <td id="p_sliding_judge" style="font-weight:bold;">-</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="print-sec-heading">6. 構造力学上の考察および留意事項</div>
+            <div class="print-notes" style="font-size:7.2pt; line-height:1.45;">
+                <b>1. 自重抵抗モーメントT1の評価</b>: 基準書式では抵抗モーメントT1を全量差し引く規定ですが、建物鉛直荷重の低減や施工時の未載荷状態を考慮し、安全率の確認を行っています。<br>
+                <b>2. 直交梁(ねじり抵抗梁)との剛比分配</b>: 片土圧による基礎梁のねじれは、直交する基礎梁の曲げ剛性によって拘束されます。直交梁端部には基礎梁から伝達されたねじりモーメントに応じた曲げモーメントが発生するため、直交梁の配筋およびハンチ補強を適切に施工してください。<br>
+                <b>3. 高成偏平梁の薄肉ねじり挙動</b>: 幅150mm、せい1500mmの高成梁では、サンブナンねじりだけでなく面外変形・そりねじり応力が発生しやすくなります。側面筋(腹筋)を配置し、スターラップのかぶり厚さを確保して施工してください。<br>
+                <b>4. 底盤接地圧の偏心と浮き上がり</b>: 片土圧作用により底盤下の地盤反力は偏心します。つま先側端部の最大接地圧が地盤の長期許容支持力度以内であることを併せてご確認ください。
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../js/common.js?v=20261006_v11"></script>
+<script src="../js/katadatsu_kisohari.js?v=20261110_v1"></script>
+</body>
+</html>

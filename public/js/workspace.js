@@ -118,6 +118,16 @@
       planGroup: ["all"]
     },
     {
+      id: "katadatsu_kisohari",
+      name: "片土圧基礎梁の計算書",
+      category: "foundation",
+      frequent: false,
+      icon: "foundation",
+      url: "/app/tools/katadatsu_kisohari.html",
+      desc: "片土圧基礎梁の長期曲げ・ねじり一次二次・滑動検定書（動的断面図・A4出力）",
+      planGroup: ["all"]
+    },
+    {
       id: "youheki_calculator",
       name: "逆L型・逆T型擁壁の計算",
       category: "foundation",

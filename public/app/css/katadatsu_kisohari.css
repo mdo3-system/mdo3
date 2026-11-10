@@ -1,0 +1,452 @@
+@charset "UTF-8";
+
+/* ==========================================================================
+   片土圧基礎梁の計算書 (katadatsu_kisohari.css)
+   mdo3 構造計算補助ツール - A4印刷・レスポンシブ・SVG動的描画対応
+   ========================================================================== */
+
+:root {
+    --primary: #1e3a8a;
+    --primary-light: #3b82f6;
+    --accent: #2563eb;
+    --success: #16a34a;
+    --warning: #ca8a04;
+    --danger: #dc2626;
+    --border-color: #cbd5e1;
+    --bg-light: #f8fafc;
+    --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+}
+
+.tool-container {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 16px 20px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
+    color: #1e293b;
+}
+
+/* メインカード */
+.kth-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 24px 28px;
+    margin-bottom: 24px;
+    box-shadow: var(--card-shadow);
+}
+
+.kth-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 14px;
+    margin-bottom: 20px;
+}
+
+.kth-title-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.kth-title-icon {
+    font-size: 28px;
+    color: var(--accent);
+}
+
+.kth-card-title {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.01em;
+}
+
+.kth-badge-paid {
+    background: #fef3c7;
+    color: #92400e;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 4px;
+    border: 1px solid #fde68a;
+    vertical-align: middle;
+}
+
+/* 総括判定バッジバー */
+.kth-summary-banner {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+    margin-bottom: 24px;
+}
+
+.kth-status-badge {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    transition: all 0.2s ease;
+}
+
+.kth-status-badge.ok {
+    background: #f0fdf4;
+    border-color: #86efac;
+}
+
+.kth-status-badge.ng {
+    background: #fef2f2;
+    border-color: #fca5a5;
+}
+
+.kth-status-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #64748b;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.kth-status-value {
+    font-size: 1.2rem;
+    font-weight: 900;
+    color: #0f172a;
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+}
+
+.kth-status-pill {
+    font-size: 0.8rem;
+    padding: 2px 8px;
+    border-radius: 9999px;
+    font-weight: 800;
+}
+
+.kth-status-pill.ok {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.kth-status-pill.ng {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+/* 2カラムレイアウト: 左側入力フォーム、右側リアルタイムSVG図面プレビュー */
+.kth-main-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    align-items: start;
+}
+
+@media (max-width: 1024px) {
+    .kth-main-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* セクションボックス */
+.kth-sec-box {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 18px 20px;
+    margin-bottom: 18px;
+}
+
+.kth-sec-box.accent-box {
+    border-left: 4px solid var(--accent);
+}
+
+.kth-sec-title {
+    font-size: 0.98rem;
+    font-weight: 800;
+    color: #1e3a8a;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+/* 入力行 */
+.kth-form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 12px 16px;
+}
+
+.kth-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.kth-form-group label {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #475569;
+}
+
+.kth-input-unit {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.kth-input-unit input,
+.kth-input-unit select {
+    width: 100%;
+    padding: 6px 10px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 0.92rem;
+    background: #ffffff;
+    color: #0f172a;
+    transition: border-color 0.15s ease;
+}
+
+.kth-input-unit input:focus,
+.kth-input-unit select:focus {
+    border-color: var(--accent);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+}
+
+.kth-unit {
+    font-size: 0.8rem;
+    color: #64748b;
+    font-weight: 600;
+    white-space: nowrap;
+    min-width: 38px;
+}
+
+/* SVGプレビューカード */
+.kth-preview-panel {
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    padding: 16px;
+    position: sticky;
+    top: 20px;
+}
+
+.kth-svg-container {
+    width: 100%;
+    height: 480px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.kth-svg-container svg {
+    width: 100%;
+    height: 100%;
+}
+
+/* 構造力学的注意点アドバイザリーカード */
+.kth-alert-box {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-top: 18px;
+    font-size: 0.84rem;
+    color: #1e40af;
+    line-height: 1.6;
+}
+
+.kth-alert-box.warning {
+    background: #fffbeb;
+    border-color: #fde68a;
+    color: #92400e;
+}
+
+.kth-alert-title {
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 6px;
+}
+
+/* テーブルスタイル */
+.kth-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    margin-top: 10px;
+}
+
+.kth-table th,
+.kth-table td {
+    border: 1px solid #e2e8f0;
+    padding: 8px 10px;
+    text-align: center;
+}
+
+.kth-table th {
+    background: #f1f5f9;
+    color: #334155;
+    font-weight: 700;
+}
+
+.kth-table tr:hover td {
+    background: #f8fafc;
+}
+
+/* A4印刷用スタイル */
+#print_area {
+    display: none;
+}
+
+@media print {
+    body {
+        background: #ffffff !important;
+        font-size: 8pt !important;
+        color: #000000 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .no-print,
+    header,
+    .global-header-nav,
+    .global-header-inputs,
+    .tool-action-bar {
+        display: none !important;
+    }
+
+    #print_area {
+        display: block !important;
+        padding: 0;
+        margin: 0;
+    }
+
+    @page {
+        size: A4 portrait;
+        margin: 10mm 12mm;
+    }
+
+    .print-page {
+        page-break-after: always;
+        height: 275mm;
+        box-sizing: border-box;
+        position: relative;
+    }
+
+    .print-page:last-child {
+        page-break-after: auto;
+    }
+
+    .print-header-block {
+        border-bottom: 2px solid #000000;
+        padding-bottom: 4px;
+        margin-bottom: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+    }
+
+    .print-main-title {
+        font-size: 14pt;
+        font-weight: 800;
+        letter-spacing: 0.05em;
+    }
+
+    .print-meta-grid {
+        display: flex;
+        gap: 16px;
+        font-size: 8pt;
+    }
+
+    .print-sec-heading {
+        font-size: 9pt;
+        font-weight: 800;
+        background: #f1f5f9 !important;
+        border-left: 3px solid #000000;
+        padding: 3px 6px;
+        margin: 8px 0 4px 0;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .print-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 7.5pt;
+        margin-bottom: 6px;
+    }
+
+    .print-table th,
+    .print-table td {
+        border: 1px solid #000000 !important;
+        padding: 3px 4px !important;
+        text-align: center;
+    }
+
+    .print-table th {
+        background-color: #f8fafc !important;
+        font-weight: 700 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .print-svg-box {
+        width: 100%;
+        height: 190px;
+        border: 1px solid #000000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 6px 0;
+        background: #ffffff;
+    }
+
+    .print-svg-box svg {
+        width: 100%;
+        height: 100%;
+    }
+
+    .print-judgment-badge {
+        display: inline-block;
+        padding: 2px 6px;
+        border: 1px solid #000000;
+        font-weight: 800;
+        font-size: 7.5pt;
+    }
+
+    .print-judgment-badge.ok {
+        background: #e2e8f0 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .print-judgment-badge.ng {
+        background: #fca5a5 !important;
+        color: #000000 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .print-notes {
+        font-size: 6.8pt;
+        line-height: 1.35;
+        border: 1px solid #666;
+        padding: 5px 8px;
+        margin-top: 6px;
+    }
+}
