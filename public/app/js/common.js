@@ -111,7 +111,12 @@ const GlobalInfo = {
     updatePrintHeader: function() {
         const data = this.getData();
         const printHeader = document.getElementById('global-print-header');
-        const docTitle = document.title; // ツールごとのタイトルタグを取得
+        // ツールごとのタイトルタグを取得し、計算書提出用にサービス名・ドメイン・不要サフィックスを除去
+        let docTitle = document.title || "";
+        docTitle = docTitle.replace(/\s*\|\s*mdo3?(\.com)?/gi, '')
+                           .replace(/\s*mdo3?(\.com)?/gi, '')
+                           .replace(/\s*\|\s*構造計算補助ツール/g, '')
+                           .trim();
 
         if(printHeader) {
             printHeader.innerHTML = `

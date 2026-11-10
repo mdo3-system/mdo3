@@ -324,6 +324,7 @@
 
     .no-print,
     header,
+    #global-print-header,
     .global-header-nav,
     .global-header-inputs,
     .tool-action-bar {
