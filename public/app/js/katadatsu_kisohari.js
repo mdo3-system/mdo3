@@ -49,6 +49,21 @@ function bindInputEvents() {
     });
 }
 
+function onSidePitchChange() {
+    const val = document.getElementById('input_side_pitch')?.value;
+    const manualInput = document.getElementById('input_side_count');
+    const autoDisp = document.getElementById('disp_side_auto_count');
+    if (val === 'manual') {
+        if (manualInput) manualInput.style.display = 'block';
+        if (autoDisp) autoDisp.style.display = 'none';
+    } else {
+        if (manualInput) manualInput.style.display = 'none';
+        if (autoDisp) autoDisp.style.display = 'inline-block';
+    }
+    calculateAndRender();
+}
+window.onSidePitchChange = onSidePitchChange;
+
 /**
  * 鉄筋断面積の合計算定 (2種併用対応)
  */
@@ -137,7 +152,25 @@ function calculateAndRender() {
 
     // 側面筋 (ねじり補強軸筋)
     const sideDia = document.getElementById('input_side_dia')?.value || 'D10';
-    const sideCount = parseInt(document.getElementById('input_side_count')?.value, 10) || 4;
+    const sidePitchVal = document.getElementById('input_side_pitch')?.value || '200';
+    let sideCount = 6;
+    let sideStages = 6;
+    let sideDesc = '';
+
+    if (sidePitchVal !== 'manual') {
+        const sidePitch = parseFloat(sidePitchVal) || 200;
+        const clearHeight = Math.max(200, Deff - 250);
+        sideStages = Math.max(1, Math.floor(clearHeight / sidePitch));
+        sideCount = (stemRebarType === 'double') ? sideStages * 2 : sideStages;
+        sideDesc = `@${sidePitch} (${sideStages}段)`;
+        const autoDisp = document.getElementById('disp_side_auto_count');
+        if (autoDisp) autoDisp.innerText = `${sideStages}段 (${sideCount}本)`;
+    } else {
+        sideCount = parseInt(document.getElementById('input_side_count')?.value, 10) || 6;
+        sideStages = (stemRebarType === 'double') ? Math.ceil(sideCount / 2) : sideCount;
+        sideDesc = `${sideStages}段 (${sideCount}本)`;
+    }
+
     const As_side = (REBAR_AREAS[sideDia] || 71.3) * sideCount;
     const Asw = As_top + As_bot + As_side;
 
@@ -320,7 +353,7 @@ function calculateAndRender() {
         topDia1, topCount1, topDia2, topCount2, As_top,
         botDia1, botCount1, botDia2, botCount2, As_bot,
         stpDia, stpPitch, aw1, aw, x_limit, isStpSpacingOk,
-        sideDia, sideCount, As_side, Asw,
+        sideDia, sideCount, sideStages, sidePitchVal, sideDesc, As_side, Asw,
         baseDia, basePitch, baseType,
         Pq, Py, Tq, Ty, T2, W1, e1, W2, e2, W3, e3, WF, e4, W5, e5, T1, LT, LQ, LM,
         d, j, LMa, bendRatio, isBendOk,
@@ -338,7 +371,7 @@ function calculateAndRender() {
         stemRebarType, vertDia, vertPitch, L_bend,
         topDia1, topCount1, topDia2, topCount2,
         botDia1, botCount1, botDia2, botCount2,
-        stpDia, stpPitch, sideDia, sideCount,
+        stpDia, stpPitch, sideDia, sideCount, sideStages, sidePitchVal, sideDesc,
         baseDia, basePitch, baseType
     };
 
@@ -494,7 +527,7 @@ function renderPrintArea(res) {
     setElemText('p_rebar_top', `${formatRebarDesc(res.topDia1, res.topCount1, res.topDia2, res.topCount2)} (As=${res.As_top.toFixed(1)}mm²)`);
     setElemText('p_rebar_bot', `${formatRebarDesc(res.botDia1, res.botCount1, res.botDia2, res.botCount2)} (As=${res.As_bot.toFixed(1)}mm²)`);
     setElemText('p_rebar_stp', `${res.stpDia}@${res.stpPitch} (${res.stemRebarType === 'double' ? 'ダブル組' : '標準組'} aw=${res.aw.toFixed(1)}mm²)`);
-    setElemText('p_rebar_side', `${res.sideCount}-${res.sideDia} (Asw合計=${res.Asw.toFixed(1)}mm²)`);
+    setElemText('p_rebar_side', `${res.sideCount}-${res.sideDia} (${res.stemRebarType === 'double' ? 'ダブル2列' : 'シングル1列'} ${res.sideDesc}, Asw合計=${res.Asw.toFixed(1)}mm²)`);
     setElemText('p_rebar_base', `${res.baseDia}@${res.basePitch} (${res.baseType === 'single' ? 'シングル' : 'ダブル'})`);
     setElemText('p_material', `Fc=${res.fc}N/mm² (Lfs=${res.Lfs}N/mm²), 鉄筋 SD295A (Lft=Lfwt=${res.Lft}N/mm²)`);
 
@@ -753,14 +786,23 @@ function renderDynamicSVG(opt) {
     }
 
     // 側面筋 (ねじり補強軸筋: 青丸)
-    const sideCount = parseInt(opt.sideCount, 10) || 4;
-    const pairs = Math.floor(sideCount / 2);
-    if (pairs > 0 && yStpBot > yStpTop + 50) {
-        const sideSpacingY = (yStpBot - yStpTop) / (pairs + 1);
-        for (let p = 1; p <= pairs; p++) {
-            const sy = yStpTop + p * sideSpacingY;
-            svg += `<circle cx="${xStpL + 2}" cy="${sy}" r="3.5" fill="#2563eb" />`;
-            svg += `<circle cx="${xStpR - 2}" cy="${sy}" r="3.5" fill="#2563eb" />`;
+    // シングル配筋時は中央1列に縦配置、ダブル配筋時は左右2列に配置
+    const sideCount = parseInt(opt.sideCount, 10) || 6;
+    const sideStages = opt.sideStages || (isDouble ? Math.max(1, Math.floor(sideCount / 2)) : sideCount);
+    const xCenter = (xBeamL + xBeamR) / 2;
+
+    if (sideStages > 0 && yStpBot > yStpTop + 50) {
+        const sideSpacingY = (yStpBot - yStpTop) / (sideStages + 1);
+        for (let s = 1; s <= sideStages; s++) {
+            const sy = yStpTop + s * sideSpacingY;
+            if (isDouble) {
+                // ダブル配筋: 左右のスターラップ内側に各段2本
+                svg += `<circle cx="${xStpL + 2}" cy="${sy}" r="3.5" fill="#2563eb" />`;
+                svg += `<circle cx="${xStpR - 2}" cy="${sy}" r="3.5" fill="#2563eb" />`;
+            } else {
+                // シングル配筋: 中央1列に各段1本
+                svg += `<circle cx="${xCenter}" cy="${sy}" r="3.5" fill="#2563eb" />`;
+            }
         }
     }
 
@@ -798,7 +840,7 @@ function renderDynamicSVG(opt) {
         <text x="${xBeamR + 12}" y="${yBeamTop + 14}">上主筋: ${formatRebarDesc(opt.topDia1, opt.topCount1, opt.topDia2, opt.topCount2)}</text>
         <text x="${xBeamR + 12}" y="${yBeamTop + 30}">縦筋: ${opt.vertDia}@${opt.vertPitch} (${isDouble ? 'ダブル配筋' : 'シングル配筋'})</text>
         <text x="${xBeamR + 12}" y="${yBeamTop + 46}">STP: ${opt.stpDia}@${opt.stpPitch}</text>
-        <text x="${xBeamR + 12}" y="${yBeamTop + 62}">側面筋: ${opt.sideCount}-${opt.sideDia}</text>
+        <text x="${xBeamR + 12}" y="${yBeamTop + 62}">側面筋: ${opt.sideCount}-${opt.sideDia} (${isDouble ? 'ダブル2列' : 'シングル1列'})</text>
         <text x="${xBeamR + 12}" y="${yRebarBot + 4}">下主筋: ${formatRebarDesc(opt.botDia1, opt.botCount1, opt.botDia2, opt.botCount2)}</text>
         <text x="${xSlabL}" y="${yBase - 8}" font-size="9.5" fill="#15803d">底盤: ${opt.baseDia}@${opt.basePitch} / 定着足 Lbend=${L_bend}mm</text>
     </g>`;

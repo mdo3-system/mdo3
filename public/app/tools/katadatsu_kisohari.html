@@ -415,15 +415,22 @@
                         </div>
 
                         <div class="kth-form-group">
-                            <label for="input_side_dia">側面筋 径 / 本数 (ねじり補強軸筋):</label>
+                            <label for="input_side_dia">側面筋 (ねじり補強軸筋) 径 / ピッチ:</label>
                             <div class="kth-input-unit">
-                                <select id="input_side_dia" style="width:50%;">
+                                <select id="input_side_dia" style="width:32%;">
                                     <option value="D10" selected>D10</option>
                                     <option value="D13">D13</option>
                                     <option value="D16">D16</option>
                                 </select>
-                                <input type="number" id="input_side_count" value="4" min="0" max="10" step="2" style="width:50%;">
-                                <span class="kth-unit">本</span>
+                                <select id="input_side_pitch" style="width:38%;" onchange="onSidePitchChange()">
+                                    <option value="150">@150</option>
+                                    <option value="200" selected>@200 (標準)</option>
+                                    <option value="250">@250</option>
+                                    <option value="300">@300</option>
+                                    <option value="manual">本数手動指定</option>
+                                </select>
+                                <span id="disp_side_auto_count" class="kth-unit" style="font-size:0.8rem; font-weight:bold; color:#1e40af; min-width:65px;">6段 (6本)</span>
+                                <input type="number" id="input_side_count" value="6" min="0" max="30" step="1" style="width:30%; display:none;">
                             </div>
                         </div>
 
