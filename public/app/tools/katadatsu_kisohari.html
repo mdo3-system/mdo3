@@ -317,68 +317,6 @@
                         </div>
                     </div>
 
-                    <!-- 立ち上がり配筋形式（シングル／ダブル）＆ 縦筋 -->
-                    <div style="font-size:0.84rem; font-weight:800; color:#b91c1c; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
-                        <span>【立ち上がり配筋形式 ＆ 面外曲げ負担縦筋】</span>
-                        <span id="disp_stem_type_badge" style="background:#fee2e2; color:#b91c1c; font-size:0.75rem; padding:2px 8px; border-radius:4px;">シングル</span>
-                    </div>
-                    <div class="kth-form-grid" style="margin-bottom:14px; background:#fff1f2; padding:10px 12px; border-radius:8px; border:1px solid #fecdd3;">
-                        <div class="kth-form-group">
-                            <label for="input_stem_rebar_type" style="color:#9f1239;">立ち上がり配筋方式:</label>
-                            <select id="input_stem_rebar_type" style="font-weight:bold; color:#9f1239;">
-                                <option value="single" selected>シングル配筋 (中央1列配筋)</option>
-                                <option value="double">ダブル配筋 (両面2列配筋・高耐力)</option>
-                            </select>
-                        </div>
-
-                        <div class="kth-form-group">
-                            <label for="input_vert_dia" style="color:#9f1239;">立ち上がり縦筋 径 / ピッチ:</label>
-                            <div class="kth-input-unit">
-                                <select id="input_vert_dia" style="width:50%;">
-                                    <option value="D10" selected>D10</option>
-                                    <option value="D13">D13</option>
-                                    <option value="D16">D16</option>
-                                </select>
-                                <select id="input_vert_pitch" style="width:50%;">
-                                    <option value="75">@75</option>
-                                    <option value="100">@100</option>
-                                    <option value="150">@150</option>
-                                    <option value="200" selected>@200</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="kth-form-group" style="grid-column: 1 / -1;">
-                            <label for="input_stem_moment_model" style="color:#9f1239;">面外曲げ解析モデル:</label>
-                            <select id="input_stem_moment_model">
-                                <option value="cantilever" selected>片持ち梁モデル (土圧全量T2で直接検定・安全側実務標準)</option>
-                                <option value="slab_3fix">3辺固定スラブモデル (PDF基準書式: 直交梁拘束考慮 Mx=Mx11+Mx12)</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- スラブへの飲み込み定着 ＆ 根元曲げ -->
-                    <div style="font-size:0.84rem; font-weight:800; color:#0369a1; margin-bottom:8px;">
-                        【縦筋のスラブ内定着（飲み込み）＆ 曲げ出し】
-                    </div>
-                    <div class="kth-form-grid" style="margin-bottom:14px; background:#f0f9ff; padding:10px 12px; border-radius:8px; border:1px solid #bae6fd;">
-                        <div class="kth-form-group">
-                            <label for="input_anchor_hook" style="color:#0369a1;">スラブ内定着端部形状:</label>
-                            <select id="input_anchor_hook">
-                                <option value="hook" selected>フック付き引張定着 (必要定着長: 25d)</option>
-                                <option value="straight">フックなしストレート (必要定着長: 35d)</option>
-                            </select>
-                        </div>
-
-                        <div class="kth-form-group">
-                            <label for="input_L_bend" style="color:#0369a1;">スラブ内水平曲げ出し長 Lbend:</label>
-                            <div class="kth-input-unit">
-                                <input type="number" id="input_L_bend" value="200" step="25" min="50" max="600">
-                                <span class="kth-unit">mm</span>
-                            </div>
-                        </div>
-                    </div>
-
                     <!-- 上主筋 -->
                     <div style="font-size:0.84rem; font-weight:700; color:#1e40af; margin-bottom:8px; display:flex; justify-content:space-between;">
                         <span>【基礎梁 上主筋】(2種併用可)</span>
@@ -417,7 +355,7 @@
                         <span>【基礎梁 下主筋】(2種併用可)</span>
                         <span id="disp_as_bot" style="color:#0f172a; font-weight:800;">- mm²</span>
                     </div>
-                    <div class="kth-form-grid" style="margin-bottom:12px;">
+                    <div class="kth-form-grid" style="margin-bottom:14px;">
                         <div class="kth-form-group">
                             <label>径1 / 本数1:</label>
                             <div class="kth-input-unit">
@@ -445,13 +383,22 @@
                         </div>
                     </div>
 
-                    <!-- スターラップ & 側面筋 -->
-                    <div style="font-size:0.84rem; font-weight:700; color:#1e40af; margin-bottom:8px;">
-                        【せん断補強筋(STP) & 側面筋(ねじり補強軸筋)】
+                    <!-- 立ち上がり配筋 ＆ せん断補強筋(STP / 縦筋兼用) -->
+                    <div style="font-size:0.84rem; font-weight:800; color:#1e40af; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+                        <span>【立ち上がり配筋 ＆ せん断補強筋(STP / 縦筋兼用)】</span>
+                        <span id="disp_stem_type_badge" style="background:#fee2e2; color:#b91c1c; font-size:0.75rem; padding:2px 8px; border-radius:4px;">シングル配筋</span>
                     </div>
-                    <div class="kth-form-grid" style="margin-bottom:12px;">
+                    <div class="kth-form-grid" style="margin-bottom:14px; background:#f8fafc; padding:12px; border-radius:8px; border:1px solid #e2e8f0;">
                         <div class="kth-form-group">
-                            <label for="input_stp_dia">STP 径 / ピッチ:</label>
+                            <label for="input_stem_rebar_type" style="color:#0f172a; font-weight:bold;">立ち上がり配筋方式:</label>
+                            <select id="input_stem_rebar_type" style="font-weight:bold; color:#1e3a8a;">
+                                <option value="single" selected>シングル配筋 (中央1列配筋)</option>
+                                <option value="double">ダブル配筋 (両面2列配筋・高耐力)</option>
+                            </select>
+                        </div>
+
+                        <div class="kth-form-group">
+                            <label for="input_stp_dia" style="color:#0f172a; font-weight:bold;">STP (縦筋兼用) 径 / ピッチ:</label>
                             <div class="kth-input-unit">
                                 <select id="input_stp_dia" style="width:50%;">
                                     <option value="D10" selected>D10</option>
@@ -468,7 +415,7 @@
                         </div>
 
                         <div class="kth-form-group">
-                            <label for="input_side_dia">側面筋 径 / 本数:</label>
+                            <label for="input_side_dia">側面筋 径 / 本数 (ねじり補強軸筋):</label>
                             <div class="kth-input-unit">
                                 <select id="input_side_dia" style="width:50%;">
                                     <option value="D10" selected>D10</option>
@@ -477,6 +424,30 @@
                                 </select>
                                 <input type="number" id="input_side_count" value="4" min="0" max="10" step="2" style="width:50%;">
                                 <span class="kth-unit">本</span>
+                            </div>
+                        </div>
+
+                        <div class="kth-form-group">
+                            <label for="input_stem_moment_model">面外曲げ解析モデル:</label>
+                            <select id="input_stem_moment_model">
+                                <option value="cantilever" selected>片持ち梁モデル (土圧全量T2で直接検定・安全側)</option>
+                                <option value="slab_3fix">3辺固定スラブモデル (PDF基準書式: Mx=Mx11+Mx12)</option>
+                            </select>
+                        </div>
+
+                        <div class="kth-form-group">
+                            <label for="input_anchor_hook">スラブ内定着端部形状:</label>
+                            <select id="input_anchor_hook">
+                                <option value="hook" selected>フック付き引張定着 (必要定着長: 25d)</option>
+                                <option value="straight">フックなしストレート (必要定着長: 35d)</option>
+                            </select>
+                        </div>
+
+                        <div class="kth-form-group">
+                            <label for="input_L_bend">スラブ内水平曲げ出し長 Lbend:</label>
+                            <div class="kth-input-unit">
+                                <input type="number" id="input_L_bend" value="250" step="25" min="50" max="600">
+                                <span class="kth-unit">mm</span>
                             </div>
                         </div>
                     </div>

@@ -105,15 +105,17 @@ function calculateAndRender() {
     const Lft = 196; // N/mm2 (SD295A)
     const Lfwt = 196; // N/mm2
 
-    // 立ち上がり配筋形式（シングル／ダブル）＆ 縦筋
+    // 立ち上がり配筋 ＆ せん断補強筋(STP / 縦筋兼用)
     const stemRebarType = document.getElementById('input_stem_rebar_type')?.value || 'single';
-    const vertDia = document.getElementById('input_vert_dia')?.value || 'D10';
-    const vertPitch = parseFloat(document.getElementById('input_vert_pitch')?.value) || 200;
+    const stpDia = document.getElementById('input_stp_dia')?.value || document.getElementById('input_vert_dia')?.value || 'D10';
+    const stpPitch = parseFloat(document.getElementById('input_stp_pitch')?.value) || parseFloat(document.getElementById('input_vert_pitch')?.value) || 200;
+    const vertDia = stpDia;
+    const vertPitch = stpPitch;
     const stemMomentModel = document.getElementById('input_stem_moment_model')?.value || 'cantilever';
 
     // スラブ飲み込み定着
     const anchorHook = document.getElementById('input_anchor_hook')?.value || 'hook';
-    const L_bend = parseFloat(document.getElementById('input_L_bend')?.value) || 200;
+    const L_bend = parseFloat(document.getElementById('input_L_bend')?.value) || 250;
 
     // 基礎梁主筋
     const topDia1 = document.getElementById('input_top_dia1')?.value || 'D13';
@@ -128,9 +130,7 @@ function calculateAndRender() {
     const botCount2 = parseInt(document.getElementById('input_bot_count2')?.value, 10) || 0;
     const As_bot = calcRebarArea(botDia1, botCount1, botDia2, botCount2);
 
-    // スターラップ (STP)
-    const stpDia = document.getElementById('input_stp_dia')?.value || 'D10';
-    const stpPitch = parseFloat(document.getElementById('input_stp_pitch')?.value) || 200;
+    // スターラップ断面積 (STP)
     const aw1 = REBAR_AREAS[stpDia] || 71.3;
     // 立ち上がりがダブル配筋の場合はスターラップもダブル（2組または複スターラップ）
     const aw = (stemRebarType === 'double') ? aw1 * 4 : aw1 * 2;
