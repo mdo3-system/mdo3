@@ -983,6 +983,91 @@
       line-height: 1.55;
       margin-bottom: 18px;
     }
+
+    /* 汎用リッチモーダル */
+    .custom-modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(5, 10, 20, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .custom-modal-card {
+      background: #111827;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      max-width: 680px;
+      width: 100%;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+      position: relative;
+      overflow: hidden;
+    }
+    .custom-modal-head {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(255, 255, 255, 0.02);
+    }
+    .custom-modal-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .custom-modal-body {
+      padding: 20px;
+      overflow-y: auto;
+      font-size: 0.85rem;
+      line-height: 1.6;
+      color: var(--text-main);
+    }
+    .custom-modal-foot {
+      padding: 14px 20px;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.02);
+    }
+    .modal-close-icon {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      transition: color 0.15s;
+    }
+    .modal-close-icon:hover {
+      color: #fff;
+    }
+    .plan-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+    .terms-box {
+      background: rgba(239, 68, 68, 0.08);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      margin: 12px 0;
+      font-size: 0.8rem;
+    }
   </style>
 </head>
 <body>
@@ -998,11 +1083,27 @@
       <!-- 習得進捗インジケーター -->
       <div class="progress-pill">
         <span class="material-symbols-outlined" style="font-size:15px; color:var(--accent-gold);">emoji_events</span>
-        <span style="font-size:0.75rem; font-weight:700;" id="progressLabel">進捗: 1 / 44 (2%)</span>
+        <span style="font-size:0.75rem; font-weight:700;" id="progressLabel">進捗: 1 / 23 (4%)</span>
         <div class="progress-bar-wrap">
           <div class="progress-bar-fill" id="progressBar"></div>
         </div>
       </div>
+
+      <!-- アクションボタン群 -->
+      <button class="btn-action" style="background:linear-gradient(135deg, rgba(245,158,11,0.15), rgba(217,119,6,0.25)); border-color:var(--accent-gold); color:var(--accent-gold); font-weight:700;" onclick="openUpgradeModal()" title="差額40万円で実案件2棟OJT伴走へアップグレード">
+        <span class="material-symbols-outlined" style="font-size:15px; color:var(--accent-gold);">rocket_launch</span>
+        差額40万で実案件OJTへ
+      </button>
+
+      <button class="btn-action" style="background:rgba(6,182,212,0.1); border-color:var(--accent-cyan); color:var(--accent-cyan);" onclick="openTicketModal()" title="民間検査機関の審査質疑に対する回答助言チケット">
+        <span class="material-symbols-outlined" style="font-size:15px; color:var(--accent-cyan);">confirmation_number</span>
+        スポット質疑(5万円)
+      </button>
+
+      <button class="btn-action" style="background:rgba(16,185,129,0.1); border-color:var(--accent-green); color:var(--accent-green);" onclick="openCommunityModal()" title="受講生同士の相互解決 ＆ 講師回答アーカイブ">
+        <span class="material-symbols-outlined" style="font-size:15px; color:var(--accent-green);">forum</span>
+        コミュニティ掲示板
+      </button>
 
       <!-- ユーザー情報 -->
       <div class="user-pill">
@@ -1013,13 +1114,13 @@
       <!-- 1端末アクティブ接続バッジ -->
       <div class="session-badge" title="1申し込みにつき1端末限定でセキュア接続中">
         <span class="session-dot"></span>
-        <span>単独接続中 (同時再生防止 稼働中)</span>
+        <span>単独接続中</span>
       </div>
 
       <!-- 同時アクセス検知テスト用ボタン -->
       <button class="btn-action" style="font-size:0.7rem; padding:3px 7px; border-color:var(--accent-red);" onclick="triggerConflictSimulation()">
         <span class="material-symbols-outlined" style="font-size:13px; color:var(--accent-red);">phonelink_erase</span>
-        他端末ログイン検知シミュレート
+        競合テスト
       </button>
     </div>
   </header>
@@ -1032,16 +1133,16 @@
       <div class="sidebar-head">
         <div class="tab-pills">
           <button class="tab-btn active" id="tabBasic" onclick="switchTab('basic')">
-            <span class="material-symbols-outlined" style="font-size:15px;">format_list_numbered</span>
-            基本 44ステップ
+            <span class="material-symbols-outlined" style="font-size:15px;">play_circle</span>
+            カリキュラム (全23動画)
           </button>
           <button class="tab-btn" id="tabAdvanced" onclick="switchTab('advanced')">
             <span class="material-symbols-outlined" style="font-size:15px; color:var(--accent-gold);">star</span>
-            別枠 アドバンス
+            アドバンス実践
           </button>
         </div>
         <div class="sidebar-controls">
-          <span>全6章 アコーディオン展開</span>
+          <span>全5章 23レッスン</span>
           <button class="toggle-all-btn" onclick="toggleAllAccordions()">
             <span class="material-symbols-outlined" style="font-size:13px;" id="toggleAllIcon">unfold_more</span>
             <span id="toggleAllLabel">すべて展開</span>
@@ -1075,8 +1176,8 @@
         <!-- プレイヤー下部メタバー -->
         <div class="player-meta-bar">
           <div>
-            <div class="current-step-badge" id="currentStepBadge">STEP 01 / 44</div>
-            <h1 class="current-step-title" id="currentStepTitle">① 伏せ方の基本 ＆ グリッド設定</h1>
+            <div class="current-step-badge" id="currentStepBadge">STEP 01 / 23</div>
+            <h1 class="current-step-title" id="currentStepTitle">Lesson 1-1: 伏せ方の基本とグリッド設定</h1>
           </div>
           <div class="player-actions">
             <button class="btn-action" onclick="changePlaybackSpeed()">
@@ -1141,14 +1242,14 @@
           </a>
         </div>
 
-        <!-- ステップ別 実務Q&A・講師指導ノート（上部タブ切り替え式） -->
+        <!-- ステップ別 実務Q&A・コミュニティ（受講生相互解決 ＆ 初期は講師も直接回答） -->
         <div class="qa-thread-container">
           <div class="integration-head" style="margin-bottom:6px;">
             <div class="integration-title">
               <span class="material-symbols-outlined" style="color:var(--accent-green); font-size:18px;">help_center</span>
-              このステップの指導メモ ＆ 個別Q&A
+              このステップの指導メモ ＆ コミュニティQ&A
             </div>
-            <span style="font-size:0.68rem; color:var(--text-muted);">タブ切り替えで質問・回答を閲覧・追加</span>
+            <span style="font-size:0.68rem; color:var(--accent-gold);">※受講生コミュニティ相互解決（初期は講師も適宜回答）</span>
           </div>
 
           <!-- 上部 Q&A トピックタブバー -->
@@ -1193,6 +1294,158 @@
     </div>
   </div>
 
+  <!-- 差額40万円 実案件OJT伴走アップグレードモーダル -->
+  <div class="custom-modal-overlay" id="upgradeModal" onclick="closeUpgradeModal()">
+    <div class="custom-modal-card" onclick="event.stopPropagation()">
+      <div class="custom-modal-head">
+        <div class="custom-modal-title">
+          <span class="material-symbols-outlined" style="color:var(--accent-gold);">rocket_launch</span>
+          差額40万円で「実案件OJT伴走マスタープログラム」へステップアップ
+        </div>
+        <button class="modal-close-icon" onclick="closeUpgradeModal()">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div class="custom-modal-body">
+        <div class="plan-box" style="border-left: 4px solid var(--accent-gold); background: rgba(245,158,11,0.05);">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <strong style="color:var(--accent-gold); font-size:1rem;">実案件2棟OJT伴走マスタープログラム（松プラン）</strong>
+            <span style="font-size:1.15rem; font-weight:800; color:#fff;">差額 400,000 円 <span style="font-size:0.75rem; color:var(--text-sub);">(税込 / 通常50万円)</span></span>
+          </div>
+          <p style="font-size:0.8rem; color:var(--text-sub); margin:0;">
+            現在ご受講中の「動画マスター＆コミュニティ（年額10万円）」の受講料全額（10万円）が充当され、<strong>差額の40万円</strong>のみで最上位のマンツーマン伴走プランへ即時移行できます。
+          </p>
+        </div>
+
+        <h4 style="color:#fff; font-size:0.9rem; margin:14px 0 8px;">🚀 実案件OJT伴走で得られる5大特典：</h4>
+        <ul style="padding-left:18px; margin:0; font-size:0.82rem; color:var(--text-main); line-height:1.7;">
+          <li><strong>実案件2棟 完全マンツーマン伴走：</strong> 貴社が実際に申請する木造2棟のアーキトレンドZERO物件データを用いて、講師（管理建築士）と画面共有・データ授受を行いながら確認申請完了まで直接指導。</li>
+          <li><strong>実況ノーカット動画の提供：</strong> 貴社物件の伏図修正から計算書出力までの実況作業動画をそのまま納品。貴社固有の永久教材になります。</li>
+          <li><strong>確認申請・審査機関質疑の完全回答伴走：</strong> 民間検査機関（ERI, UDI等）から届く補正指摘に対し、受講生と一緒に是正伏図・補正回答書を作成。</li>
+          <li><strong>安心のギブアップ時 50%外注代行保証：</strong> 業務繁忙や納期逼迫で自社計算が間に合わない場合、通常の半額（1棟あたり10万円〜）で当事務所が計算・図書作成を代行引き受け。</li>
+          <li><strong>mdo3全31ツールの永久利用権：</strong> 1年間のサブスク期限に関係なく、全ツールの永久アクセスを付与。</li>
+        </ul>
+
+        <div style="background:rgba(245,158,11,0.08); border:1px solid rgba(245,158,11,0.3); border-radius:var(--radius-sm); padding:10px; margin-top:14px; font-size:0.8rem; line-height:1.6;">
+          💡 <strong>お支払い・実務管理方法：</strong><br>
+          差額40万円は、受講開始（一次回答）時に1/2（20万円 税込）、翌月に残り1/2（20万円 税込）の<strong>2回分割請求書払い（銀行振込）</strong>にて承ります（Stripe決済対象外）。実務の構造設計・図書作成・CADデータ授受は、受託管理ポータル「<strong>system.thanks.work</strong>」にて厳格に一元管理いたします。
+        </div>
+      </div>
+      <div class="custom-modal-foot">
+        <button class="btn-action" onclick="closeUpgradeModal()">閉じる</button>
+        <a href="/contact.html?type=master_program&plan=upgrade_ojt" class="btn-action btn-complete" style="background:linear-gradient(135deg, #f59e0b, #d97706); color:#0f172a; font-weight:800; border:none; text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
+          <span class="material-symbols-outlined" style="font-size:16px;">send</span>
+          受講者情報を送信して2回分割請求書で申し込む (差額40万円)
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 案件スポット質疑チケット モーダル -->
+  <div class="custom-modal-overlay" id="ticketModal" onclick="closeTicketModal()">
+    <div class="custom-modal-card" onclick="event.stopPropagation()">
+      <div class="custom-modal-head">
+        <div class="custom-modal-title">
+          <span class="material-symbols-outlined" style="color:var(--accent-cyan);">confirmation_number</span>
+          案件スポット質疑チケット（1案件 50,000円 税込）
+        </div>
+        <button class="modal-close-icon" onclick="closeTicketModal()">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div class="custom-modal-body">
+        <div class="plan-box" style="border-left: 4px solid var(--accent-cyan); background: rgba(6,182,212,0.05);">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <strong style="color:var(--accent-cyan); font-size:1rem;">審査指摘・補正回答書 集中支援チケット</strong>
+            <span style="font-size:1.15rem; font-weight:800; color:#fff;">50,000 円 <span style="font-size:0.75rem; color:var(--text-sub);">(税込 / 1案件)</span></span>
+          </div>
+          <p style="font-size:0.8rem; color:var(--text-sub); margin:0;">
+            受講生自らがARCHITREND ZEROで構造計算・確認申請を行った実案件について、民間審査機関（ERI, UDI等）から届いた質疑・指摘事項に対する「是正伏図方針・補正回答書の書き方」を直接助言・アドバイスします。
+          </p>
+        </div>
+
+        <div class="terms-box">
+          <div style="display:flex; align-items:center; gap:6px; color:var(--accent-red); font-weight:800; margin-bottom:6px;">
+            <span class="material-symbols-outlined" style="font-size:18px;">warning</span>
+            チケット購入・ご利用に関する【重要誓約事項】
+          </div>
+          <p style="margin:0 0 8px; color:var(--text-sub);">
+            本チケットは自社内製化を目的とした助言サービスです。トラブル防止のため下記2点を厳格に適用いたします：
+          </p>
+          <label style="display:flex; align-items:flex-start; gap:8px; margin-bottom:8px; cursor:pointer;">
+            <input type="checkbox" id="pledgeCheck1" onchange="checkTicketPledge()" style="margin-top:3px;">
+            <span><strong>① 丸投げ・図書作成代行の禁止：</strong> CAD入力・計算書の再実行・伏図の修正は受講生ご自身で行っていただきます。当事務所が代行入力・図書作成を行うことは一切ありません。</span>
+          </label>
+          <label style="display:flex; align-items:flex-start; gap:8px; cursor:pointer;">
+            <input type="checkbox" id="pledgeCheck2" onchange="checkTicketPledge()" style="margin-top:3px;">
+            <span><strong>② ギブアップ時50%代行保証の対象外：</strong> 計算がまとまらない場合等の「半額代行引き受け保証」は50万円OJTプラン限定特典であり、本チケットには一切適用されません。</span>
+          </label>
+        </div>
+
+        <p style="font-size:0.78rem; color:var(--text-muted); margin:0;">
+          ※1チケットにつき、当該案件の確認済証交付（または審査質疑の完了）まで伴走いたします。
+        </p>
+      </div>
+      <div class="custom-modal-foot">
+        <button class="btn-action" onclick="closeTicketModal()">キャンセル</button>
+        <button class="btn-action btn-complete" id="btnBuyTicket" disabled style="opacity:0.5; cursor:not-allowed;" onclick="submitTicketRequest()">
+          <span class="material-symbols-outlined" style="font-size:16px;">shopping_cart</span>
+          誓約事項に同意してチケットを購入する (50,000円)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 受講生コミュニティ掲示板 モーダル -->
+  <div class="custom-modal-overlay" id="communityModal" onclick="closeCommunityModal()">
+    <div class="custom-modal-card" style="max-width:780px;" onclick="event.stopPropagation()">
+      <div class="custom-modal-head">
+        <div class="custom-modal-title">
+          <span class="material-symbols-outlined" style="color:var(--accent-green);">forum</span>
+          受講生限定 実務コミュニティ掲示板（相互解決 ＆ 実務ナレッジ）
+        </div>
+        <button class="modal-close-icon" onclick="closeCommunityModal()">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div class="custom-modal-body" style="padding-top:12px;">
+        <!-- 説明バナー -->
+        <div style="background:rgba(16,185,129,0.06); border:1px solid rgba(16,185,129,0.25); border-radius:var(--radius-sm); padding:10px 14px; margin-bottom:14px; font-size:0.8rem; color:var(--text-sub); display:flex; justify-content:space-between; align-items:center;">
+          <span>💬 受講生同士で現場のエラーやアーキトレンドZEROの納まりを相互に解決し合う実務掲示板です。<br><strong style="color:var(--accent-green);">※初期フェーズは講師（管理建築士）も適宜書き込み、グレー本基準やCAD画面の解説を行います。</strong></span>
+          <button class="btn-action btn-complete" style="font-size:0.75rem; padding:6px 12px; white-space:nowrap;" onclick="promptNewCommunityTopic()">
+            <span class="material-symbols-outlined" style="font-size:14px;">post_add</span>
+            新しい質問を投稿
+          </button>
+        </div>
+
+        <!-- 検索バー ＆ カテゴリフィルタ -->
+        <div style="display:flex; gap:8px; margin-bottom:12px;">
+          <div style="flex:1; position:relative;">
+            <input type="text" id="communitySearchInput" placeholder="キーワード・部材名・エラー内容で検索 (例: 人通口, 剛床, 梁成)..." style="width:100%; padding:8px 10px 8px 30px; background:#0b1120; border:1px solid var(--border-color); border-radius:var(--radius-sm); color:#fff; font-size:0.8rem;" oninput="filterCommunityTopics()">
+            <span class="material-symbols-outlined" style="position:absolute; left:8px; top:8px; font-size:16px; color:var(--text-muted);">search</span>
+          </div>
+          <select id="communityCatSelect" style="padding:8px 10px; background:#0b1120; border:1px solid var(--border-color); border-radius:var(--radius-sm); color:var(--text-main); font-size:0.8rem;" onchange="filterCommunityTopics()">
+            <option value="all">すべてのカテゴリ</option>
+            <option value="grid">伏図・グリッド計画</option>
+            <option value="wall">耐力壁・剛床</option>
+            <option value="beam">梁・柱・横架材</option>
+            <option value="foundation">基礎・スラブ・人通口</option>
+            <option value="review">確認申請・審査指摘</option>
+          </select>
+        </div>
+
+        <!-- スレッド一覧 -->
+        <div id="communityTopicList" style="display:flex; flex-direction:column; gap:8px; max-height:420px; overflow-y:auto;">
+          <!-- JSで動的レンダリング -->
+        </div>
+      </div>
+      <div class="custom-modal-foot">
+        <span style="font-size:0.75rem; color:var(--text-muted); margin-right:auto;">個別案件の審査質疑を専属で解決したい場合は「スポット質疑チケット（5万円）」をご活用ください。</span>
+        <button class="btn-action" onclick="closeCommunityModal()">閉じる</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     // ==========================================
     // カリキュラムデータ定義（全44ステップ ＋ アドバンス）
@@ -1201,141 +1454,193 @@
       basic: [
         {
           catId: "cat_1",
-          cat: "第1章：基本計画・グリッド・インポート",
+          cat: "第1章：【構造1】伏図先行作成 ＆ 梁組エラー確認",
           steps: [
             {
-              id: 1, title: "① 伏せ方の基本 ＆ グリッド設定", dur: "4:30",
-              gray: "第1章 構造計画の基本方針・グリッド計画（P.18〜P.28）<br>・鉛直荷重と水平力の明確な伝達ルートの確保<br>・通し柱・管柱の配置基準と基本構造グリッド（910mm / 1000mm）の設定",
-              err: "・梁の掛け違いや支点のない架構を作ってしまう<br>・意匠グリッドと構造モジュール（芯ズレ）による部材認識エラー",
+              id: 1, title: "Lesson 1-1: 伏図先行思想と1階土台大引", dur: "2:37",
+              videoSrc: "/assets/videos/master/Lesson_1_1_伏図先行思想と1階土台大引.mp4",
+              gray: "第1章 構造計画の基本方針・伏図先行の思想<br>・意匠図柱直下の通り芯交点配置と構造読込の前提<br>・端部勝ち負け（-52.5, -60）の設定ルール<br>・大引@910等ピッチ・鋼製束配置による流通材加工削減",
+              err: "・耐力壁直下に土台がない・基礎と接続されないエラー<br>・大引ピッチ1000mm超えによる床鳴り・たわみ",
               tool: { name: "木造ベタ基礎 梁断面図作図＆dt算定", url: "/tools/foundation_cad.html" }
             },
             {
-              id: 2, title: "② 構造計算プログラムへ読込", dur: "3:45",
-              gray: "第2章 計算モデル化の前提（P.42〜P.46）<br>・意匠CAD図面と構造骨組モデルの整合性チェック",
-              err: "・壁芯・柱芯のグリッドずれによる部材認識エラー<br>・階高・下がり壁・吹き抜けの階層認識ミス",
+              id: 2, title: "Lesson 1-2: 2F3F小屋伏図と梁組エラー確認", dur: "4:30",
+              videoSrc: "/assets/videos/master/Lesson_1_2_2F3F小屋伏図と梁組エラー確認.mp4",
+              gray: "第1章 梁組の架構モデル化とスパン割付ルール<br>・3m材(2730)・4m材(3640)の流通材優先選定<br>・4550mm梁上における耐力壁3種類制限（三次梁エラーの未然防止）<br>・5m以上および梁成300mm以上の集成材指定ルール",
+              err: "・4550梁上で耐力壁パターンが3種を超えて三次梁エラーが発生<br>・卍組による架構の機構化・応力伝達遮断",
               tool: { name: "AZ斜め壁 Web-CAD", url: "/tools/az_skew_wall.html" }
             }
           ]
         },
         {
           catId: "cat_2",
-          cat: "第2章：構造設計プログラム初期設定",
+          cat: "第2章：【構造2】構造図設定 ＆ 初期設定・建物仕様入力",
           steps: [
             {
-              id: 3, title: "③ 構造設計プログラムの設定 - 物件情報", dur: "3:20",
-              gray: "第2章 第1節 一般事項・地域定数（P.50〜P.55）<br>・多雪・一般区域区分、基準風速V0、地表面粗度区分",
-              err: "・建設地の市区町村コードと基準風速の不整合<br>・多雪区域フラグのチェック漏れ（積雪考慮の欠落）",
+              id: 3, title: "Lesson 2-1: 構造図事前設定と構造図読み込み", dur: "2:11",
+              videoSrc: "/assets/videos/master/Lesson_2_1_構造図事前設定と構造図読み込み.mp4",
+              gray: "第2章 計算モデル化と構造図設定の整合<br>・床梁と小屋梁の線種・色・端部形状の分別視認性確保<br>・耐力壁・仕様金物の事前割り当てマスター登録",
+              err: "・構造図と計算書で仕様金物が食い違い審査で指摘される<br>・準耐力壁・根太荷重領域の自動生成によるモデル過大化",
               tool: { name: "設計用地域定数 自動検索", url: "/tools/dosha_saigai.html" }
             },
             {
-              id: 4, title: "④ 構造設計プログラムの設定 - 設計方針", dur: "4:15",
-              gray: "第2章 ルート1・許容応力度計算の選択基準（P.60〜P.68）<br>・偏心率・剛性率・耐震等級（等級2/3）目標の設定",
-              err: "・耐震等級3計算時の1.5倍割増し係数の指定ミス<br>・水平構面検定の省略設定ミス",
-              tool: { name: "Z低減係数算定ツール", url: "/tools/zi.html" }
+              id: 4, title: "Lesson 2-2: 初期設定：物件情報と設計方針", dur: "4:25",
+              videoSrc: "/assets/videos/master/Lesson_2_2_初期設定_物件情報と設計方針.mp4",
+              gray: "第2章 【公式PDF完全解説】物件情報と設計方針<br>・確認申請書面積・高さ整合、設計地耐力<br>・mdo3ツールによるZ, V0, S（基準風速・積雪）の正確な設定<br>・告示耐力壁と認定耐力壁（EXハイパー等）の有効壁長制限",
+              err: "・認定耐力壁の壁長300mm未満・600mm未満使用による構造NG<br>・確認申請面積と構造計算モデルの面積乖離",
+              tool: { name: "設計用地域定数 自動検索", url: "/tools/dosha_saigai.html" }
             },
             {
-              id: 5, title: "⑤ 構造設計プログラムの設定 - チェックリスト", dur: "3:50",
-              gray: "第1章 設計フローと確認申請提出前チェック（P.30〜P.35）",
-              err: "・特定行政庁独自のローカルルール（基礎深さ・凍結深度等）の見落とし",
-              tool: { name: "全30計算ツール ポータル", url: "/#toolsCatalog" }
-            },
-            {
-              id: 6, title: "⑥ 構造設計プログラムの設定 - 接合部仕様", dur: "4:40",
-              gray: "第3章 第4節 接合部の設計基準（P.210〜P.225）<br>・N値計算または許容応力度設計法による金物選定方針",
-              err: "・告示1460号表と計算金物の混同<br>・柱頭柱脚の引抜耐力不足",
-              tool: { name: "めり込み補強計算", url: "/tools/merikomi.html" }
-            },
-            {
-              id: 7, title: "⑦ 構造設計プログラムの設定 - 仕様共通部材", dur: "4:10",
-              gray: "第3章 第1節 木材の基準強度・樹種区分（P.90〜P.105）<br>・E105-F300等の材料等級・ヤング係数と断面寸法",
-              err: "・プレカット業者の標準在庫材と指定樹種の不一致<br>・米松・杉・集成材の許容応力度差によるNG",
-              tool: { name: "めり込み補強計算", url: "/tools/merikomi.html" }
-            },
-            {
-              id: 8, title: "⑧ 構造設計プログラムの設定 - 固定荷重・積載荷重", dur: "4:50",
-              gray: "第2章 第2節 荷重および外力（P.70〜P.85）<br>・屋根仕上げ材自重（瓦/ガルバ/コロニアル）、太陽光パネル加算",
-              err: "・PV（太陽光発電）パネル自重（約15〜20kg/㎡）の計上漏れ<br>・外壁サイディング厚・モルタル塗り厚の過小評価",
+              id: 5, title: "Lesson 2-3: 初期設定：固定荷重と積載荷重", dur: "4:41",
+              videoSrc: "/assets/videos/master/Lesson_2_3_初期設定_固定荷重と積載荷重.mp4",
+              gray: "第2章 【公式PDF完全解説】仮定荷重・実荷重の算定<br>・界壁（遮音仕様）・ユニットバス・車庫・軒天・両面外壁<br>・2階防音床・床暖房設備の荷重算入ルール",
+              err: "・界壁やUB等の重量荷重抜け（途中で気づくと全計算やり直し）<br>・屋根勾配による割増し自重の二重計上または計上漏れ",
               tool: { name: "屋根構面計算ツール", url: "/tools/roof_calc.html" }
             },
             {
-              id: 9, title: "⑨ 構造設計プログラムの設定 - 外力設定", dur: "4:00",
-              gray: "第2章 地震力・風圧力の算定（P.86〜P.98）<br>・地震層せん断力係数Ci、見付面積あたりの風圧荷重",
-              err: "・風圧力見付面積のパラペット・バルコニー手すり分の漏れ",
-              tool: { name: "設計用地域定数 自動検索", url: "/tools/dosha_saigai.html" }
+              id: 6, title: "Lesson 2-4: 初期設定：構造計算条件と水平構面", dur: "4:32",
+              videoSrc: "/assets/videos/master/Lesson_2_4_初期設定_構造計算条件と水平構面.mp4",
+              gray: "第2章 【公式PDF完全解説】計算条件と水平構面設定<br>・構造計算条件Ⅰ・Ⅱの最適パラメータ選定<br>・剛床（24mm/28mm構造用合板・川の字釘打ち）の安全側設計方針",
+              err: "・水平構面の耐力評価不足（転び止めなし・釘ピッチ不整合）<br>・短期許容応力度の割増係数指定ミス",
+              tool: { name: "基本の床構面 (合板床)", url: "/tools/shosai_yuka_kihon.html" }
             },
             {
-              id: 10, title: "⑩ 構造設計プログラムの設定 - 計算条件", dur: "3:30",
-              gray: "第2章 解析オプションと許容応力度の割増し条件（P.100〜P.108）",
-              err: "・短期荷重時（積雪＋地震）の組合せチェック漏れ",
-              tool: { name: "Z低減係数算定ツール", url: "/tools/zi.html" }
+              id: 7, title: "Lesson 2-5: 初期設定：自動選定金物とJ1J2金物", dur: "4:37",
+              videoSrc: "/assets/videos/master/Lesson_2_5_初期設定_自動選定金物とJ1J2金物.mp4",
+              gray: "第3章 【公式PDF完全解説】柱頭柱脚および横架材接合部仕様<br>・グレー本準拠のJ1・J2金物仕様の統一<br>・仕様外検知のための『NG』記号登録によるエラー抽出テクニック",
+              err: "・横架材継手の耐力不足見落とし（*記号ではエラーが隠蔽される）<br>・柱頭柱脚金物の耐力ランク不足による引抜NG",
+              tool: { name: "めり込み補強計算", url: "/tools/merikomi.html" }
             },
             {
-              id: 11, title: "⑪ 構造設計プログラムの設定 - 条件", dur: "3:15",
-              gray: "第2章 たわみ制限値・クリープ変形の許容限界（P.110〜P.114）",
-              err: "・梁たわみ限界1/300と1/250の指定不一致",
-              tool: { name: "片持ち梁計算ツール", url: "/tools/cantilever_beam_no_column.html" }
+              id: 8, title: "Lesson 2-6: 外観見附図と屋根入力", dur: "4:10",
+              videoSrc: "/assets/videos/master/Lesson_2_6_外観見附図と屋根入力.mp4",
+              gray: "第2章 見附図ツールによる立面トレースと風圧力算定<br>・外壁厚ふかし130mmによる見付面積の安全側確保<br>・Shiftキー直交固定と補助線による正確な外形抽出・屋根モデル化",
+              err: "・パラペットや下屋の見付面積算入漏れによる風圧力過小評価<br>・多角形屋根の勾配・軒の出の認識不整合",
+              tool: { name: "AZ斜め壁 Web-CAD", url: "/tools/az_skew_wall.html" }
             },
             {
-              id: 12, title: "⑫ 構造設計プログラムの設定 - 追加使用部材・グリッド", dur: "3:40",
-              gray: "第1章 構造グリッドと特記部材の指定（P.36〜P.40）",
-              err: "・登り梁・タイバー・特殊集成材断面の登録漏れ",
-              tool: { name: "木造ベタ基礎 梁断面図作図＆dt算定", url: "/tools/foundation_cad.html" }
+              id: 9, title: "Lesson 2-7: 階別荷重と床組軸組入力", dur: "4:24",
+              videoSrc: "/assets/videos/master/Lesson_2_7_階別荷重と床組軸組入力.mp4",
+              gray: "第2章 各階（1F〜3F・小屋）の荷重・床組・軸組完全入力<br>・外壁・内壁・床・バルコニー・線荷重（手すり壁・垂れ壁）の階層配置<br>・根太・荷重方向の横架材直交設定と出隅柱指定",
+              err: "・階段吹抜け部の床構面除外漏れ（105逃げのモデル化ミス）<br>・床段差（下がり床）が梁成範囲外となり剛床不成立",
+              tool: { name: "基本の床構面 (合板床)", url: "/tools/shosai_yuka_kihon.html" }
             }
           ]
         },
         {
           catId: "cat_3",
-          cat: "第3章：外観・荷重・構面モデリング",
+          cat: "第3章：【構造3】部材算定実行 ＆ 梁成+30・集成材置換",
           steps: [
-            { id: 13, title: "⑬ 外観・見附図", dur: "4:20", gray: "第2章 風圧力見付面積の算定基準（P.88〜P.92）", err: "・立面形状の凹凸反映漏れによる風荷重の過小計算", tool: { name: "AZ斜め壁 Web-CAD", url: "/tools/az_skew_wall.html" } },
-            { id: 14, title: "⑭ 荷重", dur: "4:10", gray: "第2章 特殊荷重（ピアノ・小屋裏収納・バルコニー水勾配）の配置", err: "・小屋裏収納（積載荷重加算）の配置抜け", tool: { name: "基本の床構面 (合板床)", url: "/tools/shosai_yuka_kihon.html" } },
-            { id: 15, title: "⑮ 水平構面", dur: "4:50", gray: "第3章 第3節 水平構面の設計（P.180〜P.205）", err: "・吹抜け周囲の水平構面倍率不足・火打金物不足", tool: { name: "基本の屋根構面 (垂木)", url: "/tools/shosai_tarukiyane_kihon.html" } },
-            { id: 16, title: "⑯ 鉛直構面（耐力壁）", dur: "4:40", gray: "第3章 第2節 耐力壁の設計・壁倍率算定（P.120〜P.160）", err: "・耐力壁の有効壁長（600mm未満の除外）判定エラー", tool: { name: "真壁・大壁 詳細壁倍率計算", url: "/tools/shosai_okabe.html" } },
-            { id: 17, title: "⑰ 根太荷重方向", dur: "3:30", gray: "第2章 荷重分配とスラブ・根太の荷重伝達方向", err: "・根太受け梁への荷重集中見落とし", tool: { name: "根太計算ツール", url: "/tools/neta.html" } }
+            {
+              id: 10, title: "Lesson 3-1: 部材算定実行と梁成エラー解消", dur: "3:56",
+              videoSrc: "/assets/videos/master/Lesson_3_1_部材算定と梁成エラー解消.mp4",
+              gray: "第3章 部材算定ループと梁成決定の実務ルール<br>・部材算定実行と詳細計算書作成フラグの活用<br>・計算結果への梁成+30mmアップ（240→270mm）<br>・300mm以上の一律集成材置換によるプレカット標準化",
+              err: "・無垢材のまま300mm以上の梁成を指定しプレカット調達困難<br>・たわみ制限（L/250またはL/300）による曲げたわみNG",
+              tool: { name: "横架材のZ低減係数", url: "/tools/zi.html" }
+            },
+            {
+              id: 11, title: "Lesson 3-2: 梁再選別と再計算_柱エラー把握", dur: "3:00",
+              videoSrc: "/assets/videos/master/Lesson_3_2_梁再選別と再計算_柱エラー把握.mp4",
+              gray: "第3章 梁成の再選別・再計算と軸組（柱）エラーの分類把握<br>・270mm無垢材と300mm集成材の最終仕分け<br>・柱の座屈・短期軸力・めり込み等のエラー原因切り分け",
+              err: "・梁成アップに伴う階高・天井懐の干渉見落とし<br>・柱のめり込みエラーを無理にソフト内で直そうとして行き詰まる",
+              tool: { name: "めり込み補強計算", url: "/tools/merikomi.html" }
+            }
           ]
         },
         {
           catId: "cat_4",
-          cat: "第4章：解析実行とエラー解消マスター",
+          cat: "第4章：【構造4】許容応力度計算 ＆ エラー完全クリア",
           steps: [
-            { id: 18, title: "⑱ 計算", dur: "3:00", gray: "第2章 応力解析の実行とエラーリスト確認手順", err: "・モデル不安定（機構化）による解析ストップ", tool: { name: "門型フレーム剛性計算", url: "/tools/rigid_frame_R.html" } },
-            { id: 19, title: "⑲ 横架材のエラー解消・ツールZI+垂木他", dur: "5:00", gray: "第3章 梁・胴差の曲げ・せん断・たわみ検定", err: "・スパン4m超の梁成不足（105×240→105×300等の選定）", tool: { name: "Z低減係数算定ツール", url: "/tools/zi.html" } },
-            { id: 20, title: "⑳ 鉛直構面（耐力壁）エラーの解消", dur: "4:45", gray: "第3章 耐力壁の強度比検定・偏心率0.15以下への調整", err: "・偏心率オーバー（重心と剛心の乖離是正手順）", tool: { name: "真壁詳細計算", url: "/tools/shosai_shinkabe.html" } },
-            { id: 21, title: "㉑ 水平構面エラーの解消・屋根構面ツール", dur: "4:30", gray: "第3章 吹抜け・勾配屋根の面内せん断力検定", err: "・登り淀・母屋直貼り構面の倍率不足", tool: { name: "基本の屋根構面 (直貼り)", url: "/tools/shosai_yanejikabari_kihon.html" } },
-            { id: 22, title: "㉒ 横架材接合部の確認・エラーの解消", dur: "4:15", gray: "第3章 仕口・継手の耐力検定と金物補強", err: "・大梁に架かる小梁の羽子板ボルト耐力不足", tool: { name: "釘配列諸定数算定", url: "/tools/kugihairetsushoteisu.html" } }
+            {
+              id: 12, title: "Lesson 4-1: 仕口低減計算とせん断エラー解消", dur: "4:03",
+              videoSrc: "/assets/videos/master/Lesson_4_1_仕口低減計算とせん断エラー解消.mp4",
+              gray: "第3章 グレー本の同寸欠損による過剰低減の是正（mdo3ツール活用）<br>・mdo3「仕口低減計算ツール」による実断面係数Z・I算出<br>・梁端部継手位置の調整による全断面有効化・梁受け金物検討",
+              err: "・大梁に小梁が取り付く部位のせん断耐力NG<br>・グレー本の同寸欠損計算のままで過大な梁成になってしまう",
+              tool: { name: "横架材のZ低減係数", url: "/tools/zi.html" }
+            },
+            {
+              id: 13, title: "Lesson 4-2: 出隅柱確認と耐力壁一括配置", dur: "4:17",
+              videoSrc: "/assets/videos/master/Lesson_4_2_出隅柱確認と耐力壁一括配置.mp4",
+              gray: "第3章 現代実務における外周面材一括配置と初期計算投入<br>・出隅柱の仕様再確認<br>・外周部への構造用合板一括配置による手戻り防止フロー",
+              err: "・筋交い時代の手計算思想に囚われて初期設計に膨大な時間を浪費する<br>・出隅柱の指定漏れによる壁倍率低減エラー",
+              tool: { name: "真壁・大壁 詳細壁倍率計算", url: "/tools/shosai_okabe.html" }
+            },
+            {
+              id: 14, title: "Lesson 4-3: 鉛直構面検定と耐力壁配置Part1", dur: "4:15",
+              videoSrc: "/assets/videos/master/Lesson_4_3_鉛直構面検定と耐力壁配置Part1.mp4",
+              gray: "第3章 鉛直構面の必要耐力判定と不足壁長の算出式<br>・地震力vs風圧力の比較と最大値のクリア<br>・計算式『(必要耐力 - 許容耐力) / 1.96 ＝ 必要壁長(m)』<br>・偏心率0.15割増しと重心・剛心の近接化",
+              err: "・風圧力が必要耐力を支配している階の地震力のみ検討によるNG<br>・偏心率オーバーによる許容せん断力の割り戻し不足",
+              tool: { name: "真壁・大壁 詳細壁倍率計算", url: "/tools/shosai_okabe.html" }
+            },
+            {
+              id: 15, title: "Lesson 4-4: 鉛直構面検定と耐力壁配置Part2", dur: "4:15",
+              videoSrc: "/assets/videos/master/Lesson_4_4_鉛直構面検定と耐力壁配置Part2.mp4",
+              gray: "第3章 梁上低減係数・減歩対策と三次梁エラーの解消<br>・直下率による耐力100%発揮と内部耐力壁の梁上減歩<br>・【裏技】必要耐力以上の梁成アップによる耐力壁倍率引き上げ<br>・梁上耐力壁3つ以上警告（同仕様1枚扱い放置可）と三次梁NG解消",
+              err: "・直下率不足による上階耐力壁の大幅な倍率減歩見落とし<br>・三次梁エラーを放置したまま申請を出して審査で差し戻される",
+              tool: { name: "梁上柱・片持ち梁計算", url: "/tools/hariue.html" }
+            },
+            {
+              id: 16, title: "Lesson 4-5: 水平構面エラー解消と屋根詳細計算法", dur: "4:09",
+              videoSrc: "/assets/videos/master/Lesson_4_5_水平構面エラー解消と屋根詳細計算法.mp4",
+              gray: "第3章 水平構面検定（∑Pa ＞ Qi）と屋根構面の詳細設計<br>・剛床4周釘打ち仕様の適用と勾配天井での火打ち省略限界<br>・mdo3「詳細計算法-屋根（垂木仕様）」による耐力UP算出と構造計算条件Ⅱ登録",
+              err: "・勾配天井・吹抜けで火打ちを入れられず屋根構面が耐力不足<br>・屋根垂木留め釘ピッチの仕様と計算パラメータの食い違い",
+              tool: { name: "垂木工法勾配屋根 (任意配列)", url: "/tools/shosai_tarukiyane.html" }
+            },
+            {
+              id: 17, title: "Lesson 4-6: 梁成火打ち設定と軸組柱エラー解消", dur: "4:10",
+              videoSrc: "/assets/videos/master/Lesson_4_6_梁成火打ち設定と軸組柱エラー解消.mp4",
+              gray: "第3章 横架材成・火打ち耐力・軸組（柱）エラーの総合クリア<br>・外周部梁成150mm設定と火打ち受け梁の成アップ<br>・柱の座屈・短期応力NG（105→120角変更、集成材置換）<br>・めり込みNGをここでは残す実務的理由の確認",
+              err: "・火打ち金物の定着梁成不足（105では耐力が十分に発揮されない）<br>・出隅柱の短期座屈応力オーバーの見落とし",
+              tool: { name: "柱の曲げ応力検定", url: "/tools/hasira_mage.html" }
+            },
+            {
+              id: 18, title: "Lesson 4-7: アンカーボルト配置と計算完了", dur: "4:23",
+              videoSrc: "/assets/videos/master/Lesson_4_7_アンカーボルト配置と計算完了.mp4",
+              gray: "第4章 アンカーボルト配置と許容応力度計算の全エラークリア<br>・15kN以上引抜き柱へのM16配置、一般引抜き柱へのM12配置（離れ200/150mm）<br>・土台曲げ・アンカー引張の検定省略基準（グレー本準拠）<br>・柱脚コーナー金物使用時の検定留意点と許容応力度計算完了",
+              err: "・人通口とアンカーボルトが現場で干渉し施工不能になる<br>・高耐力コーナー金物使用時のアンカー直結なしによる検定抜け",
+              tool: { name: "木造ベタ基礎 梁断面図作図＆dt算定", url: "/tools/foundation_cad.html" }
+            }
           ]
         },
         {
           catId: "cat_5",
-          cat: "第5章：基礎設計・人通口・再計算",
+          cat: "第5章：【構造5】めり込み補強 ＆ 基礎計算・耐風梁",
           steps: [
-            { id: 23, title: "㉓ アンカーボルトの設置", dur: "3:40", gray: "第4章 第3節 ホールダウン金物・アンカーボルトの配置基準", err: "・耐力壁端部アンカーボルトの埋込み長さ・へりあき不足", tool: { name: "木造ベタ基礎 梁断面図作図＆dt算定", url: "/tools/foundation_cad.html" } },
-            { id: 24, title: "㉔ 基礎梁の設置", dur: "4:10", gray: "第4章 ベタ基礎梁の配筋・幅・成の決定基準（P.240〜P.260）", err: "・立ち上がり幅120mm/150mmの選定ミス", tool: { name: "基礎梁応力・許容耐力合算計算書", url: "/tools/w_wall_kisohari_gassan.html" } },
-            { id: 25, title: "㉕ スラブの設置", dur: "3:50", gray: "第4章 底盤スラブの曲げモーメント・せん断力検定", err: "・スラブ主筋ピッチ@200と@150の判定", tool: { name: "釣合鉄筋比算定ツール", url: "/tools/balanced_rebar_ratio.html" } },
-            { id: 26, title: "㉖ 基礎の計算・エラーの解消", dur: "4:50", gray: "第4章 地盤反力度・基礎梁応力の検定", err: "・地盤許容応力度（30kN/㎡等）オーバーによる接地圧NG", tool: { name: "地盤支持力・擁壁計算", url: "/tools/youheki_calculator.html" } },
-            { id: 27, title: "㉗ 人通口の設置", dur: "4:00", gray: "第4章 人通口開口部による耐力欠損の評価", err: "・耐力壁直下の開口配置（原則不可箇所の回避）", tool: { name: "人通口補強計算", url: "/tools/jintsuko.html" } },
-            { id: 28, title: "㉘ 人通口補強ツール", dur: "4:30", gray: "第4章 開口補強筋（斜め筋・増打梁）の設計算定", err: "・せん断補強筋（スターラップ）不足の解消", tool: { name: "基礎梁合算（人通口M中/M端分離検定）", url: "/tools/w_wall_kisohari_gassan.html" } },
-            { id: 29, title: "㉙ 再計算してエラーがないことを確認、めり込みエラーはツール利用", dur: "4:20", gray: "第3章 柱のめり込み耐力検定と添木・座金補強", err: "・管柱・通し柱の支圧応力度オーバー（めり込みNG）", tool: { name: "めり込み補強計算", url: "/tools/merikomi.html" } }
-          ]
-        },
-        {
-          catId: "cat_6",
-          cat: "第6章：構造図作図・仕上げ・凡例",
-          steps: [
-            { id: 30, title: "㉚ 構造図作図・読込 - 1F", dur: "3:40", gray: "第5章 構造図面の作成要領・整合性基準", err: "・意匠平面図と柱・壁位置の食い違い", tool: { name: "スマート案内図作図 (MAP)", url: "/tools/map_editor.html" } },
-            { id: 31, title: "㉛ 構造図作図・読込 - 2F", dur: "3:30", gray: "第5章 2階床伏図の表現と継手位置の図示", err: "・梁継手（プレカット継手位置）の図示漏れ", tool: { name: "基本の床構面 (合板床)", url: "/tools/shosai_yuka_kihon.html" } },
-            { id: 32, title: "㉜ 構造図作図・読込 - 3F", dur: "3:10", gray: "第5章 3階建て特有の柱頭柱脚金物図示", err: "・3階柱頭引抜力金物の図示抜け", tool: { name: "柱の曲げ応力検定", url: "/tools/hasira_mage.html" } },
-            { id: 33, title: "㉝ 構造図作図・読込 - 小屋", dur: "3:20", gray: "第5章 小屋伏図・小屋束・雲筋交いの表現", err: "・振れ止め・小屋ブレースの記載漏れ", tool: { name: "基本の屋根構面 (垂木)", url: "/tools/shosai_tarukiyane_kihon.html" } },
-            { id: 34, title: "㉞ 柱高さ補正", dur: "3:00", gray: "第5章 下がり床・土間・ポーチ柱の特殊高さ整合", err: "・土間柱の座屈長さ指定ミス", tool: { name: "柱の曲げ応力検定", url: "/tools/hasira_mage.html" } },
-            { id: 35, title: "㉟ 基礎伏図作図", dur: "4:00", gray: "第4章 基礎伏図・アンカーボルト位置・人通口記号の明記", err: "・アンカーボルト記号凡例との不整合", tool: { name: "木造ベタ基礎 梁断面図作図＆dt算定", url: "/tools/foundation_cad.html" } },
-            { id: 36, title: "㊱ 軸組図作図", dur: "4:15", gray: "第5章 通り別軸組図と筋交い配置・金物記号", err: "・筋交い向き（片筋交い・たすき掛け）の不一致", tool: { name: "はしご計算ツール", url: "/tools/hashigo.html" } },
-            { id: 37, title: "㊲ 構造標準図", dur: "3:50", gray: "第5章 特記仕様書・コンクリート呼び強度・鉄筋規格", err: "・SD295AとFc21の特記漏れ", tool: { name: "全30計算ツール ポータル", url: "/#toolsCatalog" } },
-            { id: 38, title: "㊳ 基礎伏図凡例他", dur: "3:20", gray: "第4章 基礎伏図の記号凡例・配筋リストの整理", err: "・ベース配筋記号の記載ミス", tool: { name: "基礎梁応力・許容耐力合算計算書", url: "/tools/w_wall_kisohari_gassan.html" } },
-            { id: 39, title: "㊴ 基礎断面図", dur: "4:10", gray: "第4章 標準配筋断面図（外周部・内部梁・人通口部）", err: "・かぶり厚さ（土に接する部分40mm/60mm）の図示ミス", tool: { name: "木造ベタ基礎 梁断面図作図＆dt算定", url: "/tools/foundation_cad.html" } },
-            { id: 40, title: "㊵ 1F床伏図凡例", dur: "3:00", gray: "第5章 樹種・等級・金物記号表の配置", err: "・使用釘（N50/N75/CN50）の凡例漏れ", tool: { name: "釘配列諸定数算定", url: "/tools/kugihairetsushoteisu.html" } },
-            { id: 41, title: "㊷ 2F～3F床伏図、小屋伏図、母屋・屋根伏図", dur: "4:30", gray: "第5章 各階床伏・屋根伏の図面セットまとめ", err: "・シートレイヤ間の通り芯ずれ", tool: { name: "基本の屋根構面 (直貼り)", url: "/tools/shosai_yanejikabari_kihon.html" } },
-            { id: 42, title: "㊸ 凡例コピー+貼り付け", dur: "2:50", gray: "第5章 審査機関が求める標準特記事項の一括配置", err: "・木材含水率（20%以下）特記の欠落", tool: { name: "全30計算ツール ポータル", url: "/#toolsCatalog" } },
-            { id: 43, title: "㊹ 軸組図（最終審査提出セット完成）", dur: "4:00", gray: "第5章 確認申請・審査機関提出用図書の最終バインド", err: "・計算書と構造図面の部材符号不一致（審査で最も多い指摘）", tool: { name: "スマート案内図作図 (MAP)", url: "/tools/map_editor.html" } }
+            {
+              id: 19, title: "Lesson 5-1: めり込み補強検定と土台プレート", dur: "2:37",
+              videoSrc: "/assets/videos/master/Lesson_5_1_めり込み補強検定と土台プレート.mp4",
+              gray: "第3章 柱脚めり込みエラーの完全解消（mdo3ツール活用）<br>・計算書の長期・短期応力をmdo3「めり込み補強計算ツール」に入力<br>・タナカ土台プレートⅡ設置による検定適合と別紙計算書添付方針",
+              err: "・現場で間柱添えを行って耐力壁金物と干渉する施工トラブル<br>・アーキトレンド内のエラーを別紙計算書で解消するプロ実務手続きの理解不足",
+              tool: { name: "めり込み補強計算", url: "/tools/merikomi.html" }
+            },
+            {
+              id: 20, title: "Lesson 5-2: 基礎梁配置と連続梁0.01ずらし", dur: "4:05",
+              videoSrc: "/assets/videos/master/Lesson_5_2_基礎梁配置と連続梁0.01ずらし.mp4",
+              gray: "第4章 べた基礎梁（立ち上がり）の設置と連続梁モデル化ルール<br>・根入れ深さ・平均GL断面算定（mdo3基礎CADツール）<br>・15kN引抜き柱の半島型立ち上がり回避<br>・【最重要】交差部・跨ぎ部基礎梁端部を『0.01』ずらして配置する連続梁ルール",
+              err: "・基礎梁端部を揃えてしまい連続梁にならず単純梁に分断され過大配筋になる<br>・15kN以上の引き抜き柱が半島型になり地盤に応力が逃げない",
+              tool: { name: "木造ベタ基礎 梁断面図作図＆dt算定", url: "/tools/foundation_cad.html" }
+            },
+            {
+              id: 21, title: "Lesson 5-3: スラブ配筋と基礎梁符号エラー解消", dur: "4:08",
+              videoSrc: "/assets/videos/master/Lesson_5_3_スラブ配筋と基礎梁符号エラー解消.mp4",
+              gray: "第4章 スラブ配筋（FS1）と基礎梁配筋符号（A/B/C）ルール<br>・短辺D13@150/長辺D13@300のFS1標準配筋とスラブNG解消<br>・基礎梁符号統一ルール：基本(上下1-D13), A(上2-下1), B(上1-下2), C(上下2-D13)<br>・スパン間分割修正と全体構造計算の実行",
+              err: "・スパン分割時に0.01ずらしを忘れて連続梁が崩れる<br>・基礎梁の主筋段数と重心距離dtの計算不整合",
+              tool: { name: "基礎梁応力・許容耐力合算計算書", url: "/tools/w_wall_kisohari_gassan.html" }
+            },
+            {
+              id: 22, title: "Lesson 5-4: 人通口配置と補強計算", dur: "4:19",
+              videoSrc: "/assets/videos/master/Lesson_5_4_人通口配置と補強計算.mp4",
+              gray: "第4章 人通口配置（伏図連動）とスラブ内補強筋の合理化計算<br>・アンカーボルト離れ調整（200→150mm）と基礎隅部片持計算<br>・mdo3「人通口補強計算ツール」による長期・短期応力検定<br>・基礎梁幅150mm・D13鉄筋本数決定による地中梁回避テクニック",
+              err: "・人通口欠損により市販ソフトで過大な地中梁を要求され基礎工事費が跳ね上がる<br>・開口補強筋のあばら筋ピッチ不足によるせん断ひび割れ",
+              tool: { name: "人通口補強計算", url: "/tools/jintsuko.html" }
+            },
+            {
+              id: 23, title: "Lesson 5-5: 耐風梁計算書と構造計算の完了", dur: "3:54",
+              videoSrc: "/assets/videos/master/Lesson_5_5_耐風梁計算書と構造計算の完了.mp4",
+              gray: "第5章 各階耐風梁計算書の作成と詳細計算部材選定・構造計算完遂<br>・耐風梁スパン間設定の確実な指定とA4計算書出力<br>・各階最大応力柱・梁の2本選定と確認申請提出用計算書バインド<br>・めり込み別紙添付による全工程完全クリアの総括",
+              err: "・耐風梁のスパン間設定ミスによる風圧たわみオーバー<br>・詳細計算部材の選定抜けによる審査機関からの差し戻し通知",
+              tool: { name: "全31計算ツール ポータル", url: "/#toolsCatalog" }
+            }
           ]
         }
       ],
@@ -1346,27 +1651,24 @@
           steps: [
             {
               id: 101, title: "★ 耐風梁の設計とアーキトレンド入力", dur: "5:50",
+              videoSrc: "/assets/videos/master/Lesson_5_5_耐風梁計算書と構造計算の完了.mp4",
               gray: "第3章 大開口部（吹抜け・大窓）の耐風梁設計基準",
               err: "・風圧力による梁の弱軸曲げ・たわみ検定オーバーの解消",
               tool: { name: "梁上柱・片持ち梁計算", url: "/tools/hariue.html" }
             },
             {
               id: 102, title: "★ 基礎隅部・出隅の応力集中補強", dur: "5:20",
+              videoSrc: "/assets/videos/master/Lesson_5_4_人通口配置と補強計算.mp4",
               gray: "第4章 出隅部・入隅部の地盤反力とコーナー配筋補強",
               err: "・出隅直下の浮き上がり・接地圧集中の補正テクニック",
               tool: { name: "片持ち基礎梁計算", url: "/tools/cantilever_foundation_beam.html" }
             },
             {
-              id: 103, title: "★ 不整形スラブ・段差スラブの分割算定", dur: "6:10",
-              gray: "第4章 スキップフロア・深基礎・段差スラブの応力伝達",
-              err: "・スラブ段差部での応力遮断モデル化エラー",
-              tool: { name: "釣合鉄筋比算定ツール", url: "/tools/balanced_rebar_ratio.html" }
-            },
-            {
-              id: 104, title: "★ スキップフロア・段差床の水平構面置換", dur: "6:00",
-              gray: "第3章 床段差部における剛床仮定の成立限界と斜めブレース",
-              err: "・段差部耐力壁の高さ補正と吹抜け扱いエラー",
-              tool: { name: "基本の床構面 (合板床)", url: "/tools/shosai_yuka_kihon.html" }
+              id: 103, title: "★ 人通口欠損とスラブ内補強筋の設計", dur: "4:19",
+              videoSrc: "/assets/videos/master/Lesson_5_4_人通口配置と補強計算.mp4",
+              gray: "第4章 地中梁化を回避するスラブ内増打筋・斜め補強筋の計算",
+              err: "・地中梁化による基礎掘削深さ増大とコストアップの解消",
+              tool: { name: "人通口補強計算", url: "/tools/jintsuko.html" }
             }
           ]
         }
@@ -1531,8 +1833,18 @@
       currentStep = st;
 
       // ヘッダー情報
-      document.getElementById('currentStepBadge').textContent = `STEP ${String(st.id).padStart(2, '0')}`;
+      document.getElementById('currentStepBadge').textContent = `STEP ${String(st.id).padStart(2, '0')} / 23`;
       document.getElementById('currentStepTitle').textContent = st.title;
+
+      // 動画ソース更新
+      const videoSource = document.getElementById('videoSource');
+      const mainVideo = document.getElementById('mainVideo');
+      if (videoSource && mainVideo && st.videoSrc) {
+        if (!videoSource.src.endsWith(st.videoSrc)) {
+          videoSource.src = st.videoSrc;
+          mainVideo.load();
+        }
+      }
 
       // 完了ボタン状態
       const isComp = completedSteps.has(st.id);
@@ -1554,7 +1866,7 @@
       `;
 
       // 字幕差し替え
-      const subText = SAMPLE_CAPTIONS[st.id] || `【${st.title}】の操作手順を画面をキャプチャしながら実践解説します。`;
+      const subText = SAMPLE_CAPTIONS[st.id] || `【${st.title}】の実践操作解説です。プロ品質AIナレーションとテロップで即座に急所を習得できます。`;
       document.getElementById('subText').textContent = subText;
 
       // 質疑・指導タブを描画
@@ -1756,7 +2068,7 @@
 
     // 進捗率更新
     function updateProgress() {
-      const total = 44; // 基本44ステップ
+      const total = 23; // 全23レッスン
       let compCount = 0;
       CURRICULUM_DATA.basic.forEach(g => {
         g.steps.forEach(st => {
@@ -1788,6 +2100,174 @@
       const modal = document.getElementById('conflictModal');
       modal.style.display = 'none';
       alert('セッションを再取得し、この端末で再生を再開しました。');
+    }
+
+    // ==========================================
+    // アップグレード・チケット・コミュニティ モーダル操作
+    // ==========================================
+
+    // 1. アップグレードモーダル
+    function openUpgradeModal() {
+      document.getElementById('upgradeModal').style.display = 'flex';
+    }
+    function closeUpgradeModal() {
+      document.getElementById('upgradeModal').style.display = 'none';
+    }
+
+    // 2. 案件スポット質疑チケットモーダル
+    function openTicketModal() {
+      document.getElementById('ticketModal').style.display = 'flex';
+    }
+    function closeTicketModal() {
+      document.getElementById('ticketModal').style.display = 'none';
+    }
+    function checkTicketPledge() {
+      const c1 = document.getElementById('pledgeCheck1').checked;
+      const c2 = document.getElementById('pledgeCheck2').checked;
+      const btn = document.getElementById('btnBuyTicket');
+      if (c1 && c2) {
+        btn.disabled = false;
+        btn.style.opacity = '1';
+        btn.style.cursor = 'pointer';
+      } else {
+        btn.disabled = true;
+        btn.style.opacity = '0.5';
+        btn.style.cursor = 'not-allowed';
+      }
+    }
+    function submitTicketRequest() {
+      closeTicketModal();
+      window.open('https://buy.stripe.com/fZu3cpbNl5beg0g7U45gc01', '_blank');
+    }
+
+    // 3. 受講生コミュニティ掲示板
+    const COMMUNITY_POSTS = [
+      {
+        id: "cp1",
+        cat: "foundation",
+        catName: "基礎・スラブ",
+        title: "人通口補強でスラブ内増打筋を入れる際の注意点と配筋符号",
+        author: "田中建築設計 (受講生)",
+        time: "2日前",
+        solved: true,
+        hasTeacherAnswer: true,
+        text: "人通口を配置した際、深基礎にせずにスラブ内増打筋でクリアしたいのですが、アーキトレンド上でFS1のまま配筋符号を変えずに処理できますか？",
+        replies: 2,
+        teacherText: "FS1スラブの短辺D13@150を維持したまま、人通口開口補強筋（斜め筋2-D13）をmdo3の「人通口補強計算ツール」で検定し、伏図に別記詳細図を添付するのが審査で最もスムーズに通る王道パターンです。"
+      },
+      {
+        id: "cp2",
+        cat: "beam",
+        catName: "梁・柱",
+        title: "梁上柱の集中荷重で梁成300mmでもたわみNGになる場合の解消テクニック",
+        author: "S工務店 一級建築士 (受講生)",
+        time: "4日前",
+        solved: true,
+        hasTeacherAnswer: true,
+        text: "リビング上部の2階柱が梁上に乗り、梁成120×300でもたわみがL/300を超えてしまいます。梁幅を150mmに上げる以外に良い方法はありますか？",
+        replies: 3,
+        teacherText: "梁幅150mmにする前に、グレー本第3章の「梁上柱荷重の分散評価（直交梁への荷重分担）」および「小梁配置によるスパン短縮」を検討してください。またmdo3の梁上柱計算ツールでZ低減を正確に入力すると105×300で納まるケースが多数あります。"
+      },
+      {
+        id: "cp3",
+        cat: "wall",
+        catName: "耐力壁・剛床",
+        title: "吹抜けに面する耐力壁で水平構面倍率が不足する指摘について",
+        author: "アトリエM設計 (受講生)",
+        time: "1週間前",
+        solved: true,
+        hasTeacherAnswer: true,
+        text: "2階吹抜け（3P×3P）の周囲の床構面で耐力壁線間距離が広がり、水平構面検定比が1.12でエラーになりました。火打梁の増設でクリアできますか？",
+        replies: 1,
+        teacherText: "火打金物（1組あたり許容耐力4.9kN）を吹抜け四隅に追加するか、吹抜け周囲の合板床を28mm厚・CN75釘@75（構面倍率3.0倍超）へ部分強化するのが標準解法です。"
+      },
+      {
+        id: "cp4",
+        cat: "review",
+        catName: "確認申請・審査指摘",
+        title: "ERIの指摘で「めり込み検定の別紙添付」を求められた場合の対処法",
+        author: "K一級建築士事務所 (受講生)",
+        time: "2週間前",
+        solved: true,
+        hasTeacherAnswer: true,
+        text: "確認申請の指摘書で「土台および大梁への柱めり込み検定計算書（安全証明）を添付すること」と記載されました。アーキトレンドの出力だけでは足りないのでしょうか？",
+        replies: 2,
+        teacherText: "アーキトレンドの基本計算書では柱めり込みが省略フラグになっている場合があります。mdo3の「めり込み検定計算ツール」で柱脚応力を入力し、A4の1枚計算書を出力して【補正図書別紙】としてバインドすれば一発で指摘クリアとなります。"
+      }
+    ];
+
+    function openCommunityModal() {
+      document.getElementById('communityModal').style.display = 'flex';
+      filterCommunityTopics();
+    }
+    function closeCommunityModal() {
+      document.getElementById('communityModal').style.display = 'none';
+    }
+
+    function filterCommunityTopics() {
+      const query = (document.getElementById('communitySearchInput').value || '').trim().toLowerCase();
+      const cat = document.getElementById('communityCatSelect').value;
+      const listEl = document.getElementById('communityTopicList');
+      if (!listEl) return;
+
+      const filtered = COMMUNITY_POSTS.filter(p => {
+        const matchCat = (cat === 'all' || p.cat === cat);
+        const matchQuery = !query || p.title.toLowerCase().includes(query) || p.text.toLowerCase().includes(query) || (p.teacherText && p.teacherText.toLowerCase().includes(query));
+        return matchCat && matchQuery;
+      });
+
+      if (filtered.length === 0) {
+        listEl.innerHTML = `<div style="text-align:center; padding:30px; color:var(--text-muted); font-size:0.85rem;">該当するコミュニティトピックは見つかりませんでした。</div>`;
+        return;
+      }
+
+      listEl.innerHTML = filtered.map(p => `
+        <div style="background:#0b1120; border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:12px; transition:border 0.2s;" onmouseenter="this.style.borderColor='var(--accent-green)'" onmouseleave="this.style.borderColor='var(--border-color)'">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px; margin-bottom:6px;">
+            <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+              <span style="font-size:0.7rem; padding:2px 6px; background:rgba(16,185,129,0.15); color:var(--accent-green); border-radius:4px; font-weight:700;">${p.catName}</span>
+              ${p.hasTeacherAnswer ? '<span style="font-size:0.7rem; padding:2px 6px; background:rgba(245,158,11,0.15); color:var(--accent-gold); border-radius:4px; font-weight:700;">★ 講師回答・図解あり</span>' : ''}
+              <strong style="font-size:0.85rem; color:#fff;">${p.title}</strong>
+            </div>
+            <span style="font-size:0.7rem; color:var(--text-muted); white-space:nowrap;">${p.time}</span>
+          </div>
+          <p style="font-size:0.78rem; color:var(--text-sub); margin:0 0 8px; line-height:1.5;">${p.text}</p>
+          ${p.teacherText ? `
+            <div style="background:rgba(245,158,11,0.06); border-left:3px solid var(--accent-gold); padding:8px 10px; border-radius:0 4px 4px 0; margin-top:6px; font-size:0.76rem; color:var(--text-main);">
+              <strong style="color:var(--accent-gold);">【講師（管理建築士）アドバイス】</strong><br>
+              ${p.teacherText}
+            </div>
+          ` : ''}
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px; font-size:0.72rem; color:var(--text-muted);">
+            <span>投稿者: ${p.author}</span>
+            <span>💬 返信・見解 (${p.replies})</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function promptNewCommunityTopic() {
+      const title = prompt('新しくコミュニティに投稿する質問のタイトルを入力してください：');
+      if (!title || !title.trim()) return;
+      const text = prompt('質問内容の詳細（エラー内容、部材寸法、疑問点など）を入力してください：');
+      if (!text || !text.trim()) return;
+
+      COMMUNITY_POSTS.unshift({
+        id: `cp_${Date.now()}`,
+        cat: document.getElementById('communityCatSelect').value === 'all' ? 'grid' : document.getElementById('communityCatSelect').value,
+        catName: "受講生相談",
+        title: title.trim(),
+        author: "受講生 (あなた)",
+        time: "たった今",
+        solved: false,
+        hasTeacherAnswer: false,
+        text: text.trim(),
+        replies: 0,
+        teacherText: "質問が投稿されました。受講生同士の見解や、管理建築士からの補足アドバイスをお待ちください。"
+      });
+
+      filterCommunityTopics();
+      alert('コミュニティ掲示板に質問を投稿しました！');
     }
   </script>
 </body>

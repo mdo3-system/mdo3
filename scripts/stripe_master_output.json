@@ -1,0 +1,14 @@
+{
+    "video_annual": {
+        "product_id": "prod_VbmekBMlZGnRXu",
+        "price_id": "price_1UaZ4m7zvNn4YIGPns767AAZ",
+        "amount": 100000,
+        "payment_url": "https://buy.stripe.com/7sY14h18H7jm15mcak5gc00"
+    },
+    "ticket_spot": {
+        "product_id": "prod_VbmezwbPzXXJ5N",
+        "price_id": "price_1UaZ4n7zvNn4YIGPAf0NtpDo",
+        "amount": 50000,
+        "payment_url": "https://buy.stripe.com/fZu3cpbNl5beg0g7U45gc01"
+    }
+}

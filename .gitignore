@@ -20,3 +20,6 @@ Desktop.ini
 *.log
 scratch/
 temp/
+
+# Large media files (served via server asset storage)
+*.mp4

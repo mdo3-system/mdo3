@@ -70,4 +70,22 @@ return array (
     'interval' => 'year',
     'nickname' => 'AZ斜め壁 年額98,000円 (サポートQ&A付)',
   ),
+  'master_video_annual' => 
+  array (
+    'product_id' => 'prod_VbmekBMlZGnRXu',
+    'price_id' => 'price_1UaZ4m7zvNn4YIGPns767AAZ',
+    'payment_url' => 'https://buy.stripe.com/7sY14h18H7jm15mcak5gc00',
+    'amount' => 100000,
+    'interval' => 'year',
+    'nickname' => '動画マスター＆受講生コミュニティ 年額100,000円',
+  ),
+  'master_ticket_spot' => 
+  array (
+    'product_id' => 'prod_VbmezwbPzXXJ5N',
+    'price_id' => 'price_1UaZ4n7zvNn4YIGPAf0NtpDo',
+    'payment_url' => 'https://buy.stripe.com/fZu3cpbNl5beg0g7U45gc01',
+    'amount' => 50000,
+    'interval' => 'one_time',
+    'nickname' => '案件スポット質疑チケット 1案件50,000円',
+  ),
 );

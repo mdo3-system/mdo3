@@ -207,42 +207,66 @@
     var isMasterProgram = (urlParams.get('type') === 'master_program');
 
     if (isMasterProgram) {
-      document.querySelector('h1').textContent = 'ARCHITREND ZERO 実務マスタープログラム 事前相談・面談お申込み';
-      document.querySelector('h1 + p').textContent = '木造許容応力度計算の自社内製化をご検討中の設計者様・工務店様向け、無料事前相談（オンライン）窓口です。';
+      var planParam = urlParams.get('plan') || '';
+      document.querySelector('h1').textContent = 'ARCHITREND ZERO 実務マスタープログラム お申込み・事前相談';
+      document.querySelector('h1 + p').textContent = '木造許容応力度計算の自社内製化をご検討中の設計者様・工務店様向け、受講お申込み・請求書発行および無料事前相談窓口です。';
       
       var noticeBox = document.querySelector('.contact-notice');
       noticeBox.style.borderLeftColor = 'var(--accent-gold)';
       noticeBox.style.background = 'rgba(245, 158, 11, 0.1)';
-      noticeBox.innerHTML = '<strong>【実務マスタープログラム 事前相談・受講案内】</strong><br>' +
-        '・管理建築士が、貴社の設計状況・アーキトレンド導入環境・教材とする案件選定についてオンラインにて直接ご相談を承ります。<br>' +
-        '・<strong>法人様対応（銀行振込・請求書払い）および2回分割振込（一次回答時50%＋翌月50%・回数応相談）にも柔軟に対応しております。</strong><br>' +
-        '・受講生には専用ポータル（案件別ダッシュボード）を開設し、図面・計算書・限定実況動画の授受およびチャット質疑を一元管理します。<br>' +
-        '・無理な勧誘は一切ございません。お気軽にお問い合わせください。';
+      noticeBox.innerHTML = '<strong>【実案件OJT伴走マスタープログラム（50万円）お申込み・受講案内】</strong><br>' +
+        '・<strong>お支払い方法（基本請求書払い・2回分割振込）：</strong> 受講開始（一次回答）時に1/2（25万円 税込）、翌月に残り1/2（25万円 税込）の分割請求書（インボイス対応）を発行いたします。<br>' +
+        '・<strong>実務管理ポータル（system.thanks.work）：</strong> 貴社案件のCADデータ（.bld等）・計算書授受・審査質疑回答書作成は、株式会社住ま居るの受託管理システム「<strong>system.thanks.work</strong>」にて厳格に一元管理いたします。<br>' +
+        '・<strong>動画マスター（年額10万円）およびスポット質疑チケット（5万円）の請求書払い</strong>をご希望の方もこちらからお申込みいただけます（※クレジットカード即時決済をご希望の方はLP上のStripeボタンをご利用ください）。<br>' +
+        '・無理な勧誘は一切ございません。管理建築士が丁寧にご対応いたします。';
 
       var typeSelect = document.getElementById('contactType');
-      var opt = document.createElement('option');
-      opt.value = '実務マスタープログラム 事前相談・面談申込み';
-      opt.textContent = '実務マスタープログラム 事前相談・面談申込み';
-      opt.selected = true;
-      typeSelect.insertBefore(opt, typeSelect.firstChild);
+      var ojtOpt = document.createElement('option');
+      ojtOpt.value = '実案件2棟OJT伴走プログラム（50万円・2回分割請求書払い 25万+25万）';
+      ojtOpt.textContent = '実案件2棟OJT伴走プログラム（50万円・2回分割請求書払い 25万+25万）';
+      if (planParam === 'ojt' || planParam === 'upgrade_ojt' || !planParam) ojtOpt.selected = true;
+
+      var videoOpt = document.createElement('option');
+      videoOpt.value = '動画マスター＆受講生コミュニティ（年額10万円・請求書払い）';
+      videoOpt.textContent = '動画マスター＆受講生コミュニティ（年額10万円・請求書払い）';
+      if (planParam === 'video') videoOpt.selected = true;
+
+      var ticketOpt = document.createElement('option');
+      ticketOpt.value = '案件スポット質疑チケット（5万円・請求書払い）';
+      ticketOpt.textContent = '案件スポット質疑チケット（5万円・請求書払い）';
+      if (planParam === 'ticket') ticketOpt.selected = true;
+
+      var consultOpt = document.createElement('option');
+      consultOpt.value = 'まずはオンライン無料事前相談・面談を希望';
+      consultOpt.textContent = 'まずはオンライン無料事前相談・面談を希望';
+      if (planParam === 'consult') consultOpt.selected = true;
+
+      typeSelect.innerHTML = '';
+      typeSelect.appendChild(ojtOpt);
+      typeSelect.appendChild(videoOpt);
+      typeSelect.appendChild(ticketOpt);
+      typeSelect.appendChild(consultOpt);
 
       var toolLabel = document.querySelector('label[for="contactTool"]');
-      if (toolLabel) toolLabel.textContent = '検討中の物件種別 / アーキトレンド導入状況';
+      if (toolLabel) toolLabel.textContent = '対象予定の物件種別 / アーキトレンド導入状況';
       var toolSelect = document.getElementById('contactTool');
       toolSelect.innerHTML = 
-        '<option value="木造2階 建売分譲住宅 (整形)">木造2階 建売分譲住宅 (整形)</option>' +
-        '<option value="木造2階 注文住宅">木造2階 注文住宅</option>' +
+        '<option value="木造2階 建売分譲住宅 (整形プラン)">木造2階 建売分譲住宅 (整形プラン)</option>' +
+        '<option value="木造2階 注文住宅 (吹抜け・大開口あり)">木造2階 注文住宅 (吹抜け・大開口あり)</option>' +
         '<option value="木造3階 狭小・都市型住宅">木造3階 狭小・都市型住宅</option>' +
-        '<option value="アーキトレンド導入済み・これから構造計算を導入">アーキトレンド導入済み・これから構造計算を導入</option>' +
-        '<option value="その他">その他</option>';
+        '<option value="アーキトレンド導入済み・これから構造計算を内製化">アーキトレンド導入済み・これから構造計算を内製化</option>' +
+        '<option value="その他・未定">その他・未定</option>';
 
       var msgLabel = document.querySelector('label[for="contactMessage"]');
-      if (msgLabel) msgLabel.innerHTML = 'ご相談内容・ご希望事項 <span style="color:#ef4444;">*</span>';
+      if (msgLabel) msgLabel.innerHTML = '受講者情報・物件情報・ご希望事項 <span style="color:#ef4444;">*</span>';
       var msgArea = document.getElementById('contactMessage');
-      msgArea.placeholder = '受講を検討されている時期、現在抱えている設計課題、銀行振込や分割払いのご希望、ご都合の良い面談日時候補などをご自由にご記入ください。';
+      msgArea.placeholder = '【入力例】\n・請求書宛名（法人名）：株式会社○○設計\n・受講設計者氏名：山田 太郎（一級建築士）\n・希望開始時期：○月頃から\n・対象物件の概要（階数・延床面積・申請時期など）：\n・ご希望の連絡方法（メール・オンライン面談など）：';
 
       var submitBtn = document.getElementById('btnSubmitContact');
       submitBtn.style.background = 'linear-gradient(135deg, #f59e0b, #d97706)';
+      submitBtn.style.color = '#0f172a';
+      submitBtn.innerHTML = '<span class="material-symbols-outlined">send</span> 受講者情報を送信して申し込む / 相談する';
+    }
       submitBtn.style.color = '#0f172a';
       submitBtn.innerHTML = '<span class="material-symbols-outlined">event_available</span> 無料事前相談・面談を申し込む';
     }
