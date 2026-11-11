@@ -1402,7 +1402,7 @@
       <div class="custom-modal-head">
         <div class="custom-modal-title">
           <span class="material-symbols-outlined" style="color:var(--accent-green);">forum</span>
-          受講生限定 実務コミュニティ掲示板（相互解決 ＆ 実務ナレッジ）
+          受講生限定 実務コミュニティ掲示板（無期限ログイン保証）
         </div>
         <button class="modal-close-icon" onclick="closeCommunityModal()">
           <span class="material-symbols-outlined">close</span>
@@ -1411,8 +1411,13 @@
       <div class="custom-modal-body" style="padding-top:12px;">
         <!-- 説明バナー -->
         <div style="background:rgba(16,185,129,0.06); border:1px solid rgba(16,185,129,0.25); border-radius:var(--radius-sm); padding:10px 14px; margin-bottom:14px; font-size:0.8rem; color:var(--text-sub); display:flex; justify-content:space-between; align-items:center;">
-          <span>💬 受講生同士で現場のエラーやアーキトレンドZEROの納まりを相互に解決し合う実務掲示板です。<br><strong style="color:var(--accent-green);">※初期フェーズは講師（管理建築士）も適宜書き込み、グレー本基準やCAD画面の解説を行います。</strong></span>
-          <button class="btn-action btn-complete" style="font-size:0.75rem; padding:6px 12px; white-space:nowrap;" onclick="promptNewCommunityTopic()">
+          <div>
+            <div style="color:#fff; font-weight:700; margin-bottom:2px;">
+              🌟 「1年後、この動画を見る必要が全くなくなっている（＝完全自立）」。これが私たちの願いです。
+            </div>
+            <span>受講生コミュニティ掲示板は【無期限・永久ログイン保証】され、実務設計を続ける限りずっとご利用いただけます。<br><strong style="color:var(--accent-green);">※初期フェーズは講師（管理建築士）も適宜書き込み、グレー本基準やCAD画面の解説を行います。</strong></span>
+          </div>
+          <button class="btn-action btn-complete" style="font-size:0.75rem; padding:6px 12px; white-space:nowrap; margin-left:12px;" onclick="promptNewCommunityTopic()">
             <span class="material-symbols-outlined" style="font-size:14px;">post_add</span>
             新しい質問を投稿
           </button>
