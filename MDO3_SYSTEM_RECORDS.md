@@ -1428,3 +1428,26 @@ WRC造の「開口部補強・割増検討（jintsuko_bf）」は削除。新た
      - `config/stripe_plans.php` に `master_video_annual` および `master_ticket_spot` を正式追加。
      - `Version.js` を `v2.2.28` に更新。
      - `MDO3_SYSTEM_RECORDS.md` に全改訂仕様を公式記録。
+
+---
+
+## 52. リリース履歴: v2.2.29 (2026-11-12)
+
+### 🎬 解説動画ダイジェスト版（digest_preview.mp4）制作・LP目玉プレイヤー配備 ＆ Single Source of Truth ツール数自動同期基盤の完全構築
+- **背景 & 要望**:
+  - 10万円（動画マスター）および50万円（実案件OJT）の双方において、申込前に講義の熱量・クオリティ（CAD画面操作、AIプロナレーション、見やすいASS字幕）を一瞬で体感できる「解説動画のダイジェスト版」をLPの目玉に据える要望。
+  - サイト内（index.html、404.html、llms.txt、llms-full.txt、tools/*.html 等）に散在していた旧ツール数（28/29/30/31）の表記揺れ・更新漏れを根絶するため、今後もツールが増えても更新漏れが一切起きない仕組み（Single Source of Truth）の構築要望。
+- **改修内容 & 実装**:
+  1. **ダイジェスト動画の自動生成 (`scratch/render_digest_preview.py` -> `public/assets/videos/master/digest_preview.mp4`)**:
+     - 全23レッスン動画から代表6チャプター（伏図先行思想、初期設定・構造方針、梁成エラー解消、屋根水平構面、人通口補強、耐風梁完了）のハイライト映像を抽出し、Edge-TTS（`ja-JP-NanamiNeural`）新規ダイジェストナレーションと上下不透明バナー（既存字幕カバー）＋ダイジェスト専用ASS字幕を合成（100.5秒 / 5.64 MB / 1080p FHD / `-movflags +faststart`）。
+  2. **特設LP（`public/master-program.html`）＆ ポータル（`public/index.html`）への目玉プレイヤー配備**:
+     - `master-program.html` のファーストビュー直下に `#videoDigestSection` を新設し、「総合ダイジェスト版（約100秒）」と「第1回本編 無料公開（Lesson 1-1: 伏図先行思想・2分37秒）」をワンクリック切替できる統合プレイヤーを配備。
+     - 動画直下に「梅・動画マスター（年額10万円 / Stripe直結）」と「松・実案件OJT伴走（50万円 / 2回分割請求書・差額40万円アップグレード可）」の導線を並置し、両プラン共通の入口として訴求力を最大化。
+     - `public/index.html` の特設ゴールドバナーにも「ダイジェスト動画＆詳細を見る（`/master-program.html#videoDigestSection`）」および「50万円OJT詳細」導線を配備。
+  3. **Single Source of Truth ツール数自動同期機構 (`scripts/sync_tool_counts.js` & `public/js/site_metrics.js`)**:
+     - `public/js/tools_data.js` の `MDO3_TOOLS_CATALOG`（現在 **32ツール**）を唯一の真実（Single Source of Truth）として定義。
+     - **`scripts/sync_tool_counts.js`**: デプロイ前やツール追加時に実行することで、`public/*.html`, `public/*.txt`, `public/tools/*.html`, `public/js/site_metrics.js`, `scripts/register_master_program_stripe.php` 内のツール総数表記（`全XXツール`, `構造ツール (XX)`, `全XX構造計算ツール`, `data-mdo3-tool-count` 等）を一括同期（全39ファイル・旧28/29/30/31表記を32へ完全統一）。
+     - **`scripts/deploy_portal.bat`**: デプロイ実行直前に `node "%~dp0sync_tool_counts.js"` を自動実行するフックを組み込み、手動修正忘れを構造的に防止。
+     - **`public/js/site_metrics.js`**: クライアント実行時にも `MDO3_TOOLS_CATALOG.length` を参照して `[data-mdo3-tool-count]` 属性要素を動的更新（`index.html`, `master-program.html`, `master_dashboard.html`, `404.html` へ配備）。
+  4. **バージョン・システム台帳更新**:
+     - `Version.js` を `v2.2.29` に更新し、`MDO3_SYSTEM_RECORDS.md` へ第52項を追記。

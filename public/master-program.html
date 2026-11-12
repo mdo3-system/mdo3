@@ -56,7 +56,7 @@
         "offers": [
           {
             "@type": "Offer",
-            "name": "動画マスター＆受講生コミュニティ会員", "price": "100000", "priceCurrency": "JPY", "category": "Paid", "description": "全23実務動画1年間見放題＋mdo3全31ツール1年間使い放題＋受講生限定コミュニティ掲示板。いつでも差額40万円で実案件OJTへ移行可能。"
+            "name": "動画マスター＆受講生コミュニティ会員", "price": "100000", "priceCurrency": "JPY", "category": "Paid", "description": "全23実務動画1年間見放題＋mdo3全32ツール1年間使い放題＋受講生限定コミュニティ掲示板。いつでも差額40万円で実案件OJTへ移行可能。"
           },
           {
             "@type": "Offer",
@@ -523,7 +523,7 @@
         <ul class="nav-links">
           <li><a href="/"><span class="material-symbols-outlined" style="font-size:15px;">home</span> ポータルトップ</a></li>
           <li><a href="/master-program.html" style="color:var(--accent-gold); font-weight:700;"><span class="material-symbols-outlined" style="font-size:15px;">school</span> 実務マスタープログラム</a></li>
-          <li><a href="/#toolsCatalog"><span class="material-symbols-outlined" style="font-size:15px;">grid_view</span> 全30ツール一覧</a></li>
+          <li><a href="/#toolsCatalog"><span class="material-symbols-outlined" style="font-size:15px;">grid_view</span> 全32ツール一覧</a></li>
           <li><a href="/faq.html"><span class="material-symbols-outlined" style="font-size:15px;">help</span> 技術Q&A</a></li>
         </ul>
       </nav>
@@ -556,34 +556,90 @@
       <!-- 3大受講特典 -->
       <div class="hero-perks-grid">
         <div class="hero-perk-card">
+          <span class="material-symbols-outlined hero-perk-icon">ondemand_video</span>
+          <div>
+            <div class="hero-perk-title">全23本 実務解説動画（計92分）</div>
+            <div class="hero-perk-sub">10万・50万両プランの共通基礎カリキュラム完備</div>
+          </div>
+        </div>
+        <div class="hero-perk-card">
           <span class="material-symbols-outlined hero-perk-icon">card_membership</span>
           <div>
-            <div class="hero-perk-title">mdo3全30ツール 1年間無料</div>
+            <div class="hero-perk-title">mdo3全<span data-mdo3-tool-count>32</span>ツール 1年間無料</div>
             <div class="hero-perk-sub">受講期間中、全専門構造ツールが使い放題</div>
           </div>
         </div>
         <div class="hero-perk-card">
-          <span class="material-symbols-outlined hero-perk-icon">support_agent</span>
+          <span class="material-symbols-outlined hero-perk-icon">forum</span>
           <div>
-            <div class="hero-perk-title">1年間 質疑・補正伴走サポート</div>
-            <div class="hero-perk-sub">民間検査機関からの指摘対応まで徹底指導</div>
-          </div>
-        </div>
-        <div class="hero-perk-card">
-          <span class="material-symbols-outlined hero-perk-icon">shield</span>
-          <div>
-            <div class="hero-perk-title">万全のバックアップ支援体制（外注相場半額でのサポート）</div>
-            <div class="hero-perk-sub">万一の際も通常半額で図書作成支援を約束</div>
+            <div class="hero-perk-title">コミュニティ掲示板 無期限保証</div>
+            <div class="hero-perk-sub">卒業後も実務の疑問を仲間・講師と永久共有</div>
           </div>
         </div>
       </div>
 
-      <div style="margin-top:32px; display:flex; gap:16px; flex-wrap:wrap;">
-        <a href="/contact.html?type=master_program" class="btn btn-primary" style="padding:16px 36px; font-size:1.05rem;">
-          <span class="material-symbols-outlined">event_available</span> 事前相談・面談を申し込む（無料）
+      <div style="margin-top:32px; display:flex; gap:14px; flex-wrap:wrap; align-items:center;">
+        <a href="#videoDigestSection" class="btn btn-primary" style="background:linear-gradient(135deg, #06b6d4, #0284c7); border:none; padding:16px 28px; font-size:1.02rem; font-weight:800; box-shadow:0 8px 20px rgba(6,182,212,0.4);">
+          <span class="material-symbols-outlined">play_circle</span> まずは解説動画ダイジェストを見る
         </a>
-        <a href="#curriculum" class="btn btn-ghost" style="padding:16px 28px;">
-          <span class="material-symbols-outlined">expand_more</span> プログラム構成・受講費用を見る
+        <a href="/contact.html?type=master_program" class="btn btn-primary" style="background:#f59e0b; color:#0f172a; border:none; padding:16px 28px; font-size:1.02rem; font-weight:800;">
+          <span class="material-symbols-outlined">event_available</span> 50万円OJT 事前相談・分割請求書申込み
+        </a>
+        <a href="#curriculum" class="btn btn-ghost" style="padding:16px 24px;">
+          <span class="material-symbols-outlined">expand_more</span> プラン比較・料金表
+        </a>
+      </div>
+    </section>
+
+    <!-- ★ 目玉セクション: 解説動画ダイジェスト ＆ 無料お試しプレビュー -->
+    <section id="videoDigestSection" class="section-card" style="border:2px solid rgba(6, 182, 212, 0.5); background:linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(11, 15, 25, 0.98)); box-shadow:0 20px 40px rgba(0,0,0,0.6), 0 0 35px rgba(6,182,212,0.12);">
+      <div style="display:inline-flex; align-items:center; gap:6px; background:rgba(6, 182, 212, 0.15); border:1px solid var(--accent-cyan); color:var(--accent-cyan); padding:4px 12px; border-radius:9999px; font-size:0.78rem; font-weight:800; margin-bottom:12px;">
+        <span class="material-symbols-outlined" style="font-size:15px;">smart_display</span>
+        両プラン共通の核となる「全23レッスン」を体感
+      </div>
+      <h2 class="section-title" style="margin-bottom:10px; font-size:1.55rem;">
+        <span class="material-symbols-outlined" style="color:var(--accent-cyan);">ondemand_video</span>
+        実際の解説動画ダイジェスト ＆ 無料お試し試聴
+      </h2>
+      <p style="font-size:0.94rem; color:var(--text-sub); line-height:1.7; margin-bottom:18px;">
+        「本当に分かりやすいのか？」「自分のペースで実践できそうか？」をお申し込み前にご自身の目でお確かめください。<br>
+        <strong style="color:#fff;">【動画マスター（10万円）】</strong>はもちろん、<strong style="color:var(--accent-gold);">【実案件OJT伴走（50万円）】</strong>をご受講の方も、まずはこの全23本（計92分）の実践動画で全体の急所を掴んでから本番物件の個別伴走へ進むため、習得スピードが劇的に向上します。
+      </p>
+
+      <!-- 動画切替タブ -->
+      <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:14px;">
+        <button type="button" id="btnDigestClip" onclick="switchShowcaseVideo('digest')" style="flex:1; min-width:260px; padding:12px 16px; border-radius:8px; border:2px solid var(--accent-cyan); background:rgba(6,182,212,0.15); color:#fff; font-weight:700; font-size:0.88rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:all 0.2s;">
+          <span class="material-symbols-outlined" style="color:var(--accent-cyan);">movie_filter</span>
+          🎬 総合ダイジェスト版（全5章ハイライト・約100秒）
+        </button>
+        <button type="button" id="btnSampleLesson" onclick="switchShowcaseVideo('lesson1')" style="flex:1; min-width:260px; padding:12px 16px; border-radius:8px; border:1px solid rgba(255,255,255,0.2); background:rgba(255,255,255,0.04); color:#cbd5e1; font-weight:700; font-size:0.88rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:all 0.2s;">
+          <span class="material-symbols-outlined" style="color:var(--accent-gold);">play_lesson</span>
+          📺 第1回本編 無料公開（Lesson 1-1: 伏図先行思想・2分37秒）
+        </button>
+      </div>
+
+      <!-- 16:9 プレイヤー枠 -->
+      <div style="position:relative; width:100%; background:#000; border-radius:10px; overflow:hidden; border:1px solid rgba(255,255,255,0.15); box-shadow:0 12px 30px rgba(0,0,0,0.7);">
+        <video id="lpShowcaseVideo" controls playsinline preload="metadata" style="width:100%; display:block; aspect-ratio:16/9; max-height:540px; background:#050811;">
+          <source id="lpShowcaseSource" src="/assets/videos/master/digest_preview.mp4" type="video/mp4">
+          お使いのブラウザは動画再生に対応していません。
+        </video>
+      </div>
+
+      <div id="lpShowcaseCaption" style="margin-top:10px; padding:10px 14px; background:rgba(255,255,255,0.04); border-radius:6px; font-size:0.84rem; color:#94a3b8; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+        <span>📌 <strong style="color:#38bdf8;">再生中：</strong>【公式ダイジェスト】全23レッスンから厳選した伏図・初期設定・エラー解消・人通口補強計算のハイライト</span>
+        <span style="font-size:0.76rem; color:var(--accent-green);">✓ Edge-TTS AIクリア音声・強調テロップ・社外秘情報ぼかし処理済</span>
+      </div>
+
+      <!-- 視聴後のダイレクト申込み導線 -->
+      <div style="margin-top:20px; display:flex; gap:14px; flex-wrap:wrap; justify-content:center; padding-top:16px; border-top:1px solid rgba(255,255,255,0.08);">
+        <a href="https://buy.stripe.com/7sY14h18H7jm15mcak5gc00" target="_blank" rel="noopener" class="btn btn-primary" style="background:linear-gradient(135deg, #06b6d4, #0284c7); border:none; padding:13px 24px; font-size:0.92rem; font-weight:800; text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
+          <span class="material-symbols-outlined" style="font-size:18px;">credit_card</span>
+          動画マスター＋全<span data-mdo3-tool-count>32</span>ツール＋掲示板（年額10万円）をカードで開始
+        </a>
+        <a href="/contact.html?type=master_program&plan=ojt" class="btn btn-primary" style="background:linear-gradient(135deg, #f59e0b, #d97706); color:#0f172a; border:none; padding:13px 24px; font-size:0.92rem; font-weight:800; text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
+          <span class="material-symbols-outlined" style="font-size:18px;">event_available</span>
+          この動画＋実案件2棟OJT伴走（50万円・2回分割請求書）を申し込む
         </a>
       </div>
     </section>
@@ -614,7 +670,7 @@
           <tr>
             <th>受講プラン・費用</th>
             <td>
-              <strong>① 動画マスター＆コミュニティ会員</strong>: 年額 100,000円（全23動画＋全31ツール1年使い放題＋掲示板。いつでも差額40万円で実案件OJTへ移行可能）<br>
+              <strong>① 動画マスター＆コミュニティ会員</strong>: 年額 100,000円（全23動画＋全32ツール1年使い放題＋掲示板。いつでも差額40万円で実案件OJTへ移行可能）<br>
               <strong>② 実案件OJT伴走マスタープログラム</strong>: 一式 500,000円（実案件2棟完全実況＋個別OJT＋ギブアップ時半額代行保証）<br>
               <strong>③ 案件スポット質疑チケット（OP）</strong>: 1案件 50,000円（自ら申請する案件の是正回答助言。丸投げ・ギブアップ保証対象外）
             </td>
@@ -856,13 +912,13 @@
               </td>
               <td class="highlight-cell" style="border-left:2px solid var(--accent-cyan) !important;">
                 <span style="font-size:1.3rem; font-weight:800; color:#fff;">100,000</span> 円 / 年<br>
-                <span style="font-size:0.75rem; font-weight:600; color:var(--accent-green);">★ 全31ツール1年無料付き</span><br>
+                <span style="font-size:0.75rem; font-weight:600; color:var(--accent-green);">★ 全32ツール1年無料付き</span><br>
                 <span style="font-size:0.72rem; color:var(--accent-cyan);">※ 差額40万円でOJTへ移行可</span>
               </td>
               <td>
                 <strong>【自力で内製化をマスターしたい設計者様向け】</strong><br>
                 ・<strong>全23レッスン（【構造1】〜【構造5】総再生91分47秒）実務動画が1年間見放題</strong>（ARCHITREND ZERO操作からmdo3ツール併用まで完全網羅）。<br>
-                ・<strong>mdo3全31ツールの全機能が1年間完全無料・使い放題</strong>（通常年額39,800円相当）。<br>
+                ・<strong>mdo3全32ツールの全機能が1年間完全無料・使い放題</strong>（通常年額39,800円相当）。<br>
                 ・<strong>受講生限定コミュニティ掲示板は【無期限・永久ログイン保証】</strong>（卒業後も実務の疑問や審査質疑を仲間・講師と相互解決）。<br>
                 <div style="background:rgba(16,185,129,0.08); border-left:3px solid var(--accent-green); padding:8px 12px; margin:8px 0; border-radius:0 4px 4px 0; font-size:0.82rem; color:#ecfdf5; line-height:1.6;">
                   🌟 <strong>私たちの願い：</strong>「1年後、この動画を見直す必要が全くなくなっている（＝自立した構造設計者として独り立ちできている）」。これこそが私たちの真のゴールです。動画カリキュラム終了後も、実務を続ける限り受講生コミュニティ掲示板はずっと無期限でご利用いただけます。
@@ -897,7 +953,7 @@
                 ・<strong>構造設計実務・CADデータ授受・審査質疑対応は、受託管理ポータル「system.thanks.work」にて一元管理</strong>。<br>
                 ・<strong>お申込み時に受講者情報（会社名・設計者氏名・物件概要等）を受領し、受講開始時1/2（25万円）、翌月1/2（25万円）の2回分割請求書を発行いたします。</strong><br>
                 ・<strong>万全のギブアップ保証（通常外注相場の50%で図書作成を代理バックアップ）付き</strong>。<br>
-                ・全23動画1年間見放題 ＋ mdo3全31ツール1年間完全無料。
+                ・全23動画1年間見放題 ＋ mdo3全32ツール1年間完全無料。
                 <div style="margin-top:10px;">
                   <a href="/contact.html?type=master_program&plan=ojt" class="btn btn-primary" style="background:#f59e0b; color:#0f172a; font-weight:800; padding:10px 20px; font-size:0.85rem; border:none; text-decoration:none; display:inline-flex; align-items:center; gap:6px; box-shadow:0 4px 14px rgba(245,158,11,0.35);">
                     <span class="material-symbols-outlined" style="font-size:16px;">send</span>
@@ -1109,7 +1165,7 @@
       <p style="font-size:0.85rem; color:var(--text-sub); margin-bottom:8px;">
         <a href="/" style="color:var(--text-main); text-decoration:none;">mdo3.com 基幹ポータル</a> | 
         <a href="/master-program.html" style="color:var(--accent-gold); text-decoration:none;">実務マスタープログラム</a> | 
-        <a href="/#toolsCatalog" style="color:var(--text-main); text-decoration:none;">全30ツール一覧</a> | 
+        <a href="/#toolsCatalog" style="color:var(--text-main); text-decoration:none;">全32ツール一覧</a> | 
         <a href="/terms.html" style="color:var(--text-main); text-decoration:none;">利用規約</a> | 
         <a href="/tokusho.html" style="color:var(--text-main); text-decoration:none;">特定商取引法</a>
       </p>
@@ -1117,5 +1173,38 @@
     </div>
   </footer>
 
+  <script src="/js/site_metrics.js"></script>
+  <script>
+    function switchShowcaseVideo(mode) {
+      var video = document.getElementById('lpShowcaseVideo');
+      var source = document.getElementById('lpShowcaseSource');
+      var btnDigest = document.getElementById('btnDigestClip');
+      var btnSample = document.getElementById('btnSampleLesson');
+      var caption = document.getElementById('lpShowcaseCaption');
+      if (!video || !source) return;
+
+      if (mode === 'digest') {
+        source.src = '/assets/videos/master/digest_preview.mp4';
+        btnDigest.style.border = '2px solid var(--accent-cyan)';
+        btnDigest.style.background = 'rgba(6,182,212,0.15)';
+        btnDigest.style.color = '#fff';
+        btnSample.style.border = '1px solid rgba(255,255,255,0.2)';
+        btnSample.style.background = 'rgba(255,255,255,0.04)';
+        btnSample.style.color = '#cbd5e1';
+        caption.innerHTML = '<span>📌 <strong style="color:#38bdf8;">再生中：</strong>【公式ダイジェスト】全23レッスンから厳選した伏図・初期設定・エラー解消・人通口補強計算のハイライト</span><span style="font-size:0.76rem; color:var(--accent-green);">✓ Edge-TTS AIクリア音声・強調テロップ・社外秘情報ぼかし処理済</span>';
+      } else {
+        source.src = '/assets/videos/master/Lesson_1_1_%E4%BC%8F%E5%9B%B3%E5%85%88%E8%A1%8C%E6%80%9D%E6%83%B3%E3%81%A81%E9%9A%8E%E5%9C%9F%E5%8F%B0%E5%A4%A7%E5%BC%95.mp4';
+        btnSample.style.border = '2px solid var(--accent-gold)';
+        btnSample.style.background = 'rgba(245,158,11,0.15)';
+        btnSample.style.color = '#fff';
+        btnDigest.style.border = '1px solid rgba(255,255,255,0.2)';
+        btnDigest.style.background = 'rgba(255,255,255,0.04)';
+        btnDigest.style.color = '#cbd5e1';
+        caption.innerHTML = '<span>📺 <strong style="color:#f59e0b;">再生中：</strong>【第1回本編 無料公開】Lesson 1-1: 伏図先行思想と1階土台大引（フル本編 2分37秒）</span><span style="font-size:0.76rem; color:var(--accent-green);">✓ 本番教材と全く同じ品質をご視聴いただけます</span>';
+      }
+      video.load();
+      video.play().catch(function(){});
+    }
+  </script>
 </body>
 </html>

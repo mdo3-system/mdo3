@@ -1,6 +1,11 @@
 @echo off
 chcp 65001 > nul
 echo ========================================================
+echo  Syncing Tool Counts from Single Source of Truth
+echo ========================================================
+node "%~dp0sync_tool_counts.js"
+
+echo ========================================================
 echo  Deploying mdo3.com Core Portal to XServer
 echo  Target: /home/mdo3/mdo3.com/public_html/
 echo ========================================================
