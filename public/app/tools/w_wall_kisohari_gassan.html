@@ -990,6 +990,13 @@
 
       try {
         const arrayBuffer = await file.arrayBuffer();
+        if (!arrayBuffer || arrayBuffer.byteLength === 0) {
+          throw new Error('ファイルが空（0バイト）です。クラウド同期中のファイルでないかご確認ください。');
+        }
+        const header = new TextDecoder('ascii').decode(arrayBuffer.slice(0, 5));
+        if (header !== '%PDF-') {
+          throw new Error(`有効なPDFファイルではありません（形式違い、またはファイル破損の可能性があります: "${file.name}"）。`);
+        }
 
         const loadingTask = pdfjsLib.getDocument({
           data: arrayBuffer,
@@ -1211,15 +1218,20 @@
           });
 
       spanData = newSpanData;
-      statusEl.innerText = `✅ 解析反映    1.title} ＋ ${b2.title}（支    umnNodes.length}点・全${spanData.length}スパン自動抽出完了！）`;
+      statusEl.innerText = `✅ 解析反映: ${b1.title} ＋ ${b2.title}（支点${columnNodes.length}点・全${spanData.length}スパン自動抽出完了！）`;
       render();
       return;
     }
 
-    statusEl.innerText = "⚠    の基礎梁テーブルを検    でした。直接入力をご利用ください。";
+    statusEl.innerText = "⚠️ 対象の基礎梁テーブルを検出できませんでした。直接入力をご利用ください。";
   } catch (err) {
     console.error("PDF Parse Error:", err);
-    statusEl.innerTe       `❌ 解析エラー: ${err.message || err}`;
+    const detail = (err && err.name === 'InvalidPDFException')
+      ? '無効または破損したPDFファイルです（パスワード保護・非PDF形式・未ダウンロードの可能性があります）。'
+      : (err && err.message ? err.message : String(err));
+    statusEl.innerText = `❌ 解析エラー: ${detail}`;
+  } finally {
+    e.target.value = '';
   }
 });
   </script>
