@@ -20,6 +20,8 @@ Desktop.ini
 *.log
 scratch/
 temp/
+__pycache__/
+*.pyc
 
 # Large media files (served via server asset storage)
 *.mp4

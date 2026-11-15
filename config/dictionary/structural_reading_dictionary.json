@@ -1,0 +1,1698 @@
+{
+  "title": "mdo3 構造計算・建築専門用語 読み＆字幕マスター辞書",
+  "version": "1.0.0",
+  "description": "構造計算解説動画および字幕・TTSナレーションの整合元（Single Source of Truth）。",
+  "total_entries": 237,
+  "entries": [
+    {
+      "term": "ARCHITREND ZERO",
+      "reading": "あーき",
+      "spoken": "あーき",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "CLT",
+      "reading": "しーえるてぃー",
+      "spoken": "しーえるてぃー",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "FCコンシェルジュ",
+      "reading": "えふしー",
+      "spoken": "えふしー",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "LIXIL",
+      "reading": "りくしる",
+      "spoken": "りくしる",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "LVL",
+      "reading": "えるぶいえーる",
+      "spoken": "えるぶいえーる",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "MOISS",
+      "reading": "もいす",
+      "spoken": "もいす",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "MPa",
+      "reading": "めがぱすかる",
+      "spoken": "めがぱすかる",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "N/?",
+      "reading": "にゅーとん",
+      "spoken": "にゅーとん",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "N値計算",
+      "reading": "えぬち",
+      "spoken": "えぬち",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "OSB",
+      "reading": "おーえすびー",
+      "spoken": "おーえすびー",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "Pa",
+      "reading": "ぱすかる",
+      "spoken": "ぱすかる",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "RC",
+      "reading": "あーるしー",
+      "spoken": "あーるしー",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "SE構法",
+      "reading": "えすいー",
+      "spoken": "えすいー",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "TOTO",
+      "reading": "とうとう",
+      "spoken": "とうとう",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "WRC",
+      "reading": "だぶりゅーあーるしー",
+      "spoken": "だぶりゅーあーるしー",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "YKK AP",
+      "reading": "わいけーけー",
+      "spoken": "わいけーけー",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "kN",
+      "reading": "きろにゅーとん",
+      "spoken": "きろにゅーとん",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "kN・m",
+      "reading": "きろにゅーとんめーとる",
+      "spoken": "きろにゅーとんめーとる",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "kPa",
+      "reading": "きろぱすかる",
+      "spoken": "きろぱすかる",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "°",
+      "reading": "ど",
+      "spoken": "ど",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "±",
+      "reading": "ぷらすまいなす",
+      "spoken": "ぷらすまいなす",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "×",
+      "reading": "かける",
+      "spoken": "かける",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "÷",
+      "reading": "わる",
+      "spoken": "わる",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "π",
+      "reading": "ぱい",
+      "spoken": "ぱい",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "φ",
+      "reading": "ふぁい",
+      "spoken": "ふぁい",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "ℓ",
+      "reading": "り",
+      "spoken": "り",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "あんしんボード",
+      "reading": "あんしんぼーど",
+      "spoken": "あんしんぼーど",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "かぶり厚",
+      "reading": "かぶり",
+      "spoken": "かぶり",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "けらば",
+      "reading": "けらば",
+      "spoken": "けらば",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "せん断",
+      "reading": "せんだん",
+      "spoken": "せんだん",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "せん断力",
+      "reading": "せんがんりょく",
+      "spoken": "せんがんりょく",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "つが",
+      "reading": "つが",
+      "spoken": "つが",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "ねじれ補正",
+      "reading": "ねじれ",
+      "spoken": "ねじれ",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "まぐさ",
+      "reading": "まぐさ",
+      "spoken": "まぐさ",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "みよ子",
+      "reading": "みよこ",
+      "spoken": "みよこ",
+      "pos": "名",
+      "source": "attached_file"
+    },
+    {
+      "term": "アンカーボルト",
+      "reading": "あんかーぼると",
+      "spoken": "あんかーぼると",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "ウッドピタ",
+      "reading": "うっどぴた",
+      "spoken": "うっどぴた",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "クリナップ",
+      "reading": "くりなっぷ",
+      "spoken": "くりなっぷ",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "グラスウール",
+      "reading": "ぐらすうーる",
+      "spoken": "ぐらすうーる",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "ケイミュー",
+      "reading": "けーみゅー",
+      "spoken": "けーみゅー",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "ケラバ",
+      "reading": "けらば",
+      "spoken": "けらば",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "コンクリート",
+      "reading": "こんくりーと",
+      "spoken": "こんくりーと",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "スプライン",
+      "reading": "すぷりね",
+      "spoken": "すぷりね",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "スランプ",
+      "reading": "すらんぷ",
+      "spoken": "すらんぷ",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "タカラスタンダード",
+      "reading": "たから",
+      "spoken": "たから",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "ダイライト",
+      "reading": "だいらいと",
+      "spoken": "だいらいと",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "ダイライトMS",
+      "reading": "だいらいとえむえす",
+      "spoken": "だいらいとえむえす",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "ドブ漬け",
+      "reading": "どぶづけ",
+      "spoken": "どぶづけ",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "ニチハ",
+      "reading": "にちは",
+      "spoken": "にちは",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "ネダレス工法",
+      "reading": "ねだれす",
+      "spoken": "ねだれす",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "ノダ",
+      "reading": "のだ",
+      "spoken": "のだ",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "ノボパン",
+      "reading": "のぼぱん",
+      "spoken": "のぼぱん",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "ノボパンSTP II",
+      "reading": "のぼぱんえすてぃーぴーつー",
+      "spoken": "のぼぱんえすてぃーぴーつー",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "ハイベストウッド",
+      "reading": "はいべすと",
+      "spoken": "はいべすと",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "プレカット",
+      "reading": "ぷれかっと",
+      "spoken": "ぷれかっと",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "プレハブ",
+      "reading": "ぷれはぶ",
+      "spoken": "ぷれはぶ",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "ベタ基礎",
+      "reading": "べたぎそ",
+      "spoken": "べたぎそ",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "ホワイトウッド",
+      "reading": "ほわいと",
+      "spoken": "ほわいと",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "ホールダウン金物",
+      "reading": "ほーるだうん",
+      "spoken": "ほーるだうん",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "ボルト",
+      "reading": "ぼると",
+      "spoken": "ぼると",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "メッキ",
+      "reading": "めっき",
+      "spoken": "めっき",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "モーメント",
+      "reading": "もーめんと",
+      "spoken": "もーめんと",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "ヤング係数",
+      "reading": "やんぐけいすう",
+      "spoken": "やんぐけいすう",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "ラグスクリュー",
+      "reading": "らぐすくりゅー",
+      "spoken": "らぐすくりゅー",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "ロックウール",
+      "reading": "ろっくうーる",
+      "spoken": "ろっくうーる",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "㎟",
+      "reading": "へいほうみり",
+      "spoken": "へいほうみり",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "㎠",
+      "reading": "へいほうせんち",
+      "spoken": "へいほうせんち",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "㎡",
+      "reading": "へいほう",
+      "spoken": "へいほう",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "㎣",
+      "reading": "りっぽうみり",
+      "spoken": "りっぽうみり",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "㎤",
+      "reading": "りっぽうせんち",
+      "spoken": "りっぽうせんち",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "㎥",
+      "reading": "りゅうべ",
+      "spoken": "りゅうべ",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "上棟",
+      "reading": "じょうとう",
+      "spoken": "じょうとう",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "上面",
+      "reading": "うわづら",
+      "spoken": "うわづら",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "中間検査",
+      "reading": "ちゅうかんけんさ",
+      "spoken": "ちゅうかんけんさ",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "住ま居る",
+      "reading": "すまいる",
+      "spoken": "すまいる",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "偏心率",
+      "reading": "へんしんりつ",
+      "spoken": "へんしんりつ",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "充填",
+      "reading": "じゅうてん",
+      "spoken": "じゅうてん",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "充填断熱",
+      "reading": "じゅうてん",
+      "spoken": "じゅうてん",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "免震",
+      "reading": "めんしん",
+      "spoken": "めんしん",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "制震",
+      "reading": "せいしん",
+      "spoken": "せいしん",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "剛心",
+      "reading": "ごうしん",
+      "spoken": "ごうしん",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "剛性",
+      "reading": "ごうせい",
+      "spoken": "ごうせい",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "功樹",
+      "reading": "こうき",
+      "spoken": "こうき",
+      "pos": "名",
+      "source": "attached_file"
+    },
+    {
+      "term": "吹付ウレタン",
+      "reading": "うれたん",
+      "spoken": "うれたん",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "和釘",
+      "reading": "わぶち",
+      "spoken": "わぶち",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "四分割法",
+      "reading": "よんぶんのいち",
+      "spoken": "よんぶんのいち",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "固定荷重",
+      "reading": "こてい",
+      "spoken": "こてい",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "土台",
+      "reading": "どだい",
+      "spoken": "どだい",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "圧縮",
+      "reading": "あっしゅく",
+      "spoken": "あっしゅく",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "在来工法",
+      "reading": "ざいらい",
+      "spoken": "ざいらい",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "地盤",
+      "reading": "じばん",
+      "spoken": "じばん",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "地盤調査報告書",
+      "reading": "じばん",
+      "spoken": "じばん",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "地震力",
+      "reading": "じしんりょく",
+      "spoken": "じしんりょく",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "垂木",
+      "reading": "たるき",
+      "spoken": "たるき",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "基礎パッキン",
+      "reading": "きそぱっきん",
+      "spoken": "きそぱっきん",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "壁芯",
+      "reading": "かべしん",
+      "spoken": "かべしん",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "壁量",
+      "reading": "へきりょう",
+      "spoken": "へきりょう",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "壁量計算",
+      "reading": "かべりょう",
+      "spoken": "かべりょう",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "変形",
+      "reading": "へんけい",
+      "spoken": "へんけい",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "外断熱",
+      "reading": "がいだんねつ",
+      "spoken": "がいだんねつ",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "外構",
+      "reading": "がいこう",
+      "spoken": "がいこう",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "大入れ",
+      "reading": "おおいれ",
+      "spoken": "おおいれ",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "大建工業",
+      "reading": "だいけん",
+      "spoken": "だいけん",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "大引",
+      "reading": "おおびき",
+      "spoken": "おおびき",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "大樹",
+      "reading": "だいき",
+      "spoken": "だいき",
+      "pos": "名",
+      "source": "attached_file"
+    },
+    {
+      "term": "天井",
+      "reading": "てんじょう",
+      "spoken": "てんじょう",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "天端",
+      "reading": "てんば",
+      "spoken": "てんば",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "妻側",
+      "reading": "つま",
+      "spoken": "つま",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "安全率",
+      "reading": "あんぜんりつ",
+      "spoken": "あんぜんりつ",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "完了検査",
+      "reading": "かんりょうけんさ",
+      "spoken": "かんりょうけんさ",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "容積率",
+      "reading": "ようせきりつ",
+      "spoken": "ようせきりつ",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "寛代",
+      "reading": "ひろよ",
+      "spoken": "ひろよ",
+      "pos": "名",
+      "source": "attached_file"
+    },
+    {
+      "term": "小屋組",
+      "reading": "こやぐみ",
+      "spoken": "こやぐみ",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "屋根構面",
+      "reading": "やねこうめん",
+      "spoken": "やねこうめん",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "屋根裏",
+      "reading": "やねうら",
+      "spoken": "やねうら",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "布基礎",
+      "reading": "ぬのぎそ",
+      "spoken": "ぬのぎそ",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "庇",
+      "reading": "ひさし",
+      "spoken": "ひさし",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "床下",
+      "reading": "ゆかした",
+      "spoken": "ゆかした",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "床構面",
+      "reading": "ゆかこうめん",
+      "spoken": "ゆかこうめん",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "建ぺい率",
+      "reading": "けんぺいりつ",
+      "spoken": "けんぺいりつ",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "建方",
+      "reading": "たてかた",
+      "spoken": "たてかた",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "強度",
+      "reading": "きょうど",
+      "spoken": "きょうど",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "応力",
+      "reading": "おうりょく",
+      "spoken": "おうりょく",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "換気",
+      "reading": "かんき",
+      "spoken": "かんき",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "撓み",
+      "reading": "たわみ",
+      "spoken": "たわみ",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "擁壁",
+      "reading": "ようへき",
+      "spoken": "ようへき",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "敏志",
+      "reading": "さとし",
+      "spoken": "さとし",
+      "pos": "名",
+      "source": "attached_file"
+    },
+    {
+      "term": "敷居",
+      "reading": "しきい",
+      "spoken": "しきい",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "断熱材",
+      "reading": "だんねつ",
+      "spoken": "だんねつ",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "方立",
+      "reading": "ほうだて",
+      "spoken": "ほうだて",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "曲げ",
+      "reading": "まげ",
+      "spoken": "まげ",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "曲げモーメント",
+      "reading": "まげもーめんと",
+      "spoken": "まげもーめんと",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "末子",
+      "reading": "すえこ",
+      "spoken": "すえこ",
+      "pos": "名",
+      "source": "attached_file"
+    },
+    {
+      "term": "杉",
+      "reading": "すぎ",
+      "spoken": "すぎ",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "束",
+      "reading": "つか",
+      "spoken": "つか",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "枠組壁工法",
+      "reading": "わくぐみ",
+      "spoken": "わくぐみ",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "柱脚",
+      "reading": "ちゅうきゃく",
+      "spoken": "ちゅうきゃく",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "柱頭",
+      "reading": "ちゅうとう",
+      "spoken": "ちゅうとう",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "株式会社住ま居る",
+      "reading": "かぶしきがいしゃすまいる",
+      "spoken": "かぶしきがいしゃすまいる",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "根太",
+      "reading": "ねだ",
+      "spoken": "ねだ",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "桁",
+      "reading": "けた",
+      "spoken": "けた",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "框",
+      "reading": "かまち",
+      "spoken": "かまち",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "桧",
+      "reading": "ひのき",
+      "spoken": "ひのき",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "梁背",
+      "reading": "はりせ",
+      "spoken": "はりせ",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "棟",
+      "reading": "むね",
+      "spoken": "むね",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "構造用MDF",
+      "reading": "こうぞうようえむでぃーえふ",
+      "spoken": "こうぞうようえむでぃーえふ",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "構造用パーティクルボード",
+      "reading": "こうぞうようぱーてぃくるぼーど",
+      "spoken": "こうぞうようぱーてぃくるぼーど",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "母屋",
+      "reading": "もや",
+      "spoken": "もや",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "気密",
+      "reading": "きみつ",
+      "spoken": "きみつ",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "水平頂構面",
+      "reading": "すいへいちょうこうめん",
+      "spoken": "すいへいちょうこうめん",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "永大産業",
+      "reading": "えいだい",
+      "spoken": "えいだい",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "法定控除",
+      "reading": "ほていこうじょ",
+      "spoken": "ほていこうじょ",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "深基礎",
+      "reading": "ふかぎそ",
+      "spoken": "ふかぎそ",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "火打ち",
+      "reading": "ひうち",
+      "spoken": "ひうち",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "特記",
+      "reading": "とっき",
+      "spoken": "とっき",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "略伏図",
+      "reading": "りゃくふ",
+      "spoken": "りゃくふ",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "異形Sｱﾝｶｰﾎﾞﾙﾄ",
+      "reading": "いけ",
+      "spoken": "いけ",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "眉干",
+      "reading": "まぐさ",
+      "spoken": "まぐさ",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "短冊金物",
+      "reading": "たんざく",
+      "spoken": "たんざく",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "破風",
+      "reading": "はふ",
+      "spoken": "はふ",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "確認申請",
+      "reading": "かくにんしんせい",
+      "spoken": "かくにんしんせい",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "積載荷重",
+      "reading": "せきさい",
+      "spoken": "せきさい",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "窓台",
+      "reading": "まどだい",
+      "spoken": "まどだい",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "竪樋",
+      "reading": "たてどい",
+      "spoken": "たてどい",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "筋交い",
+      "reading": "すじかい",
+      "spoken": "すじかい",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "管柱",
+      "reading": "くだばしら",
+      "spoken": "くだばしら",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "米松",
+      "reading": "べいまつ",
+      "spoken": "べいまつ",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "羽子板金物",
+      "reading": "はごいた",
+      "spoken": "はごいた",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "耐力壁",
+      "reading": "たいりょくへき",
+      "spoken": "たいりょくへき",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "耐震等級",
+      "reading": "たいしん",
+      "spoken": "たいしん",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "胴差",
+      "reading": "どうさし",
+      "spoken": "どうさし",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "胴縁",
+      "reading": "どうぶち",
+      "spoken": "どうぶち",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "菅原",
+      "reading": "すが",
+      "spoken": "すが",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "蟻掛け",
+      "reading": "ありかけ",
+      "spoken": "ありかけ",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "許容応力度",
+      "reading": "きょようおうりょくど",
+      "spoken": "きょようおうりょくど",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "許容応力度計算",
+      "reading": "きょうようおうりょくど",
+      "spoken": "きょうようおうりょくど",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "許容耐力",
+      "reading": "きょようたいりょく",
+      "spoken": "きょようたいりょく",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "貫",
+      "reading": "ぬき",
+      "spoken": "ぬき",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "赤松",
+      "reading": "あかまつ",
+      "spoken": "あかまつ",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "軒先",
+      "reading": "のきさき",
+      "spoken": "のきさき",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "軒天",
+      "reading": "のきてん",
+      "spoken": "のきてん",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "軒樋",
+      "reading": "のきどい",
+      "spoken": "のきどい",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "軸組工法",
+      "reading": "じくぐみ",
+      "spoken": "じくぐみ",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "透湿防水シート",
+      "reading": "とうしすい",
+      "spoken": "とうしすい",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "通し柱",
+      "reading": "とうしばしら",
+      "spoken": "とうしばしら",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "重心",
+      "reading": "ちゅうしん",
+      "spoken": "ちゅうしん",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "重要事項説明",
+      "reading": "じゅうせつ",
+      "spoken": "じゅうせつ",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "野地板",
+      "reading": "のじいた",
+      "spoken": "のじいた",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "金物",
+      "reading": "かなもの",
+      "spoken": "かなもの",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "金物図",
+      "reading": "かなもの",
+      "spoken": "かなもの",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "鉄筋",
+      "reading": "てっきん",
+      "spoken": "てっきん",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "鎹",
+      "reading": "かすがい",
+      "spoken": "かすがい",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "間引き",
+      "reading": "まびき",
+      "spoken": "まびき",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "間柱",
+      "reading": "まんばしら",
+      "spoken": "まんばしら",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "防腐",
+      "reading": "ぼうふ",
+      "spoken": "ぼうふ",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "防蟻",
+      "reading": "ぼうちゅう",
+      "spoken": "ぼうちゅう",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "除雪荷重",
+      "reading": "じょしき",
+      "spoken": "じょしき",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "集成材",
+      "reading": "しゅうせいざい",
+      "spoken": "しゅうせいざい",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "雨樋",
+      "reading": "あまどい",
+      "spoken": "あまどい",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "面",
+      "reading": "つら",
+      "spoken": "つら",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "風荷重",
+      "reading": "ふうかじゅう",
+      "spoken": "ふうかじゅう",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "高基礎",
+      "reading": "たかぎそ",
+      "spoken": "たかぎそ",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "鴨居",
+      "reading": "かもい",
+      "spoken": "かもい",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "（株）住ま居る",
+      "reading": "かぶすまいる",
+      "spoken": "かぶすまいる",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "２×４",
+      "reading": "つーばいふぉー",
+      "spoken": "つーばいふぉー",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "～",
+      "reading": "から",
+      "spoken": "から",
+      "pos": "名詞",
+      "source": "attached_file"
+    },
+    {
+      "term": "めり込み",
+      "reading": "めりこみ",
+      "spoken": "めりこみ",
+      "pos": "名詞",
+      "notes": "柱頭柱脚めり込み検定",
+      "source": "master_structural_addon"
+    },
+    {
+      "term": "キャンチ梁",
+      "reading": "きゃんちはり",
+      "spoken": "きゃんちはり",
+      "pos": "名詞",
+      "notes": "片持梁",
+      "source": "master_structural_addon"
+    },
+    {
+      "term": "一本の梁上",
+      "reading": "いっぽんのはりじょう",
+      "spoken": "いっぽんのはりじょう",
+      "pos": "名詞",
+      "notes": "梁上誤読防止",
+      "source": "master_structural_addon"
+    },
+    {
+      "term": "三次梁",
+      "reading": "さんじばり",
+      "spoken": "さんじばり",
+      "pos": "名詞",
+      "notes": "小梁",
+      "source": "master_structural_addon"
+    },
+    {
+      "term": "二次梁",
+      "reading": "にじばり",
+      "spoken": "にじばり",
+      "pos": "名詞",
+      "notes": "小梁",
+      "source": "master_structural_addon"
+    },
+    {
+      "term": "人通口",
+      "reading": "じんつうこう",
+      "spoken": "じんつうこう",
+      "pos": "名詞",
+      "notes": "基礎人通口。TTS誤読(ひととおりぐち)防止",
+      "source": "master_structural_addon"
+    },
+    {
+      "term": "仕口",
+      "reading": "しくち",
+      "spoken": "しくち",
+      "pos": "名詞",
+      "notes": "仕口低減計算",
+      "source": "master_structural_addon"
+    },
+    {
+      "term": "伏図",
+      "reading": "ふせず",
+      "spoken": "ふせず",
+      "pos": "名詞",
+      "notes": "TTS誤読(ふくず)防止",
+      "source": "master_structural_addon"
+    },
+    {
+      "term": "入隅",
+      "reading": "いりずみ",
+      "spoken": "いりずみ",
+      "pos": "名詞",
+      "notes": "入隅部",
+      "source": "master_structural_addon"
+    },
+    {
+      "term": "出隅",
+      "reading": "でずみ",
+      "spoken": "でずみ",
+      "pos": "名詞",
+      "notes": "TTS誤読(しゅつぐう)防止",
+      "source": "master_structural_addon"
+    },
+    {
+      "term": "出隅柱",
+      "reading": "でずみばしら",
+      "spoken": "でずみばしら",
+      "pos": "名詞",
+      "notes": "出隅部の通し柱・管柱",
+      "source": "master_structural_addon"
+    },
+    {
+      "term": "単純梁",
+      "reading": "たんじゅんばり",
+      "spoken": "たんじゅんばり",
+      "pos": "名詞",
+      "notes": "TTS誤読(たんじゅんりょう)防止",
+      "source": "master_structural_addon"
+    },
+    {
+      "term": "地中梁",
+      "reading": "ちちゅうばり",
+      "spoken": "ちちゅうばり",
+      "pos": "名詞",
+      "notes": "TTS誤読(ちちゅうりょう)防止",
+      "source": "master_structural_addon"
+    },
+    {
+      "term": "基礎人通口",
+      "reading": "きそじんつうこう",
+      "spoken": "きそじんつうこう",
+      "pos": "名詞",
+      "notes": "複合語での誤読防止",
+      "source": "master_structural_addon"
+    },
+    {
+      "term": "基礎伏図",
+      "reading": "きそふせず",
+      "spoken": "きそふせず",
+      "pos": "名詞",
+      "notes": "TTS誤読防止",
+      "source": "master_structural_addon"
+    },
+    {
+      "term": "基礎梁",
+      "reading": "きそはり",
+      "spoken": "きそはり",
+      "pos": "名詞",
+      "notes": "ユーザー明示指定。TTS誤読(きそりょう)防止",
+      "source": "master_structural_addon"
+    },
+    {
+      "term": "基礎梁符号",
+      "reading": "きそはりふごう",
+      "spoken": "きそはりふごう",
+      "pos": "名詞",
+      "notes": "基礎梁の配筋符号",
+      "source": "master_structural_addon"
+    },
+    {
+      "term": "小屋伏図",
+      "reading": "こやふせず",
+      "spoken": "こやふせず",
+      "pos": "名詞",
+      "notes": "TTS誤読防止",
+      "source": "master_structural_addon"
+    },
+    {
+      "term": "小屋梁",
+      "reading": "こやばり",
+      "spoken": "こやばり",
+      "pos": "名詞",
+      "notes": "TTS誤読防止",
+      "source": "master_structural_addon"
+    },
+    {
+      "term": "床伏図",
+      "reading": "ゆかふせず",
+      "spoken": "ゆかふせず",
+      "pos": "名詞",
+      "notes": "TTS誤読防止",
+      "source": "master_structural_addon"
+    },
+    {
+      "term": "床梁",
+      "reading": "ゆかばり",
+      "spoken": "ゆかばり",
+      "pos": "名詞",
+      "notes": "TTS誤読防止",
+      "source": "master_structural_addon"
+    },
+    {
+      "term": "梁",
+      "reading": "はり",
+      "spoken": "はり",
+      "pos": "名詞",
+      "notes": "梁単体の誤読防止",
+      "source": "master_structural_addon"
+    },
+    {
+      "term": "梁上",
+      "reading": "はりじょう",
+      "spoken": "はりじょう",
+      "pos": "名詞",
+      "notes": "梁上誤読防止",
+      "source": "master_structural_addon"
+    },
+    {
+      "term": "梁幅",
+      "reading": "はりはば",
+      "spoken": "はりはば",
+      "pos": "名詞",
+      "notes": "梁幅誤読防止",
+      "source": "master_structural_addon"
+    },
+    {
+      "term": "梁成",
+      "reading": "はりせい",
+      "spoken": "はりせい",
+      "pos": "名詞",
+      "notes": "梁成エラー。TTS誤読(はりなり/りょうせい)防止",
+      "source": "master_structural_addon"
+    },
+    {
+      "term": "梁端部",
+      "reading": "はりたんぶ",
+      "spoken": "はりたんぶ",
+      "pos": "名詞",
+      "notes": "TTS誤読防止",
+      "source": "master_structural_addon"
+    },
+    {
+      "term": "梁組",
+      "reading": "はりぐみ",
+      "spoken": "はりぐみ",
+      "pos": "名詞",
+      "notes": "TTS誤読防止",
+      "source": "master_structural_addon"
+    },
+    {
+      "term": "片持梁",
+      "reading": "かたもちはり",
+      "spoken": "かたもちはり",
+      "pos": "名詞",
+      "notes": "片持梁",
+      "source": "master_structural_addon"
+    },
+    {
+      "term": "継手",
+      "reading": "つぎて",
+      "spoken": "つぎて",
+      "pos": "名詞",
+      "notes": "土台・梁の継手",
+      "source": "master_structural_addon"
+    },
+    {
+      "term": "耐風梁",
+      "reading": "たいふうばり",
+      "spoken": "たいふうばり",
+      "pos": "名詞",
+      "notes": "TTS誤読(たいふうりょう)防止",
+      "source": "master_structural_addon"
+    },
+    {
+      "term": "連続梁",
+      "reading": "れんぞくばり",
+      "spoken": "れんぞくばり",
+      "pos": "名詞",
+      "notes": "TTS誤読(れんぞくりょう)防止",
+      "source": "master_structural_addon"
+    }
+  ]
+}
