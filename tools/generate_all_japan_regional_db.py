@@ -6,6 +6,8 @@ tools/generate_all_japan_regional_db.py
 - 地震地域係数 Z (昭和55年建設省告示第1793号)
 - 基準風速 V0 (平成12年建設省告示第1454号)
 - 垂直積雪量 S & 多雪区域判定 (令第86条、国交省告示第594号、特定行政庁細則)
+  ※同一市町村内で旧町村や大字単位・告示式によりさらに細かく分かれる自治体については、
+    代表的な基準値をデータベースに格納し、要各自治体への直接調査としています。
 - 凍結深度 (各自治体細則・公庫共通仕様書基準)
 - 省エネ地域区分 (平成25年経産省・国交省告示第1号 / 建築物省エネ法 1〜8地域)
 - 年間日射地域区分 (A1〜A5区分)
@@ -64,14 +66,20 @@ def build_city_entry(pref, city):
         else:
             v0 = 30  # 旭川、帯広、北見、富良野など内陸部
 
-        # 積雪深
-        if any(m in city for m in ["倶知安", "ニセコ", "赤井川", "岩見沢", "美唄"]):
-            sBase = 200
-        elif any(m in city for m in ["札幌", "旭川", "小樽", "滝川", "深川"]):
+        # 積雪深 (道・各市建築基準法施行細則に基づく代表値)
+        if any(m in city for m in ["倶知安", "ニセコ", "赤井川"]):
+            sBase = 230
+        elif any(m in city for m in ["岩見沢", "美唄", "三笠"]):
+            sBase = 160
+        elif any(m in city for m in ["札幌", "滝川", "深川"]):
             sBase = 140
-        elif any(m in city for m in ["帯広", "十勝", "釧路", "根室"]):
+        elif any(m in city for m in ["旭川", "帯広", "十勝", "小樽"]):
+            sBase = 130
+        elif any(m in city for m in ["釧路", "根室"]):
             sBase = 80
-        elif any(m in city for m in ["函館", "室蘭", "苫小牧"]):
+        elif "函館" in city:
+            sBase = 70
+        elif any(m in city for m in ["室蘭", "苫小牧"]):
             sBase = 60
 
         # 凍結深度
@@ -119,13 +127,15 @@ def build_city_entry(pref, city):
         else:
             v0 = 30  # 弘前市、黒石市、平川市、十和田市など
 
-        # 積雪
+        # 積雪 (青森県・各市施行細則に基づく代表値)
         if "青森市" in city:
             sBase = 150
         elif "弘前市" in city:
             sBase = 130
         elif any(m in city for m in ["八戸市", "三沢市", "階上町"]):
-            sBase = 50
+            sBase = 70
+        elif any(m in city for m in ["おいらせ町", "大間町", "南部町"]):
+            sBase = 80
 
         if any(m in city for m in ["八戸市", "三沢市", "おいらせ町"]):
             energyRegion = 4
@@ -168,7 +178,7 @@ def build_city_entry(pref, city):
         energyRegion = 4
         solarRegion = "A3"
         freeze = "30cm (仙台平野基準)"
-        sBase = 30
+        sBase = 40
         isSnowHeavy = False
 
         coast_cities = ["石巻市", "気仙沼市", "塩竈市", "名取市", "多賀城市", "岩沼市", "東松島市", "松島町", "七ヶ浜町", "利府町", "女川町", "南三陸町", "亘理町", "山元町"]
@@ -196,14 +206,14 @@ def build_city_entry(pref, city):
 
         if any(m in city for m in ["能代市", "男鹿市", "潟上市", "八峰町", "三種町", "にかほ市"]):
             v0 = 34
-            sBase = 80
+            sBase = 100
         elif any(m in city for m in ["秋田市", "由利本荘市", "大館市", "北秋田市", "鹿角市", "小坂町"]):
             v0 = 32
-            sBase = 100
+            sBase = 150 if any(m in city for m in ["大館市", "北秋田市", "鹿角市"]) else 100
         else:
-            # 横手市、湯沢市、大仙市、仙北市など豪雪盆地
+            # 横手市、湯沢市、大仙市、仙北市など豪雪盆地 (細則 2.0m〜3.0m)
             v0 = 30
-            sBase = 180
+            sBase = 200
 
     # ==========================================
     # 6. 山形県 (35自治体)
@@ -216,12 +226,24 @@ def build_city_entry(pref, city):
 
         if any(m in city for m in ["酒田市", "鶴岡市", "遊佐町", "庄内町"]):
             v0 = 34
-            sBase = 70
+            sBase = 150 if any(m in city for m in ["鶴岡市", "庄内町"]) else 100
             energyRegion = 4
-        elif any(m in city for m in ["新庄市", "最上町", "舟形町", "真室川町", "大蔵村", "鮭川村", "戸沢村", "尾花沢市"]):
-            v0 = 32
-            sBase = 180
+        elif any(m in city for m in ["小国町", "飯豊町"]):
+            v0 = 30
+            sBase = 250
             energyRegion = 3
+        elif any(m in city for m in ["新庄市", "最上町", "舟形町", "真室川町", "大蔵村", "鮭川村", "戸沢村", "尾花沢市", "米沢市", "村山市", "長井市", "南陽市", "西川町", "朝日町", "大江町", "大石田町", "高畠町", "川西町"]):
+            v0 = 32 if any(m in city for m in ["新庄市", "最上町", "舟形町", "真室川町", "大蔵村", "鮭川村", "戸沢村", "尾花沢市"]) else 30
+            sBase = 200
+            energyRegion = 3 if v0 == 32 else 4
+        elif any(m in city for m in ["寒河江市", "上山市", "白鷹町"]):
+            v0 = 30
+            sBase = 150
+            energyRegion = 4
+        elif "山形市" in city:
+            v0 = 30
+            sBase = 120
+            energyRegion = 4
         else:
             v0 = 30
             sBase = 100
@@ -257,7 +279,7 @@ def build_city_entry(pref, city):
             else:
                 z = 1.0  # 福島市、伊達市、本宮市等
             v0 = 30
-            sBase = 40
+            sBase = 50 if "福島市" in city else 40
             isSnowHeavy = False
             freeze = "30cm (中通り基準)"
             energyRegion = 4
@@ -288,6 +310,9 @@ def build_city_entry(pref, city):
         else:
             energyRegion = 5
 
+        if any(m in city for m in ["日立市", "常陸太田市", "常陸大宮市", "大子町"]):
+            sBase = 40
+
     # ==========================================
     # 9. 栃木県 (25自治体)
     # ==========================================
@@ -311,6 +336,12 @@ def build_city_entry(pref, city):
             if "日光" in city or "那須町" in city:
                 isSnowHeavy = True
                 sBase = 60
+            else:
+                sBase = 40
+        elif "宇都宮市" in city:
+            sBase = 34
+        elif any(m in city for m in ["矢板市", "さくら市", "鹿沼市", "塩谷町", "高根沢町"]):
+            sBase = 40
 
     # ==========================================
     # 10. 群馬県 (35自治体)
@@ -334,6 +365,8 @@ def build_city_entry(pref, city):
             sBase = 120
             freeze = "45〜60cm (山間寒冷地基準)"
             energyRegion = 3 if ("草津" in city or "嬬恋" in city or "みなかみ" in city) else 4
+        elif any(m in city for m in ["前橋市", "高崎市"]):
+            sBase = 35
 
     # ==========================================
     # 11. 埼玉県 (72自治体)
@@ -366,6 +399,8 @@ def build_city_entry(pref, city):
         if "秩父" in city or "横瀬" in city or "小鹿野" in city:
             energyRegion = 5
             solarRegion = "A3"
+        if "狭山市" in city:
+            sBase = 32
 
     # ==========================================
     # 12. 千葉県 (59自治体)
@@ -429,6 +464,10 @@ def build_city_entry(pref, city):
             v0 = 34  # 23区全区および武蔵野・調布等
         else:
             v0 = 32  # 八王子市、立川市、町田市、府中市、小平市等多摩丘陵・平野
+            if "八王子市" in city:
+                sBase = 40
+            elif "町田市" in city:
+                sBase = 33
 
     # ==========================================
     # 14. 神奈川県 (58自治体)
@@ -476,10 +515,13 @@ def build_city_entry(pref, city):
         else:
             v0 = 30  # 長岡市、三条市、新発田市、十日町市等
 
-        if any(m in city for m in ["十日町市", "魚沼市", "南魚沼市", "湯沢町", "津南町"]):
-            sBase = 250
+        if any(m in city for m in ["十日町市"]):
+            sBase = 330
             energyRegion = 4
-        elif any(m in city for m in ["長岡市", "小千谷市", "柏崎市", "妙高市"]):
+        elif any(m in city for m in ["長岡市", "上越市", "魚沼市", "南魚沼市", "湯沢町", "津南町"]):
+            sBase = 250
+            energyRegion = 4 if not any(m in city for m in ["長岡市", "上越市"]) else 5
+        elif any(m in city for m in ["小千谷市", "柏崎市", "妙高市"]):
             sBase = 180
             energyRegion = 5
         else:
@@ -493,12 +535,12 @@ def build_city_entry(pref, city):
         z = 0.9
         v0 = 30
         isSnowHeavy = True
-        sBase = 120
+        sBase = 150
         freeze = "指定なし (≧240mm)"
         energyRegion = 5
         solarRegion = "A2"
         if "南砺" in city or "立山" in city:
-            sBase = 180
+            sBase = 200
 
     # ==========================================
     # 17. 石川県 (19自治体)
@@ -549,17 +591,33 @@ def build_city_entry(pref, city):
     elif pref == "山梨県":
         z = 1.0
         isSnowHeavy = False
-        sBase = 30
+        sBase = 55  # 県細則第5条の3: 一般市街地・甲府盆地中心 55cm
         freeze = "30cm (甲府盆地基準)"
         energyRegion = 5
         solarRegion = "A3"
         v0 = 30
 
+        if any(m in city for m in ["中央市", "南部町", "昭和町"]):
+            sBase = 50
+        elif any(m in city for m in ["早川町"]):
+            sBase = 60
+        elif any(m in city for m in ["大月市"]):
+            sBase = 65
+        elif any(m in city for m in ["小菅村", "丹波山村"]):
+            sBase = 70
+        elif any(m in city for m in ["都留市", "西桂町"]):
+            sBase = 75
+        elif any(m in city for m in ["富士吉田市", "忍野村", "鳴沢村", "富士河口湖町", "北杜市"]):
+            sBase = 80
+        elif any(m in city for m in ["道志村"]):
+            sBase = 85
+        elif any(m in city for m in ["山中湖村"]):
+            sBase = 95
+
         if any(m in city for m in ["富士吉田市", "西桂町", "忍野村", "山中湖村", "鳴沢村", "富士河口湖町"]):
             v0 = 32
             freeze = "60〜70cm (富士北麓寒冷地基準)"
             energyRegion = 4
-            sBase = 50
         elif "北杜市" in city:
             freeze = "50〜60cm (八ヶ岳山麓基準)"
             energyRegion = 4
@@ -580,18 +638,23 @@ def build_city_entry(pref, city):
             freeze = "70〜80cm"
         elif any(m in city for m in ["長野市", "中野市", "須坂市", "大町市"]):
             isSnowHeavy = True
-            sBase = 90
+            sBase = 80 if "長野市" in city else 90
             energyRegion = 4
             freeze = "60cm"
         elif any(m in city for m in ["松本市", "塩尻市", "安曇野市", "岡谷市", "諏訪市", "茅野市", "下諏訪町", "軽井沢町"]):
             isSnowHeavy = False
-            sBase = 50
+            if "松本市" in city:
+                sBase = 78
+            elif "軽井沢町" in city:
+                sBase = 75
+            else:
+                sBase = 50
             energyRegion = 4
             freeze = "70〜80cm" if ("茅野" in city or "軽井沢" in city) else "60cm"
         else:
             # 飯田市、伊那市、駒ヶ根市等南部
             isSnowHeavy = False
-            sBase = 30
+            sBase = 54 if "飯田市" in city else 40
             energyRegion = 5
             freeze = "45cm"
 
@@ -606,7 +669,14 @@ def build_city_entry(pref, city):
         if any(m in city for m in hida):
             v0 = 30
             isSnowHeavy = True
-            sBase = 150
+            if "白川村" in city:
+                sBase = 380
+            elif "飛騨市" in city:
+                sBase = 200
+            elif "高山市" in city:
+                sBase = 120
+            else:
+                sBase = 150
             freeze = "50〜60cm (飛騨寒冷地基準)"
             energyRegion = 4
         else:
@@ -631,7 +701,7 @@ def build_city_entry(pref, city):
     elif pref == "静岡県":
         z = 1.0  # 注記でZ=1.2割増
         isSnowHeavy = False
-        sBase = 30
+        sBase = 32  # 県細則第10条の2: 静岡市・浜松市(大部分)・富士市周辺等 32cm
         freeze = "指定なし (≧240mm)"
         energyRegion = 6
         solarRegion = "A4"
@@ -649,11 +719,23 @@ def build_city_entry(pref, city):
             v0 = 30
             energyRegion = 5
             freeze = "30〜45cm (富士山麓)"
-            sBase = 50
         elif any(m in city for m in v32):
             v0 = 32
         else:
             v0 = 34  # 静岡市各区、浜松市各区、沼津市、熱海市、富士市、富士宮市、焼津市、掛川市、磐田市等
+
+        # 静岡県細則第10条の2に基づく垂直積雪量 (30/32/34/36cm)
+        s30 = ["浜松市天竜区", "森町", "川根本町"]
+        s34 = ["沼津市", "三島市", "熱海市", "富士市", "御殿場市", "裾野市", "伊豆の国市", "伊豆市", "松崎町", "西伊豆町", "函南町", "小山町", "清水町", "長泉町"]
+        s36 = ["伊東市", "下田市", "東伊豆町", "河津町", "南伊豆町"]
+        if any(m in city for m in s30):
+            sBase = 30
+        elif any(m in city for m in s36):
+            sBase = 36
+        elif any(m in city for m in s34):
+            sBase = 34
+        else:
+            sBase = 32
 
     # ==========================================
     # 23. 愛知県 (69自治体)
@@ -675,6 +757,8 @@ def build_city_entry(pref, city):
         elif any(m in city for m in v30):
             v0 = 30
             energyRegion = 5
+            if any(m in city for m in ["設楽町", "東栄町", "豊根村"]):
+                sBase = 50
         elif any(m in city for m in v32):
             v0 = 32
         else:
@@ -735,13 +819,13 @@ def build_city_entry(pref, city):
         if any(m in city for m in ["舞鶴市", "宮津市", "京丹後市", "伊根町", "与謝野町"]):
             v0 = 34
             isSnowHeavy = True
-            sBase = 80
+            sBase = 90
             freeze = "30cm (丹後地方)"
             energyRegion = 5
         elif any(m in city for m in ["福知山市", "綾部市", "南丹市", "京丹波町"]):
             v0 = 30
             isSnowHeavy = True
-            sBase = 60
+            sBase = 70 if "綾部" in city else 50
             freeze = "30cm"
             energyRegion = 5
         else:
@@ -759,7 +843,7 @@ def build_city_entry(pref, city):
         z = 1.0
         v0 = 34  # 大阪府全43自治体一律 34m/s
         isSnowHeavy = False
-        sBase = 30
+        sBase = 29  # 大阪府細則第30条の2: 一般区域 0.29m (29cm)
         freeze = "指定なし (≧240mm)"
         solarRegion = "A4"
         energyRegion = 5 if "能勢町" in city else 6
@@ -772,7 +856,8 @@ def build_city_entry(pref, city):
         solarRegion = "A4"
 
         awaji = ["洲本市", "南あわじ市", "淡路市"]
-        tajima = ["豊岡市", "養父市", "朝来市", "宍粟市", "香美町", "新温泉町"]
+        tajima_heavy = ["豊岡市", "養父市", "香美町", "新温泉町"]
+        tajima_mid = ["朝来市", "宍粟市"]
         inland = ["三木市", "三田市", "加西市", "丹波篠山市", "丹波市", "小野市", "加東市", "多可町", "福崎町", "市川町", "神河町", "上郡町", "佐用町"]
 
         if any(m in city for m in awaji):
@@ -781,12 +866,19 @@ def build_city_entry(pref, city):
             sBase = 30
             freeze = "指定なし (≧240mm)"
             energyRegion = 6
-        elif any(m in city for m in tajima):
+        elif any(m in city for m in tajima_heavy):
             v0 = 30
             isSnowHeavy = True
-            sBase = 120
+            sBase = 150  # 県規則第11条: 但馬地域 1.5m〜2.0m
             freeze = "30cm (但馬豪雪地)"
             energyRegion = 4 if ("香美" in city or "新温泉" in city) else 5
+            solarRegion = "A3"
+        elif any(m in city for m in tajima_mid):
+            v0 = 30
+            isSnowHeavy = True
+            sBase = 100
+            freeze = "30cm (北部山間部)"
+            energyRegion = 5
             solarRegion = "A3"
         elif any(m in city for m in inland):
             v0 = 32
@@ -797,7 +889,8 @@ def build_city_entry(pref, city):
         else:
             v0 = 34  # 神戸市全9区、姫路市、尼崎市、明石市、西宮市、芦屋市、伊丹市、加古川市、宝塚市等
             isSnowHeavy = False
-            sBase = 30
+            # 神戸市建築基準法施行細則 第9条: 北区(標高700m以下) 0.50m (50cm)、その他 0.30m (30cm)、標高700m超 0.90m (90cm)
+            sBase = 50 if "神戸市北区" in city else 30
             freeze = "指定なし (≧240mm)"
             energyRegion = 6
 
@@ -817,6 +910,18 @@ def build_city_entry(pref, city):
             freeze = "30cm (吉野山間部)"
         else:
             energyRegion = 6  # 奈良市、橿原市、生駒市等盆地部
+
+        # 奈良県建築基準法施行細則 第20条別表
+        if "野迫川村" in city:
+            sBase = 90
+        elif "天川村" in city:
+            sBase = 70
+        elif "御杖村" in city:
+            sBase = 60
+        elif any(m in city for m in ["宇陀市", "曽爾村", "黒滝村", "上北山村", "川上村"]):
+            sBase = 50
+        elif any(m in city for m in ["山添村", "下北山村", "東吉野村"]):
+            sBase = 40
 
     # ==========================================
     # 30. 和歌山県 (30自治体)
@@ -847,6 +952,14 @@ def build_city_entry(pref, city):
                 freeze = "30cm (高野山)"
         else:
             v0 = 34  # 和歌山市、岩出市、紀の川市
+
+        # 和歌山県建築基準法施行細則 第12条
+        if "高野町" in city:
+            sBase = 96
+        elif "かつらぎ町" in city:
+            sBase = 55
+        elif any(m in city for m in ["紀美野町", "有田川町", "日高川町", "北山村"]):
+            sBase = 35
 
     # ==========================================
     # 31. 鳥取県 (19自治体)
@@ -1017,6 +1130,12 @@ def build_city_entry(pref, city):
         else:
             v0 = 32  # 高松市、丸亀市、さぬき市、東かがわ市、三豊市、観音寺市、三木町、綾川町
 
+        # 香川県建築基準法施行細則 第26条 (基準積雪量)
+        if any(m in city for m in ["土庄町", "小豆島町", "直島町"]):
+            sBase = 20
+        elif any(m in city for m in ["綾川町", "琴平町", "まんのう町"]):
+            sBase = 40
+
     # ==========================================
     # 38. 愛媛県 (20自治体)
     # ==========================================
@@ -1100,13 +1219,23 @@ def build_city_entry(pref, city):
         else:
             v0 = 34  # 福岡市全7区、北九州市全7区、久留米市、大牟田市、飯塚市等全域
 
+        # 福岡県・各市建築基準法施行細則
+        if any(m in city for m in ["福岡市", "北九州市"]):
+            sBase = 20
+        elif "久留米市" in city:
+            sBase = 21
+        elif any(m in city for m in ["添田町", "東峰村"]):
+            sBase = 35
+        else:
+            sBase = 22
+
     # ==========================================
     # 41. 佐賀県 (20自治体)
     # ==========================================
     elif pref == "佐賀県":
         z = 0.8  # 告示1793号: 佐賀県全域 Z=0.8
         isSnowHeavy = False
-        sBase = 30
+        sBase = 20  # 佐賀県細則: 20cm中心
         freeze = "指定なし (≧240mm)"
         energyRegion = 6
         solarRegion = "A4"
@@ -1123,7 +1252,7 @@ def build_city_entry(pref, city):
     elif pref == "長崎県":
         z = 0.8  # 告示1793号: 長崎県全域 Z=0.8
         isSnowHeavy = False
-        sBase = 30
+        sBase = 20  # 長崎市・県細則: 平野部 20cm
         freeze = "指定なし (≧240mm)"
         solarRegion = "A4"
 
@@ -1149,7 +1278,7 @@ def build_city_entry(pref, city):
             z = 0.9  # 熊本市全5区、八代市中心部、菊池市、阿蘇市、合志市、益城町、菊陽町等
 
         isSnowHeavy = False
-        sBase = 30
+        sBase = 20  # 熊本県細則第18条の3: 平野部 20cm (天草15cm)
         freeze = "指定なし (≧240mm)"
         solarRegion = "A4"
 
@@ -1160,6 +1289,8 @@ def build_city_entry(pref, city):
             v0 = 34
             energyRegion = 7
             solarRegion = "A5"
+            if any(m in city for m in ["天草市", "上天草市", "苓北町"]):
+                sBase = 15
         elif any(m in city for m in v30):
             v0 = 30
             energyRegion = 5
@@ -1181,7 +1312,7 @@ def build_city_entry(pref, city):
             z = 0.9  # 大分市、別府市、佐伯市、臼杵市、津久見市、竹田市、豊後大野市、由布市等
 
         isSnowHeavy = False
-        sBase = 30
+        sBase = 15  # 大分県細則: 平野部基準 15cm
         freeze = "指定なし (≧240mm)"
         solarRegion = "A4"
 
@@ -1194,6 +1325,7 @@ def build_city_entry(pref, city):
             solarRegion = "A5"
         elif any(m in city for m in v30):
             v0 = 30
+            sBase = 30
             if "竹田" in city or "九重" in city:
                 energyRegion = 5
                 freeze = "30cm (久住高原)"
@@ -1209,7 +1341,7 @@ def build_city_entry(pref, city):
     elif pref == "宮崎県":
         z = 0.9  # 告示1793号: 宮崎県全域 Z=0.9
         isSnowHeavy = False
-        sBase = 30
+        sBase = 15  # 宮崎県細則第13条の2: 平野部 13〜15cm
         freeze = "指定なし (≧240mm)"
         solarRegion = "A5"
 
@@ -1222,9 +1354,13 @@ def build_city_entry(pref, city):
         elif any(m in city for m in v32):
             v0 = 32
             energyRegion = 6
+            if any(m in city for m in ["えびの市", "西米良村"]):
+                sBase = 25
         else:
             v0 = 34  # 宮崎市、延岡市、日向市、西都市等
             energyRegion = 6
+            if any(m in city for m in ["高千穂町", "日之影町", "五ヶ瀬町"]):
+                sBase = 25
 
     # ==========================================
     # 46. 鹿児島県 (43自治体)
@@ -1314,6 +1450,47 @@ def main():
         json.dump(cities_db, f, ensure_ascii=False, indent=2)
 
     print('Saved to tools/all_japan_cities_database.json successfully!')
+
+    # public/js/regional_cities_data.js も同期出力 (最長一致優先ソート)
+    cities_sorted = sorted(cities_db, key=lambda x: (x['pref'], -len(x['match'])))
+    js_lines = []
+    for c in cities_sorted:
+        p_str = json.dumps(c['pref'], ensure_ascii=False)
+        m_str = json.dumps(c['match'], ensure_ascii=False)
+        f_str = json.dumps(c['freeze'], ensure_ascii=False)
+        s_str = json.dumps(c['solarRegion'], ensure_ascii=False)
+        snow_str = "true" if c['isSnowHeavy'] else "false"
+        zs_val = "1.2" if c.get('zs') else "null"
+        js_lines.append(
+            f"    {{ pref: {p_str}, match: {m_str}, z: {c['z']}, zs: {zs_val}, v0: {c['v0']}, sBase: {c['sBase']}, isSnowHeavy: {snow_str}, freeze: {f_str}, energyRegion: {c['energyRegion']}, solarRegion: {s_str} }},"
+        )
+
+    js_header = """/**
+ * public/js/regional_cities_data.js
+ * 
+ * 全国47都道府県・全1,892市区町村 構造＆省エネ地域定数 完全網羅データベース
+ * (単一責任の原則 SRP に基づく静的データ層モジュール)
+ */
+
+(function(root) {
+  'use strict';
+
+  const REGIONAL_CITIES_DB = [
+"""
+    js_footer = """
+  ];
+
+  root.REGIONAL_CITIES_DB = REGIONAL_CITIES_DB;
+
+  if (typeof module !== 'undefined' && module.exports) {
+    module.exports = { REGIONAL_CITIES_DB };
+  }
+})(typeof window !== 'undefined' ? window : globalThis);"""
+
+    with open('public/js/regional_cities_data.js', 'w', encoding='utf-8') as f:
+        f.write(js_header + "\n".join(js_lines) + js_footer)
+
+    print('Saved to public/js/regional_cities_data.js successfully!')
 
 if __name__ == '__main__':
     main()

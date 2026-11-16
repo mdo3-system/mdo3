@@ -225,7 +225,7 @@ const REGIONAL_DATABASE = {
     "北海道": { z: 0.9, zs: null, v0: 32, sDefault: 100, isSnowHeavy: true, freezeDepth: "60〜100cm (道基準)", energyRegion: 2, solarRegion: "A1", lat: 43.0642, lon: 141.3469 },
     "青森県": { z: 0.9, zs: null, v0: 32, sDefault: 120, isSnowHeavy: true, freezeDepth: "60cm (県北寒冷地基準)", energyRegion: 3, solarRegion: "A1", lat: 40.8244, lon: 140.7400 },
     "岩手県": { z: 1.0, zs: null, v0: 30, sDefault: 70, isSnowHeavy: true, freezeDepth: "50〜60cm (岩手県基準)", energyRegion: 3, solarRegion: "A2", lat: 39.7036, lon: 141.1527 },
-    "宮城県": { z: 1.0, zs: null, v0: 30, sDefault: 30, isSnowHeavy: false, freezeDepth: "30cm (仙台平野基準)", energyRegion: 4, solarRegion: "A3", lat: 38.2682, lon: 140.8694 },
+    "宮城県": { z: 1.0, zs: null, v0: 30, sDefault: 40, isSnowHeavy: false, freezeDepth: "30cm (仙台平野基準)", energyRegion: 4, solarRegion: "A3", lat: 38.2682, lon: 140.8694 },
     "秋田県": { z: 0.9, zs: null, v0: 32, sDefault: 100, isSnowHeavy: true, freezeDepth: "45〜60cm (秋田県基準)", energyRegion: 3, solarRegion: "A1", lat: 39.7186, lon: 140.1024 },
     "山形県": { z: 0.9, zs: null, v0: 30, sDefault: 100, isSnowHeavy: true, freezeDepth: "45〜60cm (山形県基準)", energyRegion: 4, solarRegion: "A2", lat: 38.2404, lon: 140.3633 },
     "福島県": { z: 1.0, zs: null, v0: 30, sDefault: 40, isSnowHeavy: false, freezeDepth: "30cm (中通り基準)", energyRegion: 4, solarRegion: "A3", lat: 37.7503, lon: 140.4678 },
@@ -237,18 +237,18 @@ const REGIONAL_DATABASE = {
     "東京都": { z: 1.0, zs: null, v0: 34, sDefault: 30, isSnowHeavy: false, freezeDepth: "指定なし (根入れ≧240mm)", energyRegion: 6, solarRegion: "A4", lat: 35.6895, lon: 139.6917 },
     "神奈川県": { z: 1.0, zs: null, v0: 34, sDefault: 30, isSnowHeavy: false, freezeDepth: "指定なし (根入れ≧240mm)", energyRegion: 6, solarRegion: "A4", lat: 35.4478, lon: 139.6425 },
     "新潟県": { z: 0.9, zs: null, v0: 32, sDefault: 120, isSnowHeavy: true, freezeDepth: "30〜45cm (新潟県基準)", energyRegion: 5, solarRegion: "A2", lat: 37.9026, lon: 139.0232 },
-    "富山県": { z: 0.9, zs: null, v0: 30, sDefault: 120, isSnowHeavy: true, freezeDepth: "指定なし (≧240mm)", energyRegion: 5, solarRegion: "A2", lat: 36.6953, lon: 137.2113 },
+    "富山県": { z: 0.9, zs: null, v0: 30, sDefault: 150, isSnowHeavy: true, freezeDepth: "指定なし (≧240mm)", energyRegion: 5, solarRegion: "A2", lat: 36.6953, lon: 137.2113 },
     "石川県": { z: 0.9, zs: null, v0: 32, sDefault: 100, isSnowHeavy: true, freezeDepth: "指定なし (≧240mm)", energyRegion: 5, solarRegion: "A3", lat: 36.5947, lon: 136.6256 },
     "福井県": { z: 0.9, zs: null, v0: 32, sDefault: 100, isSnowHeavy: true, freezeDepth: "指定なし (≧240mm)", energyRegion: 5, solarRegion: "A3", lat: 36.0652, lon: 136.2216 },
-    "山梨県": { z: 1.0, zs: null, v0: 30, sDefault: 30, isSnowHeavy: false, freezeDepth: "30cm (甲府盆地基準)", energyRegion: 5, solarRegion: "A3", lat: 35.6639, lon: 138.5684 },
+    "山梨県": { z: 1.0, zs: null, v0: 30, sDefault: 55, isSnowHeavy: false, freezeDepth: "30cm (甲府盆地基準)", energyRegion: 5, solarRegion: "A3", lat: 35.6639, lon: 138.5684 },
     "長野県": { z: 1.0, zs: null, v0: 30, sDefault: 50, isSnowHeavy: false, freezeDepth: "60cm (長野県寒冷地基準)", energyRegion: 4, solarRegion: "A3", lat: 36.2381, lon: 137.9720 },
     "岐阜県": { z: 1.0, zs: null, v0: 32, sDefault: 30, isSnowHeavy: false, freezeDepth: "指定なし (≧240mm)", energyRegion: 6, solarRegion: "A4", lat: 35.3912, lon: 136.7223 },
-    "静岡県": { z: 1.0, zs: 1.2, v0: 34, sDefault: 30, isSnowHeavy: false, freezeDepth: "指定なし (※静岡県条例によりZs=1.2割増義務)", energyRegion: 6, solarRegion: "A4", lat: 34.9756, lon: 138.3828 },
+    "静岡県": { z: 1.0, zs: 1.2, v0: 34, sDefault: 32, isSnowHeavy: false, freezeDepth: "指定なし (※静岡県条例によりZs=1.2割増義務)", energyRegion: 6, solarRegion: "A4", lat: 34.9756, lon: 138.3828 },
     "愛知県": { z: 1.0, zs: null, v0: 34, sDefault: 30, isSnowHeavy: false, freezeDepth: "指定なし (根入れ≧240mm)", energyRegion: 6, solarRegion: "A4", lat: 35.1802, lon: 136.9066 },
     "三重県": { z: 1.0, zs: null, v0: 34, sDefault: 30, isSnowHeavy: false, freezeDepth: "指定なし (沿岸36〜38m/s)", energyRegion: 6, solarRegion: "A4", lat: 34.7303, lon: 136.5086 },
     "滋賀県": { z: 1.0, zs: null, v0: 30, sDefault: 30, isSnowHeavy: false, freezeDepth: "南部指定なし / 湖北豪雪30cm", energyRegion: 6, solarRegion: "A3", lat: 35.0045, lon: 135.8686 },
     "京都府": { z: 1.0, zs: null, v0: 32, sDefault: 30, isSnowHeavy: false, freezeDepth: "南部指定なし / 丹後30cm", energyRegion: 6, solarRegion: "A4", lat: 35.0212, lon: 135.7556 },
-    "大阪府": { z: 1.0, zs: null, v0: 34, sDefault: 30, isSnowHeavy: false, freezeDepth: "指定なし (根入れ≧240mm)", energyRegion: 6, solarRegion: "A4", lat: 34.6863, lon: 135.5200 },
+    "大阪府": { z: 1.0, zs: null, v0: 34, sDefault: 29, isSnowHeavy: false, freezeDepth: "指定なし (根入れ≧240mm)", energyRegion: 6, solarRegion: "A4", lat: 34.6863, lon: 135.5200 },
     "兵庫県": { z: 1.0, zs: null, v0: 34, sDefault: 30, isSnowHeavy: false, freezeDepth: "南部指定なし / 但馬30cm", energyRegion: 6, solarRegion: "A4", lat: 34.6913, lon: 135.1830 },
     "奈良県": { z: 1.0, zs: null, v0: 30, sDefault: 30, isSnowHeavy: false, freezeDepth: "指定なし (根入れ≧240mm)", energyRegion: 6, solarRegion: "A4", lat: 34.6853, lon: 135.8327 },
     "和歌山県": { z: 1.0, zs: null, v0: 34, sDefault: 30, isSnowHeavy: false, freezeDepth: "指定なし (潮岬・沿岸36〜38m/s)", energyRegion: 6, solarRegion: "A4", lat: 34.2260, lon: 135.1675 },
@@ -261,12 +261,12 @@ const REGIONAL_DATABASE = {
     "香川県": { z: 1.0, zs: null, v0: 32, sDefault: 30, isSnowHeavy: false, freezeDepth: "指定なし (根入れ≧240mm)", energyRegion: 6, solarRegion: "A4", lat: 34.3402, lon: 134.0433 },
     "愛媛県": { z: 0.9, zs: null, v0: 34, sDefault: 30, isSnowHeavy: false, freezeDepth: "指定なし (沿岸36m/s)", energyRegion: 6, solarRegion: "A4", lat: 33.8417, lon: 132.7661 },
     "高知県": { z: 0.9, zs: null, v0: 36, sDefault: 30, isSnowHeavy: false, freezeDepth: "指定なし (室戸・土佐清水38m/s)", energyRegion: 6, solarRegion: "A5", lat: 33.5597, lon: 133.5311 },
-    "福岡県": { z: 0.8, zs: null, v0: 34, sDefault: 30, isSnowHeavy: false, freezeDepth: "指定なし (根入れ≧240mm)", energyRegion: 6, solarRegion: "A4", lat: 33.6064, lon: 130.4183 },
-    "佐賀県": { z: 0.8, zs: null, v0: 32, sDefault: 30, isSnowHeavy: false, freezeDepth: "指定なし (唐津34m/s)", energyRegion: 6, solarRegion: "A4", lat: 33.2494, lon: 130.2988 },
-    "長崎県": { z: 0.8, zs: null, v0: 34, sDefault: 30, isSnowHeavy: false, freezeDepth: "指定なし (離島・沿岸36m/s)", energyRegion: 6, solarRegion: "A4", lat: 32.7448, lon: 129.8737 },
-    "熊本県": { z: 0.9, zs: null, v0: 32, sDefault: 30, isSnowHeavy: false, freezeDepth: "指定なし / 阿蘇30cm", energyRegion: 6, solarRegion: "A4", lat: 32.7898, lon: 130.7417 },
-    "大分県": { z: 0.9, zs: null, v0: 32, sDefault: 30, isSnowHeavy: false, freezeDepth: "指定なし / 久住30cm", energyRegion: 6, solarRegion: "A4", lat: 33.2382, lon: 131.6126 },
-    "宮崎県": { z: 0.9, zs: null, v0: 34, sDefault: 30, isSnowHeavy: false, freezeDepth: "指定なし (日南36m/s)", energyRegion: 6, solarRegion: "A5", lat: 31.9111, lon: 131.4239 },
+    "福岡県": { z: 0.8, zs: null, v0: 34, sDefault: 20, isSnowHeavy: false, freezeDepth: "指定なし (根入れ≧240mm)", energyRegion: 6, solarRegion: "A4", lat: 33.6064, lon: 130.4183 },
+    "佐賀県": { z: 0.8, zs: null, v0: 32, sDefault: 20, isSnowHeavy: false, freezeDepth: "指定なし (唐津34m/s)", energyRegion: 6, solarRegion: "A4", lat: 33.2494, lon: 130.2988 },
+    "長崎県": { z: 0.8, zs: null, v0: 34, sDefault: 20, isSnowHeavy: false, freezeDepth: "指定なし (離島・沿岸36m/s)", energyRegion: 6, solarRegion: "A4", lat: 32.7448, lon: 129.8737 },
+    "熊本県": { z: 0.9, zs: null, v0: 32, sDefault: 20, isSnowHeavy: false, freezeDepth: "指定なし / 阿蘇30cm", energyRegion: 6, solarRegion: "A4", lat: 32.7898, lon: 130.7417 },
+    "大分県": { z: 0.9, zs: null, v0: 32, sDefault: 15, isSnowHeavy: false, freezeDepth: "指定なし / 久住30cm", energyRegion: 6, solarRegion: "A4", lat: 33.2382, lon: 131.6126 },
+    "宮崎県": { z: 0.9, zs: null, v0: 34, sDefault: 15, isSnowHeavy: false, freezeDepth: "指定なし (日南36m/s)", energyRegion: 6, solarRegion: "A5", lat: 31.9111, lon: 131.4239 },
     "鹿児島県": { z: 0.8, zs: null, v0: 36, sDefault: 30, isSnowHeavy: false, freezeDepth: "指定なし (奄美Z=0.9, 枕崎38, 奄美42m/s)", energyRegion: 6, solarRegion: "A5", lat: 31.5602, lon: 130.5581 },
     "沖縄県": { z: 0.7, zs: null, v0: 42, sDefault: 0, isSnowHeavy: false, freezeDepth: "指定なし (宮古・石垣46m/s, 台風常襲)", energyRegion: 8, solarRegion: "A5", lat: 26.2124, lon: 127.6809 }
   },
@@ -330,10 +330,50 @@ function calculateRegionalConstants(address, elevation = 0, lat = null, lon = nu
   const energyRegion = matchedCity ? matchedCity.energyRegion : (prefData.energyRegion || 6);
   const solarRegion = matchedCity ? matchedCity.solarRegion : (prefData.solarRegion || "A4");
 
-  // 積雪深算定 (標高補正: 多雪区域かつ標高>100m時は標高100m毎に+10cmの安全側補正)
+  // 積雪深算定 (各特定行政庁の建築基準法施行細則に基づく標高・区域連動算定)
   let snowDepth = baseSnow;
-  if (isSnowHeavy && elevation > 100) {
-    snowDepth = Math.round(baseSnow + ((elevation - 100) / 100) * 10);
+  const cityMatch = matchedCity ? matchedCity.match : "";
+  let snowNote = "";
+
+  if (matchedPref === "兵庫県" && cityMatch.startsWith("神戸市")) {
+    // 神戸市建築基準法施行細則 第9条
+    if (elevation > 700) {
+      snowDepth = 90;
+    } else if (cityMatch === "神戸市北区") {
+      snowDepth = 50;
+    } else {
+      snowDepth = 30;
+    }
+    snowNote = "【神戸市細則第9条】標高700m超: 90cm / 700m以下北区: 50cm / その他区域: 30cm。";
+  } else if (matchedPref === "大阪府" && ["豊能郡豊能町", "豊能郡能勢町", "南河内郡千早赤阪村"].includes(cityMatch)) {
+    // 大阪府建築基準法施行細則 第30条の2
+    snowDepth = Math.max(29, Math.round(0.09 * elevation + 21));
+  } else if (matchedPref === "京都府" && cityMatch.startsWith("京都市")) {
+    // 京都市建築基準法施行細則
+    if (elevation <= 400) {
+      snowDepth = Math.max(30, Math.round(0.09 * elevation + 21));
+    } else {
+      snowDepth = Math.round(1.1 * (0.09 * elevation + 21));
+    }
+    snowNote = "【京都市細則】標高連動式を適用（旧京北町区域は下限50cm）。";
+  } else if (matchedPref === "奈良県" && ["奈良市", "橿原市", "生駒市"].includes(cityMatch)) {
+    // 奈良県細則 第20条・各市細則 (標高による算定)
+    snowDepth = Math.max(30, Math.floor((0.0009 * elevation + 0.21) * 10) * 10);
+  } else if (matchedPref === "富山県") {
+    // 富山県建築基準法施行細則 (標高区分)
+    if (elevation > 400) snowDepth = 250;
+    else if (elevation > 200) snowDepth = 200;
+    else snowDepth = 150;
+  } else if (matchedPref === "福岡県" && cityMatch.startsWith("北九州市")) {
+    // 北九州市建築基準法施行細則 第4条の2
+    if (elevation >= 500) snowDepth = 50;
+    else if (elevation >= 250) snowDepth = 35;
+    else snowDepth = 20;
+  } else if (matchedPref === "長崎県" && cityMatch === "長崎市") {
+    // 長崎市建築基準法施行細則 第22条
+    if (elevation > 230) snowDepth = 40;
+    else if (elevation > 60) snowDepth = 30;
+    else snowDepth = 20;
   }
 
   // 断熱等級基準 & 省エネ地域マスター
@@ -354,14 +394,30 @@ function calculateRegionalConstants(address, elevation = 0, lat = null, lon = nu
     elevationDesignNote = `標高${Math.round(elevation)}m (高冷地・山間部)。平野部比で約 -${tempDiff}℃ 大幅低温。外皮断熱等級6以上推奨、凍結深度の厳格確保、屋根雪・氷柱落下の安全離隔。`;
   }
 
-  let note = "";
+  // 細則の完全固定値または標高分岐が実装済みの自治体か判定
+  const isExactSnowRuleImplemented =
+    (matchedPref === "兵庫県" && cityMatch.startsWith("神戸市")) ||
+    matchedPref === "大阪府" ||
+    matchedPref === "千葉県" ||
+    matchedPref === "富山県" ||
+    matchedPref === "沖縄県" ||
+    (matchedPref === "東京都" && cityMatch.endsWith("区")) ||
+    (matchedPref === "福岡県" && (cityMatch === "福岡市" || cityMatch.startsWith("福岡市") || cityMatch.startsWith("北九州市") || cityMatch === "久留米市")) ||
+    (matchedPref === "長崎県" && cityMatch === "長崎市");
+
+  let note = snowNote ? snowNote + " " : "";
   if (matchedPref === "静岡県") {
-    note = "【静岡県特記】静岡県建築基準条例および建築構造設計指針により、静岡県地震地域係数 Zs=1.2 の割増適用が義務付けられています（国告示 Z=1.0）。";
+    note += "【静岡県特記】静岡県建築基準条例および建築構造設計指針により、静岡県地震地域係数 Zs=1.2 の割増適用が義務付けられています（国告示 Z=1.0）。 ";
   } else if (matchedPref === "沖縄県") {
-    note = "【沖縄県特記】台風常襲地域のため風力割増、基準風速42〜46m/sに留意してください。";
+    note += "【沖縄県特記】台風常襲地域のため風力割増、基準風速42〜46m/sに留意してください。";
   } else if (isSnowHeavy) {
-    note = "【多雪区域特記】特定行政庁の施行細則により垂直積雪量の算定式が定められています。確認申請前に所管課の基準をご確認ください。";
+    note += "【多雪区域特記】特定行政庁の施行細則により垂直積雪量の算定式・別表が定められています。 ";
   }
+
+  if (!isExactSnowRuleImplemented) {
+    note += "【要各自治体への直接調査】同一市町村内でも旧町村・大字単位・標高・告示式により垂直積雪量がさらに細かく分かれる場合があります（代表的な基準値を表示しています）。確認申請・構造計算前に必ず各自治体（特定行政庁）へ直接ご確認ください。";
+  }
+  note = note.trim();
 
   // 都市計画・WebGIS・不動産情報ライブラリ連携メタデータの生成
   const cityPlanning = getCityPlanningInfo(matchedPref, matchedCity ? matchedCity.match : null, address, lat, lon);
