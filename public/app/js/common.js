@@ -519,6 +519,9 @@ const ToolStorage = {
     }
 };
 
+window.GlobalInfo = GlobalInfo;
+window.ToolStorage = ToolStorage;
+
 // DOM読み込み完了時に初期化
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
