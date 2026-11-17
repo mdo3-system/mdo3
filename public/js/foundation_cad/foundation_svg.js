@@ -164,7 +164,7 @@ export function renderFoundationSvg(targetContainerOrGroup, beam, avgGlConfig, s
       concPts.push([xInFace, ySlabTop]);
       concPts.push([xInFace, yConcTop]);
     }
-    poly(concPts, "#ffffff", "none", 2);
+    poly(concPts, "#ffffff", "none", 3.5);
 
     const gravelPts = [
       [xOutFace - 40, yBaseBot],
@@ -193,7 +193,7 @@ export function renderFoundationSvg(targetContainerOrGroup, beam, avgGlConfig, s
         [xBreakR, yBaseBot], [xBreakL, yBaseBot], [xBreakL, ySlabTop], [xOutFace, ySlabTop]
       ];
     }
-    poly(concPts, "#ffffff", "none", 2);
+    poly(concPts, "#ffffff", "none", 3.5);
 
     poly([
       [xBreakL, yBaseBot], [xBreakR, yBaseBot], [xBreakR, yBaseBot + subThick], [xBreakL, yBaseBot + subThick]
@@ -209,14 +209,14 @@ export function renderFoundationSvg(targetContainerOrGroup, beam, avgGlConfig, s
     text(`レベラー ${beam.levelerT}mm`, xOutFace - 10, yFinishTop + (beam.levelerT || 10)/2 + 4, "#38bdf8", 10, "end");
   }
 
-  // 設計GLライン
-  line(xOutFace - 340, yGl, xInFace + 360, yGl, "#4ade80", 1.5, "8,4");
-  text("▽ 設計GL", xOutFace - 345, yGl - 6, "#4ade80", 13, "end", true);
+  // 設計GLライン (一点鎖線)
+  line(xOutFace - 340, yGl, xInFace + 360, yGl, "#4ade80", 1.8, "28,6,4,6");
+  text("▽ 設計GL (一点鎖線)", xOutFace - 345, yGl - 6, "#4ade80", 13, "end", true);
 
-  // 平均GLライン
+  // 平均GLライン (三点鎖線)
   if (avgGlConfig.show) {
-    line(xOutFace - 340, yAvgGl, xInFace + 360, yAvgGl, "#fbbf24", 1.5, "6,3,1,3");
-    text("▽ 平均GL", xOutFace - 345, yAvgGl - 6, "#fbbf24", 13, "end", true);
+    line(xOutFace - 340, yAvgGl, xInFace + 360, yAvgGl, "#fbbf24", 1.8, "28,5,4,5,4,5,4,5");
+    text("▽ 平均GL (三点鎖線)", xOutFace - 345, yAvgGl - 6, "#fbbf24", 13, "end", true);
   }
 
   // 3. 鉄筋配置
@@ -400,20 +400,45 @@ export function renderFoundationSvg(targetContainerOrGroup, beam, avgGlConfig, s
     }
   }
 
-  // スラブ配筋
+  // 腹筋 (D10@300程度)
+  const r10 = getBarRadius('D10');
+  const webTopLimitY = stY_top + 12 + (beam.topSpec && (beam.topSpec.includes('2段') || (!isDoubleStem && beam.topSpec.startsWith('2-'))) ? 40 : 0);
+  const webBotLimitY = botBaseY - (beam.botSpec && (beam.botSpec.includes('2段') || beam.botSpec.includes('+')) ? 38 : 0);
+  const webSpanH = Math.max(webBotLimitY - webTopLimitY, 100);
+  const webDivs = Math.max(2, Math.ceil(webSpanH / 300));
+  const webStepY = webSpanH / webDivs;
+  let midWebY = null;
+  for (let wi = 1; wi < webDivs; wi++) {
+    const wy = webTopLimitY + webStepY * wi;
+    if (isDoubleStem) {
+      circle(hoopL + 10, wy, r10, "#fb923c");
+      circle(hoopR - 10, wy, r10, "#fb923c");
+    } else {
+      circle(xStemCenter, wy, r10, "#fb923c");
+    }
+    if (midWebY === null) midWebY = wy;
+  }
+  if (midWebY !== null) {
+    const webPtX = isDoubleStem ? (hoopR - 10) : xStemCenter;
+    drawCallout(webPtX, midWebY, xInFace + 55, midWebY, xInFace + 180, `腹筋: D10@300`, "start");
+  }
+
+  // スラブ配筋 (スターラップまで延長配置)
   const sPitch = slabCommon.shortBar.includes('@100') ? 100 : (slabCommon.shortBar.includes('@200') ? 200 : 150);
+  const stRefX = isDoubleStem ? hoopL : (xStemCenter - 10);
 
   if (isFG1) {
-    const longStartX = xStemCenter - 10;
-    line(longStartX, yTopLong, xBreak, yTopLong, "#ef4444", 2.2);
+    // 長辺横筋を梁内のスターラップ位置(stRefX)まで配する
+    line(stRefX, yTopLong, xBreak, yTopLong, "#ef4444", 2.2);
     if (isDoubleSlab) {
-      line(longStartX, yBotLong, xBreak, yBotLong, "#ef4444", 2.2);
+      line(stRefX, yBotLong, xBreak, yBotLong, "#ef4444", 2.2);
     }
 
-    const startShortX = Math.max(stSlopeEndX + 35, xInFace + 70);
+    // 短辺点筋もスターラップ近傍からスラブ全域へ配する
+    const startShortX = isDoubleStem ? (hoopR + 25) : (stRefX + 35);
     let px = startShortX;
     const pts = [];
-    while (px < xBreak - 25) {
+    while (px < xBreak - 20) {
       circle(px, yTopShort, rShort);
       if (isDoubleSlab) {
         circle(px, yBotShort, rShort);
@@ -423,11 +448,12 @@ export function renderFoundationSvg(targetContainerOrGroup, beam, avgGlConfig, s
     }
 
     if (pts.length >= 1) {
+      const calloutIdx = pts.length > 1 ? 1 : 0;
       const slabTypeStr = isDoubleSlab ? ' (W配筋)' : '';
       const shortCalloutY = isSlabFlush ? (ySlabTop - 30) : (ySlabTop - 45);
-      drawCallout(pts[0], yTopShort, pts[0] + 35, shortCalloutY, pts[0] + 130, `スラブ短辺: ${slabCommon.shortBar}${slabTypeStr}`, "start");
+      drawCallout(pts[calloutIdx], yTopShort, pts[calloutIdx] + 35, shortCalloutY, pts[calloutIdx] + 130, `スラブ短辺: ${slabCommon.shortBar}${slabTypeStr}`, "start");
     }
-    drawCallout(xBreak - 80, yTopLong, xBreak - 50, ySlabTop + 70, xBreak + 80, `スラブ長辺: ${slabCommon.longBar} (立上りへ延長)`, "start");
+    drawCallout(xBreak - 80, yTopLong, xBreak - 50, ySlabTop + 70, xBreak + 80, `スラブ長辺: ${slabCommon.longBar} (スターラップ定着)`, "start");
 
   } else {
     line(xBreakL, yTopLong, xBreakR, yTopLong, "#ef4444", 2.2);
@@ -438,13 +464,11 @@ export function renderFoundationSvg(targetContainerOrGroup, beam, avgGlConfig, s
     let px = xBreakL + 25;
     let firstPtX = null;
     while (px < xBreakR - 20) {
-      if (px < (xOutFace - 20) || px > (xInFace + 20)) {
-        circle(px, yTopShort, rShort);
-        if (isDoubleSlab) {
-          circle(px, yBotShort, rShort);
-        }
-        if (!firstPtX && px > xInFace + 15) firstPtX = px;
+      circle(px, yTopShort, rShort);
+      if (isDoubleSlab) {
+        circle(px, yBotShort, rShort);
       }
+      if (!firstPtX && px > xInFace + 15) firstPtX = px;
       px += sPitch;
     }
 

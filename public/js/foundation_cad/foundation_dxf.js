@@ -2,7 +2,11 @@
  * foundation_dxf.js
  * 基礎梁断面詳細図 全符号DXFエクスポートモジュール
  * - ARCHITREND ZERO / AutoCAD / Jw_cad 完全互換 (AC1009 R12 DXF + Shift_JIS)
- * - 縮尺1/20〜1/25印刷時に最低でも文字高さ2.0mm以上(実寸45mm〜75mm)を確保し、重なりを防止したレイアウト
+ * - 1. スラブ筋をスターラップまで延長配置
+ * - 2. 符号間ピッチ(5200mm)拡大＆文字レーン分離によりFG1対比表とFG2文字の被りを完全解消
+ * - 3. 腹筋(D10@300程度)の丸断面＆引出線自動作図
+ * - 4. 設計GL＝一点鎖線、平均GL＝三点鎖線 (LTYPE定義＋ジオメトリ分割鎖線で100%確実表示)
+ * - 5. 基礎梁コンクリート形状＝太線 (法線オフセット多重太線により縮尺1/20で0.4mm極太表示)
  */
 
 import { calcRebarDt, getBarRadius } from './foundation_calc.js';
@@ -10,11 +14,11 @@ import { REBAR_DATA } from './foundation_constants.js';
 
 export function generateAllBeamsDxf(beamList, avgGlConfig, slabCommon = { shortBar: 'D13@150', longBar: 'D10@300' }) {
   const numBeams = (beamList && beamList.length) ? beamList.length : 1;
-  const pitchX = 3400; // 符号ごとの配置間隔 (大型表・文字サイズ対応)
-  const minX = -1200;
-  const maxX = Math.max((numBeams - 1) * pitchX + 2800, 3000);
-  const minY = -1300;
-  const maxY = 1000;
+  const pitchX = 5200; // 符号ごとの配置間隔 (FG1対比表とFG2左端文字が絶対に被らないよう5200mm確保)
+  const minX = -1500;
+  const maxX = Math.max((numBeams - 1) * pitchX + 3000, 3200);
+  const minY = -1400;
+  const maxY = 1100;
 
   let dxf = "";
 
@@ -26,6 +30,7 @@ export function generateAllBeamsDxf(beamList, avgGlConfig, slabCommon = { shortB
   dxf += "9\r\n$DWGCODEPAGE\r\n3\r\nANSI_932\r\n";
   dxf += "9\r\n$INSBASE\r\n10\r\n0.0\r\n20\r\n0.0\r\n30\r\n0.0\r\n";
   dxf += "9\r\n$TEXTSIZE\r\n40\r\n50.0\r\n";
+  dxf += "9\r\n$LTSCALE\r\n40\r\n20.0\r\n";
   dxf += `9\r\n$EXTMIN\r\n10\r\n${minX.toFixed(1)}\r\n20\r\n${minY.toFixed(1)}\r\n30\r\n0.0\r\n`;
   dxf += `9\r\n$EXTMAX\r\n10\r\n${maxX.toFixed(1)}\r\n20\r\n${maxY.toFixed(1)}\r\n30\r\n0.0\r\n`;
   dxf += `9\r\n$LIMMIN\r\n10\r\n${minX.toFixed(1)}\r\n20\r\n${minY.toFixed(1)}\r\n`;
@@ -37,28 +42,30 @@ export function generateAllBeamsDxf(beamList, avgGlConfig, slabCommon = { shortB
   // ==========================================
   dxf += "0\r\nSECTION\r\n2\r\nTABLES\r\n";
 
-  // 2-1. LTYPE (線種テーブル)
-  dxf += "0\r\nTABLE\r\n2\r\nLTYPE\r\n70\r\n1\r\n";
+  // 2-1. LTYPE (線種テーブル: 実線・一点鎖線・三点鎖線)
+  dxf += "0\r\nTABLE\r\n2\r\nLTYPE\r\n70\r\n3\r\n";
   dxf += "0\r\nLTYPE\r\n2\r\nCONTINUOUS\r\n70\r\n0\r\n3\r\nSolid line\r\n72\r\n65\r\n73\r\n0\r\n40\r\n0.0\r\n";
+  dxf += "0\r\nLTYPE\r\n2\r\nDASHDOT\r\n70\r\n0\r\n3\r\nDash dot __ . __ . __\r\n72\r\n65\r\n73\r\n4\r\n40\r\n120.0\r\n49\r\n80.0\r\n49\r\n-15.0\r\n49\r\n10.0\r\n49\r\n-15.0\r\n";
+  dxf += "0\r\nLTYPE\r\n2\r\nDIVIDE3\r\n70\r\n0\r\n3\r\nTriple dot ____ . . . ____\r\n72\r\n65\r\n73\r\n8\r\n40\r\n160.0\r\n49\r\n80.0\r\n49\r\n-12.5\r\n49\r\n10.0\r\n49\r\n-12.5\r\n49\r\n10.0\r\n49\r\n-12.5\r\n49\r\n10.0\r\n49\r\n-12.5\r\n";
   dxf += "0\r\nENDTAB\r\n";
 
   // 2-2. LAYER (画層テーブル ※グループコード2必須)
   const layers = [
-    { name: "0",          color: 7 }, // 標準レイヤ
-    { name: "CONCRETE",   color: 7 }, // 躯体線 (白/黒)
-    { name: "GRAVEL",     color: 8 }, // 割栗石・砕石 (灰)
-    { name: "REBAR",      color: 1 }, // 鉄筋 (赤)
-    { name: "LEVELER",    color: 4 }, // レベラー (シアン)
-    { name: "DIMENSION",  color: 2 }, // 寸法・引出線 (黄)
-    { name: "CENTER",     color: 3 }, // 通り芯 (緑)
-    { name: "GL_LINE",    color: 3 }, // 設計GL (緑)
-    { name: "AVG_GL",     color: 2 }, // 平均GL (黄)
-    { name: "TABLE_LINE", color: 4 }, // 表枠線 (シアン)
-    { name: "TEXT",       color: 7 }  // 文字 (白/黒)
+    { name: "0",          color: 7, ltype: "CONTINUOUS" }, // 標準レイヤ
+    { name: "CONCRETE",   color: 7, ltype: "CONTINUOUS" }, // 躯体線 (白/黒・太線)
+    { name: "GRAVEL",     color: 8, ltype: "CONTINUOUS" }, // 割栗石・砕石 (灰)
+    { name: "REBAR",      color: 1, ltype: "CONTINUOUS" }, // 鉄筋 (赤)
+    { name: "LEVELER",    color: 4, ltype: "CONTINUOUS" }, // レベラー (シアン)
+    { name: "DIMENSION",  color: 2, ltype: "CONTINUOUS" }, // 寸法・引出線 (黄)
+    { name: "CENTER",     color: 3, ltype: "CONTINUOUS" }, // 通り芯 (緑)
+    { name: "GL_LINE",    color: 3, ltype: "CONTINUOUS" }, // 設計GL (緑・一点鎖線)
+    { name: "AVG_GL",     color: 2, ltype: "CONTINUOUS" }, // 平均GL (黄・三点鎖線)
+    { name: "TABLE_LINE", color: 4, ltype: "CONTINUOUS" }, // 表枠線 (シアン)
+    { name: "TEXT",       color: 7, ltype: "CONTINUOUS" }  // 文字 (白/黒)
   ];
   dxf += `0\r\nTABLE\r\n2\r\nLAYER\r\n70\r\n${layers.length}\r\n`;
   layers.forEach(l => {
-    dxf += `0\r\nLAYER\r\n2\r\n${l.name}\r\n70\r\n0\r\n62\r\n${l.color}\r\n6\r\nCONTINUOUS\r\n`;
+    dxf += `0\r\nLAYER\r\n2\r\n${l.name}\r\n70\r\n0\r\n62\r\n${l.color}\r\n6\r\n${l.ltype}\r\n`;
   });
   dxf += "0\r\nENDTAB\r\n";
 
@@ -82,13 +89,92 @@ export function generateAllBeamsDxf(beamList, avgGlConfig, slabCommon = { shortB
   const dLine = (x1, y1, x2, y2, lay) =>
     `0\r\nLINE\r\n8\r\n${lay}\r\n10\r\n${Number(x1).toFixed(1)}\r\n20\r\n${Number(y1).toFixed(1)}\r\n30\r\n0.0\r\n11\r\n${Number(x2).toFixed(1)}\r\n21\r\n${Number(y2).toFixed(1)}\r\n31\r\n0.0\r\n`;
 
+  // 基礎梁形状用の太線ヘルパー (法線方向に平行多重線を描画し、どのCAD設定でも確実に太線として表示)
+  const dThickLine = (x1, y1, x2, y2, lay = "CONCRETE") => {
+    const dx = x2 - x1;
+    const dy = y2 - y1;
+    const len = Math.hypot(dx, dy) || 1;
+    const nx = -dy / len;
+    const ny = dx / len;
+    let out = "";
+    // -3.6mm, -1.8mm, 0.0mm, +1.8mm, +3.6mm (全幅7.2mm = 縮尺1/20で0.36mm〜0.4mm極太実線)
+    const offsets = [-3.6, -1.8, 0.0, 1.8, 3.6];
+    for (let i = 0; i < offsets.length; i++) {
+      const off = offsets[i];
+      out += dLine(x1 + nx * off, y1 + ny * off, x2 + nx * off, y2 + ny * off, lay);
+    }
+    return out;
+  };
+
+  // 一点鎖線ヘルパー (設計GL・通り芯用: 長線75mm + 空白14mm + 点線12mm + 空白14mm)
+  const dDashDotLine = (x1, y1, x2, y2, lay = "GL_LINE") => {
+    const dx = x2 - x1;
+    const dy = y2 - y1;
+    const totalLen = Math.hypot(dx, dy);
+    if (totalLen < 1) return "";
+    const ux = dx / totalLen;
+    const uy = dy / totalLen;
+    const segs = [
+      { draw: true, len: 75 },
+      { draw: false, len: 14 },
+      { draw: true, len: 12 },
+      { draw: false, len: 14 }
+    ];
+    let dist = 0;
+    let step = 0;
+    let out = "";
+    while (dist < totalLen) {
+      const s = segs[step % segs.length];
+      const nextDist = Math.min(dist + s.len, totalLen);
+      if (s.draw && nextDist > dist) {
+        out += dLine(x1 + ux * dist, y1 + uy * dist, x1 + ux * nextDist, y1 + uy * nextDist, lay);
+      }
+      dist = nextDist;
+      step++;
+    }
+    return out;
+  };
+
+  // 三点鎖線ヘルパー (平均GL用: 長線75mm + [空白12mm + 点線10mm]×3 + 空白12mm)
+  const dTripleDotLine = (x1, y1, x2, y2, lay = "AVG_GL") => {
+    const dx = x2 - x1;
+    const dy = y2 - y1;
+    const totalLen = Math.hypot(dx, dy);
+    if (totalLen < 1) return "";
+    const ux = dx / totalLen;
+    const uy = dy / totalLen;
+    const segs = [
+      { draw: true, len: 75 },
+      { draw: false, len: 12 },
+      { draw: true, len: 10 },
+      { draw: false, len: 12 },
+      { draw: true, len: 10 },
+      { draw: false, len: 12 },
+      { draw: true, len: 10 },
+      { draw: false, len: 12 }
+    ];
+    let dist = 0;
+    let step = 0;
+    let out = "";
+    while (dist < totalLen) {
+      const s = segs[step % segs.length];
+      const nextDist = Math.min(dist + s.len, totalLen);
+      if (s.draw && nextDist > dist) {
+        out += dLine(x1 + ux * dist, y1 + uy * dist, x1 + ux * nextDist, y1 + uy * nextDist, lay);
+      }
+      dist = nextDist;
+      step++;
+    }
+    return out;
+  };
+
   const dCircle = (cx, cy, r, lay) =>
     `0\r\nCIRCLE\r\n8\r\n${lay}\r\n10\r\n${Number(cx).toFixed(1)}\r\n20\r\n${Number(cy).toFixed(1)}\r\n30\r\n0.0\r\n40\r\n${Number(r).toFixed(1)}\r\n`;
 
   const dArc = (cx, cy, r, startAng, endAng, lay) =>
     `0\r\nARC\r\n8\r\n${lay}\r\n10\r\n${Number(cx).toFixed(1)}\r\n20\r\n${Number(cy).toFixed(1)}\r\n30\r\n0.0\r\n40\r\n${Number(r).toFixed(1)}\r\n50\r\n${Number(startAng).toFixed(1)}\r\n51\r\n${Number(endAng).toFixed(1)}\r\n`;
 
-  // 文字出力ヘルパー: 最低でも高さ45mm (1/20で2.25mm、1/22.5で2.0mm) 以上を保証
+  // 文字出力ヘルパー: 最低でも高さ45mm (縮尺1/20で2.25mm以上) を保証
   const dText = (str, x, y, lay, h = 50) => {
     const safeH = Math.max(Number(h) || 50, 45);
     return `0\r\nTEXT\r\n8\r\n${lay}\r\n10\r\n${Number(x).toFixed(1)}\r\n20\r\n${Number(y).toFixed(1)}\r\n30\r\n0.0\r\n40\r\n${safeH.toFixed(1)}\r\n1\r\n${String(str)}\r\n7\r\nSTANDARD\r\n`;
@@ -188,29 +274,31 @@ export function generateAllBeamsDxf(beamList, avgGlConfig, slabCommon = { shortB
     const xBreakL = xOut - 320;
     const xBreakR = xIn + 320;
 
+    // 左端基準位置 (FG1はxOut、FG2はxBreakL)
+    const leftEdgeX = isFG1 ? xOut : xBreakL;
+
     // タイトル (高さ70mm / 48mm)
     const toeStr = isMatchStem ? `底盤同寸${stemW}mm` : `底盤250mm`;
     const typeLabel = isFG1 ? `FG1仕様 (${toeStr})` : 'FG2仕様 (内部T型梁)';
     const stemTypeDesc = isDoubleStem ? '立上りW' : '立上りS';
     const slabTypeDesc = isDoubleSlab ? 'スラブW' : 'スラブS';
 
-    dxf += dText(`【 符号 : ${b.title || b.id} 】 ${typeLabel}`, ox - 250, yTop + 210, "TEXT", 70);
-    dxf += dText(`仕様: ${stemTypeDesc}・${slabTypeDesc} | 幅${stemW}×梁成D${concD}mm (全高${totalH}mm)`, ox - 250, yTop + 130, "TEXT", 48);
+    dxf += dText(`【 符号 : ${b.title || b.id} 】 ${typeLabel}`, leftEdgeX - 200, yTop + 220, "TEXT", 70);
+    dxf += dText(`仕様: ${stemTypeDesc}・${slabTypeDesc} | 幅${stemW}×梁成D${concD}mm (全高${totalH}mm)`, leftEdgeX - 200, yTop + 135, "TEXT", 48);
 
-    // 躯体線 & 砕石層 & 破断線
+    // 躯体線 (太線 dThickLine) & 砕石層 & 破断線
     if (isFG1) {
       const topY = isSlabFlush ? ySlabTop : yConcTop;
-      dxf += dLine(xOut, topY, xOut, yBot, "CONCRETE");
-      dxf += dLine(xOut, yBot, xBaseEnd, yBot, "CONCRETE");
-      dxf += dLine(xBaseEnd, yBot, xSlopeEnd, ySlabBot, "CONCRETE");
-      dxf += dLine(xSlopeEnd, ySlabBot, xBreak, ySlabBot, "CONCRETE");
-      dxf += dLine(xBreak, ySlabBot, xBreak, ySlabTop, "CONCRETE");
+      dxf += dThickLine(xOut, topY, xOut, yBot, "CONCRETE");
+      dxf += dThickLine(xOut, yBot, xBaseEnd, yBot, "CONCRETE");
+      dxf += dThickLine(xBaseEnd, yBot, xSlopeEnd, ySlabBot, "CONCRETE");
+      dxf += dThickLine(xSlopeEnd, ySlabBot, xBreak, ySlabBot, "CONCRETE");
       if (!isSlabFlush) {
-        dxf += dLine(xBreak, ySlabTop, xIn, ySlabTop, "CONCRETE");
-        dxf += dLine(xIn, ySlabTop, xIn, yConcTop, "CONCRETE");
-        dxf += dLine(xIn, yConcTop, xOut, yConcTop, "CONCRETE");
+        dxf += dThickLine(xBreak, ySlabTop, xIn, ySlabTop, "CONCRETE");
+        dxf += dThickLine(xIn, ySlabTop, xIn, yConcTop, "CONCRETE");
+        dxf += dThickLine(xIn, yConcTop, xOut, yConcTop, "CONCRETE");
       } else {
-        dxf += dLine(xBreak, ySlabTop, xOut, ySlabTop, "CONCRETE");
+        dxf += dThickLine(xBreak, ySlabTop, xOut, ySlabTop, "CONCRETE");
       }
 
       // 割栗石・砕石層
@@ -223,27 +311,23 @@ export function generateAllBeamsDxf(beamList, avgGlConfig, slabCommon = { shortB
       dxf += dBreak(xBreak, ySlabTop + 30, ySlabBot - subThick - 30);
     } else {
       if (yBot < ySlabBot) {
-        dxf += dLine(xOut, yConcTop, xIn, yConcTop, "CONCRETE");
-        dxf += dLine(xIn, yConcTop, xIn, ySlabTop, "CONCRETE");
-        dxf += dLine(xIn, ySlabTop, xBreakR, ySlabTop, "CONCRETE");
-        dxf += dLine(xBreakR, ySlabTop, xBreakR, ySlabBot, "CONCRETE");
-        dxf += dLine(xBreakR, ySlabBot, xIn, ySlabBot, "CONCRETE");
-        dxf += dLine(xIn, ySlabBot, xIn, yBot, "CONCRETE");
-        dxf += dLine(xIn, yBot, xOut, yBot, "CONCRETE");
-        dxf += dLine(xOut, yBot, xOut, ySlabBot, "CONCRETE");
-        dxf += dLine(xOut, ySlabBot, xBreakL, ySlabBot, "CONCRETE");
-        dxf += dLine(xBreakL, ySlabBot, xBreakL, ySlabTop, "CONCRETE");
-        dxf += dLine(xBreakL, ySlabTop, xOut, ySlabTop, "CONCRETE");
-        dxf += dLine(xOut, ySlabTop, xOut, yConcTop, "CONCRETE");
+        dxf += dThickLine(xOut, yConcTop, xIn, yConcTop, "CONCRETE");
+        dxf += dThickLine(xIn, yConcTop, xIn, ySlabTop, "CONCRETE");
+        dxf += dThickLine(xIn, ySlabTop, xBreakR, ySlabTop, "CONCRETE");
+        dxf += dThickLine(xBreakR, ySlabBot, xIn, ySlabBot, "CONCRETE");
+        dxf += dThickLine(xIn, ySlabBot, xIn, yBot, "CONCRETE");
+        dxf += dThickLine(xIn, yBot, xOut, yBot, "CONCRETE");
+        dxf += dThickLine(xOut, yBot, xOut, ySlabBot, "CONCRETE");
+        dxf += dThickLine(xOut, ySlabBot, xBreakL, ySlabBot, "CONCRETE");
+        dxf += dThickLine(xBreakL, ySlabTop, xOut, ySlabTop, "CONCRETE");
+        dxf += dThickLine(xOut, ySlabTop, xOut, yConcTop, "CONCRETE");
       } else {
-        dxf += dLine(xOut, yConcTop, xIn, yConcTop, "CONCRETE");
-        dxf += dLine(xIn, yConcTop, xIn, ySlabTop, "CONCRETE");
-        dxf += dLine(xIn, ySlabTop, xBreakR, ySlabTop, "CONCRETE");
-        dxf += dLine(xBreakR, ySlabTop, xBreakR, yBot, "CONCRETE");
-        dxf += dLine(xBreakR, yBot, xBreakL, yBot, "CONCRETE");
-        dxf += dLine(xBreakL, yBot, xBreakL, ySlabTop, "CONCRETE");
-        dxf += dLine(xBreakL, ySlabTop, xOut, ySlabTop, "CONCRETE");
-        dxf += dLine(xOut, ySlabTop, xOut, yConcTop, "CONCRETE");
+        dxf += dThickLine(xOut, yConcTop, xIn, yConcTop, "CONCRETE");
+        dxf += dThickLine(xIn, yConcTop, xIn, ySlabTop, "CONCRETE");
+        dxf += dThickLine(xIn, ySlabTop, xBreakR, ySlabTop, "CONCRETE");
+        dxf += dThickLine(xBreakR, yBot, xBreakL, yBot, "CONCRETE");
+        dxf += dThickLine(xBreakL, ySlabTop, xOut, ySlabTop, "CONCRETE");
+        dxf += dThickLine(xOut, ySlabTop, xOut, yConcTop, "CONCRETE");
       }
 
       dxf += dLine(xBreakL, yBot - subThick, xBreakR, yBot - subThick, "GRAVEL");
@@ -256,26 +340,29 @@ export function generateAllBeamsDxf(beamList, avgGlConfig, slabCommon = { shortB
       dxf += dLine(xOut, yTop, xIn, yTop, "LEVELER");
       dxf += dLine(xOut, yConcTop, xOut, yTop, "LEVELER");
       dxf += dLine(xIn, yConcTop, xIn, yTop, "LEVELER");
-      dxf += dCallout(xOut, (yTop + yConcTop) / 2, xOut - 50, yTop + 30, xOut - 120, `レベラー ${levelerT}mm`, true, 45);
+      dxf += dCallout(xOut, (yTop + yConcTop) / 2, xOut - 40, yTop + 45, xOut - 100, `レベラー ${levelerT}mm`, true, 45);
     }
 
-    // 通り芯 & GL
-    dxf += dLine(xStemCenter, yTop + 40, xStemCenter, yBot - 220, "CENTER");
+    // 通り芯 (一点鎖線)
+    dxf += dDashDotLine(xStemCenter, yTop + 40, xStemCenter, yBot - 220, "CENTER");
     dxf += dText("通り芯", xStemCenter - 65, yBot - 285, "CENTER", 45);
 
-    dxf += dLine(ox - 550, yGl, ox + 800, yGl, "GL_LINE");
-    dxf += dText("▽ 設計GL", ox - 820, yGl - 20, "GL_LINE", 50);
+    // 設計GL (一点鎖線) ＆ 平均GL (三点鎖線)
+    const glLeftX = leftEdgeX - 650;
+    const glRightX = isFG1 ? (xBreak + 100) : (xBreakR + 100);
+    dxf += dDashDotLine(glLeftX, yGl, glRightX, yGl, "GL_LINE");
+    dxf += dText("▽ 設計GL", glLeftX - 270, yGl - 20, "GL_LINE", 50);
 
     if (avgGlConfig && avgGlConfig.show) {
       const yAvg = yGl + (avgGlConfig.diff || 0);
-      dxf += dLine(ox - 550, yAvg, ox + 800, yAvg, "AVG_GL");
-      const avgLabelY = (Math.abs(avgGlConfig.diff || 0) < 60) ? (yAvg - 75) : (yAvg - 20);
-      dxf += dText("▽ 平均GL", ox - 820, avgLabelY, "AVG_GL", 50);
+      dxf += dTripleDotLine(glLeftX, yAvg, glRightX, yAvg, "AVG_GL");
+      const avgLabelY = (Math.abs(avgGlConfig.diff || 0) < 65) ? (yAvg - 75) : (yAvg - 20);
+      dxf += dText("▽ 平均GL", glLeftX - 270, avgLabelY, "AVG_GL", 50);
 
       if (avgGlConfig.diff !== 0) {
         const diffVal = avgGlConfig.diff;
         const diffSign = diffVal > 0 ? `+${diffVal}` : `${diffVal}`;
-        dxf += dDim(ox - 480, yGl, ox - 480, yAvg, `GL差 ${diffSign}`, true, -1, 45);
+        dxf += dDim(leftEdgeX - 480, yGl, leftEdgeX - 480, yAvg, `GL差 ${diffSign}`, true, -1, 45);
       }
     }
 
@@ -287,6 +374,7 @@ export function generateAllBeamsDxf(beamList, avgGlConfig, slabCommon = { shortB
     const stY_bot = yBot + 60;
     const bendR = 20;
 
+    const r10 = REBAR_DATA['D10'].r;
     const r13 = REBAR_DATA['D13'].r;
     const r16 = REBAR_DATA['D16'].r;
 
@@ -358,12 +446,12 @@ export function generateAllBeamsDxf(beamList, avgGlConfig, slabCommon = { shortB
       }
     }
 
-    // 縦筋引出線 (右側へ引き出して左側の寸法線と干渉させない)
+    // 縦筋引出線
     const stTargetPtX = isDoubleStem ? hoopR : (xStemCenter - 10);
-    const stCalloutY = yGl - embedH * 0.45;
+    const stCalloutY = yGl - embedH * 0.55;
     dxf += dCallout(stTargetPtX, stCalloutY, xIn + 80, stCalloutY, xIn + 180, `縦筋: ${b.stirrupBar || 'D10@200'}${isDoubleStem ? ' (フープ)' : ''}`, false, 50);
 
-    // 主筋
+    // 上主筋
     let topLabel = b.topSpec || '2-D13';
     if (isDoubleStem) {
       const rTop = b.topSpec.includes('D16') ? r16 : r13;
@@ -382,7 +470,7 @@ export function generateAllBeamsDxf(beamList, avgGlConfig, slabCommon = { shortB
         dxf += dCircle(xStemCenter, stY_top - 12 - 38, rTop2, "REBAR");
       }
     }
-    const topElbowY = isSlabFlush ? (ySlabTop + 140) : (stY_top + 35);
+    const topElbowY = isSlabFlush ? (ySlabTop + 150) : (stY_top + 40);
     dxf += dCallout(xStemCenter, stY_top - 12, xIn + 80, topElbowY, xIn + 180, `上主筋: ${topLabel}`, false, 50);
 
     // 下主筋
@@ -431,24 +519,52 @@ export function generateAllBeamsDxf(beamList, avgGlConfig, slabCommon = { shortB
       }
     }
 
-    // スラブ筋
-    const sPitch = shortSpecStr.includes('@100') ? 100 : (shortSpecStr.includes('@200') ? 200 : 150);
-    if (isFG1) {
-      dxf += dLine(xStemCenter - 10, yTopLong, xBreak, yTopLong, "REBAR");
-      if (isDoubleSlab) {
-        dxf += dLine(xStemCenter - 10, yBotLong, xBreak, yBotLong, "REBAR");
+    // 腹筋 (D10@300程度)
+    const webTopLimitY = stY_top - 12 - (b.topSpec && (b.topSpec.includes('2段') || (!isDoubleStem && b.topSpec.startsWith('2-'))) ? 38 : 0);
+    const webBotLimitY = botBaseY + (b.botSpec && (b.botSpec.includes('2段') || b.botSpec.includes('+')) ? 38 : 0);
+    const webSpanH = Math.max(webTopLimitY - webBotLimitY, 100);
+    const webDivs = Math.max(2, Math.ceil(webSpanH / 300));
+    const webStepY = webSpanH / webDivs;
+    let firstWebY = null;
+    for (let wi = 1; wi < webDivs; wi++) {
+      const wy = webTopLimitY - webStepY * wi;
+      if (isDoubleStem) {
+        dxf += dCircle(hoopL + 10, wy, r10, "REBAR");
+        dxf += dCircle(hoopR - 10, wy, r10, "REBAR");
+      } else {
+        dxf += dCircle(xStemCenter, wy, r10, "REBAR");
       }
-      const startShortX = Math.max(stSlopeEndX + 35, xIn + 70);
+      if (firstWebY === null) firstWebY = wy;
+    }
+    if (firstWebY !== null) {
+      const webPtX = isDoubleStem ? (hoopR - 10) : xStemCenter;
+      const webLabelY = isSlabFlush ? (yGl - embedH * 0.25) : firstWebY;
+      dxf += dCallout(webPtX, firstWebY, xIn + 80, webLabelY, xIn + 180, `腹筋: D10@300`, false, 48);
+    }
+
+    // スラブ筋 (スターラップまで延長配置)
+    const sPitch = shortSpecStr.includes('@100') ? 100 : (shortSpecStr.includes('@200') ? 200 : 150);
+    const stRefX = isDoubleStem ? hoopL : (xStemCenter - 10);
+
+    if (isFG1) {
+      // スラブ横筋をスターラップ位置(stRefX)までしっかり伸ばす
+      dxf += dLine(stRefX, yTopLong, xBreak, yTopLong, "REBAR");
+      if (isDoubleSlab) {
+        dxf += dLine(stRefX, yBotLong, xBreak, yBotLong, "REBAR");
+      }
+      // スラブ短辺点筋もスターラップ近傍から配置する
+      const startShortX = isDoubleStem ? (hoopR + 25) : (stRefX + 35);
       let spx = startShortX;
-      let firstPt = null;
-      while (spx < xBreak - 25) {
+      const shortPts = [];
+      while (spx < xBreak - 20) {
         dxf += dCircle(spx, yTopShort, rShort, "REBAR");
         if (isDoubleSlab) dxf += dCircle(spx, yBotShort, rShort, "REBAR");
-        if (!firstPt) firstPt = spx;
+        shortPts.push(spx);
         spx += sPitch;
       }
-      if (firstPt) {
-        dxf += dCallout(firstPt, yTopShort, firstPt + 40, ySlabTop + 65, firstPt + 120, `スラブ短辺: ${shortSpecStr}${isDoubleSlab ? ' (W)' : ''}`, false, 50);
+      if (shortPts.length > 0) {
+        const ptTarget = shortPts.length > 1 ? shortPts[1] : shortPts[0];
+        dxf += dCallout(ptTarget, yTopShort, ptTarget + 40, ySlabTop + 70, ptTarget + 120, `スラブ短辺: ${shortSpecStr}${isDoubleSlab ? ' (W)' : ''}`, false, 50);
       }
       dxf += dCallout(xBreak - 90, yTopLong, xBreak - 40, ySlabBot - 85, xBreak + 20, `スラブ長辺: ${longSpecStr}`, false, 50);
     } else {
@@ -459,25 +575,23 @@ export function generateAllBeamsDxf(beamList, avgGlConfig, slabCommon = { shortB
       let spx = xBreakL + 25;
       let firstPt = null;
       while (spx < xBreakR - 20) {
-        if (spx < (xOut - 20) || spx > (xIn + 20)) {
-          dxf += dCircle(spx, yTopShort, rShort, "REBAR");
-          if (isDoubleSlab) dxf += dCircle(spx, yBotShort, rShort, "REBAR");
-          if (!firstPt && spx > xIn + 15) firstPt = spx;
-        }
+        dxf += dCircle(spx, yTopShort, rShort, "REBAR");
+        if (isDoubleSlab) dxf += dCircle(spx, yBotShort, rShort, "REBAR");
+        if (!firstPt && spx > xIn + 15) firstPt = spx;
         spx += sPitch;
       }
       if (firstPt) {
-        dxf += dCallout(firstPt, yTopShort, firstPt + 30, ySlabTop + 65, xBreakR + 30, `スラブ短辺: ${shortSpecStr}${isDoubleSlab ? ' (W)' : ''}`, false, 50);
+        dxf += dCallout(firstPt, yTopShort, firstPt + 30, ySlabTop + 70, xBreakR + 30, `スラブ短辺: ${shortSpecStr}${isDoubleSlab ? ' (W)' : ''}`, false, 50);
       }
       dxf += dCallout(xBreakR - 60, yTopLong, xBreakR - 20, ySlabBot - 85, xBreakR + 30, `スラブ長辺: ${longSpecStr}`, false, 50);
     }
 
-    // 寸法線 (最小文字高さ45mm保証・重なり回避配置)
+    // 寸法線 (leftEdgeX基準で配置し、FG2でもスラブやGL文字と一切被らないように整列)
     dxf += dDim(xOut, yTop + 35, xIn, yTop + 35, `${stemW}`, false, 1, 45);
-    dxf += dDim(xOut - 60, yGl, xOut - 60, ySlabTop, `+${glToSlab}`, true, -1, 45);
-    dxf += dDim(xOut - 220, yGl, xOut - 220, yTop, `天端 ${aboveGl}`, true, -1, 45);
-    dxf += dDim(xOut - 220, yBot, xOut - 220, yGl, `H=${embedH}`, true, -1, 45);
-    dxf += dDim(xOut - 560, yBot, xOut - 560, yTop, `全高 ${totalH}`, true, -1, 48);
+    dxf += dDim(leftEdgeX - 60, yGl, leftEdgeX - 60, ySlabTop, `+${glToSlab}`, true, -1, 45);
+    dxf += dDim(leftEdgeX - 220, yGl, leftEdgeX - 220, yTop, `天端 ${aboveGl}`, true, -1, 45);
+    dxf += dDim(leftEdgeX - 220, yBot, leftEdgeX - 220, yGl, `H=${embedH}`, true, -1, 45);
+    dxf += dDim(leftEdgeX - 550, yBot, leftEdgeX - 550, yTop, `全高 ${totalH}`, true, -1, 48);
 
     if (isFG1) {
       if (!isMatchStem && toeW > 0) {
@@ -509,7 +623,7 @@ export function generateAllBeamsDxf(beamList, avgGlConfig, slabCommon = { shortB
       const dtBotStr = (Math.round(dtBot.dt * 10) / 10).toFixed(1);
       const dEffBotStr = (Math.round(dEffBot * 10) / 10).toFixed(1);
 
-      const tx = ox + 1100;
+      const tx = ox + 1180;
       const ty = yTop + 180;
       const tw = 1520;
       const th = 1060;
