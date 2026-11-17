@@ -3,9 +3,9 @@
  * 基礎梁CAD プロモード UIコントローラー＆イベントバインディング
  */
 
-import { foundationState } from './foundation_state.js';
-import { renderFoundationSvg } from './foundation_svg.js';
-import { generateAllBeamsDxf } from './foundation_dxf.js';
+import { foundationState } from './foundation_state.js?v=20261117_v2';
+import { renderFoundationSvg } from './foundation_svg.js?v=20261117_v2';
+import { generateAllBeamsDxf } from './foundation_dxf.js?v=20261117_v2';
 
 export class FoundationCadUI {
   constructor() {
@@ -85,7 +85,7 @@ export class FoundationCadUI {
     const btnDxf = document.getElementById('btnExportAllDXF');
     if (btnDxf) {
       btnDxf.onclick = () => {
-        generateAllBeamsDxf(foundationState.beamList, foundationState.avgGlConfig);
+        generateAllBeamsDxf(foundationState.beamList, foundationState.avgGlConfig, foundationState.slabCommon);
       };
     }
 
