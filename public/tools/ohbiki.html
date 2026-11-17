@@ -4,13 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>大引の計算書（構造用合板根太なし床組） - 許容曲げ・せん断・たわみ検定 | mdo3.com</title>
-  <meta name="description" content="木造軸組工法住宅の許容応力度設計（グレー本 設計例14）に準拠した大引の構造計算ツール。大引間隔、スパン、束ピッチ、樹種DB（無等級製材21種・集成材対応）、断面寸法から長期曲げ応力度、せん断応力度、クリープ考慮たわみを即座に算定。完全無償提供（¥0）。">
+  <meta name="description" content="木造軸組工法住宅の大引の構造計算ツール。大引間隔、スパン、束ピッチ、樹種DB（無等級製材21種・集成材対応）、断面寸法から長期曲げ応力度、せん断応力度、クリープ考慮たわみを即座に算定。完全無償提供（¥0）。">
   <link rel="canonical" href="https://mdo3.com/tools/ohbiki.html">
   
   <!-- OGP & Twitter Cards -->
   <meta property="og:type" content="article">
   <meta property="og:title" content="大引の計算書（構造用合板根太なし床組） - 許容曲げ・せん断・たわみ検定 | mdo3.com">
-  <meta property="og:description" content="木造軸組工法住宅の大引許容応力度設計。グレー本設計例14完全準拠・樹種DB内蔵・床伏図連動・A4計算書出力。完全無償ツール（¥0）。">
+  <meta property="og:description" content="木造軸組工法住宅の大引許容応力度設計。樹種DB内蔵・床伏図連動・A4計算書出力。完全無償ツール（¥0）。">
   <meta property="og:url" content="https://mdo3.com/tools/ohbiki.html">
   <meta property="og:image" content="https://mdo3.com/assets/ogp/ogp_default.png">
   <meta name="twitter:card" content="summary_large_image">
@@ -43,13 +43,13 @@
         "name": "一級建築士事務所 構造開発実務チーム (監修: 管理建築士)",
         "url": "https://mdo3.com/"
       },
-      "description": "『木造軸組工法住宅の許容応力度設計（グレー本）』713 設計例14（構造用合板張り根太なし床組の大引設計）に準拠し、大引の長期曲げ応力度、せん断応力度、および長期たわみ（クリープ変形係数2.0考慮）を即座に判定する実務計算ツールです。無等級製材21樹種および各種構造用集成材の基準強度・ヤング係数DBを内蔵し、大引間隔やスパンに連動した1階床伏図付きA4計算書帳票を出力します。"
+      "description": "構造用合板張り（根太なし）床組における大引の長期曲げ応力度、せん断応力度、および長期たわみ（クリープ変形係数2.0考慮）を即座に判定する実務計算ツールです。無等級製材21樹種および各種構造用集成材の基準強度・ヤング係数DBを内蔵し、大引間隔やスパンに連動した1階床伏図付きA4計算書帳票を出力します。"
     },
     {
       "@type": "HowTo",
       "@id": "https://mdo3.com/tools/ohbiki.html#howto",
       "name": "大引の計算書（構造用合板根太なし床組）を用いた許容応力度検定の手順",
-      "description": "グレー本設計例14に基づき、大引間隔・束ピッチ・断面寸法・樹種を入力して許容応力度検定を行い、確認申請・審査添付用のA4計算書を出力するフローです。",
+      "description": "大引間隔・束ピッチ・断面寸法・樹種を入力して許容応力度検定を行い、確認申請・審査添付用のA4計算書を出力するフローです。",
       "step": [
         {
           "@type": "HowToStep",
@@ -87,7 +87,7 @@
           "name": "大引のたわみ計算でクリープ係数は考慮されていますか？",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "はい。『木造軸組工法住宅の許容応力度設計（グレー本）』設計例14の算定式に則り、長期荷重によるたわみ算定時にクリープ割増係数 2.0 を乗じて検定しています（δ = 2 × 5wd·l^4 / (384·E·I) ≦ l / 250）。"
+            "text": "はい。木造床組の標準設計法に則り、長期荷重によるたわみ算定時にクリープ割増係数 2.0 を乗じて検定しています（δ = 2 × 5wd·l^4 / (384·E·I) ≦ l / 250）。"
           }
         },
         {
@@ -500,7 +500,7 @@
         <span class="tool-badge-cat">木造軸組・詳細計算系</span>
         <span class="tool-badge-price">完全無償 (¥0)</span>
         <span style="font-size: 0.8rem; color: #94a3b8; display: flex; align-items: center; gap: 4px;">
-          <span class="material-symbols-outlined" style="font-size: 16px;">verified</span> グレー本 設計例14 準拠
+          <span class="material-symbols-outlined" style="font-size: 16px;">verified</span> 木造床組・断面検定
         </span>
       </div>
 
@@ -508,7 +508,7 @@
 
       <!-- AIO 定義ボックス -->
       <div class="aio-definition-box">
-        <strong>【実務概要】</strong> 『木造軸組工法住宅の許容応力度設計（グレー本）』713 設計例14に完全準拠し、構造用合板直接張り（根太レス）における大引の長期曲げ応力度、せん断応力度、および長期荷重によるたわみ（クリープ係数2.0考慮）をリアルタイムに自動算定・判定する実務計算ツールです。
+        <strong>【実務概要】</strong> 構造用合板直接張り（根太レス）における大引の長期曲げ応力度、せん断応力度、および長期荷重によるたわみ（クリープ係数2.0考慮）をリアルタイムに自動算定・判定する実務計算ツールです。
       </div>
 
       <div class="formula-badge-card">
@@ -559,7 +559,7 @@
               <td><strong>たわみ＆クリープ評価</strong></td>
               <td>クリープ係数2.0や積載荷重低減の反映漏れが起きやすい</td>
               <td>床組全体モデル化が必要で、大引単体の検討には過大負荷</td>
-              <td><strong>グレー本設計例14式に則り、クリープ2.0考慮たわみを即時判定</strong></td>
+              <td><strong>変形増大係数（クリープ2.0）を考慮し、クリープ2.0考慮たわみを即時判定</strong></td>
             </tr>
             <tr>
               <td><strong>床伏図との整合性</strong></td>
@@ -591,7 +591,6 @@
             対応している機能（できること）
           </div>
           <ul class="spec-list">
-            <li>✓ グレー本（2020年版/2025年版対応）713 設計例14 完全準拠の計算モデル</li>
             <li>✓ 国交省告示基準の無等級製材21樹種（ひのき、あかまつ、べいまつ等）および集成材DB連携</li>
             <li>✓ 大引幅 (b)・成 (d)・支持スパン (l)・大引間隔のミリ単位での任意調整</li>
             <li>✓ 長期固定荷重 (440 N/m² 等) および床用積載荷重 (1300 N/m², たわみ用 600 N/m²) 自動連動</li>
@@ -639,7 +638,7 @@
           <div class="sheet-header">
             <div>
               <div class="sheet-title">大引の計算書（構造用合板張り根太なし床組）</div>
-              <div style="font-size: 0.72rem; color: #64748b; margin-top: 4px;">木造軸組工法住宅の許容応力度設計（713 設計例14準拠）</div>
+              
             </div>
             <div class="sheet-meta">
               <div>物件名: ○○邸新築工事</div>
@@ -741,7 +740,7 @@
       </h2>
       <div class="faq-item">
         <div class="faq-q">Q. なぜ固定荷重に440 N/m²が使われているのですか？</div>
-        <div class="faq-a">A. グレー本設計例14（P88〜P89）の実務標準荷重設定に基づいています。1階床の仕上げ・下地合板・床下断熱材・大引自重を合算した標準的な設計固定荷重として440 N/m²が採用されており、本ツールでもこの値を基準値（任意変更可）としてセットしています。</div>
+        <div class="faq-a">A. 木造住宅1階床組の実務標準荷重設定に基づいています。1階床の仕上げ・下地合板・床下断熱材・大引自重を合算した標準的な設計固定荷重として440 N/m²が採用されており、本ツールでもこの値を基準値（任意変更可）としてセットしています。</div>
       </div>
       <div class="faq-item">
         <div class="faq-q">Q. 束ピッチ（支持スパン）はどのように決めればよいですか？</div>

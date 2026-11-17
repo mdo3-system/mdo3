@@ -232,27 +232,29 @@
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 12px;
+            border: none !important;
+        }
+
+        .sheet-header-table td {
+            border: none !important;
+            padding: 4px 6px;
         }
 
         .sheet-title-main {
-            font-size: 14.5pt;
+            font-size: 13pt;
             font-weight: 800;
             color: #0f172a;
             border-bottom: 2px solid #0f172a;
-            padding-bottom: 4px;
-            letter-spacing: 0.04em;
-        }
-
-        .sheet-subtitle {
-            font-size: 8.5pt;
-            color: #475569;
-            margin-top: 2px;
+            padding-bottom: 6px;
+            letter-spacing: 0.02em;
+            white-space: nowrap;
         }
 
         .sheet-meta-box {
             font-size: 8pt;
             text-align: right;
             line-height: 1.45;
+            white-space: nowrap;
         }
 
         /* 適格判定スタンプ */
@@ -404,7 +406,7 @@
             <div style="display:flex; gap:10px;">
                 <button type="button" class="btn btn-secondary" onclick="resetToSample713()">
                     <span class="material-symbols-outlined" style="font-size:16px;">restart_alt</span>
-                    設計例14 (713) 条件に戻す
+                    初期条件に戻す
                 </button>
                 <button type="button" class="btn btn-primary" onclick="calculate()">
                     <span class="material-symbols-outlined" style="font-size:16px;">refresh</span>
@@ -525,7 +527,7 @@
             <div class="input-group">
                 <label>たわみ制限値</label>
                 <select id="deflection_limit_select" class="input-control" onchange="calculate()">
-                    <option value="250" selected>l / 250 (住宅一般床・グレー本標準)</option>
+                    <option value="250" selected>l / 250 (住宅一般床・標準)</option>
                     <option value="300">l / 300 (高剛性要求)</option>
                     <option value="200">l / 200 (一般許容限界)</option>
                 </select>
@@ -564,11 +566,10 @@
         <!-- 帳票タイトルヘッダー -->
         <table class="sheet-header-table">
             <tr>
-                <td style="vertical-align: bottom;">
+                <td style="vertical-align: middle;">
                     <div class="sheet-title-main">大引の構造計算書（構造用合板張り根太なし床組）</div>
-                    <div class="sheet-subtitle">『木造軸組工法住宅の許容応力度設計（グレー本）』713 設計例14 準拠</div>
                 </td>
-                <td style="width: 190px; vertical-align: bottom;" class="sheet-meta-box">
+                <td style="width: 175px; vertical-align: bottom;" class="sheet-meta-box">
                     <div><b>工事件名:</b> <span id="p_project_display">-</span></div>
                     <div><b>計算日:</b> <span id="p_date_display">-</span></div>
                     <div><b>設計者:</b> <span id="p_engineer_display">-</span></div>
@@ -734,7 +735,6 @@
 
         <!-- 帳票フッター注記 -->
         <div class="sheet-footer-notes">
-            ※ 本計算書は『木造軸組工法住宅の許容応力度設計（グレー本）』第7章「床組の設計」に準拠した大引断面の許容応力度・たわみ検定書です。<br>
             ※ 床材に厚さ24mm以上の構造用合板等を直接大引および土台に千鳥打ちすることで、剛床（火打梁の省略）が成立します。<br>
             ※ 束には鋼製束・プラスチック束を用い、束石またはベタ基礎耐圧盤上に接着剤・ビス等で確実に固定してください。
         </div>

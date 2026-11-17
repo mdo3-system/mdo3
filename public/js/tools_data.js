@@ -526,7 +526,7 @@ const MDO3_TOOLS_CATALOG = [
     categoryName: "木造軸組・接合部系",
     sortOrder: 8,
     title: "大引の計算書（構造用合板張り根太なし床組）",
-    summary: "グレー本設計例14準拠。大引間隔・スパン・束ピッチ・断面寸法から長期曲げ・せん断・たわみ（クリープ2.0）を算定。樹種DB（21種製材＋集成材）＆床伏図連動。",
+    summary: "大引間隔・スパン・束ピッチ・断面寸法から長期曲げ・せん断・たわみ（クリープ2.0）を算定。樹種DB（21種製材＋集成材）＆床伏図連動。",
     icon: "table_rows",
     url: "/app/tools/ohbiki.html",
     lpUrl: "/tools/ohbiki.html",
@@ -537,7 +537,6 @@ const MDO3_TOOLS_CATALOG = [
     badgeLabel: "完全無償",
     pricing: { individual: 0, categoryPack: 0, allAccess: 0 },
     standards: [
-      "日本建築防災協会 木造軸組工法住宅の許容応力度設計 (713 設計例14 構造用合板張り根太なし床組の大引設計)",
       "建築基準法施行令 第82条 (各部材の長期許容応力度検定)"
     ],
     canDo: [

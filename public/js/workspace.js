@@ -233,7 +233,7 @@
       isFree: true,
       icon: "table_rows",
       url: "/app/tools/ohbiki.html",
-      desc: "【完全無償】グレー本設計例14準拠・大引の曲げ/せん断/クリープたわみ検定・樹種DB内蔵",
+      desc: "【完全無償】大引の曲げ/せん断/クリープたわみ検定・樹種DB内蔵",
       planGroup: ["free_trial", "core_pack", "single_jintsuko", "all"]
     },
 
