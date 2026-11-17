@@ -225,6 +225,17 @@
       desc: "【完全無償】確認申請第1面添付の敷地付近見取図を1分でPDF/画像出力",
       planGroup: ["free_trial", "core_pack", "single_jintsuko", "all"]
     },
+    {
+      id: "ohbiki",
+      name: "大引の計算書（合板根太なし床組）",
+      category: "free",
+      frequent: false,
+      isFree: true,
+      icon: "table_rows",
+      url: "/app/tools/ohbiki.html",
+      desc: "【完全無償】グレー本設計例14準拠・大引の曲げ/せん断/クリープたわみ検定・樹種DB内蔵",
+      planGroup: ["free_trial", "core_pack", "single_jintsuko", "all"]
+    },
 
     // --- 木造軸組・接合部系 (有償) ---
     {

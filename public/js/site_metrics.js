@@ -7,7 +7,7 @@
  * - [data-mdo3-tool-count] 属性要素およびタイトル・ラベル等を自動書き換え
  */
 (function () {
-  var SYNCED_TOOL_COUNT = 32;
+  var SYNCED_TOOL_COUNT = 33;
 
   function getToolCount() {
     if (typeof MDO3_TOOLS_CATALOG !== 'undefined' && Array.isArray(MDO3_TOOLS_CATALOG) && MDO3_TOOLS_CATALOG.length > 0) {
@@ -35,3 +35,4 @@
     applyDynamicCounts();
   }
 })();
+

@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>大引の計算書（構造用合板根太なし床組） | mdo3 構造計算ツール</title>
+    <script>
+        if (window.location.protocol !== 'file:') {
+            fetch('/api/check_auth.php')
+                .then(res => res.ok ? res.json() : null)
+                .then(data => {
+                    if (data && data.authenticated === false) {
+                        window.location.replace('/login.html');
+                    }
+                })
+                .catch(err => console.warn("Auth check failed:", err));
+        }
+    </script>
+    <!-- Fonts & Icons -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap">
+    <link rel="stylesheet" href="../css/common.css?v=20261117_v1">
+    <!-- 樹種マスターデータベース -->
+    <script src="/js/timber_db.js?v=20261117_v1"></script>
+
+    <style>
+        :root {
+            --primary-color: #0284c7;
+            --primary-hover: #0369a1;
+            --accent-green: #16a34a;
+            --accent-red: #dc2626;
+            --card-border: #cbd5e1;
+            --bg-card: #ffffff;
+            --bg-page: #f8fafc;
+            --text-main: #0f172a;
+            --text-sub: #64748b;
+        }
+
+        body {
+            font-family: 'Inter', 'Noto Sans JP', sans-serif;
+            color: var(--text-main);
+            background-color: var(--bg-page);
+            margin: 0;
+            padding: 0;
+            line-height: 1.5;
+        }
+
+        .tool-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* 画面操作部 (印刷時は非表示) */
+        .calc-input-panel {
+            background: var(--bg-card);
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 12px;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .panel-title {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .badge-free-tag {
+            background: rgba(16, 185, 129, 0.15);
+            color: #15803d;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 9999px;
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .input-group label {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #334155;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .input-group label span.unit {
+            color: var(--text-sub);
+            font-weight: normal;
+            font-size: 0.78rem;
+        }
+
+        .input-control {
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 0.95rem;
+            font-family: 'JetBrains Mono', 'Inter', monospace;
+            color: #0f172a;
+            background: #fff;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .input-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+        }
+
+        select.input-control {
+            font-family: inherit;
+        }
+
+        /* サマリー判定バッジ */
+        .summary-badges {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .badge-card {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 14px 18px;
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .badge-card.ok {
+            background: #f0fdf4;
+            border-color: #86efac;
+        }
+
+        .badge-card.ng {
+            background: #fef2f2;
+            border-color: #fca5a5;
+        }
+
+        .badge-card-title {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-sub);
+            margin-bottom: 4px;
+        }
+
+        .badge-card-status {
+            font-size: 1.15rem;
+            font-weight: 800;
+        }
+
+        .badge-card.ok .badge-card-status { color: var(--accent-green); }
+        .badge-card.ng .badge-card-status { color: var(--accent-red); }
+
+        .badge-card-ratio {
+            font-size: 0.78rem;
+            font-family: 'JetBrains Mono', monospace;
+            color: #475569;
+            margin-top: 2px;
+        }
+
+        /* A4印刷プレビューシート (A4縦: 210mm x 297mm) */
+        .a4-print-sheet {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            margin: 0 auto;
+            width: 210mm;
+            min-height: 297mm;
+            padding: 15mm 16mm 14mm;
+            box-sizing: border-box;
+            position: relative;
+            background-color: #fff;
+        }
+
+        /* 印刷用スタイル */
+        @media print {
+            body {
+                background: #fff;
+                padding: 0;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .tool-container {
+                max-width: 100%;
+                padding: 0;
+                margin: 0;
+            }
+            .a4-print-sheet {
+                border: none;
+                box-shadow: none;
+                width: 100%;
+                min-height: 100%;
+                padding: 10mm 12mm;
+                page-break-after: avoid;
+            }
+        }
+
+        /* 帳票ヘッダー */
+        .sheet-header-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 12px;
+        }
+
+        .sheet-title-main {
+            font-size: 14.5pt;
+            font-weight: 800;
+            color: #0f172a;
+            border-bottom: 2px solid #0f172a;
+            padding-bottom: 4px;
+            letter-spacing: 0.04em;
+        }
+
+        .sheet-subtitle {
+            font-size: 8.5pt;
+            color: #475569;
+            margin-top: 2px;
+        }
+
+        .sheet-meta-box {
+            font-size: 8pt;
+            text-align: right;
+            line-height: 1.45;
+        }
+
+        /* 適格判定スタンプ */
+        .stamp-box {
+            display: inline-block;
+            border: 2px solid #16a34a;
+            color: #16a34a;
+            font-size: 9pt;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 4px;
+            letter-spacing: 0.08em;
+            transform: rotate(-3deg);
+        }
+
+        .stamp-box.ng {
+            border-color: #dc2626;
+            color: #dc2626;
+        }
+
+        /* 帳票セクション見出し */
+        .sheet-section-title {
+            font-size: 9.5pt;
+            font-weight: 800;
+            background: #f1f5f9;
+            border-left: 4px solid #0284c7;
+            padding: 3px 8px;
+            margin: 10px 0 6px;
+            color: #0f172a;
+        }
+
+        /* 帳票テーブル */
+        .sheet-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 8.2pt;
+            margin-bottom: 8px;
+        }
+
+        .sheet-table th, .sheet-table td {
+            border: 1px solid #cbd5e1;
+            padding: 4px 6px;
+            line-height: 1.35;
+        }
+
+        .sheet-table th {
+            background-color: #f8fafc;
+            font-weight: 700;
+            text-align: left;
+            color: #334155;
+            width: 28%;
+        }
+
+        .sheet-table td.val-col {
+            font-family: 'JetBrains Mono', 'Consolas', monospace;
+            font-weight: 600;
+        }
+
+        .sheet-table td.center {
+            text-align: center;
+        }
+
+        .sheet-table td.right {
+            text-align: right;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* 検定テーブル */
+        .check-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 8.2pt;
+            margin-bottom: 10px;
+        }
+
+        .check-table th, .check-table td {
+            border: 1px solid #cbd5e1;
+            padding: 5px 6px;
+            text-align: center;
+        }
+
+        .check-table th {
+            background-color: #f1f5f9;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .check-table td.formula {
+            text-align: left;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 7.8pt;
+        }
+
+        .check-table td.status-ok {
+            color: #15803d;
+            font-weight: 800;
+        }
+
+        .check-table td.status-ng {
+            color: #b91c1c;
+            font-weight: 800;
+            background: #fef2f2;
+        }
+
+        /* 伏図SVGコンテナ */
+        .layout-plan-wrap {
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            padding: 8px;
+            background: #ffffff;
+            margin: 6px 0 10px;
+            text-align: center;
+        }
+
+        .plan-title-tag {
+            font-size: 8.5pt;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .sheet-footer-notes {
+            font-size: 7.2pt;
+            color: #64748b;
+            border-top: 1px dashed #cbd5e1;
+            padding-top: 5px;
+            margin-top: 8px;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+
+<div class="tool-container">
+    <!-- 共通グローバルヘッダー (工事名・日付・設計者・保存復元・A4印刷) -->
+    <div id="global-header-container"></div>
+
+    <!-- 画面操作パネル (no-print) -->
+    <div class="calc-input-panel no-print">
+        <div class="panel-header">
+            <div class="panel-title">
+                <span class="material-symbols-outlined" style="color:var(--primary-color); font-size:28px;">straighten</span>
+                <span>大引の計算書（構造用合板根太なし床組）</span>
+                <span class="badge-free-tag">完全無償ツール (¥0)</span>
+            </div>
+            <div style="display:flex; gap:10px;">
+                <button type="button" class="btn btn-secondary" onclick="resetToSample713()">
+                    <span class="material-symbols-outlined" style="font-size:16px;">restart_alt</span>
+                    設計例14 (713) 条件に戻す
+                </button>
+                <button type="button" class="btn btn-primary" onclick="calculate()">
+                    <span class="material-symbols-outlined" style="font-size:16px;">refresh</span>
+                    再計算
+                </button>
+                <button type="button" class="btn btn-primary" onclick="window.print()" style="background:#0f172a;">
+                    <span class="material-symbols-outlined" style="font-size:16px;">print</span>
+                    A4印刷 / PDF保存
+                </button>
+            </div>
+        </div>
+
+        <!-- 総括3大判定バッジ -->
+        <div class="summary-badges">
+            <div class="badge-card ok" id="summary_bend">
+                <div class="badge-card-title">1. 曲げ応力度検定</div>
+                <div class="badge-card-status" id="status_bend">検定中</div>
+                <div class="badge-card-ratio" id="ratio_bend">σb / fb = -</div>
+            </div>
+            <div class="badge-card ok" id="summary_shear">
+                <div class="badge-card-title">2. せん断応力度検定</div>
+                <div class="badge-card-status" id="status_shear">検定中</div>
+                <div class="badge-card-ratio" id="ratio_shear">τ / fs = -</div>
+            </div>
+            <div class="badge-card ok" id="summary_def">
+                <div class="badge-card-title">3. たわみ検定 (変形増大係数考慮)</div>
+                <div class="badge-card-status" id="status_def">検定中</div>
+                <div class="badge-card-ratio" id="ratio_def">δ ≦ δlimit</div>
+            </div>
+        </div>
+
+        <!-- 入力フィールド群 -->
+        <div class="input-grid">
+            <!-- 樹種区分 -->
+            <div class="input-group">
+                <label>樹種・木材区分</label>
+                <select id="timber_category" class="input-control" onchange="onTimberCategoryChange()">
+                    <option value="sawn_ungraded" selected>構造用製材 (無等級材)</option>
+                    <option value="glulam_homo">同一等級構成集成材</option>
+                    <option value="glulam_sym">対称異等級構成集成材</option>
+                    <option value="custom">直接入力 (ユーザー設定)</option>
+                </select>
+            </div>
+
+            <!-- 樹種名 / 強度等級 -->
+            <div class="input-group">
+                <label>樹種 / 等級名</label>
+                <select id="timber_select" class="input-control" onchange="onTimberSelectChange()">
+                    <!-- JSにて動的生成 -->
+                </select>
+            </div>
+
+            <!-- 集成材の場合の樹種(せん断・めり込み用) -->
+            <div class="input-group" id="glulam_species_group" style="display:none;">
+                <label>集成材 構成樹種 <span class="unit">(せん断・めり込み強度)</span></label>
+                <select id="glulam_species_select" class="input-control" onchange="onTimberSelectChange()">
+                    <!-- JSにて動的生成 -->
+                </select>
+            </div>
+
+            <!-- 断面寸法 (幅 b) -->
+            <div class="input-group">
+                <label>断面 幅 b <span class="unit">(mm)</span></label>
+                <input type="number" id="dim_b" class="input-control" value="90" min="45" max="300" step="5" onchange="calculate()">
+            </div>
+
+            <!-- 断面寸法 (成 d) -->
+            <div class="input-group">
+                <label>断面 成 d <span class="unit">(mm)</span></label>
+                <input type="number" id="dim_d" class="input-control" value="90" min="45" max="450" step="5" onchange="calculate()">
+            </div>
+
+            <!-- スパン l -->
+            <div class="input-group">
+                <label>スパン l <span class="unit">(束〜束または土台間)</span></label>
+                <div style="display:flex; gap:6px;">
+                    <input type="number" id="span_l" class="input-control" value="0.9" min="0.45" max="3.64" step="0.05" onchange="calculate()" style="flex:1;">
+                    <select id="span_preset" class="input-control" style="width:110px;" onchange="onSpanPresetChange(this.value)">
+                        <option value="0.9" selected>0.9 m (900)</option>
+                        <option value="1.0">1.0 m (1000)</option>
+                        <option value="1.8">1.8 m (1800)</option>
+                        <option value="custom">手入力</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- 大引間隔 -->
+            <div class="input-group">
+                <label>大引間隔 <span class="unit">(m)</span></label>
+                <input type="number" id="spacing_ohbiki" class="input-control" value="0.9" min="0.45" max="2.0" step="0.05" onchange="calculate()">
+            </div>
+
+            <!-- 束ピッチ -->
+            <div class="input-group">
+                <label>束ピッチ <span class="unit">(m)</span></label>
+                <input type="number" id="pitch_tsuka" class="input-control" value="0.9" min="0.45" max="2.0" step="0.05" onchange="calculate()">
+            </div>
+
+            <!-- 固定荷重 w_dead -->
+            <div class="input-group">
+                <label>固定荷重 (1階床 大引自重含) <span class="unit">(N/m²)</span></label>
+                <input type="number" id="load_dead" class="input-control" value="440" min="100" max="2000" step="10" onchange="calculate()">
+            </div>
+
+            <!-- 積載荷重 (床用) w_live -->
+            <div class="input-group">
+                <label>積載荷重 (床用) <span class="unit">(N/m²)</span></label>
+                <input type="number" id="load_live" class="input-control" value="1300" min="100" max="5000" step="50" onchange="calculate()">
+            </div>
+
+            <!-- 積載荷重 (たわみ用) w_live_def -->
+            <div class="input-group">
+                <label>積載荷重 (たわみ用) <span class="unit">(N/m²)</span></label>
+                <input type="number" id="load_live_def" class="input-control" value="600" min="100" max="3000" step="50" onchange="calculate()">
+            </div>
+
+            <!-- たわみ制限値 -->
+            <div class="input-group">
+                <label>たわみ制限値</label>
+                <select id="deflection_limit_select" class="input-control" onchange="calculate()">
+                    <option value="250" selected>l / 250 (住宅一般床・グレー本標準)</option>
+                    <option value="300">l / 300 (高剛性要求)</option>
+                    <option value="200">l / 200 (一般許容限界)</option>
+                </select>
+            </div>
+
+            <!-- 変形増大係数 -->
+            <div class="input-group">
+                <label>変形増大係数 <span class="unit">(クリープたわみ考慮)</span></label>
+                <input type="number" id="creep_factor" class="input-control" value="2.0" min="1.0" max="3.0" step="0.1" onchange="calculate()">
+            </div>
+
+            <!-- 許容曲げ応力度 fb -->
+            <div class="input-group">
+                <label>長期許容曲げ応力度 fb <span class="unit">(N/mm²)</span></label>
+                <input type="number" id="val_fb" class="input-control" value="8.90" min="1" max="50" step="0.01" onchange="calculate()">
+            </div>
+
+            <!-- 許容せん断応力度 fs -->
+            <div class="input-group">
+                <label>長期許容せん断応力度 fs <span class="unit">(N/mm²)</span></label>
+                <input type="number" id="val_fs" class="input-control" value="0.70" min="0.1" max="10" step="0.01" onchange="calculate()">
+            </div>
+
+            <!-- ヤング係数 E -->
+            <div class="input-group">
+                <label>ヤング係数 E <span class="unit">(kN/mm²)</span></label>
+                <input type="number" id="val_E" class="input-control" value="9.0" min="1" max="30" step="0.1" onchange="calculate()">
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- A4 印刷プレビュー帳票 (A4縦 1枚ジャスト仕様) -->
+    <!-- ======================================================== -->
+    <div class="a4-print-sheet" id="a4PrintSheet">
+        <!-- 帳票タイトルヘッダー -->
+        <table class="sheet-header-table">
+            <tr>
+                <td style="vertical-align: bottom;">
+                    <div class="sheet-title-main">大引の構造計算書（構造用合板張り根太なし床組）</div>
+                    <div class="sheet-subtitle">『木造軸組工法住宅の許容応力度設計（グレー本）』713 設計例14 準拠</div>
+                </td>
+                <td style="width: 190px; vertical-align: bottom;" class="sheet-meta-box">
+                    <div><b>工事件名:</b> <span id="p_project_display">-</span></div>
+                    <div><b>計算日:</b> <span id="p_date_display">-</span></div>
+                    <div><b>設計者:</b> <span id="p_engineer_display">-</span></div>
+                    <div style="margin-top:4px;">
+                        <span class="stamp-box ok" id="stamp_overall">適格 OK</span>
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+        <!-- 1. 設計条件 -->
+        <div class="sheet-section-title">1. 設計条件および使用材料</div>
+        <table class="sheet-table">
+            <tr>
+                <th>床組工法</th>
+                <td>構造用合板直張り（根太なし・剛床仕様、火打梁省略）</td>
+                <th>大引配置間隔</th>
+                <td class="val-col"><span id="out_spacing_ohbiki">0.90</span> m ( <span id="out_spacing_ohbiki_mm">900</span> mm )</td>
+            </tr>
+            <tr>
+                <th>樹種・等級区分</th>
+                <td><span id="out_timber_name">ひのき (無等級材)</span></td>
+                <th>支持スパン (束ピッチ) l</th>
+                <td class="val-col"><span id="out_span_l">0.90</span> m ( <span id="out_span_l_mm">900</span> mm )</td>
+            </tr>
+            <tr>
+                <th>断面寸法 (幅 × 成)</th>
+                <td class="val-col"><span id="out_dim_b">90</span> mm × <span id="out_dim_d">90</span> mm</td>
+                <th>束の種類・配置</th>
+                <td>鋼製束 / プラ束（ <span id="out_pitch_tsuka">0.90</span> m ピッチ配置 ）</td>
+            </tr>
+            <tr>
+                <th>長期許容曲げ応力度 fb</th>
+                <td class="val-col"><span id="out_val_fb">8.90</span> N/mm² (基準強度 <span id="out_raw_fb">26.70</span> ÷ 3)</td>
+                <th>断面積 A</th>
+                <td class="val-col"><span id="out_val_A">8,100</span> mm²</td>
+            </tr>
+            <tr>
+                <th>長期許容せん断応力度 fs</th>
+                <td class="val-col"><span id="out_val_fs">0.70</span> N/mm² (基準強度 <span id="out_raw_fs">2.10</span> ÷ 3)</td>
+                <th>断面係数 Z</th>
+                <td class="val-col"><span id="out_val_Z">121.5 × 10³</span> mm³</td>
+            </tr>
+            <tr>
+                <th>ヤング係数 E</th>
+                <td class="val-col"><span id="out_val_E">9.0</span> kN/mm² ( <span id="out_val_E_N">9,000</span> N/mm² )</td>
+                <th>断面2次モーメント I</th>
+                <td class="val-col"><span id="out_val_I">546.8 × 10⁴</span> mm⁴</td>
+            </tr>
+        </table>
+
+        <!-- 2. 設計荷重の算定 -->
+        <div class="sheet-section-title">2. 設計荷重の算定</div>
+        <table class="sheet-table">
+            <tr>
+                <th>固定荷重 (1階床 大引自重含)</th>
+                <td class="val-col"><span id="out_load_dead">440</span> N/m²</td>
+                <th>積載荷重 (床用)</th>
+                <td class="val-col"><span id="out_load_live">1,300</span> N/m²</td>
+            </tr>
+            <tr>
+                <th>常時荷重 (曲げ・せん断用) w</th>
+                <td colspan="3" class="val-col">
+                    w = ( <span id="out_w_dead_calc">440</span> N/m² + <span id="out_w_live_calc">1,300</span> N/m² ) × <span id="out_w_spacing_calc">0.90</span> m 
+                    = <b><span id="out_w_total_Nm">1,566</span> N/m</b> ( <b><span id="out_w_total_Nmm">1.566</span> N/mm</b> )
+                </td>
+            </tr>
+            <tr>
+                <th>たわみ検討用荷重 wd</th>
+                <td colspan="3" class="val-col">
+                    wd = ( <span id="out_wd_dead_calc">440</span> N/m² + <span id="out_wd_live_calc">600</span> N/m² ) × <span id="out_wd_spacing_calc">0.90</span> m 
+                    = <b><span id="out_wd_total_Nm">936</span> N/m</b> ( <b><span id="out_wd_total_Nmm">0.936</span> N/mm</b> )
+                </td>
+            </tr>
+        </table>
+
+        <!-- 3. 断面算定および検定 -->
+        <div class="sheet-section-title">3. 断面算定および許容応力度・たわみ検定結果</div>
+        <table class="check-table">
+            <thead>
+                <tr>
+                    <th style="width: 18%;">検討項目</th>
+                    <th style="width: 38%;">算定式および数値</th>
+                    <th style="width: 15%;">発生値</th>
+                    <th style="width: 15%;">許容値 / 制限</th>
+                    <th style="width: 14%;">判定 (検定比)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- 曲げ応力度 -->
+                <tr>
+                    <td><b>曲げモーメント M</b><br>曲げ応力度 σb</td>
+                    <td class="formula">
+                        M = w · l² / 8 = <span id="chk_M_calc">1.566 × 900² / 8</span><br>
+                        σb = M / Z = <span id="chk_sigb_calc">1.586×10⁵ / 121.5×10³</span>
+                    </td>
+                    <td class="val-col" style="text-align:right;">
+                        M = <span id="chk_M_val">1.59 × 10⁵</span> N·mm<br>
+                        <b>σb = <span id="chk_sigb_val">1.30</span></b> N/mm²
+                    </td>
+                    <td class="val-col" style="text-align:right;">
+                        fb = <span id="chk_fb_val">8.90</span> N/mm²
+                    </td>
+                    <td id="cell_judge_bend" class="status-ok">
+                        <span id="chk_bend_status">OK</span><br>
+                        <small>( <span id="chk_bend_ratio">0.146</span> ≦ 1.0 )</small>
+                    </td>
+                </tr>
+
+                <!-- せん断応力度 -->
+                <tr>
+                    <td><b>せん断力 Q</b><br>せん断応力度 τ</td>
+                    <td class="formula">
+                        Q = w · l / 2 = <span id="chk_Q_calc">1.566 × 900 / 2</span><br>
+                        τ = 1.5 · Q / A = <span id="chk_tau_calc">1.5 × 704.7 / 8,100</span>
+                    </td>
+                    <td class="val-col" style="text-align:right;">
+                        Q = <span id="chk_Q_val">704.7</span> N<br>
+                        <b>τ = <span id="chk_tau_val">0.131</span></b> N/mm²
+                    </td>
+                    <td class="val-col" style="text-align:right;">
+                        fs = <span id="chk_fs_val">0.70</span> N/mm²
+                    </td>
+                    <td id="cell_judge_shear" class="status-ok">
+                        <span id="chk_shear_status">OK</span><br>
+                        <small>( <span id="chk_shear_ratio">0.187</span> ≦ 1.0 )</small>
+                    </td>
+                </tr>
+
+                <!-- たわみ検定 -->
+                <tr>
+                    <td><b>たわみ δ</b><br><small>(クリープ係数2.0)</small></td>
+                    <td class="formula">
+                        δ = 2 × ( 5 · wd · l⁴ ) / ( 384 · E · I )<br>
+                        <span id="chk_def_calc">2 × (5 × 0.936 × 900⁴) / (384 × 4.92×10¹⁰)</span>
+                    </td>
+                    <td class="val-col" style="text-align:right;">
+                        <b>δ = <span id="chk_def_val">0.42</span></b> mm
+                    </td>
+                    <td class="val-col" style="text-align:right;">
+                        l / <span id="chk_def_limit_denom">250</span> =<br>
+                        <b><span id="chk_def_limit_val">3.60</span></b> mm
+                    </td>
+                    <td id="cell_judge_def" class="status-ok">
+                        <span id="chk_def_status">OK</span><br>
+                        <small>( <span id="chk_def_ratio">0.116</span> ≦ 1.0 )</small>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- 4. 1階床伏図 (構造用合板張り) - 動的SVG描画 -->
+        <div class="layout-plan-wrap">
+            <div class="plan-title-tag">
+                <span>1階床伏図（構造用合板張り）</span>
+                <span style="font-size:7.5pt; font-weight:normal; color:#64748b;">剛床設計につき火打梁省略 / 大引間隔および束配置連動図面</span>
+            </div>
+            <!-- 動的SVG出力エリア -->
+            <div id="svgPlanContainer" style="width:100%; height:195px; display:flex; justify-content:center; align-items:center;">
+                <!-- JavaScriptにて動的生成 -->
+            </div>
+        </div>
+
+        <!-- 帳票フッター注記 -->
+        <div class="sheet-footer-notes">
+            ※ 本計算書は『木造軸組工法住宅の許容応力度設計（グレー本）』第7章「床組の設計」に準拠した大引断面の許容応力度・たわみ検定書です。<br>
+            ※ 床材に厚さ24mm以上の構造用合板等を直接大引および土台に千鳥打ちすることで、剛床（火打梁の省略）が成立します。<br>
+            ※ 束には鋼製束・プラスチック束を用い、束石またはベタ基礎耐圧盤上に接着剤・ビス等で確実に固定してください。
+        </div>
+    </div>
+</div>
+
+<script src="../js/common.js?v=20261117_v1"></script>
+<script>
+    // ========================================================
+    // 大引計算ロジック & 動的描画スクリプト
+    // ========================================================
+
+    // 初期化
+    window.addEventListener('DOMContentLoaded', () => {
+        // common.js の共通ヘッダー初期化
+        if (window.GlobalInfo) {
+            GlobalInfo.init();
+            // 物件名変更などのリスナー
+            ['g_project', 'g_date', 'g_engineer'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.addEventListener('input', updatePrintHeaderInfo);
+                }
+            });
+            updatePrintHeaderInfo();
+        }
+
+        initTimberOptions();
+        calculate();
+    });
+
+    function updatePrintHeaderInfo() {
+        const p = document.getElementById('g_project');
+        const d = document.getElementById('g_date');
+        const e = document.getElementById('g_engineer');
+
+        if (p) document.getElementById('p_project_display').innerText = p.value || '○○邸 新築工事';
+        if (d) document.getElementById('p_date_display').innerText = d.value || new Date().toISOString().split('T')[0];
+        if (e) document.getElementById('p_engineer_display').innerText = e.value || '構造設計担当';
+    }
+
+    // 樹種セレクトボックスの初期化
+    function initTimberOptions() {
+        const cat = document.getElementById('timber_category').value;
+        const select = document.getElementById('timber_select');
+        select.innerHTML = '';
+
+        if (!window.TIMBER_DB) {
+            console.error("TIMBER_DB not loaded");
+            return;
+        }
+
+        if (cat === 'sawn_ungraded') {
+            document.getElementById('glulam_species_group').style.display = 'none';
+            TIMBER_DB.SAWN_TIMBER_UNGRADED.forEach(t => {
+                const opt = document.createElement('option');
+                opt.value = t.id;
+                opt.innerText = `${t.name} (E=${t.E} kN/mm², fb=${(t.fb/3).toFixed(2)})`;
+                if (t.id === 'hinoki') opt.selected = true;
+                select.appendChild(opt);
+            });
+        } else if (cat === 'glulam_homo') {
+            document.getElementById('glulam_species_group').style.display = 'flex';
+            initGlulamSpecies();
+            TIMBER_DB.GLULAM_HOMO.forEach(t => {
+                const opt = document.createElement('option');
+                opt.value = t.id;
+                opt.innerText = `${t.name} (E=${t.E} kN/mm², fb=${(t.fb_lam/3).toFixed(2)})`;
+                if (t.id === 'E105-F345') opt.selected = true;
+                select.appendChild(opt);
+            });
+        } else if (cat === 'glulam_sym') {
+            document.getElementById('glulam_species_group').style.display = 'flex';
+            initGlulamSpecies();
+            TIMBER_DB.GLULAM_SYM.forEach(t => {
+                const opt = document.createElement('option');
+                opt.value = t.id;
+                opt.innerText = `${t.name} (E=${t.E} kN/mm², fb=${(t.fb_lam/3).toFixed(2)})`;
+                if (t.id === 'E105-F300') opt.selected = true;
+                select.appendChild(opt);
+            });
+        } else if (cat === 'custom') {
+            document.getElementById('glulam_species_group').style.display = 'none';
+            const opt = document.createElement('option');
+            opt.value = 'custom';
+            opt.innerText = '任意設定材 (手入力)';
+            opt.selected = true;
+            select.appendChild(opt);
+        }
+
+        onTimberSelectChange();
+    }
+
+    function initGlulamSpecies() {
+        const spSelect = document.getElementById('glulam_species_select');
+        if (spSelect.children.length === 0) {
+            TIMBER_DB.GLULAM_SPECIES_STRENGTH.forEach(s => {
+                const opt = document.createElement('option');
+                opt.value = s.id;
+                opt.innerText = `${s.name} (fs=${(s.fs_lam/3).toFixed(2)} N/mm²)`;
+                if (s.id === 'hinoki') opt.selected = true;
+                spSelect.appendChild(opt);
+            });
+        }
+    }
+
+    function onTimberCategoryChange() {
+        initTimberOptions();
+        calculate();
+    }
+
+    function onTimberSelectChange() {
+        const cat = document.getElementById('timber_category').value;
+        const selVal = document.getElementById('timber_select').value;
+        if (cat === 'custom') return;
+
+        let timber = null;
+        let glulamSp = null;
+
+        if (cat === 'sawn_ungraded') {
+            timber = TIMBER_DB.SAWN_TIMBER_UNGRADED.find(t => t.id === selVal);
+        } else if (cat === 'glulam_homo') {
+            timber = TIMBER_DB.GLULAM_HOMO.find(t => t.id === selVal);
+            const spVal = document.getElementById('glulam_species_select').value;
+            glulamSp = TIMBER_DB.getGlulamSpecies(spVal);
+        } else if (cat === 'glulam_sym') {
+            timber = TIMBER_DB.GLULAM_SYM.find(t => t.id === selVal);
+            const spVal = document.getElementById('glulam_species_select').value;
+            glulamSp = TIMBER_DB.getGlulamSpecies(spVal);
+        }
+
+        if (timber) {
+            const stress = TIMBER_DB.calcAllowableStress(timber, 'long', glulamSp);
+            document.getElementById('val_fb').value = stress.fb.toFixed(2);
+            document.getElementById('val_fs').value = stress.fs.toFixed(2);
+            document.getElementById('val_E').value = stress.E.toFixed(1);
+        }
+
+        calculate();
+    }
+
+    function onSpanPresetChange(val) {
+        if (val !== 'custom') {
+            document.getElementById('span_l').value = val;
+            calculate();
+        }
+    }
+
+    // 設計例14 (713) 初期値にリセット
+    function resetToSample713() {
+        document.getElementById('timber_category').value = 'sawn_ungraded';
+        initTimberOptions();
+        document.getElementById('timber_select').value = 'hinoki';
+        onTimberSelectChange();
+
+        document.getElementById('dim_b').value = 90;
+        document.getElementById('dim_d').value = 90;
+        document.getElementById('span_l').value = 0.9;
+        document.getElementById('span_preset').value = '0.9';
+        document.getElementById('spacing_ohbiki').value = 0.9;
+        document.getElementById('pitch_tsuka').value = 0.9;
+        document.getElementById('load_dead').value = 440;
+        document.getElementById('load_live').value = 1300;
+        document.getElementById('load_live_def').value = 600;
+        document.getElementById('deflection_limit_select').value = '250';
+        document.getElementById('creep_factor').value = 2.0;
+
+        calculate();
+    }
+
+    // 主計算関数
+    function calculate() {
+        // 1. 入力値の取得
+        const cat = document.getElementById('timber_category').value;
+        const timberName = (cat === 'custom') ? '任意設定材' : document.getElementById('timber_select').selectedOptions[0].text.split(' (')[0];
+        const b = parseFloat(document.getElementById('dim_b').value) || 90;
+        const d = parseFloat(document.getElementById('dim_d').value) || 90;
+        const span_m = parseFloat(document.getElementById('span_l').value) || 0.9;
+        const span_mm = span_m * 1000;
+        const spacing_m = parseFloat(document.getElementById('spacing_ohbiki').value) || 0.9;
+        const pitch_m = parseFloat(document.getElementById('pitch_tsuka').value) || 0.9;
+
+        const w_dead = parseFloat(document.getElementById('load_dead').value) || 440;
+        const w_live = parseFloat(document.getElementById('load_live').value) || 1300;
+        const w_live_def = parseFloat(document.getElementById('load_live_def').value) || 600;
+
+        const fb = parseFloat(document.getElementById('val_fb').value) || 8.90;
+        const fs = parseFloat(document.getElementById('val_fs').value) || 0.70;
+        const E_kN = parseFloat(document.getElementById('val_E').value) || 9.0;
+        const E = E_kN * 1000; // N/mm²
+
+        const limit_denom = parseFloat(document.getElementById('deflection_limit_select').value) || 250;
+        const creep_k = parseFloat(document.getElementById('creep_factor').value) || 2.0;
+
+        // 2. 断面諸元
+        const A = b * d; // mm²
+        const Z = (b * Math.pow(d, 2)) / 6; // mm³
+        const I = (b * Math.pow(d, 3)) / 12; // mm⁴
+        const EI = E * I; // N·mm²
+
+        // 3. 設計荷重
+        // 常時荷重 w (N/m 及び N/mm)
+        const w_Nm = (w_dead + w_live) * spacing_m;
+        const w_Nmm = w_Nm / 1000;
+
+        // たわみ検討用荷重 wd (N/m 及び N/mm)
+        const wd_Nm = (w_dead + w_live_def) * spacing_m;
+        const wd_Nmm = wd_Nm / 1000;
+
+        // 4. 曲げモーメント & 曲げ応力度
+        // M = w · l² / 8 (N·mm)
+        const M = (w_Nmm * Math.pow(span_mm, 2)) / 8;
+        const sigma_b = M / Z; // N/mm²
+        const ratio_bend = sigma_b / fb;
+        const ok_bend = ratio_bend <= 1.0;
+
+        // 5. せん断力 & せん断応力度
+        // Q = w · l / 2 (N)
+        const Q = (w_Nmm * span_mm) / 2;
+        const tau = (1.5 * Q) / A; // N/mm²
+        const ratio_shear = tau / fs;
+        const ok_shear = ratio_shear <= 1.0;
+
+        // 6. たわみ検討
+        // δ = k_def × (5 · wd · l⁴) / (384 · E · I)
+        const def_val = creep_k * (5 * wd_Nmm * Math.pow(span_mm, 4)) / (384 * EI);
+        const def_limit = span_mm / limit_denom;
+        const ratio_def = def_val / def_limit;
+        const ok_def = ratio_def <= 1.0;
+
+        const all_ok = ok_bend && ok_shear && ok_def;
+
+        // ========================================================
+        // 画面および帳票への反映
+        // ========================================================
+
+        // 画面上部サマリーバッジ
+        updateSummaryBadge('summary_bend', 'status_bend', 'ratio_bend', ok_bend, ratio_bend, `σb: ${sigma_b.toFixed(2)} / fb: ${fb.toFixed(2)}`);
+        updateSummaryBadge('summary_shear', 'status_shear', 'ratio_shear', ok_shear, ratio_shear, `τ: ${tau.toFixed(3)} / fs: ${fs.toFixed(2)}`);
+        updateSummaryBadge('summary_def', 'status_def', 'ratio_def', ok_def, ratio_def, `δ: ${def_val.toFixed(2)} ≦ ${def_limit.toFixed(2)}mm`);
+
+        // 帳票 総合判定スタンプ
+        const stamp = document.getElementById('stamp_overall');
+        stamp.className = 'stamp-box ' + (all_ok ? 'ok' : 'ng');
+        stamp.innerText = all_ok ? '適格 OK' : '不適格 NG';
+
+        // 帳票 1. 設計条件
+        document.getElementById('out_spacing_ohbiki').innerText = spacing_m.toFixed(2);
+        document.getElementById('out_spacing_ohbiki_mm').innerText = Math.round(spacing_m * 1000);
+        document.getElementById('out_timber_name').innerText = timberName;
+        document.getElementById('out_span_l').innerText = span_m.toFixed(2);
+        document.getElementById('out_span_l_mm').innerText = Math.round(span_mm);
+        document.getElementById('out_dim_b').innerText = b;
+        document.getElementById('out_dim_d').innerText = d;
+        document.getElementById('out_pitch_tsuka').innerText = pitch_m.toFixed(2);
+        document.getElementById('out_val_fb').innerText = fb.toFixed(2);
+        document.getElementById('out_raw_fb').innerText = (fb * 3).toFixed(2);
+        document.getElementById('out_val_fs').innerText = fs.toFixed(2);
+        document.getElementById('out_raw_fs').innerText = (fs * 3).toFixed(2);
+        document.getElementById('out_val_E').innerText = E_kN.toFixed(1);
+        document.getElementById('out_val_E_N').innerText = Math.round(E).toLocaleString();
+        document.getElementById('out_val_A').innerText = Math.round(A).toLocaleString();
+        document.getElementById('out_val_Z').innerText = (Z / 1000).toFixed(1) + ' × 10³';
+        document.getElementById('out_val_I').innerText = (I / 10000).toFixed(1) + ' × 10⁴';
+
+        // 帳票 2. 荷重
+        document.getElementById('out_load_dead').innerText = w_dead.toLocaleString();
+        document.getElementById('out_load_live').innerText = w_live.toLocaleString();
+        document.getElementById('out_w_dead_calc').innerText = w_dead;
+        document.getElementById('out_w_live_calc').innerText = w_live;
+        document.getElementById('out_w_spacing_calc').innerText = spacing_m.toFixed(2);
+        document.getElementById('out_w_total_Nm').innerText = Math.round(w_Nm).toLocaleString();
+        document.getElementById('out_w_total_Nmm').innerText = w_Nmm.toFixed(3);
+
+        document.getElementById('out_wd_dead_calc').innerText = w_dead;
+        document.getElementById('out_wd_live_calc').innerText = w_live_def;
+        document.getElementById('out_wd_spacing_calc').innerText = spacing_m.toFixed(2);
+        document.getElementById('out_wd_total_Nm').innerText = Math.round(wd_Nm).toLocaleString();
+        document.getElementById('out_wd_total_Nmm').innerText = wd_Nmm.toFixed(3);
+
+        // 帳票 3. 検定表
+        // 曲げ
+        document.getElementById('chk_M_calc').innerText = `${w_Nmm.toFixed(3)} × ${Math.round(span_mm)}² / 8`;
+        document.getElementById('chk_sigb_calc').innerText = `${(M / 100000).toFixed(3)}×10⁵ / ${(Z / 1000).toFixed(1)}×10³`;
+        document.getElementById('chk_M_val').innerText = (M / 100000).toFixed(2) + ' × 10⁵';
+        document.getElementById('chk_sigb_val').innerText = sigma_b.toFixed(2);
+        document.getElementById('chk_fb_val').innerText = fb.toFixed(2);
+        document.getElementById('chk_bend_status').innerText = ok_bend ? 'OK' : 'NG';
+        document.getElementById('chk_bend_ratio').innerText = ratio_bend.toFixed(3);
+        setCellStatus('cell_judge_bend', ok_bend);
+
+        // せん断
+        document.getElementById('chk_Q_calc').innerText = `${w_Nmm.toFixed(3)} × ${Math.round(span_mm)} / 2`;
+        document.getElementById('chk_tau_calc').innerText = `1.5 × ${Q.toFixed(1)} / ${A.toLocaleString()}`;
+        document.getElementById('chk_Q_val').innerText = Q.toFixed(1);
+        document.getElementById('chk_tau_val').innerText = tau.toFixed(3);
+        document.getElementById('chk_fs_val').innerText = fs.toFixed(2);
+        document.getElementById('chk_shear_status').innerText = ok_shear ? 'OK' : 'NG';
+        document.getElementById('chk_shear_ratio').innerText = ratio_shear.toFixed(3);
+        setCellStatus('cell_judge_shear', ok_shear);
+
+        // たわみ
+        document.getElementById('chk_def_calc').innerText = `${creep_k.toFixed(1)} × (5 × ${wd_Nmm.toFixed(3)} × ${Math.round(span_mm)}⁴) / (384 × ${(EI / 1e10).toFixed(2)}×10¹⁰)`;
+        document.getElementById('chk_def_val').innerText = def_val.toFixed(2);
+        document.getElementById('chk_def_limit_denom').innerText = limit_denom;
+        document.getElementById('chk_def_limit_val').innerText = def_limit.toFixed(2);
+        document.getElementById('chk_def_status').innerText = ok_def ? 'OK' : 'NG';
+        document.getElementById('chk_def_ratio').innerText = ratio_def.toFixed(3);
+        setCellStatus('cell_judge_def', ok_def);
+
+        // 4. 動的SVG床伏図の描画
+        renderFloorPlanSvg({
+            span_m: span_m,
+            spacing_m: spacing_m,
+            pitch_m: pitch_m
+        });
+    }
+
+    function updateSummaryBadge(cardId, statId, ratioId, ok, ratio, subText) {
+        const card = document.getElementById(cardId);
+        card.className = 'badge-card ' + (ok ? 'ok' : 'ng');
+        document.getElementById(statId).innerText = ok ? '適格 OK' : '不適格 NG';
+        document.getElementById(ratioId).innerText = `検定比: ${ratio.toFixed(3)} (${subText})`;
+    }
+
+    function setCellStatus(cellId, ok) {
+        const cell = document.getElementById(cellId);
+        cell.className = ok ? 'status-ok' : 'status-ng';
+    }
+
+    // ========================================================
+    // 4. 1階床伏図（構造用合板張り）の動的SVG描画
+    // （※教科書の図7・2に対応。図番号「7-2」は入れない）
+    // ========================================================
+    function renderFloorPlanSvg(params) {
+        const container = document.getElementById('svgPlanContainer');
+        if (!container) return;
+
+        const w = 480;
+        const h = 195;
+
+        // グリッド基準サイズ (外枠: 2,700mm x 2,700mm のモデル区画)
+        const modelSize = 2700; // 3グリッド (0.9m x 3 = 2.7m)
+        const padX = 75;
+        const padY = 28;
+        const drawW = 190;
+        const drawH = 150;
+
+        const scaleX = drawW / modelSize;
+        const scaleY = drawH / modelSize;
+
+        // 大引本数と位置
+        const spacing_mm = params.spacing_m * 1000;
+        const pitch_mm = params.pitch_m * 1000;
+
+        let ohbikiLines = [];
+        for (let x = spacing_mm; x < modelSize; x += spacing_mm) {
+            ohbikiLines.push(x);
+        }
+
+        let tsukaPoints = [];
+        for (let x of ohbikiLines) {
+            for (let y = pitch_mm; y < modelSize; y += pitch_mm) {
+                tsukaPoints.push({ x: x, y: y });
+            }
+        }
+
+        // SVGマークアップの組み立て
+        let svg = `
+        <svg viewBox="0 0 ${w} ${h}" width="100%" height="100%" style="font-family:'Noto Sans JP', sans-serif;">
+            <defs>
+                <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse">
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#475569" />
+                </marker>
+                <pattern id="plywoodHatch" width="8" height="8" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
+                    <line x1="0" y1="0" x2="0" y2="8" stroke="#f1f5f9" stroke-width="2" />
+                </pattern>
+            </defs>
+
+            <!-- 背景・合板エリア (2700x2700) -->
+            <rect x="${padX}" y="${padY}" width="${drawW}" height="${drawH}" fill="url(#plywoodHatch)" stroke="#334155" stroke-width="2.5" />
+
+            <!-- 大引 (実線または太線) -->
+            ${ohbikiLines.map(x => {
+                const px = padX + x * scaleX;
+                return `<line x1="${px}" y1="${padY}" x2="${px}" y2="${padY + drawH}" stroke="#0284c7" stroke-width="2.2" />`;
+            }).join('')}
+
+            <!-- 土台・外周ライン -->
+            <rect x="${padX}" y="${padY}" width="${drawW}" height="${drawH}" fill="none" stroke="#0f172a" stroke-width="3" />
+
+            <!-- 束 (○記号とクロス) -->
+            ${tsukaPoints.map(p => {
+                const cx = padX + p.x * scaleX;
+                const cy = padY + p.y * scaleY;
+                return `
+                    <g>
+                        <circle cx="${cx}" cy="${cy}" r="4.5" fill="#ffffff" stroke="#dc2626" stroke-width="1.8" />
+                        <line x1="${cx - 3}" y1="${cy - 3}" x2="${cx + 3}" y2="${cy + 3}" stroke="#dc2626" stroke-width="1.2" />
+                        <line x1="${cx - 3}" y1="${cy + 3}" x2="${cx + 3}" y2="${cy - 3}" stroke="#dc2626" stroke-width="1.2" />
+                    </g>
+                `;
+            }).join('')}
+
+            <!-- 引出線 & ラベル注記 (右側展開) -->
+            <g font-size="9" fill="#0f172a">
+                <!-- 大引引出線 -->
+                <line x1="${padX + (ohbikiLines[0] || 900) * scaleX}" y1="${padY + 45}" x2="${padX + drawW + 35}" y2="${padY + 45}" stroke="#64748b" stroke-width="1" />
+                <text x="${padX + drawW + 40}" y="${padY + 48}" font-weight="bold" fill="#0284c7">大引 @${Math.round(spacing_mm)}</text>
+
+                <!-- 束引出線 -->
+                <line x1="${padX + (ohbikiLines[0] || 900) * scaleX}" y1="${padY + (tsukaPoints[0] ? tsukaPoints[0].y * scaleY : 75)}" x2="${padX + drawW + 35}" y2="${padY + 75}" stroke="#64748b" stroke-width="1" />
+                <text x="${padX + drawW + 40}" y="${padY + 78}" font-weight="bold" fill="#dc2626">束 (プラ束/鋼製束 @${Math.round(pitch_mm)})</text>
+
+                <!-- 構造用合板注記 -->
+                <line x1="${padX + 25}" y1="${padY + 25}" x2="${padX - 10}" y2="${padY - 8}" stroke="#64748b" stroke-width="1" />
+                <text x="${padX - 65}" y="${padY - 6}" font-weight="bold">構造用合板 (24mm)</text>
+
+                <!-- 剛床注記 -->
+                <text x="${padX + drawW + 40}" y="${padY + 115}" font-size="8.5" fill="#475569">
+                    <tspan x="${padX + drawW + 40}" dy="0">剛床設計につき</tspan>
+                    <tspan x="${padX + drawW + 40}" dy="12">火打梁なし（直張り）</tspan>
+                </text>
+            </g>
+
+            <!-- 寸法線 (上部: 全体 2,700) -->
+            <g stroke="#64748b" stroke-width="0.8" font-size="8" fill="#475569">
+                <line x1="${padX}" y1="${padY - 14}" x2="${padX + drawW}" y2="${padY - 14}" marker-start="url(#arrow)" marker-end="url(#arrow)" />
+                <text x="${padX + drawW / 2}" y="${padY - 18}" text-anchor="middle" font-weight="bold">2,700</text>
+                <line x1="${padX}" y1="${padY - 20}" x2="${padX}" y2="${padY - 8}" />
+                <line x1="${padX + drawW}" y1="${padY - 20}" x2="${padX + drawW}" y2="${padY - 8}" />
+
+                <!-- 左側寸法線: 全体 2,700 -->
+                <line x1="${padX - 14}" y1="${padY}" x2="${padX - 14}" y2="${padY + drawH}" marker-start="url(#arrow)" marker-end="url(#arrow)" />
+                <text x="${padX - 18}" y="${padY + drawH / 2}" text-anchor="end" dominant-baseline="middle" font-weight="bold">2,700</text>
+                <line x1="${padX - 20}" y1="${padY}" x2="${padX - 8}" y2="${padY}" />
+                <line x1="${padX - 20}" y1="${padY + drawH}" x2="${padX - 8}" y2="${padY + drawH}" />
+
+                <!-- 下部寸法線: スパン / 間隔 -->
+                <line x1="${padX}" y1="${padY + drawH + 14}" x2="${padX + (ohbikiLines[0] || 900) * scaleX}" y2="${padY + drawH + 14}" marker-start="url(#arrow)" marker-end="url(#arrow)" />
+                <text x="${padX + ((ohbikiLines[0] || 900) * scaleX) / 2}" y="${padY + drawH + 24}" text-anchor="middle">@${Math.round(spacing_mm)}</text>
+            </g>
+        </svg>
+        `;
+
+        container.innerHTML = svg;
+    }
+</script>
+</body>
+</html>
