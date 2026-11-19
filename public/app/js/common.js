@@ -258,6 +258,7 @@ const ToolStorage = {
             const key = el.id || el.name || el.dataset.field;
             if (!key) return;
             if (key.startsWith('g_')) return; // ヘッダー情報は別枠管理
+            if (el.type === 'file' || el.type === 'button' || el.type === 'submit' || el.type === 'reset') return;
 
             if (el.type === 'checkbox' || el.type === 'radio') {
                 if (el.checked) formValues[key] = el.value || true;
@@ -462,6 +463,7 @@ const ToolStorage = {
                 const val = formData[key];
                 const el = document.getElementById(key) || document.querySelector(`[name="${key}"]`) || document.querySelector(`[data-field="${key}"]`);
                 if (!el) return;
+                if (el.type === 'file' || el.type === 'button' || el.type === 'submit' || el.type === 'reset') return;
 
                 if (el.type === 'checkbox' || el.type === 'radio') {
                     const group = document.querySelectorAll(`[name="${key}"], #${key}`);
