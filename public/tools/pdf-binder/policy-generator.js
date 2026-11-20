@@ -147,6 +147,9 @@
     $('polMetalMaker').value = '株式会社タツミ製「Tec-One P3（ピン接合プレカット金物工法）」';
     $('polWallBrace').checked = true;
     $('polWallPlywood').checked = true;
+    $('polWallParticle').checked = false;
+    $('polWallMdf').checked = false;
+    $('polWallOsb').checked = false;
     $('polWallCert').checked = false;
     $('polWallCertName').value = '';
     $('polWallQuasi').checked = true;
@@ -215,6 +218,9 @@
       metalMaker: $('polMetalMaker').value.trim(),
       wallBrace: $('polWallBrace').checked,
       wallPlywood: $('polWallPlywood').checked,
+      wallParticle: $('polWallParticle').checked,
+      wallMdf: $('polWallMdf').checked,
+      wallOsb: $('polWallOsb').checked,
       wallCert: $('polWallCert').checked,
       wallCertName: $('polWallCertName').value.trim(),
       wallQuasi: $('polWallQuasi').checked,
@@ -271,6 +277,9 @@
       setVal('polMetalMaker', s.metalMaker);
       setChk('polWallBrace', s.wallBrace);
       setChk('polWallPlywood', s.wallPlywood);
+      setChk('polWallParticle', s.wallParticle);
+      setChk('polWallMdf', s.wallMdf);
+      setChk('polWallOsb', s.wallOsb);
       setChk('polWallCert', s.wallCert);
       setVal('polWallCertName', s.wallCertName);
       setChk('polWallQuasi', s.wallQuasi);
@@ -354,20 +363,30 @@
     let elevSentence = elevTextMap[s.elevShape] || elevTextMap.regular;
     if (s.elevNote) elevSentence += `（${s.elevNote}）`;
 
-    // 使用耐力壁文
+    // 使用耐力壁文（告示面材4種の重複選択および大臣認定耐力壁の複数種記載に対応）
     const walls = [];
     if (s.wallBrace) walls.push('筋かい耐力壁');
-    if (s.wallPlywood) walls.push('構造用合板張り耐力壁');
+    const kokujiBoards = [];
+    if (s.wallPlywood) kokujiBoards.push('構造用合板');
+    if (s.wallParticle) kokujiBoards.push('構造用パーティクルボード');
+    if (s.wallMdf) kokujiBoards.push('構造用MDF');
+    if (s.wallOsb) kokujiBoards.push('構造用パネル（OSB）');
+    if (kokujiBoards.length > 0) {
+      walls.push(`${kokujiBoards.join('・')}張り耐力壁（告示耐力壁）`);
+    }
     if (s.wallCert) {
       walls.push(s.wallCertName ? `大臣認定面材耐力壁（${s.wallCertName}）` : '大臣認定面材耐力壁');
     }
-    const wallMainStr = walls.length > 0 ? walls.join('および') : '筋かい耐力壁および構造用合板張り耐力壁';
+    const wallMainStr = walls.length > 0 ? walls.join('、') : '筋かい耐力壁および構造用合板張り耐力壁';
     let wallSentence = `鉛直構面は、X方向・Y方向ともに${wallMainStr}で構成する。`;
+    if (s.wallCert) {
+      wallSentence += 'なお、大臣認定耐力壁は各認定条件および施工仕様を遵守する。';
+    }
     if (s.wallQuasi) {
       wallSentence += `また、${s.wallQuasiName || 'せっこうボード'}等を準耐力壁として適切に評価・算入する。`;
     }
     if (s.wallDamper) {
-      wallSentence += `なお、${s.wallDamperName || '制振装置・高倍率耐力壁'}を併用し、各認定・評価条件に基づき仕様を遵守する。`;
+      wallSentence += `あわせて、${s.wallDamperName || '制振装置・高倍率耐力壁'}を併用し、各認定・評価条件に基づき仕様を遵守する。`;
     }
 
     // 水平構面文

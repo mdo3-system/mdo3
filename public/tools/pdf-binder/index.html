@@ -697,16 +697,20 @@
               </div>
 
               <div class="form-group full">
-                <label>使用耐力壁・準耐力壁（複数選択）</label>
+                <label>使用耐力壁・準耐力壁（告示面材4種の重複選択・大臣認定複数記載可）</label>
                 <div class="policy-chk-grid">
                   <label class="toggle-label"><input type="checkbox" id="polWallBrace" checked><span>筋かい耐力壁</span></label>
-                  <label class="toggle-label"><input type="checkbox" id="polWallPlywood" checked><span>構造用合板張り耐力壁</span></label>
-                  <label class="toggle-label"><input type="checkbox" id="polWallCert"><span>大臣認定面材耐力壁</span></label>
-                  <input type="text" id="polWallCertName" placeholder="認定面材名（例：ダイライトMS 9mm、モイス等）">
+                  <label class="toggle-label"><input type="checkbox" id="polWallPlywood" checked><span>構造用合板（告示面材）</span></label>
+                  <label class="toggle-label"><input type="checkbox" id="polWallParticle"><span>構造用パーティクルボード（告示面材）</span></label>
+                  <label class="toggle-label"><input type="checkbox" id="polWallMdf"><span>構造用MDF（告示面材）</span></label>
+                  <label class="toggle-label"><input type="checkbox" id="polWallOsb"><span>構造用パネル（OSB / 告示面材）</span></label>
+                  <div></div>
+                  <label class="toggle-label"><input type="checkbox" id="polWallCert"><span>大臣認定面材耐力壁（複数種可）</span></label>
+                  <input type="text" id="polWallCertName" placeholder="複数可（例：ダイライトMS 9mm、モイスTM 9.5mm）">
                   <label class="toggle-label"><input type="checkbox" id="polWallQuasi" checked><span>準耐力壁を算入する</span></label>
                   <input type="text" id="polWallQuasiName" value="せっこうボード" placeholder="準耐力壁材料名">
                   <label class="toggle-label"><input type="checkbox" id="polWallDamper"><span>高倍率壁・制振装置を併用</span></label>
-                  <input type="text" id="polWallDamperName" placeholder="製品名・認定番号等">
+                  <input type="text" id="polWallDamperName" placeholder="製品名・認定番号等（複数可）">
                 </div>
               </div>
 
@@ -920,7 +924,7 @@
   <script src="cover-renderer.js?v=1.1.0"></script>
   <script src="pdf-engine.js?v=1.1.0"></script>
   <script src="app.js?v=1.1.0"></script>
-  <script src="policy-generator.js?v=1.1.0"></script>
+  <script src="policy-generator.js?v=1.1.1"></script>
 </body>
 
 </html>
