@@ -9,7 +9,7 @@
  * - 釘配列諸定数 & 任意配列詳細構面ツール (2in1) の完全動作対応
  */
 
-(function() {
+(function () {
   'use strict';
 
   // 全ツール体系定義
@@ -389,26 +389,33 @@
   function initWorkspace() {
     loadProjectFromStorage();
     setupUrlParams();
+    const select = document.getElementById('simPlanSelect');
+    if (select) select.value = currentPlanMode;
     checkAuthAndSetPlan();
     renderNavBar();
     setupEventListeners();
     updateProjectHeaderUI();
-    
+
     // 初回ツールをiframeで表示
     switchTool(activeToolId);
   }
 
-  // ログイン認証状態をチェックし、ログイン済みなら「全ツール使い放題」を完全保証
+  // ログイン認証状態をチェック（受講生モード選択済み・またはAPIがmaster_studentを返した場合は受講生権限を維持）
   function checkAuthAndSetPlan() {
     if (window.location.protocol !== 'file:') {
       fetch('/api/check_auth.php')
         .then(res => res.ok ? res.json() : null)
         .then(data => {
           if (data && data.authenticated) {
-            currentPlanMode = "all";
-            localStorage.setItem('mdo3_workspace_plan', "all");
+            const apiPlan = data.subscription && data.subscription.plan_key;
+            if (apiPlan === 'master_student') {
+              currentPlanMode = 'master_student';
+            } else if (currentPlanMode !== 'master_student') {
+              currentPlanMode = 'all';
+            }
+            localStorage.setItem('mdo3_workspace_plan', currentPlanMode);
             const select = document.getElementById('simPlanSelect');
-            if (select) select.value = "all";
+            if (select) select.value = currentPlanMode;
             renderNavBar();
           }
         })
@@ -451,22 +458,22 @@
     const frequentHtml = `
       <div class="ws-frequent-group">
         ${frequentTools.map(tool => {
-          const isSubscribed = checkSubscription(tool.id);
-          const isActive = tool.id === activeToolId;
-          const classes = [
-            'ws-tool-tab-btn',
-            isActive ? 'active' : '',
-            isSubscribed ? 'subscribed' : 'locked'
-          ].filter(Boolean).join(' ');
+      const isSubscribed = checkSubscription(tool.id);
+      const isActive = tool.id === activeToolId;
+      const classes = [
+        'ws-tool-tab-btn',
+        isActive ? 'active' : '',
+        isSubscribed ? 'subscribed' : 'locked'
+      ].filter(Boolean).join(' ');
 
-          return `
+      return `
             <button type="button" class="${classes}" data-tool="${tool.id}" onclick="window.onSelectToolTab('${tool.id}')">
               <span class="material-symbols-outlined tab-status-icon">${isSubscribed ? tool.icon : 'lock'}</span>
               <span>${tool.name}</span>
               ${!isSubscribed ? '<span class="material-symbols-outlined tab-lock-badge">lock</span>' : ''}
             </button>
           `;
-        }).join('')}
+    }).join('')}
       </div>
     `;
 
@@ -496,16 +503,16 @@
           </button>
           <div class="ws-dropdown-menu">
             ${catTools.map(tool => {
-              const isSubscribed = checkSubscription(tool.id);
-              const isActive = tool.id === activeToolId;
-              const classes = [
-                'ws-dropdown-item',
-                isActive ? 'active' : '',
-                isSubscribed ? 'subscribed' : 'locked',
-                tool.isFree ? 'is-free-item' : ''
-              ].filter(Boolean).join(' ');
+        const isSubscribed = checkSubscription(tool.id);
+        const isActive = tool.id === activeToolId;
+        const classes = [
+          'ws-dropdown-item',
+          isActive ? 'active' : '',
+          isSubscribed ? 'subscribed' : 'locked',
+          tool.isFree ? 'is-free-item' : ''
+        ].filter(Boolean).join(' ');
 
-              return `
+        return `
                 <button type="button" class="${classes}" onclick="window.onSelectToolTab('${tool.id}'); window.closeAllDropdowns();">
                   <span style="display:flex; align-items:center; gap:6px;">
                     <span class="material-symbols-outlined" style="font-size:14px; color:${tool.isFree ? '#4ade80' : ''};">${isSubscribed ? tool.icon : 'lock'}</span>
@@ -514,7 +521,7 @@
                   ${tool.isFree ? '<span class="tag-free-mini" style="font-size:0.68rem; background:rgba(16,185,129,0.2); color:#4ade80; border:1px solid rgba(16,185,129,0.4); padding:1px 6px; border-radius:10px;">¥0</span>' : (!isSubscribed ? '<span class="material-symbols-outlined" style="font-size:13px; color:#f59e0b;">lock</span>' : '')}
                 </button>
               `;
-            }).join('')}
+      }).join('')}
           </div>
         </div>
       `;
@@ -524,7 +531,7 @@
   }
 
   // ドロップダウン開閉制御
-  window.toggleDropdown = function(catId) {
+  window.toggleDropdown = function (catId) {
     const target = document.getElementById(`dropdown_${catId}`);
     const wasActive = target ? target.classList.contains('active') : false;
     window.closeAllDropdowns();
@@ -533,7 +540,7 @@
     }
   };
 
-  window.closeAllDropdowns = function() {
+  window.closeAllDropdowns = function () {
     document.querySelectorAll('.ws-dropdown').forEach(d => d.classList.remove('active'));
   };
 
@@ -549,12 +556,33 @@
     const tool = WORKSPACE_TOOLS.find(t => t.id === toolId);
     if (!tool) return false;
     if (tool.isFree) return true; // 無償ツールは常にアンロック
-    if (currentPlanMode === 'all') return true;
+    if (currentPlanMode === 'all' || currentPlanMode === 'master_student') return true;
     return tool.planGroup.includes(currentPlanMode);
   }
 
+  // ★ 構造計算学習プログラム受講生限定：計算書作成（PDF統合・製本ツール）起動制御
+  // 月額サブスク・全ツール使い放題からは明確に対象外とし、受講生権限のみ開放
+  window.openPdfBinderTool = function () {
+    if (currentPlanMode !== 'master_student') {
+      const ok = confirm(
+        '【構造計算学習プログラム受講生 限定ツール】\n\n' +
+        '「構造計算書 PDF統合・製本ツール（A3自動差替・NG対応追記・新表紙・自動目次）」は、\n' +
+        '構造計算学習プログラム（ARCHITREND ZERO 実務マスター）受講者様専用ツールです。\n' +
+        '（※月額サブスクリプションおよび「全ツール使い放題」プランの対象外です）\n\n' +
+        '学習プログラムの詳細ページを開きますか？\n' +
+        '（受講生の方は上部プラン切替で「🎓 構造計算学習プログラム受講生」を選択してください）'
+      );
+      if (ok) {
+        window.open('master-program.html', '_blank');
+      }
+      return;
+    }
+    const url = `tools/pdf-binder/index.html?t=${Date.now()}`;
+    window.open(url, '_blank');
+  };
+
   // ツール切り替えイベント
-  window.onSelectToolTab = function(toolId) {
+  window.onSelectToolTab = function (toolId) {
     const tool = WORKSPACE_TOOLS.find(t => t.id === toolId);
     if (!tool) return;
 
@@ -613,7 +641,7 @@
   }
 
   // ★ 現在アクティブなツールを直接ブラウザ別タブで最大化起動（推奨実務）
-  window.openCurrentToolExternal = function() {
+  window.openCurrentToolExternal = function () {
     const tool = WORKSPACE_TOOLS.find(t => t.id === activeToolId);
     if (!tool) return;
     const sep = tool.url.includes('?') ? '&' : '?';
@@ -668,12 +696,12 @@
     }
   }
 
-  window.closeSubscriptionModal = function() {
+  window.closeSubscriptionModal = function () {
     const modal = document.getElementById('wsSubscriptionModal');
     if (modal) modal.style.display = 'none';
   };
 
-  window.activateDemoPlan = function(planMode) {
+  window.activateDemoPlan = function (planMode) {
     currentPlanMode = planMode;
     localStorage.setItem('mdo3_workspace_plan', planMode);
     const select = document.getElementById('simPlanSelect');
@@ -687,6 +715,7 @@
   function getPlanName(plan) {
     switch (plan) {
       case 'all': return '全ツール使い放題 (月額¥1,980 / 年額¥19,800)';
+      case 'master_student': return '構造計算学習プログラム受講生 (計算書作成ツール利用可)';
       case 'core_pack': return '基本⑥ツールパック (Z/めり込み/人通口/屋根直/屋根垂/床) [月額¥980 / 年額¥10,000]';
       case 'single_jintsuko': return '個別ツール契約 (月額¥490)';
       default: return 'フリー体験';
@@ -770,7 +799,7 @@
         urbanGisGuideTitle.textContent = `🏛️ ${gisInfo.localGis.name}`;
       }
       if (urbanGisGuideSub) {
-        urbanGisGuideSub.textContent = gisInfo.localGis.isOfficial 
+        urbanGisGuideSub.textContent = gisInfo.localGis.isOfficial
           ? '公式WebGISを開いて用途地域・防火・高度地区をピンポイント確認'
           : '公開都市計画マップ検索を開いて指定状況を確認';
       }
@@ -834,7 +863,7 @@
         if (!addr) return;
         btnSyncRegional.disabled = true;
         btnSyncRegional.innerHTML = `<span class="material-symbols-outlined" style="font-size:12px; animation:spin 1s infinite;">sync</span>`;
-        
+
         try {
           if (typeof calculateRegionalConstants === 'function') {
             const res = calculateRegionalConstants(addr, 20);
@@ -846,12 +875,12 @@
             currentProject.freezeDepth = res.freezeDepth;
             currentProject.energyRegion = res.energyRegion;
             currentProject.solarRegion = res.solarRegion;
-            
+
             saveProjectToStorage();
             updateProjectHeaderUI();
-            
-            const gisNote = (res.cityPlanning && res.cityPlanning.localGis) 
-              ? `【都市計画: ${res.cityPlanning.localGis.name}】` 
+
+            const gisNote = (res.cityPlanning && res.cityPlanning.localGis)
+              ? `【都市計画: ${res.cityPlanning.localGis.name}】`
               : '';
             showWsToast(`建設地「${addr}」の地域定数を同期しました！${gisNote}`);
           }

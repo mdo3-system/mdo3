@@ -86,6 +86,7 @@
         <!-- サブスク契約切り替えシミュレーター (初期設定: 全ツール使い放題) -->
         <select id="simPlanSelect" class="ws-sim-select" title="サブスク契約状態のシミュレーション">
           <option value="all" selected>👑 全ツール使い放題 (ログイン・正規版)</option>
+          <option value="master_student">🎓 構造計算学習プログラム受講生</option>
           <option value="core_pack">基本⑥ツールパック (月額¥980 / 年額¥10,000)</option>
           <option value="single_jintsuko">個別ツール契約 (月額¥490)</option>
           <option value="free_trial">フリー体験</option>
@@ -95,6 +96,12 @@
         <button type="button" class="btn-ws-cad" id="btnOpenCurrentToolNewTab" title="現在のツールを別タブで全画面起動（推奨）" onclick="window.openCurrentToolExternal();" style="background:#0284c7; border-color:#38bdf8;">
           <span class="material-symbols-outlined" style="font-size:15px;">open_in_new</span>
           <span>別タブで最大化</span>
+        </button>
+
+        <!-- ★ 構造計算学習プログラム受講生限定：計算書作成（PDF統合・製本ツール） -->
+        <button type="button" class="btn-ws-cad" id="btnOpenPdfBinder" title="構造計算学習プログラム受講生限定：A3自動差替・NG追記・表紙＆目次自動生成ツール（月額サブスク・使い放題対象外）" onclick="window.openPdfBinderTool();" style="background:linear-gradient(135deg,#b45309,#d97706); border-color:#fbbf24; color:#fff;">
+          <span class="material-symbols-outlined" style="font-size:15px;">menu_book</span>
+          <span>📄 計算書作成 (受講生限定)</span>
         </button>
 
         <!-- CAD連携・斜め壁 (別タブで独立起動) -->
